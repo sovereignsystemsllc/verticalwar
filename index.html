@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#050505] font-sans text-gray-400 antialiased selection:bg-red-900/30">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMMON SENSE REBEL // VERTICAL WAR</title>
+
+    <meta property="og:title" content="Vertical War | Architecture for Narrative Warfare">
+    <meta property="og:description" content="The Vertical War begins here. Access the terminal, master the doctrine.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05010a',
+                        panel: '#0a0a0a',
+                        border: '#27272a',
+                        text: '#a1a1aa',
+                        highlight: '#e5e7eb',
+                        signal: '#10b981', // Emerald-500
+                        operator: '#b91c1c', // Red-700
+                        operator_hover: '#ef4444', // Red-500
+                    },
+                    fontFamily: {
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #05010a;
+            color: #a1a1aa;
+        }
+
+        .industrial-card {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid #27272a;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .industrial-card:hover {
+            border-color: #52525b;
+            background: rgba(15, 15, 15, 0.95);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #71717a;
+        }
+
+        .scanlines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="bg-void min-h-screen flex flex-col p-4 relative overflow-x-hidden">
+
+    <div class="scanlines opacity-50"></div>
+
+    <!-- THE REBRANDED HERO (The Anchor) -->
+    <div class="relative w-full max-w-7xl mx-auto mt-8 border-b-2 border-border pb-12 overflow-hidden shadow-2xl">
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <video autoplay loop muted playsinline
+                class="w-full h-full object-cover opacity-30 mix-blend-screen select-none">
+                <source src="assets/media/header_video.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-gradient-to-t from-void via-transparent to-void/80 pointer-events-none">
+            </div>
+        </div>
+
+        <div
+            class="relative z-10 flex flex-col md:flex-row items-center justify-between pt-24 pb-8 px-4 md:px-12 text-center md:text-left gap-8">
+            <div class="flex-1">
+                <h1
+                    class="font-tech text-6xl md:text-7xl lg:text-8xl font-bold uppercase tracking-widest text-white leading-none drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                    COMMON SENSE REBEL
+                </h1>
+                <p class="font-mono text-lg md:text-xl text-signal uppercase tracking-[0.3em] mt-2 mb-6">
+                    // THE VERTICAL WAR
+                </p>
+                <p class="font-sans text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed mx-auto md:mx-0">
+                    You have bypassed the corporate feed. This is the un-gated, frontline dispatch center. Read the
+                    latest intelligence below, or access the armory to begin your training.
+                </p>
+            </div>
+
+            <div class="flex-shrink-0">
+                <a href="gate/"
+                    class="group relative inline-block px-8 py-5 border-2 border-signal bg-signal/10 hover:bg-signal/20 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                    <div class="absolute top-0 right-0 w-2 h-2 bg-signal animate-pulse"></div>
+                    <div
+                        class="font-tech text-2xl md:text-3xl text-white font-bold tracking-widest uppercase relative z-10 flex items-center justify-center gap-3">
+                        [ OPERATOR LOGIN / REGISTER ]
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE BROADCAST LAYOUT (The 70/30 Split) -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto mt-12 mb-16 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+            <!-- LEFT COLUMN: THE DISPATCH FEED -->
+            <div class="lg:col-span-8">
+                <div class="flex items-center gap-4 mb-6 border-b border-border pb-2">
+                    <h2
+                        class="font-tech text-3xl font-bold text-white uppercase tracking-widest flex items-center gap-3">
+                        <span class="text-red-500 animate-pulse text-2xl">[●]</span>
+                        LIVE TRANSMISSIONS [ UN-GATED ]
+                    </h2>
+                </div>
+
+                <div id="dispatch-feed-container" class="space-y-8 mt-6">
+                    <!-- HARDCODED DISPATCH CARD PLACEHOLDER -->
+                    <div class="bg-black/80 border border-zinc-800 p-6 md:p-8 hover:border-zinc-600 transition-colors">
+                        <div class="mb-4">
+                            <span class="text-xs font-mono text-signal uppercase tracking-widest">FEB 24, 2026 //
+                                TACTICAL BRIEFING</span>
+                        </div>
+                        <h3 class="font-serif text-3xl md:text-5xl text-white font-bold mb-6 leading-tight">The Collapse
+                            of the Horizontal Web</h3>
+                        <div class="space-y-4 mb-8">
+                            <p class="text-lg text-gray-300 font-sans leading-relaxed">
+                                The algorithms are tightening. What was once an open digital frontier has been
+                                meticulously enclosed into behavioral containment zones. The mega-creators are not your
+                                friends; they are the wardens of these zones, deployed to keep your attention pinned
+                                while the value is extracted.
+                            </p>
+                            <p class="text-lg text-gray-300 font-sans leading-relaxed">
+                                To survive the coming shift, we cannot rely on the tools they provided. We must build a
+                                Phantom Fence—an un-cancellable, self-owned perimeter for our networks and our capital.
+                            </p>
+                            <p class="text-lg text-gray-300 font-sans leading-relaxed">
+                                This dispatch outlines the exact architecture required to step out of the algorithm and
+                                begin fighting the Vertical War.
+                            </p>
+                        </div>
+                        <a href="read/"
+                            class="inline-block border border-gray-500 text-gray-300 hover:bg-gray-200 hover:text-black hover:border-white py-3 px-6 font-tech text-xl font-bold uppercase tracking-widest transition-all">
+                            [ READ FULL DISPATCH >> ]
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: THE ARMORY SIDEBAR -->
+            <div class="lg:col-span-4">
+                <div class="sticky top-24">
+                    <div class="mb-6 border-b border-border pb-2">
+                        <h2 class="font-tech text-3xl font-bold text-gray-300 uppercase tracking-widest">THE ARMORY</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Card 1 -->
+                        <a href="cmd/codex/"
+                            class="block bg-zinc-900/50 border border-zinc-800 p-6 hover:border-white transition-all group">
+                            <div class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">[ DIR_01:
+                                CODEX ]</div>
+                            <div
+                                class="font-sans text-3xl font-bold text-gray-300 group-hover:text-white uppercase transition-colors">
+                                READ THE BOOKS</div>
+                        </a>
+
+                        <!-- Card 2 -->
+                        <a href="terminal/"
+                            class="block bg-zinc-900/50 border border-zinc-800 p-6 hover:border-white transition-all group">
+                            <div class="font-mono text-[10px] text-operator_hover uppercase tracking-widest mb-2">[
+                                SYS.ACADEMY ]</div>
+                            <div
+                                class="font-sans text-3xl font-bold text-gray-300 group-hover:text-white uppercase transition-colors">
+                                INTERACTIVE TRAINING</div>
+                        </a>
+
+                        <!-- Card 3 -->
+                        <a href="cmd/lexicon/"
+                            class="block bg-zinc-900/50 border border-zinc-800 p-6 hover:border-white transition-all group">
+                            <div class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">[
+                                DATA.LEXICON ]</div>
+                            <div
+                                class="font-sans text-3xl font-bold text-gray-300 group-hover:text-white uppercase transition-colors">
+                                SOVEREIGN DICTIONARY</div>
+                        </a>
+
+                        <!-- Card 4 -->
+                        <a href="ai/"
+                            class="block bg-zinc-900/50 border border-zinc-800 p-6 hover:border-white transition-all group">
+                            <div class="font-mono text-[10px] text-yellow-600 uppercase tracking-widest mb-2">[
+                                NEURAL.LINK ]</div>
+                            <div
+                                class="font-sans text-3xl font-bold text-gray-300 group-hover:text-white uppercase transition-colors">
+                                BUILD YOUR CUSTOM AI</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- THE SUPPLY DEPOT (Footer Conversion) -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto mt-12 mb-24 px-4">
+        <div class="mb-6 border-b border-border pb-2">
+            <h2 class="font-tech text-2xl font-bold text-gray-400 uppercase tracking-widest">SUPPLY DEPOT // SUPPORT THE
+                PHALANX</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 border border-border">
+            <div class="industrial-card border-b md:border-b-0 md:border-r border-border p-6 md:p-8 group">
+                <h3 class="font-tech text-3xl text-gray-300 group-hover:text-white mb-2 transition-colors">THE SIGNAL
+                </h3>
+                <div class="font-mono text-md text-gray-500 mb-6">$7.76 // DIGITAL</div>
+                <ul class="font-mono text-[11px] text-gray-400 space-y-3 mb-8 text-lg">
+                    <li>> PDF / ePub Manual</li>
+                    <li>> Immediate Download</li>
+                </ul>
+                <a href="https://buy.stripe.com/dRm9AT3gbe5u1SC1XR7Zu00" target="_blank" rel="noopener"
+                    class="block w-full text-center border border-border text-gray-400 hover:text-black hover:bg-white py-4 font-sans text-xl font-bold uppercase transition-colors">ACQUIRE</a>
+            </div>
+
+            <div class="industrial-card border-b md:border-b-0 md:border-r border-border p-6 md:p-8 group bg-[#0a0505]">
+                <h3 class="font-tech text-3xl text-white group-hover:text-red-500 mb-2 transition-colors">THE OPERATOR
+                </h3>
+                <div class="font-mono text-md text-red-500 mb-6">$45.00 // FULL KIT</div>
+                <ul class="font-mono text-[11px] text-gray-400 space-y-3 mb-8 text-lg">
+                    <li>+ Signed Paperback</li>
+                    <li>+ The Living Archive</li>
+                    <li>+ Private Discord</li>
+                </ul>
+                <a href="https://buy.stripe.com/dRm14n8AvbXm54O45Z7Zu01" target="_blank" rel="noopener"
+                    class="block w-full text-center bg-red-700 text-black py-4 font-sans text-xl font-bold hover:bg-white uppercase transition-colors">INITIALIZE</a>
+            </div>
+
+            <div class="industrial-card p-6 md:p-8 group bg-[#0a0800]">
+                <h3 class="font-tech text-3xl text-yellow-500 group-hover:text-yellow-400 mb-2 transition-colors">THE
+                    PHALANX</h3>
+                <div class="font-mono text-md text-yellow-700 mb-6">$150.00 // PATRON</div>
+                <ul class="font-mono text-[11px] text-gray-400 space-y-3 mb-8 text-lg">
+                    <li>! Prison Audit Call</li>
+                    <li>! Alpha Tools Access</li>
+                    <li>! Inner Circle Status</li>
+                </ul>
+                <a href="https://buy.stripe.com/8x228r6sn3qQ0Oy1XR7Zu02" target="_blank" rel="noopener"
+                    class="block w-full text-center border border-yellow-700 text-yellow-600 hover:bg-yellow-600 hover:text-black py-4 font-sans text-xl font-bold uppercase transition-colors">JOIN
+                    CORE</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPABASE DISPATCH FEED INTEGRATION -->
+    <script type="module">
+        import { supabase } from './assets/js/supabaseClient.js';
+
+        const feedContainer = document.getElementById('dispatch-feed-container');
+
+        // Render a single dispatch card
+        function renderDispatchCard(article) {
+            // Format Date (e.g. FEB 24, 2026)
+            const dateObj = new Date(article.created_at);
+            const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+
+            // Extract a snippet from the content (strip HTML tags, limit words)
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = article.content || "";
+            const textContent = tempDiv.textContent || tempDiv.innerText || "";
+            const snippet = textContent.split(' ').slice(0, 40).join(' ') + '...';
+
+            return `
+                <div class="bg-black/80 border border-zinc-800 p-6 md:p-8 hover:border-zinc-600 transition-colors">
+                    <div class="mb-4 flex items-center justify-between border-b border-zinc-800/50 pb-2">
+                        <span class="text-xs font-mono text-signal uppercase tracking-widest">${dateStr} // DISPATCH</span>
+                        <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">AUTHOR: ${article.author_name || "UNKNOWN_OPERATIVE"}</span>
+                    </div>
+                    <h3 class="font-serif text-3xl md:text-5xl text-white font-bold mb-6 leading-tight">${article.title}</h3>
+                    <div class="space-y-4 mb-8">
+                        <p class="text-lg text-gray-300 font-sans leading-relaxed">
+                            ${snippet}
+                        </p>
+                    </div>
+                    <a href="read/?id=${article.id}" class="inline-block border border-gray-500 text-gray-300 hover:bg-gray-200 hover:text-black hover:border-white py-3 px-6 font-tech text-xl font-bold uppercase tracking-widest transition-all">
+                        [ READ FULL DISPATCH >> ]
+                    </a>
+                </div>
+            `;
+        }
+
+        async function fetchLiveDispatches() {
+            feedContainer.innerHTML = '<div class="text-center p-12"><span class="font-mono text-signal text-sm animate-pulse">/// ESTABLISHING SECURE UPLINK... ///</span></div>';
+
+            try {
+                // Fetch published articles
+                const { data: articles, error } = await supabase
+                    .from('articles')
+                    .select('id, title, content, author_name, created_at')
+                    .eq('published', true)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                if (articles && articles.length > 0) {
+                    feedContainer.innerHTML = articles.map(renderDispatchCard).join('');
+                } else {
+                    feedContainer.innerHTML = `
+                        <div class="bg-black/50 border border-dashed border-zinc-800 p-12 text-center">
+                            <span class="font-mono text-zinc-600 text-sm tracking-widest uppercase">
+                                [ NO ACTIVE TRANSMISSIONS FOUND ]
+                            </span>
+                        </div>
+                    `;
+                }
+
+            } catch (err) {
+                console.error("Transmission Error:", err);
+                feedContainer.innerHTML = `
+                    <div class="bg-black/50 border border-dashed border-red-900/50 p-12 text-center mt-6">
+                        <span class="font-mono text-red-500 text-sm tracking-widest uppercase">
+                            [ UPLINK FAILED: ENCRYPTED INTERFERENCE ]
+                        </span>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize Feed
+        document.addEventListener('DOMContentLoaded', fetchLiveDispatches);
+    </script>
+</body>
+
+</html>

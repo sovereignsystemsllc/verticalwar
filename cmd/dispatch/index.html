@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FORGE // DISPATCH</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Native Editor Styles -->
+    <style>
+        /* Toolbar Styles */
+        #native-toolbar {
+            background: rgba(10, 10, 10, 0.9);
+            border-bottom: 1px solid #27272a;
+            padding: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 60;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            background: transparent;
+            border: 1px solid #27272a;
+            color: #a1a1aa;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover,
+        .toolbar-btn.active {
+            background: #27272a;
+            color: white;
+            border-color: #52525b;
+        }
+
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: #0a0a0a;
+            border: 1px solid #27272a;
+            color: #a1a1aa;
+            padding: 4px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .dropdown-btn:hover {
+            background: #27272a;
+            color: white;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #0a0a0a;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.8);
+            border: 1px solid #27272a;
+            z-index: 70;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-content button {
+            color: #a1a1aa;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #27272a;
+            color: white;
+        }
+
+        /* Editor Area Styles */
+        #native-editor {
+            min-height: 500px;
+            padding: 2rem;
+            font-family: 'Georgia', serif;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: #d4d4d8;
+            outline: none;
+        }
+
+        #native-editor[data-placeholder]:empty:before {
+            content: attr(data-placeholder);
+            color: #52525b;
+            font-style: italic;
+            cursor: text;
+        }
+
+        /* Override Tailwind Resets for Editor Content */
+        #native-editor ul {
+            list-style-type: disc;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        #native-editor ol {
+            list-style-type: decimal;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        #native-editor li {
+            margin-bottom: 0.5rem;
+        }
+
+        #native-editor h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        #native-editor h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4d4d8;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        #native-editor a {
+            color: #3b82f6;
+            /* Blue-500 */
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: color 0.2s;
+        }
+
+        #native-editor a:hover {
+            color: #60a5fa;
+            /* Blue-400 */
+        }
+    </style>
+
+    <script>
+        // Speed Lock
+        // if (!localStorage.getItem('sb-zazzwdaexhkeusfjdphv-auth-token')) {
+        //     window.location.replace('../../gate/index.html?mode=login');
+        // }
+    </script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05010a',
+                        panel: '#0a0a0a',
+                        border: '#27272a',
+                        text: '#a1a1aa',
+                        highlight: '#e5e7eb',
+                        signal: '#d4d4d8',
+                        operator: '#b91c1c',
+                        phalanx: '#a16207',
+                        emerald: { 500: '#10b981', 900: '#064e3b' },
+                    },
+                    fontFamily: {
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
+                        serif: ['Georgia', 'serif']
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #a1a1aa;
+            background-image: url('../../assets/images/backgrounds/chamber.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 1, 10, 0.92);
+            z-index: -1;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid #27272a;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .scan-lines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+        }
+
+        /* Reading constraints */
+        .editor-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #71717a;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-black text-gray-400 font-mono flex flex-col items-center justify-start p-4">
+
+    <div class="bg-overlay"></div>
+    <div class="scan-lines"></div>
+
+    <div class="w-full max-w-5xl mt-16 glass-panel flex flex-col relative z-10 min-h-[85vh]">
+
+        <!-- HEADER -->
+        <div class="p-6 border-b border-border bg-black/40 flex justify-between items-center sticky top-0 z-50">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-3 h-3 bg-red-500 animate-pulse"></div>
+                    <h1 class="font-tech text-2xl text-white tracking-widest uppercase">THE FORGE // DISPATCH</h1>
+                </div>
+                <p class="text-[10px] text-red-500/80 uppercase tracking-widest font-mono">Sovereign Intel Transmitter
+                </p>
+            </div>
+
+            <div class="flex gap-4">
+                <button id="btn-save-draft"
+                    class="px-4 py-2 text-xs font-mono text-gray-400 border border-gray-700 hover:text-white hover:border-white transition-all">
+                    [ SAVE DRAFT ]
+                </button>
+                <button id="btn-publish"
+                    class="px-6 py-2 text-xs font-tech font-bold text-black bg-red-600 hover:bg-red-500 uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+                    [ BROADCAST ]
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN EDITOR AREA -->
+        <div class="flex-1 flex flex-col relative bg-black/20 overflow-y-auto">
+            <div class="w-full max-w-[750px] mx-auto px-6 py-12 flex flex-col flex-1">
+
+                <!-- TITLE INPUT -->
+                <input type="text" id="draft-title" placeholder="ENTER SUBJECT HEADING..."
+                    class="w-full bg-transparent border-none text-4xl md:text-5xl font-tech font-bold text-white mb-8 focus:outline-none placeholder-gray-700 uppercase tracking-wider">
+
+                <!-- SERIES SELECTION -->
+                <div class="mb-8 flex items-center gap-4">
+                    <span class="text-xs font-mono text-gray-500 uppercase">CLASSIFICATION:</span>
+                    <select id="draft-series"
+                        class="bg-black border border-border text-xs font-mono text-gray-300 p-2 focus:border-red-500 outline-none w-64 uppercase">
+                        <option value="Dispatch">Field Dispatch (Public)</option>
+                        <option value="Doctrine">Sovereign Doctrine</option>
+                        <option value="Inside the Forge">[RESTRICTED] Inside the Forge</option>
+                    </select>
+                </div>
+
+                <!-- NATIVE HTML EDITOR -->
+                <div id="editor-wrapper"
+                    class="flex-1 flex flex-col border border-border bg-black/30 rounded-sm overflow-hidden mb-12">
+
+                    <div id="native-toolbar">
+                        <!-- Custom Formatting Dropdown -->
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" onclick="toggleFormatDropdown(event)"
+                                id="format-btn">
+                                FORMAT ▼
+                            </button>
+                            <div id="format-dropdown" class="dropdown-content">
+                                <button type="button" onclick="applyFormat('H2', 'HEADING 1')">Heading 1</button>
+                                <button type="button" onclick="applyFormat('H3', 'HEADING 2')">Heading 2</button>
+                                <button type="button" onclick="applyFormat('P', 'PARAGRAPH')">Paragraph</button>
+                            </div>
+                        </div>
+                        <button type="button" class="toolbar-btn" data-cmd="bold" onclick="formatDoc('bold')"
+                            title="Bold">B</button>
+                        <button type="button" class="toolbar-btn" data-cmd="italic" onclick="formatDoc('italic')"
+                            title="Italic">I</button>
+                        <button type="button" class="toolbar-btn" data-cmd="underline" onclick="formatDoc('underline')"
+                            title="Underline">U</button>
+                        <button type="button" class="toolbar-btn" onclick="formatDoc('insertUnorderedList')"
+                            title="Bullet List">• List</button>
+                        <button type="button" class="toolbar-btn" onclick="formatDoc('insertOrderedList')"
+                            title="Number List">1. List</button>
+                        <button type="button" class="toolbar-btn" onclick="addLink()" title="Insert Link">Link</button>
+                        <button type="button" class="toolbar-btn"
+                            onclick="document.getElementById('image-upload').click()"
+                            title="Insert Image">Image</button>
+                        <input type="file" id="image-upload" accept="image/*" style="display:none;"
+                            onchange="uploadImage(this)">
+                    </div>
+
+                    <div id="native-editor" contenteditable="true" data-placeholder="Commence transcription..."></div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATION SYSTEM -->
+    <div id="status-toast"
+        class="fixed bottom-6 right-6 p-4 border border-border bg-black/90 font-mono text-xs text-white z-50 transform translate-y-[200%] transition-transform duration-300 flex items-center gap-3 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+        <div id="toast-indicator" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+        <span id="toast-message">STATUS UPDATE</span>
+    </div>
+
+    <script>
+        // Formatting Commands
+        window.formatDoc = function (cmd, value = null) {
+            document.execCommand(cmd, false, value);
+            document.getElementById('native-editor').focus();
+            updateToolbarState();
+        };
+
+        // Custom Dropdown Logic
+        window.toggleFormatDropdown = function (event) {
+            event.stopPropagation();
+            document.getElementById("format-dropdown").classList.toggle("show");
+        };
+
+        window.applyFormat = function (blockType, label) {
+            formatDoc('formatBlock', blockType);
+            document.getElementById("format-btn").innerHTML = label + ' ▼';
+            document.getElementById("format-dropdown").classList.remove("show");
+
+            setTimeout(() => {
+                document.getElementById("format-btn").innerHTML = 'FORMAT ▼';
+            }, 1000);
+        };
+
+        // Close dropdown when clicking outside
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        };
+
+        window.addLink = function () {
+            const url = prompt("Enter link URL:");
+            if (url) {
+                document.execCommand("createLink", false, url);
+                updateToolbarState();
+            }
+        };
+
+        // Active State Toggling
+        function updateToolbarState() {
+            const buttons = document.querySelectorAll('#native-toolbar .toolbar-btn[data-cmd]');
+            buttons.forEach(btn => {
+                const cmd = btn.getAttribute('data-cmd');
+                if (document.queryCommandState(cmd)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Listen for cursor movement or clicks to update button states
+        const editor = document.getElementById('native-editor');
+        editor.addEventListener('keyup', updateToolbarState);
+        editor.addEventListener('mouseup', updateToolbarState);
+        editor.addEventListener('focus', updateToolbarState);
+
+        // Custom Image Upload Pipeline
+        window.uploadImage = async function (input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            showToast('UPLOADING ASSET TO MAINFRAME...', 'blue');
+            try {
+                // Determine user folder or use 'public' if disabled currently
+                const folderName = currentUserId || 'guest_uploads';
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `${folderName}/${fileName}`;
+
+                const { data, error } = await supabase.storage
+                    .from('article_assets')
+                    .upload(filePath, file);
+
+                if (error) throw error;
+
+                // Get Public URL
+                const { data: { publicUrl } } = supabase.storage
+                    .from('article_assets')
+                    .getPublicUrl(filePath);
+
+                // Insert into Editor
+                document.getElementById('native-editor').focus();
+                document.execCommand('insertImage', false, publicUrl);
+                showToast('ASSET UPLOAD COMPLETE.', 'green');
+
+            } catch (err) {
+                console.error("Upload Error:", err);
+                showToast('UPLOAD FAILED: ' + err.message, 'red');
+            }
+
+            // Reset input
+            input.value = '';
+        };
+    </script>
+
+    <script type="module">
+        // Main Access Flow
+        async function verifyAccess() {
+            // CheckGuard restricts the Forge to Authors/Archivists/Command
+            // const isAuthorized = await checkGuard(['OPERATOR', 'ARCHIVIST']);
+            // if (!isAuthorized) {
+            // window.location.replace('../../gate/index.html');
+            // return;
+            // }
+
+            const { data: { session } } = await supabase.auth.getSession();
+            currentUserId = session.user.id;
+
+            // Check URL for edit mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('id');
+            if (editId) {
+                loadDraft(editId);
+            }
+        }
+
+        // Load Existing Draft
+        async function loadDraft(id) {
+            showToast('RETRIEVING ENCRYPTED FILE...', 'yellow');
+            try {
+                const { data, error } = await supabase
+                    .from('articles')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                if (data.author_id !== currentUserId) {
+                    showToast('ACCESS DENIED: IMMUTABLE FILE', 'red');
+                    return;
+                }
+
+                activeDraftId = data.id;
+                document.getElementById('draft-title').value = data.title;
+                document.getElementById('draft-series').value = data.series;
+                document.getElementById('native-editor').innerHTML = data.content_html;
+
+                showToast(`DECRYPTION COMPLETE: ${data.status.toUpperCase()}`, 'green');
+
+            } catch (err) {
+                console.error("Draft Load Error:", err);
+                showToast('FAILED TO RETRIEVE FILE.', 'red');
+            }
+        }
+
+        // Save Function
+        async function saveArticle(status) {
+            const title = document.getElementById('draft-title').value.trim();
+            const series = document.getElementById('draft-series').value;
+            const editorDiv = document.getElementById('native-editor');
+            const content_html = editorDiv.innerHTML;
+
+            if (!title) {
+                showToast('FATAL: SUBJECT HEADING REQUIRED.', 'red');
+                return;
+            }
+            if (!editorDiv.textContent.trim() && !content_html.includes('<img')) {
+                showToast('FATAL: TRANSCRIPTION
+        EMPTY.', 'red' ); return; } showToast(`INITIATING ${status.toUpperCase()} SEQUENCE...`, 'yellow' ); const
+        payload = { title: title, content_html: content_html, series: series, status: status, author_id: currentUserId, };
+                try {
+                    if (activeDraftId) { // Update const { error }=await supabase .from('articles') .update({ ...payload,
+                        updated_at: new Date()
+                    }) .eq('id', activeDraftId); if (error) throw error;
+                } else { // Insert const { data,
+                    error
+                }=await supabase.from('articles').insert([payload]).select().single(); if (error) throw error;
+                activeDraftId = data.id; // Store new ID // Update URL silently const newurl=window.location.protocol + "//" +
+                window.location.host + window.location.pathname + '?id=' + data.id; window.history.pushState({
+                    path: newurl
+                }, '', newurl);
+            } if (status === 'published') {
+                showToast('TRANSMISSION SENT SUCCESSFULLY.', 'green');
+                setTimeout(() => window.location.href = '../codex/index.html', 2000);
+            } else {
+                showToast('DRAFT SAVED TO LOCAL NODE.', 'green');
+            }
+
+        } catch (err) {
+            console.error("Save Error:", err);
+            showToast('TRANSMISSION FAILED.', 'red');
+        }
+        }
+
+        // Toast Helper
+        function showToast(msg, color) {
+            const toast = document.getElementById('status-toast');
+            const dot = document.getElementById('toast-indicator');
+            document.getElementById('toast-message').innerText = msg;
+
+            // Reset colors
+            dot.classList.remove('bg-red-500', 'bg-green-500', 'bg-yellow-500', 'bg-blue-500');
+
+            if (color === 'red') dot.classList.add('bg-red-500');
+            if (color === 'green') dot.classList.add('bg-green-500');
+            if (color === 'yellow') dot.classList.add('bg-yellow-500');
+            if (color === 'blue') dot.classList.add('bg-blue-500');
+
+            // Slide In
+            toast.style.transform = 'translateY(0)';
+
+            // Auto Hide
+            setTimeout(() => {
+                toast.style.transform = 'translateY(200%)';
+            }, 4000);
+        }
+
+        // Event Listeners
+        document.getElementById('btn-save-draft').addEventListener('click', () => saveArticle('draft'));
+        document.getElementById('btn-publish').addEventListener('click', () => saveArticle('published'));
+
+        // Boot
+        verifyAccess();
+    </script>
+</body>
+
+</html>

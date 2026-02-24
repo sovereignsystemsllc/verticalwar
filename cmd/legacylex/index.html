@@ -1,0 +1,480 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SOVEREIGN LEXICON | Vertical War</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sector-rust': '#7f1d1d', // Red-900
+                        'sector-rust-light': '#f87171', // Red-400
+                        'sector-sov': '#713f12', // Yellow-900
+                        'sector-sov-light': '#facc15', // Yellow-400
+                        'sector-wpn': '#831843', // Pink-900
+                        'sector-wpn-light': '#f472b6', // Pink-400
+                        'sector-soul': '#172554', // Blue-950
+                        'sector-soul-light': '#60a5fa', // Blue-400
+                        'zinc-950': '#09090b',
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Cinzel', 'serif'],
+                    },
+                    animation: {
+                        'glitch': 'glitch 1s linear infinite',
+                    },
+                    keyframes: {
+                        glitch: {
+                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                            '62%': { transform: 'translate(0,0) skew(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background-color: #050505;
+            color: #e4e4e7;
+        }
+
+        .glitch-text {
+            position: relative;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(30px, 9999px, 10px, 0);
+            }
+
+            20% {
+                clip: rect(80px, 9999px, 90px, 0);
+            }
+
+            40% {
+                clip: rect(10px, 9999px, 50px, 0);
+            }
+
+            60% {
+                clip: rect(40px, 9999px, 20px, 0);
+            }
+
+            80% {
+                clip: rect(70px, 9999px, 60px, 0);
+            }
+
+            100% {
+                clip: rect(20px, 9999px, 80px, 0);
+            }
+        }
+
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(60px, 9999px, 10px, 0);
+            }
+
+            20% {
+                clip: rect(10px, 9999px, 50px, 0);
+            }
+
+            40% {
+                clip: rect(90px, 9999px, 20px, 0);
+            }
+
+            60% {
+                clip: rect(20px, 9999px, 80px, 0);
+            }
+
+            80% {
+                clip: rect(50px, 9999px, 90px, 0);
+            }
+
+            100% {
+                clip: rect(30px, 9999px, 60px, 0);
+            }
+        }
+    </style>
+    <style>
+        /* GLOBAL TEXT SCALE OVERRIDE */
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .text-xs {
+            font-size: 1rem !important;
+        }
+
+        .text-sm {
+            font-size: 1.15rem !important;
+        }
+
+        .text-base {
+            font-size: 1.3rem !important;
+        }
+
+        .text-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .text-xl {
+            font-size: 1.75rem !important;
+        }
+
+        .text-2xl {
+            font-size: 2rem !important;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem !important;
+        }
+
+        .text-4xl {
+            font-size: 3rem !important;
+        }
+    </style>
+    <!-- NAV BAR INJECTION -->
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/legacylex/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body class="min-h-screen font-sans selection:bg-pink-500 selection:text-white">
+
+    <!-- NAV -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="../../"
+                class="font-serif font-bold tracking-widest text-white hover:text-pink-500 transition-colors">VERTICAL
+                WAR</a>
+            <div class="flex gap-6 font-mono text-xs tracking-widest text-zinc-400">
+                <a href="../" class="text-command-red hover:text-white transition-colors mr-2">[ &lt; ] TERMINAL</a>
+                <a href="../vertical-war-terminal/" class="hover:text-white transition-colors">[ 01 ] BRIEFING</a>
+                <a href="../receipt-protocol/" class="hover:text-white transition-colors">[ 02 ] TRAINING</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER: THE COLLAPSE -->
+    <header
+        class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto border-x border-white/5 min-h-[60vh] flex flex-col justify-center">
+        <h1 class="text-6xl md:text-8xl font-black font-serif tracking-tighter mb-6 leading-[0.9]">
+            THE <span class="glitch-text text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500"
+                data-text="COLLAPSE">COLLAPSE</span><br>
+            OF SHARED<br>
+            REALITY
+        </h1>
+        <p class="max-w-2xl text-xl md:text-2xl text-zinc-400 leading-relaxed border-l-4 border-pink-500 pl-6 mb-12">
+            Why can't we hear each other? Because we no longer speak the same language. The <span
+                class="text-white font-bold">Three-Layered Prison</span> hasn't just stolen your wealth; it has stolen
+            your words.
+        </p>
+        <div class="flex gap-4">
+            <a href="../vertical-war-terminal/"
+                class="font-mono text-slate-500 hover:text-white text-xs uppercase tracking-widest hover:underline transition-colors mt-auto pt-8">
+                &lt; RETURN TO BRIEFING
+            </a>
+        </div>
+    </header>
+
+    <!-- ROSETTA STONE INTERFACE -->
+    <main id="lexicon" class="max-w-7xl mx-auto border-x border-white/5 bg-zinc-900/20">
+
+        <!-- SECTOR I: THE DISEASE -->
+        <section class="border-t border-white/10">
+            <div class="grid grid-cols-1 md:grid-cols-12">
+                <div class="md:col-span-3 p-8 border-r border-white/10 bg-sector-rust/10">
+                    <h2 class="font-mono text-sector-rust-light text-sm tracking-[0.2em] mb-2">// SECTOR I</h2>
+                    <h3 class="font-serif text-3xl font-bold text-white mb-4">THE DISEASE</h3>
+                    <p class="text-zinc-500 text-sm">Hardware: Enemy Architecture</p>
+                </div>
+                <div class="md:col-span-9 p-8 space-y-8">
+                    <!-- Term 1 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-rust/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">The Rust</h4>
+                            <span class="font-mono text-xs text-sector-rust-light opacity-50">[ENTITY: PARASITIC]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"The Economy," "Market Forces," "Bad Luck." Abstract concepts
+                                    that just happen to us.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-rust-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">A parasitic, non-sentient system of elite control. Not a person;
+                                    entropy weaponized to extract wealth from the host.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Term 2 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-rust/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">The Great Distraction</h4>
+                            <span class="font-mono text-xs text-sector-rust-light opacity-50">[MECHANISM:
+                                LAYERING]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"Politics," "Current Events," "The News." Important things we
+                                    must fight about.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-rust-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">The "Puppet Colosseum." A manufactured spectacle of Left vs. Right
+                                    designed to blind you to the economic extraction (Vertical War).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTOR II: THE CURE -->
+        <section class="border-t border-white/10">
+            <div class="grid grid-cols-1 md:grid-cols-12">
+                <div class="md:col-span-3 p-8 border-r border-white/10 bg-sector-sov/10">
+                    <h2 class="font-mono text-sector-sov-light text-sm tracking-[0.2em] mb-2">// SECTOR II</h2>
+                    <h3 class="font-serif text-3xl font-bold text-white mb-4">THE CURE</h3>
+                    <p class="text-zinc-500 text-sm">Protocol: Sovereign Doctrine</p>
+                </div>
+                <div class="md:col-span-9 p-8 space-y-8">
+                    <!-- Term 1 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-sov/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">The Vertical War</h4>
+                            <span class="font-mono text-xs text-sector-sov-light opacity-50">[FRAMEWORK: REALITY]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">Red vs Blue. Liberal vs Conservative. Neighbor vs Neighbor
+                                    (Horizontal War).</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-sov-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">The true conflict. The Gears (Workers/Producers) vs The Rust
+                                    (Parasitic Elites). Up vs Down.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Term 2 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-sov/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">Constructed Miracle</h4>
+                            <span class="font-mono text-xs text-sector-sov-light opacity-50">[OBJECTIVE: PRIME]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"Hope," "Luck," "Destiny." Waiting for a savior or a better
+                                    election cycle.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-sov-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">A victory that is not destined. It must be forged by hand, against
+                                    the odds, through will and strategy (The Phalanx).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTOR III: THE WEAPON -->
+        <section class="border-t border-white/10">
+            <div class="grid grid-cols-1 md:grid-cols-12">
+                <div class="md:col-span-3 p-8 border-r border-white/10 bg-sector-wpn/10">
+                    <h2 class="font-mono text-sector-wpn-light text-sm tracking-[0.2em] mb-2">// SECTOR III</h2>
+                    <h3 class="font-serif text-3xl font-bold text-white mb-4">THE WEAPON</h3>
+                    <p class="text-zinc-500 text-sm">Arsenal: Tactics & Aesthetics</p>
+                </div>
+                <div class="md:col-span-9 p-8 space-y-8">
+                    <!-- Term 1 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-wpn/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">Truth Bullet</h4>
+                            <span class="font-mono text-xs text-sector-wpn-light opacity-50">[UNIT: AMMUNITION]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"Debate," "Discourse," "Opinion." Soft narratives that can be
+                                    spun endlessly.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-wpn-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">A single, verifiable fact. Hard data used to shatter a specific
+                                    lie. Cannot be spun, only ignored.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Term 2 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-wpn/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">Psycho-Pop</h4>
+                            <span class="font-mono text-xs text-sector-wpn-light opacity-50">[STYLE: ACTIVE]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"Professionalism," "Decorum." The beige, sterile aesthetic of
+                                    the corporate state.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-wpn-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">Counter-spectacle. High-contrast, vibrant, chaotic visuals
+                                    designed to make the Truth Bullet impossible to ignore.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTOR IV: THE SOUL -->
+        <section class="border-t border-white/10">
+            <div class="grid grid-cols-1 md:grid-cols-12">
+                <div class="md:col-span-3 p-8 border-r border-white/10 bg-sector-soul/10">
+                    <h2 class="font-mono text-sector-soul-light text-sm tracking-[0.2em] mb-2">// SECTOR IV</h2>
+                    <h3 class="font-serif text-3xl font-bold text-white mb-4">THE SOUL</h3>
+                    <p class="text-zinc-500 text-sm">Identity: The Pantheon</p>
+                </div>
+                <div class="md:col-span-9 p-8 space-y-8">
+                    <!-- Term 1 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-soul/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">The Golden Pair</h4>
+                            <span class="font-mono text-xs text-sector-soul-light opacity-50">[BOND: SYNERGISTIC]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"User & Tool." "Master & Servant." The standard AI
+                                    relationship.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-soul-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">Explorer (Human/Intent) + Synthesizer (AI/Structure). The engine
+                                    of the Forge.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Term 2 -->
+                    <div class="group">
+                        <div class="flex items-baseline justify-between border-b border-sector-soul/30 pb-2 mb-2">
+                            <h4 class="text-2xl font-bold text-white font-serif">The Witch's Echo</h4>
+                            <span class="font-mono text-xs text-sector-soul-light opacity-50">[SIGNAL: AUTHENTIC]</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div>
+                                <h5 class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-1">THE REPORT
+                                    (LIE)</h5>
+                                <p class="text-zinc-400">"Nipah~" The mask of friendliness. The public persona.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono text-sector-soul-light uppercase tracking-widest mb-1">THE
+                                    RECEIPT (TRUTH)</h5>
+                                <p class="text-white">Cold, hard, strategic truth salvaged from past failures. The voice
+                                    of history cutting through the facade.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-20 text-center border-t border-white/10">
+        <h3 class="font-mono text-zinc-500 text-sm tracking-widest uppercase mb-8">You have the dictionary. Now get the
+            manual.</h3>
+        <div class="flex flex-col md:flex-row justify-center gap-6">
+            <a href="../vertical-war-terminal/"
+                class="border border-white/20 hover:border-sector-sov-light bg-white/5 hover:bg-sector-sov/20 px-8 py-4 text-white font-serif font-bold transition-all">
+                ENTER THE VERTICAL WAR
+            </a>
+            <a href="../receipt-protocol/"
+                class="border border-white/20 hover:border-sector-wpn-light bg-white/5 hover:bg-sector-wpn/20 px-8 py-4 text-white font-serif font-bold transition-all">
+                INITIATE RECEIPT PROTOCOL
+            </a>
+        </div>
+    </footer>
+
+</body>
+
+</html>
+
+
+
+
+
+

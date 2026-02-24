@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN DISPATCH</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="../assets/js/nav_bar.js?v=21"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05010a',
+                        panel: '#0a0a0a',
+                        signal: '#d4d4d8',
+                    },
+                    fontFamily: {
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
+                        serif: ['Georgia', 'serif']
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #d4d4d8;
+            background-image: url('../assets/images/backgrounds/chamber.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 1, 10, 0.95);
+            z-index: -1;
+        }
+
+        .scan-lines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+        }
+
+        /* Article Styling */
+        .article-content {
+            font-family: 'Georgia', serif;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #d4d4d8;
+        }
+
+        .article-content p {
+            margin-bottom: 2rem;
+        }
+
+        .article-content h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .article-content h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #d4d4d8;
+            text-transform: uppercase;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-content a {
+            color: #3b82f6;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .article-content a:hover {
+            color: #60a5fa;
+        }
+
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #27272a;
+            margin: 2rem 0;
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .article-content ul {
+            list-style-type: disc;
+        }
+
+        .article-content ol {
+            list-style-type: decimal;
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid #52525b;
+            padding-left: 1rem;
+            margin-left: 0;
+            margin-right: 0;
+            font-style: italic;
+            color: #a1a1aa;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-black text-gray-400 font-mono flex flex-col justify-between">
+
+    <div class="bg-overlay"></div>
+    <div class="scan-lines"></div>
+
+    <main class="flex-grow w-full max-w-[800px] mx-auto px-6 pt-32 pb-24 relative z-10 flex flex-col">
+
+        <!-- LOADING / ERROR -->
+        <div id="status-container" class="text-center py-24">
+            <span class="font-mono text-signal text-sm animate-pulse">/// ESTABLISHING SECURE UPLINK... ///</span>
+        </div>
+
+        <!-- ARTICLE RENDER AREA -->
+        <article id="article-container" class="hidden">
+
+            <header class="mb-12 border-b border-zinc-800 pb-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <span id="article-date" class="text-xs font-mono text-gray-500 uppercase tracking-widest"></span>
+                    <span class="text-xs font-mono text-zinc-700">|</span>
+                    <span id="article-series"
+                        class="text-xs font-mono text-emerald-500 font-bold uppercase tracking-widest"></span>
+                </div>
+
+                <h1 id="article-title" class="font-serif text-5xl md:text-6xl text-white font-bold leading-tight mb-8">
+                </h1>
+
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-xs font-bold text-white">
+                        OP</div>
+                    <div>
+                        <div id="article-author" class="text-sm font-bold text-white uppercase tracking-wider"></div>
+                        <div class="text-[10px] text-gray-500 tracking-widest uppercase">Sovereign Architect</div>
+                    </div>
+                </div>
+            </header>
+
+            <div id="article-content" class="article-content"></div>
+
+            <footer class="mt-24 pt-8 border-t border-zinc-800 flex flex-col items-center text-center">
+                <p class="text-sm text-gray-500 font-mono uppercase tracking-widest mb-4">/// END OF TRANSMISSION ///
+                </p>
+                <a href="../"
+                    class="inline-block border border-gray-600 text-gray-400 hover:text-white hover:border-white px-6 py-3 font-tech text-xl uppercase transition-colors">
+                    &lt;&lt; RETURN TO BASE
+                </a>
+            </footer>
+
+        </article>
+
+    </main>
+
+    <script type="module">
+        import { supabase } from '../assets/js/supabaseClient.js';
+
+        const statusContainer = document.getElementById('status-container');
+        const articleContainer = document.getElementById('article-container');
+
+        async function fetchArticle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            if (!id) {
+                showError("INVALID TRANSMISSION ID.");
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('articles')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+                if (!data) throw new Error("Article not found.");
+
+                // Check Guard if it is Restricted
+                if (data.series === 'Inside the Forge') {
+                    const { checkGuard } = await import('../assets/js/accessGuard.js');
+                    const authorized = await checkGuard(['OPERATOR', 'ARCHIVIST']);
+                    if (!authorized) {
+                        window.location.replace('../gate/?mode=login&next=' + encodeURIComponent(window.location.pathname + window.location.search));
+                        return;
+                    }
+                }
+
+                renderArticle(data);
+
+            } catch (err) {
+                console.error(err);
+                showError("TRANSMISSION LOST OR DELETED.");
+            }
+        }
+
+        function renderArticle(data) {
+            statusContainer.classList.add('hidden');
+            articleContainer.classList.remove('hidden');
+
+            document.title = data.title + " // SOVEREIGN DISPATCH";
+
+            document.getElementById('article-title').textContent = data.title;
+            document.getElementById('article-series').textContent = data.series || 'DISPATCH';
+            document.getElementById('article-author').textContent = data.author_name || 'UNKNOWN OPERATIVE';
+            document.getElementById('article-content').innerHTML = data.content_html;
+
+            const dateObj = new Date(data.created_at);
+            document.getElementById('article-date').textContent = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+
+        function showError(msg) {
+            statusContainer.innerHTML = `
+                <div class="border border-red-900/50 bg-red-900/10 p-12 inline-block">
+                    <div class="text-3xl mb-4">⚠️</div>
+                    <div class="font-mono text-red-500 text-sm tracking-widest uppercase">${msg}</div>
+                    <a href="../" class="block mt-6 text-xs text-gray-500 hover:text-white uppercase underline">[ RETURN TO MAIN ]</a>
+                </div>
+            `;
+        }
+
+        fetchArticle();
+    </script>
+</body>
+
+</html>

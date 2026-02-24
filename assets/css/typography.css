@@ -1,0 +1,51 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-md);
+    color: var(--accent-color);
+}
+
+h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid var(--dim-color);
+    padding-bottom: var(--spacing-sm);
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    margin-bottom: var(--spacing-md);
+    max-width: 70ch;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--dim-color);
+    transition: all 0.2s;
+}
+
+a:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+code,
+pre {
+    font-family: var(--font-mono);
+    background: var(--grid-color);
+    padding: 0.2em 0.4em;
+    color: var(--accent-color);
+}

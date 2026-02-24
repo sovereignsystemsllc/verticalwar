@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVERRIDE // TRANSMITTER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#000000',
+                        'terminal-green': '#10b981',
+                        'terminal-red': '#ef4444',
+                        'terminal-gray': '#333333'
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .input-field {
+            background: #111;
+            border: 1px solid #333;
+            color: #10b981;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .btn-core {
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 1rem 2rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-core:hover {
+            background: #10b981;
+            color: #000;
+        }
+
+        .btn-core:disabled {
+            border-color: #333;
+            color: #333;
+            cursor: not-allowed;
+            background: transparent;
+        }
+    </style>
+    <!-- NAV BAR INJECTION -->
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/override/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="fixed inset-0 bg-black z-50 flex items-center justify-center">
+        <div class="max-w-md w-full border border-terminal-red p-8 bg-zinc-900/50 backdrop-blur-md">
+            <h2 class="text-xl font-bold text-terminal-red mb-4 tracking-widest text-center">AUTHENTICATION REQUIRED
+            </h2>
+            <form id="login-form" class="space-y-4">
+                <input type="email" id="email" class="input-field" placeholder="OPERATOR ID (EMAIL)" required>
+                <input type="password" id="password" class="input-field" placeholder="ACCESS CODE (PASSWORD)" required>
+                <button type="submit"
+                    class="btn-core border-terminal-red text-terminal-red hover:bg-terminal-red hover:text-black">
+                    INITIATE SESSION
+                </button>
+            </form>
+            <div id="login-status" class="text-center text-xs text-terminal-red mt-4 h-4"></div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl w-full border border-zinc-800 p-8 relative">
+        <!-- HEADER & LOGOUT -->
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-terminal-red uppercase tracking-widest">// SIGNAL TOWER // OVERRIDE
+                </h1>
+                <p class="text-xs text-zinc-500">SECURE CHANNEL // SOVEREIGN ACCESS ONLY</p>
+            </div>
+            <button id="logout-btn" class="text-xs text-zinc-600 hover:text-terminal-red underline uppercase">
+                [ TERMINATE SESSION ]
+            </button>
+        </div>
+
+        <form id="transmitter-form" class="space-y-4">
+            <input type="hidden" id="signal-id"> <!-- TRACKING ID FOR EDITS -->
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Signal Title
+                        (Public)</label>
+                    <input type="text" id="signal-title" class="input-field" placeholder="ex: INTERCEPT: OMEGA"
+                        autocomplete="off">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Source / Sender</label>
+                    <input type="text" id="signal-source" class="input-field" placeholder="Cmd_Override"
+                        value="Cmd_Override">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Encrypted Payload (Hidden
+                    Content)</label>
+                <textarea id="signal-content" class="input-field h-32"
+                    placeholder="The actual message needed to be broadcast..." autocomplete="off"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Decryption Cipher
+                    (Password)</label>
+                <input type="text" id="signal-cipher" class="input-field" placeholder="ex: RED_SUN" autocomplete="off">
+            </div>
+
+            <div class="pt-4 flex gap-4">
+                <button type="submit" id="broadcast-btn" class="btn-core flex-1">BROADCAST SIGNAL</button>
+                <button type="button" id="cancel-btn"
+                    class="btn-core border-zinc-500 text-zinc-500 hover:bg-zinc-800 hover:text-white hidden w-auto">CANCEL
+                    EDIT</button>
+            </div>
+            <div id="status-display" class="text-center text-xs text-zinc-500 mt-2 h-4">READY FOR INPUT</div>
+        </form>
+
+        <!-- HISTORY TABLE -->
+        <div class="mt-12 border-t border-zinc-800 pt-8">
+            <h3 class="text-sm font-bold text-terminal-green uppercase tracking-widest mb-4">BROADCAST LOG</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-zinc-400">
+                    <thead class="border-b border-zinc-800 text-zinc-600 uppercase">
+                        <tr>
+                            <th class="py-2">TIME</th>
+                            <th class="py-2">TITLE</th>
+                            <th class="py-2">CIPHER</th>
+                            <th class="py-2 text-right">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- JS WILL POPULATE -->
+                        <tr>
+                            <td colspan="4" class="py-4 text-center text-zinc-600">LOADING ENCRYPTED LOGS...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-8">
+                <a href="../../terminal/receipt-protocol/" target="_blank"
+                    class="text-xs text-zinc-600 hover:text-white underline">VIEW LIVE FEED -></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODULE LOADING -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../../assets/js/transmitter_v4.js"></script>
+
+</body>
+
+</html>
+
+
+
+
+
+

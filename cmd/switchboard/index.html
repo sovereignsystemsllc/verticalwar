@@ -1,0 +1,516 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SWITCHBOARD // CLASSIFIEDS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'term-black': '#050505',
+                        'term-green': '#00ff33',
+                        'term-red': '#ff0033',
+                        'term-yellow': '#ffd700',
+                        'term-dim': '#0a330a',
+                        'void': '#05010a',
+                        'rika': '#a78bfa',
+                        'cicada': '#10b981'
+                    },
+                    fontFamily: { mono: ['JetBrains Mono', 'Courier New', 'monospace'] },
+                    animation: { 'scan': 'scan 4s linear infinite', 'blink': 'blink 1s step-end infinite' }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&display=swap');
+
+        body {
+            background-color: #050505;
+            color: #00ff33;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        .scan-lines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #00ff33;
+            background-size: cover;
+            background-position: center;
+            background-color: #0a330a;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0a330a;
+            border: 1px solid #00ff33;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff33;
+        }
+
+        .modal-glass {
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #00ff33;
+        }
+    </style>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/switchboard/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body class="min-h-screen flex flex-col relative selection:bg-term-green selection:text-black">
+    <div class="scan-lines"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-7xl mx-auto w-full p-4 md:p-8 flex-1 flex flex-col gap-8 z-10 relative">
+
+        <!-- HEADER -->
+        <header
+            class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-term-green/30 pb-4 gap-4">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white glitch" data-text="SWITCHBOARD">THE
+                    SWITCHBOARD</h1>
+                <div class="text-term-green/60 text-sm tracking-[0.2em] mt-2">COMMUNITY CLASSIFIEDS // ENCRYPTED</div>
+            </div>
+
+            <div id="auth-status" class="flex items-center gap-4">
+                <!-- Injected via JS -->
+            </div>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-8 min-h-[60vh]">
+
+            <!-- LEFT COLUMN: FILTERS -->
+            <aside class="w-full md:w-64 flex flex-col gap-2 shrink-0">
+                <div class="text-xs font-bold text-term-green/50 mb-2 border-b border-term-green/20 pb-1">FILTERS</div>
+
+                <button onclick="filterCategory('ALL')"
+                    class="category-btn text-left px-4 py-3 border border-term-green/20 hover:bg-term-green/10 hover:border-term-green hover:text-white transition-all active"
+                    data-cat="ALL">[ // ALL SIGNALS ]</button>
+                <button onclick="filterCategory('LOGISTICS')"
+                    class="category-btn text-left px-4 py-3 border border-term-green/20 hover:bg-term-green/10 hover:border-term-green hover:text-white transition-all"
+                    data-cat="LOGISTICS">[ LOGISTICS ]</button>
+                <button onclick="filterCategory('RECRUITMENT')"
+                    class="category-btn text-left px-4 py-3 border border-term-green/20 hover:bg-term-green/10 hover:border-term-green hover:text-white transition-all"
+                    data-cat="RECRUITMENT">[ RECRUITMENT ]</button>
+                <button onclick="filterCategory('INTEL')"
+                    class="category-btn text-left px-4 py-3 border border-term-green/20 hover:bg-term-green/10 hover:border-term-green hover:text-white transition-all"
+                    data-cat="INTEL">[ INTEL ]</button>
+                <button onclick="filterCategory('TRADE')"
+                    class="category-btn text-left px-4 py-3 border border-term-green/20 hover:bg-term-green/10 hover:border-term-green hover:text-white transition-all"
+                    data-cat="TRADE">[ TRADE ]</button>
+
+                <div class="md:hidden mt-8" id="mobile-post-container"></div>
+            </aside>
+
+            <!-- MAIN COLUMN: FEED -->
+            <main class="flex-1 flex flex-col relative">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-xs text-term-green/50 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-term-green rounded-full animate-pulse"></span>
+                        LIVE FEED
+                    </div>
+                </div>
+
+                <!-- ADS LIST -->
+                <div id="ads-feed" class="flex flex-col gap-6">
+                    <div class="text-center py-20 text-term-green/40 animate-pulse">> SCANNING FREQUENCIES...</div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- POST AD MODAL -->
+    <div id="post-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div
+            class="modal-glass w-full max-w-2xl p-6 md:p-8 relative flex flex-col gap-6 shadow-[0_0_50px_rgba(0,255,51,0.2)]">
+            <button onclick="toggleModal(false)"
+                class="absolute top-4 right-4 text-term-green/50 hover:text-white hover:bg-term-green/20 px-3 py-2 transition-all">[
+                X ] ESC</button>
+            <h2 class="text-2xl font-bold text-white tracking-widest border-b border-term-green/30 pb-4">>> BROADCAST
+                SIGNAL</h2>
+            <form id="post-form" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-term-green/70">CATEGORY</label>
+                    <select id="input-category"
+                        class="bg-black border border-term-green/40 p-3 text-white focus:border-term-green focus:outline-none uppercase"
+                        required>
+                        <option value="LOGISTICS">LOGISTICS</option>
+                        <option value="RECRUITMENT">RECRUITMENT</option>
+                        <option value="INTEL">INTEL</option>
+                        <option value="TRADE">TRADE</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-term-green/70">TITLE / HEADER</label>
+                    <input type="text" id="input-title"
+                        class="bg-black border border-term-green/40 p-3 text-white focus:border-term-green focus:outline-none uppercase placeholder-term-green/20 w-full"
+                        placeholder="ex: TRANSPORT NEEDED - SECTOR 7" required maxlength="100">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-term-green/70">PAYLOAD / DESCRIPTION</label>
+                    <textarea id="input-content"
+                        class="bg-black border border-term-green/40 p-3 text-white focus:border-term-green focus:outline-none h-32 placeholder-term-green/20 custom-scrollbar"
+                        placeholder="DETAILS..." required></textarea>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-term-green/70">CONTACT VECTOR</label>
+                    <input type="text" id="input-contact"
+                        class="bg-black border border-term-green/40 p-3 text-white focus:border-term-green focus:outline-none placeholder-term-green/20 w-full"
+                        placeholder="ex: Signal @username or drop @ location" required maxlength="150">
+                </div>
+                <div class="pt-4 border-t border-term-green/30 flex justify-end">
+                    <button type="submit"
+                        class="bg-term-green text-black font-bold px-8 py-3 hover:bg-white transition-all tracking-widest uppercase shadow-[0_0_15px_rgba(0,255,51,0.4)]">TRANSMIT
+                        >></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script type="module">
+        import { supabase } from '../../assets/js/supabaseClient.js';
+
+        let sessionUser = null;
+        let currentCategory = 'ALL';
+        let userProfile = null;
+
+        // INIT
+        async function init() {
+            const { data: { session } } = await supabase.auth.getSession();
+            sessionUser = session?.user || null;
+            renderAuthUI();
+            if (sessionUser) fetchMyProfile();
+            fetchAds();
+        }
+
+        async function fetchMyProfile() {
+            // Added 'role' to selection for permission checks
+            const { data } = await supabase.from('profiles').select('username, avatar_url, role').eq('id', sessionUser.id).single();
+            userProfile = data;
+        }
+
+        function renderAuthUI() {
+            const container = document.getElementById('auth-status');
+            const mobileContainer = document.getElementById('mobile-post-container');
+            let html = sessionUser
+                ? `<button onclick="toggleModal(true)" class="bg-term-green text-black px-6 py-3 font-bold hover:bg-white transition-all uppercase tracking-widest flex items-center gap-2"><span>[ + BROADCAST ]</span></button>`
+                : `<a href="../../gate/" class="border border-term-green text-term-green px-6 py-3 font-bold hover:bg-term-green hover:text-black transition-all uppercase tracking-widest text-sm">[ LOGIN TO BROADCAST ]</a>`;
+
+            if (container) container.innerHTML = html;
+            if (mobileContainer && sessionUser) mobileContainer.innerHTML = html.replace('px-6', 'w-full justify-center');
+        }
+
+        window.filterCategory = function (cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                const isActive = btn.dataset.cat === cat;
+                btn.className = `category-btn text-left px-4 py-3 border transition-all ${isActive ? 'border-term-green bg-term-green/10 text-white' : 'border-term-green/20 hover:bg-term-green/10 text-term-green'}`;
+            });
+            fetchAds();
+        }
+
+        async function fetchAds() {
+            const container = document.getElementById('ads-feed');
+            container.innerHTML = '<div class="text-center py-20 text-term-green/40 animate-pulse">> FETCHING DATA STREAM...</div>';
+
+            let query = supabase.from('switchboard_feed').select('*').order('created_at', { ascending: false });
+            if (currentCategory !== 'ALL') query = query.eq('category', currentCategory);
+
+            const { data, error } = await query;
+            if (error) {
+                container.innerHTML = `<div class="text-red-500 font-mono text-center border border-red-500 p-4">ERROR: ${error.message}</div>`;
+                return;
+            }
+            renderAds(data);
+        }
+
+        function renderAds(ads) {
+            const container = document.getElementById('ads-feed');
+            if (!ads || ads.length === 0) {
+                container.innerHTML = '<div class="text-center py-20 text-term-green/40 border border-term-green/20 border-dashed">> FREQUENCY QUIET. NO RECENT SIGNALS.</div>';
+                return;
+            }
+
+            container.innerHTML = ads.map(ad => {
+                // PERMISSION CHECKS
+                const isOwner = sessionUser && sessionUser.id === ad.user_id;
+                // Check if role is 'Sovereign' OR username is 'Ethan' (hardcoded override)
+                const isSovereign = userProfile && (userProfile.role === 'Sovereign' || userProfile.username === 'Ethan');
+
+                const canDelete = isOwner || isSovereign;
+                const canEdit = isOwner; // Only owner can edit content for now
+
+                const date = new Date(ad.created_at).toLocaleDateString();
+
+                // RESOLVE AVATAR URL
+                let avatarSrc = ad.avatar_url;
+                if (avatarSrc && !avatarSrc.startsWith('http')) {
+                    const { data } = supabase.storage.from('avatars').getPublicUrl(avatarSrc);
+                    avatarSrc = data.publicUrl;
+                }
+                if (!avatarSrc) {
+                    avatarSrc = `https://api.dicebear.com/9.x/identicon/svg?seed=${ad.username}`;
+                }
+
+                const profileLink = `/cmd/profile/?user=${encodeURIComponent(ad.username || 'UNKNOWN')}`;
+
+                return `
+                    <div class="border border-term-green/20 bg-black/40 overflow-hidden relative transition-all group hover:border-term-green/50" id="post-${ad.id}">
+                        <!-- HEADER -->
+                        <div class="flex items-start gap-4 p-4 border-b border-term-green/10 bg-term-green/5 cursor-pointer relative" onclick="toggleComments('${ad.id}')">
+                            
+                            <!-- CLICKABLE AVATAR -->
+                            <a href="${profileLink}" class="z-20 block shrink-0 group/avatar" onclick="event.stopPropagation()">
+                                <img 
+                                    src="${avatarSrc}" 
+                                    alt="${ad.username}"
+                                    class="w-10 h-10 rounded-full border border-term-green bg-black object-cover transition-all duration-300 group-hover/avatar:border-white group-hover/avatar:shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                                    onerror="this.onerror=null; this.src='https://api.dicebear.com/9.x/identicon/svg?seed=${ad.username}';"
+                                >
+                            </a>
+
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <!-- CLICKABLE USERNAME -->
+                                        <a href="${profileLink}" class="font-bold text-white text-lg z-20 hover:text-term-green hover:shadow-[0_0_10px_rgba(0,255,51,0.5)] transition-all" onclick="event.stopPropagation()">
+                                            @${escapeHtml(ad.username || 'UNKNOWN')}
+                                        </a>
+                                        <span class="text-xs text-term-green/50 border border-term-green/20 px-1 rounded">${ad.category}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-term-green/40 font-mono">${date}</span>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-bold text-term-green mt-1 uppercase tracking-wide group-hover:text-white transition-colors">${escapeHtml(ad.title)}</h3>
+                            </div>
+                        </div>
+
+                        <!-- CONTENT -->
+                        <div class="p-4 cursor-pointer" onclick="toggleComments('${ad.id}')">
+                            <div class="text-gray-300 font-mono text-sm leading-relaxed whitespace-pre-wrap" id="content-${ad.id}">${escapeHtml(ad.content)}</div>
+                            <div class="mt-4 text-xs text-term-green/60 border-t border-term-green/10 pt-2 flex justify-between items-center flex-wrap gap-2">
+                                <span>CONTACT: <span class="text-white select-all z-10 relative" onclick="event.stopPropagation()">${escapeHtml(ad.contact_info)}</span></span>
+                                
+                                <div class="flex items-center gap-4">
+                                    ${canEdit ? `<button onclick="editPost('${ad.id}')" class="text-term-yellow hover:text-white font-bold transition-colors z-20 relative" onclick="event.stopPropagation()">[ EDIT ]</button>` : ''}
+                                    ${canDelete ? `<button onclick="deletePost('${ad.id}')" class="text-term-red hover:text-white font-bold transition-colors z-20 relative" onclick="event.stopPropagation()">[ DELETE ]</button>` : ''}
+                                    <span class="text-term-green group-hover:underline">[ EXPAND / COMMENTS ]</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COMMENTS SECTION (HIDDEN) -->
+                        <div id="comments-${ad.id}" class="hidden border-t border-term-green/30 bg-black/50 p-4">
+                            <div class="comments-list space-y-3 mb-4 text-sm" id="list-${ad.id}">
+                                <div class="text-term-green/30 italic">> Loading comments...</div>
+                            </div>
+                            
+                            <!-- REPLY BOX -->
+                            ${sessionUser ? `
+                                <div class="flex gap-2 mt-4">
+                                    <textarea id="reply-${ad.id}" class="flex-1 bg-black border border-term-green/30 p-2 text-white text-xs focus:border-term-green focus:outline-none" placeholder="TRANSMIT REPLY..." rows="1"></textarea>
+                                    <button onclick="submitReply('${ad.id}')" class="bg-term-green/20 text-term-green px-4 py-3 text-xs font-bold hover:bg-term-green hover:text-black transition-colors">[ REPLY ]</button>
+                                </div>
+                            ` : `
+                                <div class="text-center py-2">
+                                    <a href="../../gate/" class="text-term-green/50 hover:text-term-green text-xs">[ LOGIN TO REPLY ]</a>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // POST MANAGEMENT
+        window.deletePost = async function (id) {
+            event.stopPropagation(); // Stop card expand
+            if (!confirm("WARNING: TERMINATE BROADCAST SIGNATURE?\nThis action cannot be undone.")) return;
+
+            const { error } = await supabase.from('switchboard').delete().eq('id', id);
+
+            if (error) {
+                alert("TERMINATION FAILED: " + error.message);
+            } else {
+                // Remove from DOM immediately
+                const el = document.getElementById(`post-${id}`);
+                if (el) el.remove();
+            }
+        }
+
+        window.editPost = async function (id) {
+            event.stopPropagation(); // Stop card expand
+
+            // Get current content from DOM to pre-fill (decoding HTML entities roughly)
+            const currentEl = document.getElementById(`content-${id}`);
+            const currentText = currentEl.innerText;
+
+            const newText = prompt("UPDATE INTEL PAYLOAD:", currentText);
+            if (newText === null || newText === currentText) return; // Cancelled or unchanged
+
+            const { error } = await supabase.from('switchboard').update({ content: newText }).eq('id', id);
+
+            if (error) {
+                alert("UPDATE FAILED: " + error.message);
+            } else {
+                fetchAds(); // Refresh feed to show update
+            }
+        }
+
+        // COMMENTS LOGIC
+        window.toggleComments = async function (postId) {
+            const section = document.getElementById(`comments-${postId}`);
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                loadComments(postId);
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        async function loadComments(postId) {
+            const list = document.getElementById(`list-${postId}`);
+            const { data, error } = await supabase
+                .from('switchboard_comments')
+                .select('*')
+                .eq('post_id', postId)
+                .order('created_at', { ascending: true });
+
+            if (error || !data) {
+                list.innerHTML = `<div class="text-red-500 text-xs">ERROR LOADING COMMENTS</div>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                list.innerHTML = `<div class="text-term-green/30 text-xs italic">> No transmissions yet. Be the first.</div>`;
+                return;
+            }
+
+            list.innerHTML = data.map(c => `
+                <div class="flex gap-2">
+                    <span class="text-term-green font-bold text-xs whitespace-nowrap">@${escapeHtml(c.username)}:</span>
+                    <span class="text-gray-400 text-xs">${escapeHtml(c.content)}</span>
+                </div>
+            `).join('');
+        }
+
+        window.submitReply = async function (postId) {
+            const input = document.getElementById(`reply-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+
+            // 1. Insert Reply
+            const { data: comment, error } = await supabase.from('switchboard_comments').insert({
+                post_id: postId,
+                user_id: sessionUser.id,
+                username: userProfile?.username || 'UNKNOWN',
+                content: content
+            }).select().single();
+
+            if (error) {
+                alert("REPLY FAILED: " + error.message);
+            } else {
+                input.value = '';
+                loadComments(postId); // Reload UI
+
+                // 2. Trigger Notification (Fire & Forget)
+                // First, fetch post owner
+                const { data: post } = await supabase.from('switchboard').select('user_id').eq('id', postId).single();
+
+                if (post && post.user_id !== sessionUser.id) {
+                    const preview = content.length > 50 ? content.substring(0, 50) + "..." : content;
+
+                    await supabase.from('notifications').insert({
+                        user_id: post.user_id, // Target (Post Owner)
+                        actor_id: sessionUser.id, // Sender (Me)
+                        resource_id: comment.id, // Link to comment
+                        type: 'switchboard', // Specific type
+                        message: preview // Content preview 
+                    });
+                }
+            }
+        }
+
+        function escapeHtml(text) { return text ? text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : ''; }
+
+        window.toggleModal = function (show) {
+            const modal = document.getElementById('post-modal');
+            if (show && !sessionUser) { window.location.href = '../../gate/'; return; }
+            modal.style.display = show ? 'flex' : 'none'; // simple toggle
+            if (show) modal.classList.remove('hidden'); else modal.classList.add('hidden');
+        }
+
+        // Post Submit
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!sessionUser) return;
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+
+            const { error } = await supabase.from('switchboard').insert({
+                user_id: sessionUser.id,
+                username: userProfile?.username || 'UNKNOWN',
+                category: document.getElementById('input-category').value,
+                title: document.getElementById('input-title').value,
+                content: document.getElementById('input-content').value,
+                contact_info: document.getElementById('input-contact').value
+            });
+
+            if (error) { alert("ERROR: " + error.message); }
+            else {
+                toggleModal(false);
+                e.target.reset();
+                fetchAds();
+            }
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
+
+        init();
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+

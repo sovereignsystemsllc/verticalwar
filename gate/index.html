@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#050505] font-sans text-gray-400 antialiased selection:bg-red-900/30">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE LOGIN // COMMON SENSE REBEL</title>
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05010a',
+                        terminal: {
+                            green: '#10b981', // Emerald 500
+                            red: '#ef4444',   // Red 500
+                            dim: '#3f3f46',   // Zinc-700
+                        },
+                    },
+                    fontFamily: {
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow-green': '0 0 10px rgba(16, 185, 129, 0.3)',
+                        'glow-red': '0 0 10px rgba(239, 68, 68, 0.3)',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #d4d4d8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* CRT SCANLINE */
+        .scanline {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* INPUT AUTOFILL HACK */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #05010a inset !important;
+            -webkit-text-fill-color: #10b981 !important;
+            caret-color: #10b981;
+        }
+
+        .tab-active {
+            color: white;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .tab-inactive {
+            color: #71717a;
+            border-bottom: 2px solid transparent;
+        }
+    </style>
+
+    <!-- NAV BAR INJECTION -->
+    <script type="module" src="../assets/js/nav_bar.js"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+
+    <div class="scanline opacity-50"></div>
+
+    <!-- Go Home Link -->
+    <a href="../"
+        class="absolute top-6 left-6 md:top-10 md:left-10 text-xs text-zinc-500 hover:text-white uppercase tracking-widest font-mono z-50 transition-colors">
+        < RETURN TO BROADCAST </a>
+
+            <!-- TERMINAL WINDOW -->
+            <div
+                class="relative z-10 w-full max-w-[450px] border border-zinc-800 bg-black/80 shadow-2xl p-8 md:p-12 glass-panel">
+
+                <!-- LOGO / HEADER -->
+                <div class="text-center mb-8">
+                    <h1
+                        class="font-tech text-4xl md:text-5xl font-bold text-white tracking-widest uppercase mb-2 drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">
+                        LOGIN
+                    </h1>
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
+                        // COMMON SENSE REBEL MAINFRAME
+                    </div>
+                </div>
+
+                <!-- TABS (Clear & Frictionless) -->
+                <div class="flex mb-8 font-mono text-sm border-b border-zinc-800">
+                    <button id="tab-login"
+                        class="flex-1 pb-3 text-center transition-colors focus:outline-none tab-active">
+                        LOGIN
+                    </button>
+                    <button id="tab-register"
+                        class="flex-1 pb-3 text-center transition-colors focus:outline-none tab-inactive hover:text-zinc-400">
+                        SIGN UP
+                    </button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <form id="login-form" class="space-y-6 block">
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            Email Address
+                        </label>
+                        <input type="email" id="email-login"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-green font-mono focus:outline-none focus:border-terminal-green transition-all placeholder-zinc-800"
+                            placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            Password
+                        </label>
+                        <input type="password" id="password-login"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-green font-mono focus:outline-none focus:border-terminal-green transition-all"
+                            placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full mt-6 bg-terminal-green/10 border border-terminal-green text-terminal-green hover:bg-terminal-green/20 hover:text-white py-4 font-tech text-xl font-bold tracking-widest transition-all uppercase shadow-glow-green">
+                        ACCESS MAINFRAME
+                    </button>
+
+                    <div class="text-center pt-4 text-xs font-mono text-zinc-600">
+                        <a href="#" id="link-recovery" class="hover:text-white transition-colors uppercase">
+                            Forgot Password?
+                        </a>
+                    </div>
+                </form>
+
+                <!-- REGISTER FORM -->
+                <form id="register-form" class="space-y-6 hidden">
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            Username (Optional)
+                        </label>
+                        <input type="text" id="callsign-register"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-green font-mono focus:outline-none focus:border-terminal-green transition-all placeholder-zinc-800"
+                            placeholder="e.g. CSR_Reader">
+                    </div>
+
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            Email Address
+                        </label>
+                        <input type="email" id="email-register"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-green font-mono focus:outline-none focus:border-terminal-green transition-all placeholder-zinc-800"
+                            placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            Create Password
+                        </label>
+                        <input type="password" id="password-register"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-green font-mono focus:outline-none focus:border-terminal-green transition-all placeholder-zinc-800"
+                            placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full mt-6 bg-zinc-900 border border-zinc-700 text-white hover:border-terminal-green hover:text-terminal-green py-4 font-tech text-xl font-bold tracking-widest transition-all uppercase">
+                        CREATE ACCOUNT
+                    </button>
+                </form>
+
+                <!-- RECOVERY FORM -->
+                <form id="recovery-form" class="space-y-6 hidden">
+                    <div class="text-center text-xs text-zinc-400 mb-6 font-mono leading-relaxed">
+                        Enter your email address to receive a secure password reset link.
+                    </div>
+
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            Email Address
+                        </label>
+                        <input type="email" id="email-recovery"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-red font-mono focus:outline-none focus:border-terminal-red transition-all placeholder-zinc-800"
+                            placeholder="you@example.com" required>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full mt-6 bg-terminal-red/10 border border-terminal-red text-terminal-red hover:bg-terminal-red/20 py-4 font-tech text-xl font-bold tracking-widest transition-all uppercase shadow-glow-red">
+                        SEND RESET LINK
+                    </button>
+
+                    <div class="text-center pt-4">
+                        <button type="button" id="cancel-recovery"
+                            class="text-xs font-mono text-zinc-600 hover:text-white uppercase tracking-widest">
+                            < Back to Login </button>
+                    </div>
+                </form>
+
+                <!-- RESET FORM -->
+                <form id="reset-form" class="space-y-6 hidden">
+                    <div class="text-center text-xs text-terminal-green mb-6 font-mono">
+                        /// SECURE CHANNEL ESTABLISHED ///<br>Enter your new password below.
+                    </div>
+
+                    <div class="group">
+                        <label
+                            class="block text-xs text-zinc-500 uppercase tracking-widest mb-2 group-focus-within:text-white transition-colors">
+                            New Password
+                        </label>
+                        <input type="password" id="password-reset"
+                            class="w-full bg-black border border-zinc-800 py-3 px-4 text-terminal-green font-mono focus:outline-none focus:border-terminal-green transition-all"
+                            placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full mt-6 bg-terminal-green/10 border border-terminal-green text-terminal-green hover:bg-terminal-green/20 hover:text-white py-4 font-tech text-xl font-bold tracking-widest transition-all uppercase shadow-glow-green">
+                        SAVE NEW PASSWORD
+                    </button>
+                </form>
+
+                <!-- STATUS OUTPUT -->
+                <div id="status-output"
+                    class="mt-6 text-center min-h-[1.5rem] font-mono text-xs text-terminal-red opacity-0 transition-opacity duration-300">
+                    // SYSTEM_READY
+                </div>
+
+            </div>
+
+            <!-- MAIN SCRIPT (Logic Preserved, UI Events Updated) -->
+            <script type="module">
+                import { supabase } from '../assets/js/supabaseClient.js';
+
+                // ELEMENTS
+                const tabLogin = document.getElementById('tab-login');
+                const tabRegister = document.getElementById('tab-register');
+                const formLogin = document.getElementById('login-form');
+                const formRegister = document.getElementById('register-form');
+                const statusOutput = document.getElementById('status-output');
+
+                function showStatus(msg, classes) {
+                    statusOutput.className = `mt-6 text-center min-h-[1.5rem] font-mono text-xs transition-opacity duration-300 ${classes}`;
+                    statusOutput.innerText = msg;
+                    statusOutput.style.opacity = '1';
+                }
+
+                // CHECK EXISTING SESSION
+                (async function checkSession() {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session) {
+                        // Fetch Profile
+                        let callsign = "SUBSCRIBER";
+                        const { data: profile } = await supabase.from('profiles').select('username').eq('id', session.user.id).single();
+                        if (profile && profile.username) callsign = profile.username;
+
+                        // Modify UI for Logged In State
+                        document.querySelector('h1').innerText = "WELCOME BACK";
+                        document.querySelector('h1').nextElementSibling.innerText = `// ${callsign}`;
+                        tabLogin.parentElement.style.display = 'none'; // Hide tabs
+                        formLogin.innerHTML = `
+                    <div class="text-center space-y-6">
+                        <p class="font-mono text-sm text-terminal-green mb-8 tracking-widest">/// IDENTITY CONFIRMED ///</p>
+                        
+                        <a href="../cmd/" class="block w-full bg-terminal-green/10 border border-terminal-green text-terminal-green hover:bg-terminal-green/20 hover:text-white py-4 font-tech text-xl font-bold tracking-widest transition-all uppercase shadow-glow-green">
+                            ENTER COMMAND CENTER
+                        </a>
+
+                        <button id="gate-logout" class="mt-6 w-full text-zinc-600 hover:text-white font-mono text-xs tracking-widest transition-colors uppercase">
+                            LOG OUT
+                        </button>
+                    </div>
+                `;
+
+                        const gateLogout = document.getElementById('gate-logout');
+                        if (gateLogout) {
+                            gateLogout.addEventListener('click', async (e) => {
+                                e.preventDefault();
+                                await supabase.auth.signOut();
+                                window.location.reload();
+                            });
+                        }
+
+                        // AUTO-REDIRECT IF NEXT PARAM EXISTS
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const nextUrl = urlParams.get('next');
+                        if (nextUrl) {
+                            setTimeout(() => window.location.href = nextUrl, 800);
+                        }
+                    } else {
+                        // CAPTURE REFERRER FOR REDIRECT
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const nextParam = urlParams.get('next');
+
+                        if (nextParam) {
+                            sessionStorage.setItem('sov_redirect', nextParam);
+                        } else if (document.referrer && !document.referrer.includes('/gate/')) {
+                            try {
+                                const refUrl = new URL(document.referrer);
+                                if (refUrl.origin === window.location.origin) {
+                                    sessionStorage.setItem('sov_redirect', refUrl.pathname + refUrl.search);
+                                }
+                            } catch (e) { }
+                        }
+                    }
+                })();
+
+                // TAB SWITCHING
+                tabLogin.addEventListener('click', () => {
+                    formLogin.classList.remove('hidden');
+                    formRegister.classList.add('hidden');
+                    tabLogin.className = 'flex-1 pb-3 text-center transition-colors focus:outline-none tab-active';
+                    tabRegister.className = 'flex-1 pb-3 text-center transition-colors focus:outline-none tab-inactive hover:text-zinc-400';
+                    statusOutput.style.opacity = '0';
+                });
+
+                tabRegister.addEventListener('click', () => {
+                    formLogin.classList.add('hidden');
+                    formRegister.classList.remove('hidden');
+                    tabRegister.className = 'flex-1 pb-3 text-center transition-colors focus:outline-none tab-active';
+                    tabLogin.className = 'flex-1 pb-3 text-center transition-colors focus:outline-none tab-inactive hover:text-zinc-400';
+                    statusOutput.style.opacity = '0';
+                });
+
+                // LOGIN
+                formLogin.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('email-login').value;
+                    const password = document.getElementById('password-login').value;
+
+                    showStatus("Authenticating...", "text-yellow-500");
+
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password,
+                    });
+
+                    if (error) {
+                        showStatus(error.message, "text-terminal-red");
+                    } else {
+                        showStatus("Access Granted. Redirecting...", "text-terminal-green animate-pulse");
+
+                        const urlParams = new URLSearchParams(window.location.search);
+                        let nextUrl = urlParams.get('next') || sessionStorage.getItem('sov_redirect');
+
+                        if (nextUrl) sessionStorage.removeItem('sov_redirect');
+
+                        setTimeout(() => {
+                            window.location.href = nextUrl ? nextUrl : '../cmd/';
+                        }, 500);
+                    }
+                });
+
+                // REGISTER
+                formRegister.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('email-register').value;
+                    const password = document.getElementById('password-register').value;
+                    const callsign = document.getElementById('callsign-register').value || "Recruit";
+
+                    showStatus("Creating account...", "text-yellow-500");
+
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            emailRedirectTo: window.location.origin + '/gate/',
+                            data: {
+                                username: callsign,
+                                role: 'Observer'
+                            }
+                        }
+                    });
+
+                    if (error) {
+                        showStatus(error.message, "text-terminal-red");
+                    } else {
+                        showStatus("Account created! Please check your email to verify.", "text-terminal-green");
+                    }
+                });
+
+                // RECOVERY
+                const linkRecovery = document.getElementById('link-recovery');
+                const formRecovery = document.getElementById('recovery-form');
+                const btnCancelRecovery = document.getElementById('cancel-recovery');
+                const formReset = document.getElementById('reset-form');
+
+                if (linkRecovery) {
+                    linkRecovery.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        formLogin.classList.add('hidden');
+                        formRecovery.classList.remove('hidden');
+                        document.querySelector('h1').innerText = "RECOVERY";
+                        statusOutput.style.opacity = '0';
+                    });
+                }
+
+                if (btnCancelRecovery) {
+                    btnCancelRecovery.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        formRecovery.classList.add('hidden');
+                        formLogin.classList.remove('hidden');
+                        document.querySelector('h1').innerText = "LOGIN";
+                        statusOutput.style.opacity = '0';
+                    });
+                }
+
+                if (formRecovery) {
+                    formRecovery.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const email = document.getElementById('email-recovery').value;
+                        showStatus("Transmitting request...", "text-yellow-500 animate-pulse");
+
+                        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+                            redirectTo: window.location.origin + '/gate/?mode=reset',
+                        });
+
+                        if (error) {
+                            showStatus(error.message, "text-terminal-red");
+                        } else {
+                            showStatus("Reset link sent! Please check your inbox.", "text-terminal-green");
+                        }
+                    });
+                }
+
+                // RESET URL PARAM CHECK
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('mode') === 'reset') {
+                    formLogin.classList.add('hidden');
+                    formReset.classList.remove('hidden');
+                    document.querySelector('h1').innerText = "NEW PASSWORD";
+                    tabLogin.parentElement.style.display = 'none';
+                }
+
+                if (formReset) {
+                    formReset.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const newPassword = document.getElementById('password-reset').value;
+                        showStatus("Updating password...", "text-yellow-500 animate-pulse");
+
+                        const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+
+                        if (error) {
+                            showStatus(error.message, "text-terminal-red");
+                        } else {
+                            showStatus("Password updated successfully! Redirecting...", "text-terminal-green");
+                            setTimeout(() => window.location.href = '../cmd/', 1500);
+                        }
+                    });
+                }
+            </script>
+</body>
+
+</html>

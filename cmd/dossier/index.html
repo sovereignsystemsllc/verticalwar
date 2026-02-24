@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="bg-gray-950 font-sans text-gray-100 antialiased">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOSSIER // ETHAN FAULKNER</title>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05010a',
+                        emerald: { 500: '#10b981', 900: '#064e3b' },
+                        cyan: { 400: '#22d3ee', 900: '#164e63' },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    },
+                    backgroundImage: {
+                        'dossier-bg': "url('../../assets/img/backgrounds/chamber.png')"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-img-container {
+            position: relative;
+        }
+
+        .profile-img-container::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+    <style>
+        /* GLOBAL TEXT SCALE OVERRIDE */
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .text-xs {
+            font-size: 1rem !important;
+        }
+
+        .text-sm {
+            font-size: 1.15rem !important;
+        }
+
+        .text-base {
+            font-size: 1.3rem !important;
+        }
+
+        .text-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .text-xl {
+            font-size: 1.75rem !important;
+        }
+
+        .text-2xl {
+            font-size: 2rem !important;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem !important;
+        }
+
+        .text-4xl {
+            font-size: 3rem !important;
+        }
+    </style>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/dossier/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+</head>
+
+<body class="bg-void text-white min-h-screen relative overflow-x-hidden selection:bg-cyan-500/30">
+
+    <!-- BACKGROUND IMAGE -->
+    <div class="fixed inset-0 z-0 opacity-20">
+        <div class="absolute inset-0 bg-[url('../../assets/img/backgrounds/chamber.png')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-void via-void/90 to-transparent"></div>
+    </div>
+
+    <!-- SCANLINE & PARTICLES -->
+    <div
+        class="fixed inset-0 pointer-events-none z-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-20">
+    </div>
+    <div id="particles-js" class="fixed inset-0 z-0 pointer-events-none"></div>
+
+    <!-- NAV BAR -->
+    <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-void/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- LOGO/HOME -->
+                <div class="flex-shrink-0">
+                    <a href="../../index.html"
+                        class="font-tech text-xl font-bold tracking-widest text-white hover:text-cyan-400 transition-colors">
+                        // OPERATOR_DOSSIER
+                    </a>
+                </div>
+                <!-- LINKS -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-xs">
+                        <a href="../../index.html" class="text-gray-400 hover:text-white transition-colors">[ SURFACE
+                            ]</a>
+                        <a href="../network/" class="text-gray-400 hover:text-white transition-colors">[ NETWORK ]</a>
+                        <a href="#" class="text-cyan-400 font-bold">[ DOSSIER ]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT WRAPPER -->
+    <div class="relative z-10 pt-24 pb-12 px-4 max-w-6xl mx-auto">
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+
+            <!-- LEFT COLUMN: IMAGE & STATS -->
+            <div class="md:col-span-4 space-y-6">
+
+                <!-- PROFILE IMAGE -->
+                <div class="profile-img-container relative z-10">
+                    <img src="../../assets/images/profile_ethan.jpg" alt="Ethan Faulkner"
+                        class="w-full grayscale hover:grayscale-0 transition-all duration-500 border border-white/10 rounded shadow-2xl relative z-10">
+                </div>
+
+                <!-- STATS BLOCK -->
+                <div class="glass-panel p-4 rounded font-mono text-xs space-y-2 border-l-2 border-l-cyan-500">
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">NAME:</span>
+                        <span class="text-white font-bold">ETHAN FAULKNER</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">RANK:</span>
+                        <span class="text-cyan-400">COMMAND // ARCHITECT</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">STATUS:</span>
+                        <span class="text-emerald-500">ACTIVE</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">SPECIALTY:</span>
+                        <span class="text-white">NARRATIVE WARFARE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">AFFILIATION:</span>
+                        <span class="text-white">SOVEREIGN PHALANX</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: BIO & MANIFESTO -->
+            <div class="md:col-span-8">
+
+                <div class="glass-panel p-8 md:p-12 rounded-lg relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 p-4 opacity-10 font-tech text-6xl font-bold text-white select-none">
+                        EF</div>
+
+                    <h2 class="font-tech text-2xl text-cyan-400 mb-8 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></span>
+                        MISSION STATEMENT
+                    </h2>
+
+                    <div class="font-sans text-gray-300 leading-relaxed space-y-6 text-lg">
+                        <p>
+                            I am building the architecture for the escape.
+                        </p>
+                        <p>
+                            For years, I watched the "Vertical War" dismantle the independent mind&rdquo;trapping creators,
+                            thinkers, and workers in a loop of Learned Helplessness. The system is designed to keep you
+                            fragmented, distracted, and dependent.
+                        </p>
+                        <p class="border-l-4 border-cyan-500 pl-4 py-2 bg-cyan-900/10 text-white italic">
+                            <strong>Sovereign</strong> is the counter-measure. It is not just a website; it is a
+                            "Compound." A place where we salvage reality, reconstruct our tools, and arm ourselves with
+                            the narratives they tried to delete.
+                        </p>
+                        <p>
+                            I don't offer comfort. I offer the blueprints to build your own exit.
+                        </p>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-white/10">
+                        <h3 class="font-mono text-sm text-gray-500 mb-4 uppercase tracking-widest">>> SERVICE RECORD
+                        </h3>
+                        <ul class="font-mono text-sm text-emerald-400 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <span class="text-gray-600">[+]</span> Founder of the Sovereign Interface.
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gray-600">[+]</span> Author of "The Vertical War" Doctrine.
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gray-600">[+]</span> Architect of the Phalanx Network.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-12 text-right font-mono text-2xl text-gray-500 tracking-widest opacity-50">
+                        - E.F.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../../assets/js/visuals.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+

@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="bg-[#050505] font-sans text-gray-400 antialiased selection:bg-red-900/30">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACCESS // SUPPLY DEPOT</title>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#050505',
+                        panel: '#0a0a0a',
+                        border: '#27272a', // Gray-800
+                        text: '#a1a1aa', // Gray-400
+                        highlight: '#e5e7eb', // Gray-200
+                        signal: '#d4d4d8',
+                        operator: '#b91c1c', // Red-700
+                        operator_hover: '#ef4444', // Red-500
+                        phalanx: '#a16207', // Gold-700
+                        phalanx_hover: '#eab308', // Gold-500
+                    },
+                    fontFamily: {
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
+                    },
+                    backgroundImage: {
+                        'hangar': "url('../../assets/images/lexicon/Render_Cold_War_Hangar_Blue_Server_Rows_1.png')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- NAV BAR INJECTION -->
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+
+    <style>
+        /* INDUSTRIAL NOIR CORE */
+        body {
+            background-color: #050505;
+            color: #a1a1aa;
+        }
+
+        .industrial-card {
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid #27272a;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .industrial-card:hover {
+            border-color: #52525b;
+            background: rgba(15, 15, 15, 0.95);
+        }
+
+        /* CRT SCANLINE OVERLAY FOR IMAGES */
+        .crt-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .image-container img {
+            transition: all 0.5s ease;
+            filter: grayscale(100%) contrast(1.2);
+        }
+
+        .industrial-card:hover .image-container img {
+            filter: grayscale(0%) contrast(1.1);
+            transform: scale(1.05);
+        }
+
+        .btn-industrial {
+            border: 1px solid #27272a;
+            background: transparent;
+            color: #71717a;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .btn-industrial:hover {
+            border-color: #d4d4d8;
+            color: #d4d4d8;
+            background: #18181b;
+        }
+
+        .glitch-hover:hover {
+            animation: glitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #ef4444;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0)
+            }
+
+            20% {
+                transform: translate(-2px, 2px)
+            }
+
+            40% {
+                transform: translate(-2px, -2px)
+            }
+
+            60% {
+                transform: translate(2px, 2px)
+            }
+
+            80% {
+                transform: translate(2px, -2px)
+            }
+
+            100% {
+                transform: translate(0)
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #71717a;
+        }
+    </style>
+
+    <!-- ARG LOG -->
+    <script>
+        console.log("%c SYSTEM DETECTED: UNREGISTERED USER. PROCEED WITH CAUTION.", "color: red; font-weight: bold; font-family: monospace; font-size: 14px; background: #111; padding: 10px; border: 1px solid red;");
+
+        // MOCK TICKER
+        document.addEventListener('DOMContentLoaded', () => {
+            const ticker = document.getElementById('stock-ticker');
+            if (ticker) {
+                setInterval(() => {
+                    const states = ['CRITICAL', 'LOW', 'RESERVED', 'ALLOCATING...'];
+                    const rand = Math.floor(Math.random() * states.length);
+                    ticker.innerText = `STOCK: ${states[rand]}`;
+                }, 4000);
+            }
+        });
+    </script>
+    <!-- YOU ARE LOOKING AT THE WALLS. DO NOT JUST STARE. TEAR THEM DOWN. -->
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/access/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body class="bg-void min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- BACKGROUND LAYER -->
+    <div class="fixed inset-0 z-0 opacity-40 pointer-events-none">
+        <div class="absolute inset-0 bg-hangar bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-void via-void/90 to-void/40"></div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 py-12 md:py-20">
+
+        <!-- HEADER -->
+        <div class="mb-12 border-b border-border pb-6 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div>
+                <h1
+                    class="font-tech text-5xl md:text-7xl font-bold uppercase tracking-widest text-white leading-none drop-shadow-lg">
+                    SUPPLY<span class="text-operator">_</span>DEPOT
+                </h1>
+                <p class="font-mono text-xs text-gray-500 uppercase tracking-[0.2em] mt-2">
+                    // ACCESS_CODE: OPEN // PROTOCOL: EXCHANGE
+                </p>
+            </div>
+
+            <!-- LIVE TICKER -->
+            <div class="text-right hidden md:block">
+                <div id="stock-ticker"
+                    class="font-mono text-sm text-operator_hover font-bold uppercase tracking-widest animate-pulse">
+                    STOCK: CRITICAL</div>
+                <div class="font-mono text-[10px] text-gray-600 uppercase">UPDATING...</div>
+            </div>
+        </div>
+
+        <!-- PRICING GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+
+            <!-- TIER 1: THE SIGNAL -->
+            <div class="industrial-card flex flex-col h-full group">
+                <!-- IMAGE HEADER -->
+                <div class="image-container h-48 w-full bg-black relative">
+                    <div class="crt-overlay"></div>
+                    <img src="../../assets/images/lexicon/Graphic_System_Processing_99_Percent_Glitch_Bar.png"
+                        class="w-full h-full object-cover opacity-80" alt="Signal Processing">
+                </div>
+
+                <div class="p-8 flex flex-col flex-grow">
+                    <div class="mb-6">
+                        <h2 class="font-tech text-3xl font-bold text-gray-400 group-hover:text-white transition-colors">
+                            THE SIGNAL</h2>
+                        <div class="text-xl font-mono text-gray-500 mt-2 glitch-hover cursor-crosshair">$7.76</div>
+                        <p
+                            class="font-mono text-[10px] text-gray-600 uppercase tracking-widest mt-2 border-t border-border pt-2 inline-block">
+                            Digital Codex</p>
+                    </div>
+
+                    <ul class="space-y-4 font-mono text-xs text-gray-500 mb-8 flex-grow">
+                        <li class="flex items-start"><span class="mr-2 text-gray-700">[:]</span> PDF / ePub Manual</li>
+                        <li class="flex items-start"><span class="mr-2 text-gray-700">[:]</span> Gas Station Logs (Raw)
+                        </li>
+                        <li class="flex items-start"><span class="mr-2 text-gray-700">[:]</span> Immediate Deployment
+                        </li>
+                    </ul>
+
+                    <a href="https://buy.stripe.com/dRm9AT3gbe5u1SC1XR7Zu00" target="_blank"
+                        class="w-full py-4 bg-transparent border border-gray-700 hover:bg-white hover:text-black hover:border-white text-gray-400 font-tech text-lg font-bold uppercase tracking-widest text-center transition-all mt-auto">
+                        ACQUIRE
+                    </a>
+                </div>
+            </div>
+
+            <!-- TIER 2: THE OPERATOR -->
+            <div
+                class="industrial-card flex flex-col h-full group relative transform md:-translate-y-4 shadow-2xl shadow-black">
+                <!-- ACCENT -->
+                <div class="absolute top-0 right-0 z-20 p-2">
+                    <div class="w-1 h-1 bg-operator"></div>
+                </div>
+
+                <!-- IMAGE HEADER -->
+                <div class="image-container h-48 w-full bg-black relative border-b border-operator/50">
+                    <div class="crt-overlay"></div>
+                    <img src="../../assets/images/lexicon/Illustration_TV_Head_Suit_Sparks_Vintage_Screen.png"
+                        class="w-full h-full object-cover opacity-90" alt="Operator Escape">
+                </div>
+
+                <div class="p-8 flex flex-col flex-grow bg-[#0f0505]">
+                    <div class="mb-6">
+                        <h2
+                            class="font-tech text-4xl font-bold text-white group-hover:text-operator_hover transition-colors">
+                            THE OPERATOR</h2>
+                        <div class="text-2xl font-mono text-operator mt-2 glitch-hover cursor-critical">$45.00</div>
+                        <p
+                            class="font-mono text-[10px] text-operator uppercase tracking-widest mt-2 border-t border-operator/30 pt-2 inline-block">
+                            Full Deployment</p>
+                    </div>
+
+                    <ul class="space-y-4 font-mono text-xs text-gray-400 mb-8 flex-grow">
+                        <li class="flex items-start"><span class="mr-2 text-operator">[+]</span> Signed Paperback
+                            (Physical)</li>
+                        <li class="flex items-start"><span class="mr-2 text-operator">[+]</span> Living Archive Access
+                        </li>
+                        <li class="flex items-start"><span class="mr-2 text-operator">[+]</span> Private Comms Channel
+                        </li>
+                        <li class="flex items-start"><span class="mr-2 text-operator">[+]</span> Dispatch: Summer 2026
+                        </li>
+                    </ul>
+
+                    <a href="https://buy.stripe.com/dRm14n8AvbXm54O45Z7Zu01" target="_blank"
+                        class="w-full py-5 bg-operator hover:bg-operator_hover text-black font-tech text-xl font-bold uppercase tracking-widest text-center transition-all shadow-[0_0_20px_rgba(220,38,38,0.2)] hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] mt-auto">
+                        INITIALIZE
+                    </a>
+                </div>
+            </div>
+
+            <!-- TIER 3: THE PHALANX -->
+            <div class="industrial-card flex flex-col h-full group">
+                <!-- ACCENT -->
+                <div class="absolute top-0 right-0 z-20 p-2">
+                    <div class="w-1 h-1 bg-phalanx"></div>
+                </div>
+
+                <!-- IMAGE HEADER -->
+                <div class="image-container h-48 w-full bg-black relative border-b border-phalanx/30">
+                    <div class="crt-overlay"></div>
+                    <img src="../../assets/images/lexicon/Render_Industrial_Gold_Machine_Operational.png"
+                        class="w-full h-full object-cover opacity-80" alt="Phalanx Engine">
+                </div>
+
+                <div class="p-8 flex flex-col flex-grow bg-[#0c0a00]">
+                    <div class="mb-6">
+                        <h2
+                            class="font-tech text-3xl font-bold text-gray-200 group-hover:text-phalanx_hover transition-colors">
+                            THE PHALANX</h2>
+                        <div class="text-xl font-mono text-phalanx mt-2 glitch-hover">$150.00</div>
+                        <p
+                            class="font-mono text-[10px] text-phalanx_hover uppercase tracking-widest mt-2 border-t border-phalanx/30 pt-2 inline-block">
+                            Patron Status</p>
+                    </div>
+
+                    <ul class="space-y-4 font-mono text-xs text-gray-400 mb-8 flex-grow">
+                        <li class="flex items-start"><span class="mr-2 text-phalanx">[!]</span> Prison Audit (1-on-1)
+                        </li>
+                        <li class="flex items-start"><span class="mr-2 text-phalanx">[!]</span> Alpha Strategy Tools
+                        </li>
+                        <li class="flex items-start"><span class="mr-2 text-phalanx">[!]</span> Inner Circle Status</li>
+                        <li class="flex items-start font-bold text-phalanx/60">LIMIT: 5 REMAINING</li>
+                    </ul>
+
+                    <a href="https://buy.stripe.com/8x228r6sn3qQ0Oy1XR7Zu02" target="_blank"
+                        class="w-full py-4 bg-transparent border border-phalanx hover:bg-phalanx_hover hover:text-black hover:border-phalanx_hover text-phalanx font-tech text-lg font-bold uppercase tracking-widest text-center transition-all mt-auto">
+                        JOIN CORE
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER: RETURN NAVIGATION -->
+        <div class="mt-16 border-t border-border pt-8 flex justify-between items-center">
+            <a href="../../terminal/"
+                class="font-mono text-xs text-gray-600 hover:text-white transition-colors uppercase tracking-widest group">
+                <span class="mr-2 group-hover:mr-3 transition-all">&lt;&lt;</span> RETURN TO TERMINAL
+            </a>
+            <div class="font-mono text-[10px] text-gray-700">
+                SECURE // ENCRYPTED // STRIPE_VERIFIED
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+
+
+
+
+
+

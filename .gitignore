@@ -1,0 +1,32 @@
+node_modules/
+.env
+
+# MacOS
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Supabase Local
+supabase/.temp/
+supabase/.branches/
+
+# IMPORTANT: PRIVATE SECRETS
+private/
+.env.production
+
+# Media Files
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.pdf
+
+# Database/SQL
+*.sql

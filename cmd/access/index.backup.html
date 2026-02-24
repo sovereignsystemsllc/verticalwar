@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-950 font-sans text-gray-100 antialiased">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACCESS // SUPPLY DEPOT</title>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#05010a',
+                        emerald: { 500: '#10b981', 900: '#064e3b' },
+                        cyan: { 400: '#22d3ee', 900: '#164e63' },
+                        gold: { 400: '#facc15', 900: '#713f12' },
+                        pink: { 500: '#ec4899', 900: '#831843' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    },
+                    backgroundImage: {
+                        'access-bg': "url('../../assets/images/access_bg.png')"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-card {
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.9);
+        }
+    </style>
+    <style>
+        /* GLOBAL TEXT SCALE OVERRIDE */
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .text-xs {
+            font-size: 1rem !important;
+        }
+
+        .text-sm {
+            font-size: 1.15rem !important;
+        }
+
+        .text-base {
+            font-size: 1.3rem !important;
+        }
+
+        .text-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .text-xl {
+            font-size: 1.75rem !important;
+        }
+
+        .text-2xl {
+            font-size: 2rem !important;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem !important;
+        }
+
+        .text-4xl {
+            font-size: 3rem !important;
+        }
+    </style>
+
+    <!-- NAV BAR INJECTION -->
+    <script type="module" src="../../assets/js/nav_bar.js?v=20"></script>
+</head>
+
+<body class="bg-void text-white min-h-screen relative overflow-x-hidden selection:bg-pink-500/30">
+
+    <!-- BACKGROUND IMAGE -->
+    <div class="fixed inset-0 z-0 opacity-30">
+        <div class="absolute inset-0 bg-access-bg bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-void via-void/90 to-transparent"></div>
+    </div>
+
+    <!-- SCANLINE & PARTICLES -->
+    <div
+        class="fixed inset-0 pointer-events-none z-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-20">
+    </div>
+    <div id="particles-js" class="fixed inset-0 z-0 pointer-events-none"></div>
+
+    <!-- NAV BAR -->
+    <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-void/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- LOGO/HOME -->
+                <div class="flex-shrink-0">
+                    <a href="../../"
+                        class="font-tech text-xl font-bold tracking-widest text-pink-500 hover:text-white transition-colors">
+                        // SUPPLY_DEPOT
+                    </a>
+                </div>
+                <!-- LINKS -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-xs">
+                        <a href="../../" class="text-gray-400 hover:text-white transition-colors">[ SURFACE ]</a>
+                        <a href="../../terminal/" class="text-gray-400 hover:text-white transition-colors">[ TERMINAL
+                            ]</a>
+                        <a href="#" class="text-pink-400 font-bold">[ ACCESS ]</a>
+                        <a href="../network/" class="text-gray-400 hover:text-white transition-colors">[ NETWORK ]</a>
+                        <a href="../dossier/" class="text-gray-400 hover:text-white transition-colors">[ DOSSIER
+                            ]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT WRAPPER -->
+    <div class="relative z-10 pt-24 pb-12 px-4 max-w-7xl mx-auto">
+
+        <!-- HEADER -->
+        <div class="text-center mb-12">
+            <h1 class="font-tech text-4xl md:text-6xl font-bold mb-4 tracking-tight drop-shadow-lg text-white">
+                ACCESS <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">CONTROL</span>
+            </h1>
+            <p
+                class="font-mono text-pink-400/80 text-sm tracking-widest bg-pink-900/10 inline-block px-4 py-1 rounded border border-pink-500/20">
+                WARNING: COMMERCIAL SECTOR // EXCHANGE REQUIRED
+            </p>
+        </div>
+
+        <!-- PRICING GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-start">
+
+            <!-- TIER 1: THE SIGNAL -->
+            <div class="glass-panel p-8 rounded-xl product-card border-t-4 border-t-cyan-500 flex flex-col h-full">
+                <div class="mb-4">
+                    <h2 class="font-tech text-3xl font-bold text-white">THE SIGNAL</h2>
+                    <div class="text-2xl font-mono text-cyan-400 mt-2">$7.76</div>
+                    <p class="font-mono text-xs text-gray-500 uppercase tracking-widest mt-1">Digital Codex Only</p>
+                </div>
+
+                <ul class="space-y-3 font-sans text-sm text-gray-400 mb-8 flex-grow">
+                    <li class="flex items-start"><span class="text-cyan-500 mr-2">></span> eBook (PDF, ePub)</li>
+                    <li class="flex items-start"><span class="text-cyan-500 mr-2">></span> The "Gas Station Logs"
+                        Archive</li>
+                    <li class="flex items-start"><span class="text-cyan-500 mr-2">></span> Immediate Download</li>
+                </ul>
+
+                <a href="https://buy.stripe.com/dRm9AT3gbe5u1SC1XR7Zu00" target="_blank"
+                    class="w-full py-3 bg-gray-800 hover:bg-cyan-600 text-cyan-400 hover:text-white border border-cyan-500/30 rounded font-mono text-sm font-bold tracking-wider text-center transition-all">
+                    ACQUIRE SIGNAL
+                </a>
+            </div>
+
+            <!-- TIER 2: THE OPERATOR (POPULAR) -->
+            <div
+                class="glass-panel p-8 rounded-xl product-card border-t-4 border-t-pink-500 flex flex-col h-full transform md:-translate-y-4 relative">
+                <!-- BADGE -->
+                <div class="absolute top-0 right-0 transform translate-x-2 -translate-y-1/2">
+                    <span
+                        class="bg-pink-500 text-black font-mono text-xs font-bold px-3 py-1 rounded shadow-lg shadow-pink-500/50">LIMITED
+                        SUPPLY</span>
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="font-tech text-4xl font-bold text-white">THE OPERATOR</h2>
+                    <div class="text-3xl font-mono text-pink-400 mt-2">$45.00</div>
+                    <p class="font-mono text-xs text-gray-500 uppercase tracking-widest mt-1">Physical + Digital +
+                        Strategy</p>
+                </div>
+
+                <ul class="space-y-4 font-sans text-sm text-gray-300 mb-8 flex-grow">
+                    <li class="flex items-start"><span class="text-pink-500 mr-2">>></span> <span
+                            class="text-white font-bold">Signed Paperback Edition</span></li>
+                    <li class="flex items-start"><span class="text-pink-500 mr-2">>></span> Lifetime Access to The
+                        Living Archive</li>
+                    <li class="flex items-start"><span class="text-pink-500 mr-2">>></span> Private Discord Channel
+                        Access</li>
+                    <li class="flex items-start"><span class="text-pink-500 mr-2">>></span> Target Dispatch: Late Summer
+                        2026</li>
+                </ul>
+
+                <a href="https://buy.stripe.com/dRm14n8AvbXm54O45Z7Zu01" target="_blank"
+                    class="w-full py-4 bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-500/30 rounded font-mono text-sm font-bold tracking-wider text-center transition-all">
+                    SECURE BUNDLE
+                </a>
+            </div>
+
+            <!-- TIER 3: THE PHALANX -->
+            <div class="glass-panel p-8 rounded-xl product-card border-t-4 border-t-gold-400 flex flex-col h-full">
+                <!-- BADGE -->
+                <div class="absolute top-0 right-0 transform translate-x-2 -translate-y-1/2">
+                    <span
+                        class="bg-gold-400 text-black font-mono text-xs font-bold px-3 py-1 rounded shadow-lg shadow-gold-400/50">LIMIT:
+                        5 SPOTS</span>
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="font-tech text-3xl font-bold text-white">THE PHALANX</h2>
+                    <div class="text-2xl font-mono text-gold-400 mt-2">$150.00</div>
+                    <p class="font-mono text-xs text-gray-500 uppercase tracking-widest mt-1">Patron of the Core</p>
+                </div>
+
+                <ul class="space-y-3 font-sans text-sm text-gray-400 mb-8 flex-grow">
+                    <li class="flex items-start"><span class="text-gold-400 mr-2">></span> Everything in The Operator
+                        Tier</li>
+                    <li class="flex items-start"><span class="text-gold-400 mr-2">></span> 1-on-1 "Prison Audit" Call
+                        with Ethan</li>
+                    <li class="flex items-start"><span class="text-gold-400 mr-2">></span> Access Alpha Sovereign
+                        Strategy Tools</li>
+                    <li class="flex items-start"><span class="text-gold-400 mr-2">></span> Status: Scheduling Begins Feb
+                        2026</li>
+                </ul>
+
+                <a href="https://buy.stripe.com/8x228r6sn3qQ0Oy1XR7Zu02" target="_blank"
+                    class="w-full py-3 bg-gray-800 hover:bg-gold-400 text-gold-400 hover:text-black border border-gold-400/30 rounded font-mono text-sm font-bold tracking-wider text-center transition-all">
+                    JOIN THE PHALANX
+                </a>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="text-center">
+            <p class="font-mono text-xs text-gray-600">
+                SECURE TRANSACTION VIA STRIPE // ENCRYPTED CONNECTION
+            </p>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../../assets/js/visuals.js"></script>
+</body>
+
+</html>

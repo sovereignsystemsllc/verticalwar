@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="bg-void font-sans text-gray-100 antialiased selection:bg-rika selection:text-void">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL // COMMAND LINK</title>
+
+    <!-- FONTS: Inter (Clean) & Rajdhani (Tech) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS: Tailwind (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'rika': '#a78bfa',
+                        'cicada': '#10b981',
+                        'shrine': '#dc2626',
+                        'glass': 'rgba(167, 139, 250, 0.05)',
+                        'emerald': { 500: '#10b981', 900: '#064e3b' },
+                        'cyan': { 400: '#22d3ee', 900: '#164e63' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Rajdhani', 'sans-serif'],
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    },
+                    animation: {
+                        'scanline': 'scanline 10s linear infinite',
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { bottom: '100%' },
+                            '50%': { bottom: '100%' },
+                            '100%': { bottom: '-100px' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* GLASSMORPHISM - VOID STYLE */
+        .glass-panel {
+            background: rgba(5, 1, 10, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        /* CRT SCANLINE */
+        .crt-scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(167, 139, 250, 0.04) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        /* SCROLLBAR - RIKA STYLE */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #371b58;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a78bfa;
+        }
+
+        .system-msg {
+            color: #9ca3af;
+        }
+
+        /* Gray-400 */
+        .error-msg {
+            color: #dc2626;
+        }
+
+        /* Shrine Red */
+        .success-msg {
+            color: #10b981;
+        }
+
+        /* Cicada Green */
+
+        .rika-text {
+            color: #a78bfa;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+        }
+    </style>
+    <style>
+        /* GLOBAL TEXT SCALE OVERRIDE */
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .text-xs {
+            font-size: 1rem !important;
+        }
+
+        .text-sm {
+            font-size: 1.15rem !important;
+        }
+
+        .text-base {
+            font-size: 1.3rem !important;
+        }
+
+        .text-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .text-xl {
+            font-size: 1.75rem !important;
+        }
+
+        .text-2xl {
+            font-size: 2rem !important;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem !important;
+        }
+
+        .text-4xl {
+            font-size: 3rem !important;
+        }
+    </style>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/terminal/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body class="bg-void h-screen w-full overflow-hidden flex flex-col items-center justify-center relative p-4 md:p-8">
+
+    <!-- CRT EFFECT OVERLAY -->
+    <div
+        class="fixed inset-0 pointer-events-none z-50 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(5,1,10,0.4)_100%)]">
+    </div>
+    <div class="crt-scanline"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="terminal"
+        class="glass-panel w-full max-w-5xl h-full rounded-lg flex flex-col relative z-20 overflow-hidden border-rika/30">
+
+        <!-- HEADER / LOGO AREA -->
+        <div class="p-6 border-b border-rika/20 flex items-center justify-between bg-black/40">
+            <div class="flex items-center gap-4">
+                <a href="../" id="return-link" class="block hover:opacity-80 transition-opacity group">
+                    <img src="../../assets/images/csr_logo.png" alt="CSR LOGO"
+                        class="h-12 w-auto opacity-90 drop-shadow-[0_0_10px_rgba(167,139,250,0.3)]">
+                </a>
+                <div>
+                    <h1
+                        class="font-tech text-2xl font-bold text-rika tracking-widest leading-none drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">
+                        COMMAND LINK</h1>
+                    <a href="../" id="dynamic-text-link"
+                        class="font-mono text-[10px] text-cicada tracking-[0.2em] uppercase hover:text-white transition-colors cursor-pointer block mt-1">
+                        [ RETURN TO COMMAND ]
+                    </a>
+                </div>
+            </div>
+            <script>
+                    (function () {
+                        const returnLink = document.getElementById('return-link');
+                        const textLink = document.getElementById('dynamic-text-link');
+                        const referrer = document.referrer;
+
+                        // Check if referrer is the root (homepage) or empty (direct)
+                        // We assume 'cmd' is the trigger for staying in command.
+                        // If referrer does NOT contain 'cmd', we assume it's from surface/root.
+
+                        if (referrer && !referrer.includes('/cmd/')) {
+                            const surfaceUrl = "../../";
+                            returnLink.href = surfaceUrl;
+                            textLink.href = surfaceUrl;
+                            textLink.innerText = "[ RETURN TO BRIEFING ]";
+                            // Update color to match surface theme if needed, or keep emerald
+                        }
+                    })();
+            </script>
+            <div class="hidden md:block text-right">
+                <p class="font-mono text-xs text-purple-400/50">SYS.VER 2.1.0</p>
+                <p class="font-mono text-xs text-purple-400/30">ENCRYPTION: RIKA-AES-256</p>
+            </div>
+        </div>
+
+        <!-- TERMINAL OUTPUT (SCROLLABLE) -->
+        <div id="terminal-output"
+            class="flex-grow overflow-y-auto p-6 font-mono text-sm md:text-base leading-relaxed text-purple-200/80 space-y-1">
+            <div class="system-msg">INITIALIZING SOVEREIGN KERNEL...</div>
+            <div class="system-msg">LOADING MODULES... [OK]</div>
+            <div class="system-msg">CONNECTING TO ARCHIVE... <span class="error-msg">[OFFLINE]</span></div>
+            <br>
+            <div class="text-rika font-bold">WELCOME TO THE SOVEREIGN INTERFACE v2.0 (BLACK BOX EDITION)</div>
+            <div>TYPE <span class="success-msg">'HELP'</span> FOR AVAILABLE COMMANDS.</div>
+            <br>
+        </div>
+
+        <!-- INPUT LINE (FIXED BOTTOM) -->
+        <div id="input-line" class="p-4 border-t border-rika/20 bg-black/60 flex items-center gap-2 shrink-0">
+            <span id="prompt"
+                class="font-mono text-cicada font-bold whitespace-nowrap drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]">VISITOR@SOVEREIGN:~$</span>
+            <input type="text" id="cmd-input" autocomplete="off" autofocus
+                class="bg-transparent border-none text-white font-mono text-base focus:outline-none w-full placeholder-gray-700"
+                placeholder="_">
+        </div>
+    </div>
+
+    <!-- JS INJECT -->
+    <script src="../../assets/js/visuals.js"></script> <!-- Particle Effect -->
+    <script type="module" src="../../assets/js/terminal.js"></script> <!-- Logic -->
+
+</body>
+
+</html>
+
+
+
+
+
+
