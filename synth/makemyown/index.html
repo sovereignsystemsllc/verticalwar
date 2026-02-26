@@ -247,7 +247,7 @@ If 10, say "**Confirmed. Forging your Sovereign Protocol now...**" and output th
                 const res = await fetch("../../api/antigravity.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: "gemini-3-pro-preview", contents: historyList }),
+                    body: JSON.stringify({ model: "gemini-1.5-pro-latest", contents: historyList }),
                 });
 
                 loadDiv.remove();

@@ -19,7 +19,7 @@
                         sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
                     },
 
-                    
+
                 }
             }
         }
@@ -38,7 +38,7 @@
         .glass-panel {
             background: rgba(10, 20, 10, 0.9);
             border: 1px solid #22c55e;
-            
+
         }
 
         .input-heavy {
@@ -54,7 +54,7 @@
 
         .input-heavy:focus {
             border-color: #22c55e;
-            
+
         }
 
         /* Custom Scrollbar */
@@ -114,13 +114,11 @@
 
         <!-- HEADER -->
         <div class="border-b border-[#22c55e]/40 pb-4 text-center">
-            <div
-                class="w-24 h-24 mx-auto mb-4 border border-[#22c55e] bg-[#05010a] overflow-hidden ">
+            <div class="w-24 h-24 mx-auto mb-4 border border-[#22c55e] bg-[#05010a] overflow-hidden ">
                 <img src="../../assets/media/rika_avatar.jpg" class="w-full h-full object-cover opacity-80"
                     onerror="this.src='https://api.dicebear.com/9.x/shapes/svg?seed=Rika&backgroundColor=000000&shape1Color=00ff33'">
             </div>
-            <h1
-                class="text-3xl md:text-5xl font-bold tracking-[0.1em] text-[#22c55e] uppercase  mb-2">
+            <h1 class="text-3xl md:text-5xl font-bold tracking-[0.1em] text-[#22c55e] uppercase  mb-2">
                 SECURE INTELLIGENCE TERMINAL</h1>
             <p class="text-xs text-[#22c55e]/70 tracking-widest uppercase mb-4">
                 > FORENSIC SYNTHESIZER [ RIKA ] ONLINE. DROP THE MASK.
@@ -253,7 +251,7 @@ Be concise. Do not lecture, just dissect the target.`;
                 const res = await fetch("../../api/antigravity.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: "gemini-3-pro-preview", contents: historyList }),
+                    body: JSON.stringify({ model: "gemini-1.5-pro-latest", contents: historyList }),
                 });
 
                 loadDiv.remove();
