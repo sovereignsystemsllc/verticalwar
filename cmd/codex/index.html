@@ -24,10 +24,13 @@
             theme: {
                 extend: {
                     colors: { 'term-black': '#050505', 'term-green': '#22c55e', 'rika': '#8b5cf6' },
+
                     fontFamily: {
-                        mono: ['Courier New', 'Courier Prime', 'monospace'],
-                        serif: ['Playfair Display', 'Georgia', 'serif']
-                    }
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    },
+
+                    
                 }
             }
         }
@@ -92,7 +95,7 @@
         }
 
         .reader-text h2 {
-            font-family: 'Courier New', monospace;
+            font-family: monospace;
             font-size: 1.5rem;
             color: #22c55e;
             margin-top: 2rem;
@@ -103,7 +106,7 @@
         }
 
         .reader-text h3 {
-            font-family: 'Courier New', monospace;
+            font-family: monospace;
             font-size: 1.2rem;
             color: #fff;
             margin-top: 1.5rem;
