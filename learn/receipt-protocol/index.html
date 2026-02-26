@@ -348,7 +348,7 @@ INPUT TEXT TO ANALYZE:
 ${text}`;
                 const r = await fetch("/api/antigravity.php", {
                     method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: "gemini-1.5-flash-latest", contents: [{ role: "user", parts: [{ text: systemPrompt }] }] })
+                    body: JSON.stringify({ model: "gemini-3-flash-preview", contents: [{ role: "user", parts: [{ text: systemPrompt }] }] })
                 });
                 const data = await r.json();
                 if (data.error) throw new Error(data.error);

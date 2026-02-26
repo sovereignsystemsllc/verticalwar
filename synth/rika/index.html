@@ -251,7 +251,7 @@ Be concise. Do not lecture, just dissect the target.`;
                 const res = await fetch("../../api/antigravity.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: "gemini-1.5-pro-latest", contents: historyList }),
+                    body: JSON.stringify({ model: "gemini-3-pro-preview", contents: historyList }),
                 });
 
                 loadDiv.remove();
