@@ -7,9 +7,9 @@
     <title>Sovereign Interface // Command</title>
 
     <!-- NEW V3 TYPOGRAPHY (NEON LEGACY) -->
-    
-    
-    
+
+
+
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,7 +31,7 @@
                         sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
                     },
 
-                    
+
                     animation: {
                         'scanline': 'scanline 8s linear infinite',
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -193,8 +193,7 @@
         <header
             class="w-full border-b-2 border-term-green/40 pb-8 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 animate-fade-up">
             <div>
-                <h1
-                    class="text-5xl md:text-7xl font-black font-mono tracking-[0.15em] text-white uppercase  mb-2">
+                <h1 class="text-5xl md:text-7xl font-black font-mono tracking-[0.15em] text-white uppercase  mb-2">
                     CENTRAL COMMAND
                 </h1>
                 <p class="font-mono text-sm md:text-base text-term-green tracking-[0.2em] uppercase font-bold">
@@ -378,10 +377,10 @@
                     if (userRolesList.includes('SOVEREIGN') || userRolesList.includes('ARCHIVIST') || userRolesList.includes('OPERATOR')) {
                         hasAccess = true;
                     }
-                    // Observer Checking
-                    else if (reqRole === 'OBSERVER' && (userRole === 'OBSERVER' || userRole === 'VISITOR')) {
-                        // Enforce session for OBSERVER.
-                        if (session) hasAccess = true;
+                    // Observer Checking (GUESTS ALLOWED IN V3)
+                    else if (reqRole === 'OBSERVER') {
+                        // The Alpha Doctrine explicitly states Guests have full access to non-AI modules 
+                        hasAccess = true;
                     }
 
                     if (!hasAccess) {

@@ -14,13 +14,19 @@ export async function checkGuard(allowedRoles = []) {
     // 1. Get Session
     const { data: { session } } = await supabase.auth.getSession();
 
+    // 2. Open Access Override (if somehow passed)
+    if (targetRoles.includes('NONE') || targetRoles.includes('GUEST') || targetRoles.includes('ALL')) {
+        return true;
+    }
+
+    // 3. No Session Gate
     if (!session) {
-        // No Session -> Gate
-        window.location.href = '/gate/';
+        console.warn("[ACCESS GUARD] No Active Session. Redirecting to Gate.");
+        window.location.replace('/gate/');
         return false;
     }
 
-    // 2. Fetch True Role from Profiles Table (Source of Truth)
+    // 4. Fetch True Role from Profiles Table (Source of Truth)
     const { data: profile, error } = await supabase
         .from('profiles')
         .select('role, roles')
@@ -31,7 +37,7 @@ export async function checkGuard(allowedRoles = []) {
         console.warn("[ACCESS GUARD] Error fetching profile:", error);
     }
 
-    // 3. Evaluate Access
+    // 5. Evaluate Access
     let userRoles = [];
     if (profile) {
         if (profile.role) userRoles.push(profile.role.trim().toUpperCase());
@@ -42,11 +48,19 @@ export async function checkGuard(allowedRoles = []) {
 
     if (userRoles.length === 0) userRoles.push('NONE');
 
-    // Check if user has ANY of the allowed roles, OR if they are SOVEREIGN (Architect override)
-    const hasAccess = userRoles.some(r => targetRoles.includes(r)) || userRoles.includes('SOVEREIGN');
+    // RULE 1: SOVEREIGN bypasses everything
+    if (userRoles.includes('SOVEREIGN')) {
+        return true;
+    }
+
+    // RULE 2: STRICT MATCH
+    // If a tool is OPERATOR exclusive, ARCHIVISTS cannot enter unless they also hold OPERATOR.
+    const hasAccess = userRoles.some(r => targetRoles.includes(r));
 
     if (!hasAccess) {
         console.warn(`[ACCESS GUARD] Denied. Required one of: ${targetRoles.join(', ')}. Found: ${userRoles.join(', ')}`);
+        // FORCE REDIRECT ON FAILED ROLE
+        window.location.replace('/gate/');
         return false;
     }
 
