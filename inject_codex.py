@@ -1,12 +1,28 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 import json
 import time
 import base64
 
+# Load .env file manually to avoid pip dependencies
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(env_path):
+    with open(env_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#'):
+                key, val = line.split('=', 1)
+                os.environ[key] = val.strip(' "\'')
+
 # Configuration
 SUPABASE_URL = "https://zazzwdaexhkeusfjdphv.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inphenp3ZGFleGhrZXVzZmpkcGh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MDY2NjE1NiwiZXhwIjoyMDg2MjQyMTU2fQ.FgPoRW2dgysnYC-O9AvPFWUoXBN2qVp_aKSD40iVYz8"
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+if not SUPABASE_KEY:
+    print("CRITICAL ERROR: SUPABASE_KEY is missing. Create a .env file and add your secret key.")
+    exit(1)
+
 AUTHOR_UUID = "5abcdeb3-0d75-4201-ba36-2f0c9d7a41ff"
 
 urls_and_series = [
