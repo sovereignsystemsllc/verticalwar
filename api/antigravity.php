@@ -4,14 +4,31 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Optional: basic origin gate (same-site calls usually have an Origin header)
-// For local testing, we might want to temporarily allow localhost, but we'll stick to strict origin
-$ALLOWED_ORIGIN = 'https://verticalwar.com'; 
-$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+// Origin Gate (Allow Live + Localhost)
+$ALLOWED_ORIGINS = [
+    'https://verticalwar.com',
+    'https://www.verticalwar.com',
+    'http://localhost:8080',
+    'http://localhost:3000',
+    'http://127.0.0.1:5500',
+    'http://localhost:5500'
+];
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? rtrim($_SERVER['HTTP_ORIGIN'], '/') : '';
+
+// Function to check if origin is allowed or if it's strictly a same-origin local request (empty origin)
+$isAllowed = empty($origin) || in_array($origin, $ALLOWED_ORIGINS);
+
+if (!$isAllowed) {
+  http_response_code(403);
+  echo json_encode(['error' => "Forbidden: Invalid Origin"]);
+  exit;
+}
+
+$corsHeader = $origin ?: 'https://verticalwar.com';
 
 // Handle preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-  header('Access-Control-Allow-Origin: *'); // Relaxed internally for easier local dev
+  header('Access-Control-Allow-Origin: ' . $corsHeader);
   header('Access-Control-Allow-Methods: POST, OPTIONS');
   header('Access-Control-Allow-Headers: Content-Type');
   http_response_code(204);
@@ -24,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-header('Access-Control-Allow-Origin: *'); // Relaxed internally for easier local dev test
+header('Access-Control-Allow-Origin: ' . $corsHeader);
 header('Vary: Origin');
 
 // --- Very small rate limit (per IP, per minute) ---

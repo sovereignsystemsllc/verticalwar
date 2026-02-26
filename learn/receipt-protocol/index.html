@@ -346,9 +346,9 @@ REQUIRED OUTPUT FORMAT (JSON ONLY):
 DO NOT wrap your response in markdown blocks. Output raw JSON.
 INPUT TEXT TO ANALYZE:
 ${text}`;
-                const r = await fetch("/api/antigravity.php", {
+                const r = await fetch("../../api/antigravity.php", {
                     method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: "gemini-3-flash-preview", contents: [{ role: "user", parts: [{ text: systemPrompt }] }] })
+                    body: JSON.stringify({ model: "gemini-3-pro-preview", contents: [{ role: "user", parts: [{ text: systemPrompt }] }] })
                 });
                 const data = await r.json();
                 if (data.error) throw new Error(data.error);
