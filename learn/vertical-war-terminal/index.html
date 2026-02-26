@@ -1,0 +1,980 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sovereign Systems Command</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'command-black': '#09090b',
+                        'command-dark': '#18181b',
+                        'command-red': '#dc2626',
+                        'command-amber': '#d97706',
+                        'command-text': '#e4e4e7',
+                        'command-muted': '#71717a',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', "Helvetica Neue", 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- NAV BAR INJECTION -->
+    <style>
+        body {
+            background-color: #09090b;
+            overflow-x: hidden;
+        }
+
+        /* FORCE SCROLLBAR GUTTER TO PREVENT LAYOUT SHIFT */
+        html {
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* HIDE SCROLLBAR FOR MOBILE MENUS */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+    </style>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/terminal/vertical-war-terminal/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body>
+    <div id="sovereign-systems-root"
+        style="min-height: 100vh; background-color: #09090b; color: #00ff00; font-family: monospace; padding: 20px; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center;">
+            <div style="font-size: 24px; margin-bottom: 10px;">âš¡ SYSTEM INITIALIZING...</div>
+            <div style="color: #555;">LOADING VISUAL ASSETS...</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel" data-presets="react,typescript">
+
+        // --- CONFIGURATION ---
+        // (Cleaned up: unnecessary API keys and data removed for Book Terminal)
+
+        // --- DATA & TYPES ---
+        const ViewState = {
+            TRAINING: 'TRAINING',
+            WAR_CHEST: 'WAR_CHEST',
+            LEXICON: 'LEXICON'
+        };
+
+        const SOCIAL_LINKS = [
+            { label: "X (TWITTER)", url: "https://x.com/CSrebel" },
+            { label: "YOUTUBE", url: "https://www.youtube.com/@CommonSenseRebel" },
+            { label: "RUMBLE", url: "https://rumble.com/user/CommonRebel/reposts" },
+            { label: "INSTAGRAM", url: "https://www.instagram.com/faulkinner/" },
+            { label: "LINKEDIN", url: "https://www.linkedin.com/in/sovereignsystemsllc/" },
+            { label: "THREADS", url: "https://www.threads.com/@faulkinner" },
+            { label: "FACEBOOK", url: "https://www.facebook.com/profile.php?id=61584796418902" }
+        ];
+
+        const DOC_LINKS = [
+            { title: "DOCX // Uniparty Complicity & Elite Protection", url: "http://verticalwar.com/wp-content/uploads/2026/02/Uniparty-Complicity_-Elite-Protection-Exposed.docx" },
+            { title: "DOCX // Epstein Timeline Audit Strategy", url: "http://verticalwar.com/wp-content/uploads/2026/02/Epstein-Files_-Timeline-Audit-Strategy.docx" },
+            { title: "DOCX // Deconstructing Legal Excuses", url: "http://verticalwar.com/wp-content/uploads/2026/02/Deconstructing-Legal-Excuses-for-Sealing.docx" },
+            { title: "DOCX // Budget Bill Controversies", url: "http://verticalwar.com/wp-content/uploads/2026/02/Unearthing-Budget-Bill-Controversies.docx" },
+            { title: "DOCX // Embodied Cognition: Gut vs Screen", url: "http://verticalwar.com/wp-content/uploads/2026/02/Embodied-Cognition_-Gut-vs.-Screen.docx" }
+        ];
+
+        const TRAINING_MODULES = [
+            {
+                id: 'MOD-01',
+                title: "I. THE LEDGER",
+                subtitle: "FIRST PHASE: ECONOMIC TERROR",
+                content: [
+                    "The question echoes across the digital landscape whenever a new outrage sparks: 'Why aren't we doing anything?' The foundations of civil liberty are eroding before our eyes. And yet... the streets remain largely empty. The digital clamor fades. Apathy seems to reign.",
+                    "The answer is not laziness. The silence is by design. The inaction is the intended outcome of a meticulously constructed architecture of control.",
+                    {
+                        term: "THE RUST",
+                        definition: "A parasitic, non-sentient system of elite control. It is not a person; it is entropy weaponized. Its only function is to corrode, extract, and weaken the productive host for its own growth.",
+                        type: "RUST",
+                        image: "../../assets/images/RUST.jpeg"
+                    },
+                    "LAYER 1: THE PRISON OF ECONOMIC TERROR. The most fundamental layer of this prison is built upon economic precarity. For the vast majority of the producing class, survival is a daily struggle. Decades of stagnant wages, soaring costs of living, and the dismantling of social safety nets have created a society where financial ruin is a constant threat.",
+                    {
+                        term: "PRECARITY",
+                        definition: "The state of constant financial instability. A weapon used to ensure compliance. You cannot rebel if you are one missed paycheck away from losing your shelter.",
+                        type: "HARDWARE",
+                        image: "../../assets/images/ALGORTHM_EXTRACT.jpeg"
+                    },
+                    "In this environment, dissent becomes a luxury. Taking time off work to protest risks losing a crucial paycheck. The chains of debt and the fear of destitution are powerful instruments of social control.",
+                    {
+                        term: "POOR TAX",
+                        definition: "The specific extraction mechanisms&rdquo;overdraft fees, predatory interest, reinstatement fees&rdquo;designed to strip wealth from those with the least. A penalty for being poor.",
+                        type: "RUST",
+                        image: "../../assets/images/SYST_METRICS.jpeg"
+                    },
+                    "They call it 'inflation' or 'market forces.' We call it what it is: Extraction."
+                ],
+                quiz: {
+                    question: "Why does the Sovereign Doctrine define 'Apathy' as a constructed state rather than a personal failing?",
+                    options: [
+                        "Because people are naturally lazy.",
+                        "Because the 'Architecture of Control' (Debt/Precarity) makes dissent financially impossible for the working class.",
+                        "Because social media bores us.",
+                        "It doesn't; it blames the individual."
+                    ],
+                    correctAnswer: 1,
+                    explanation: "The silence of the citizenry is not due to lack of care, but lack of capacity. The 'Prison of Economic Terror' ensures that survival takes precedence over resistance."
+                }
+            },
+            {
+                id: 'MOD-02',
+                title: "II. THE SHATTERING",
+                subtitle: "SECOND PHASE: THE GREAT DISTRACTION",
+                content: [
+                    "For those who possess the time and emotional energy to be outraged, the Corporate State offers a meticulously crafted diversion: the 'Puppet Colosseum' of partisan politics.",
+                    "All righteous anger is deliberately channeled into the safe, predictable battleground of Left vs. Right. The media ecosystem amplifies this manufactured conflict, creating a constant state of tribal warfare.",
+                    {
+                        term: "THE GREAT DISTRACTION",
+                        definition: "The 'Killing Game' of partisan politics. The manufacture of endless, high-voltage cultural spectacles designed to blind you to the economic extraction happening behind the scenes.",
+                        type: "SOFTWARE",
+                        image: "../../assets/images/MEDIA_LENS.jpeg"
+                    },
+                    "Citizens are pitted against each other over carefully curated social issues, effectively blinding them to the unified looting being carried out by the ruling class that controls both sides of the political divide.",
+                    {
+                        term: "HORIZONTAL WAR",
+                        definition: "Fighting your neighbor over curated social issues while the machinery of The Rust extracts wealth from both of you. The trap of the Colosseum.",
+                        type: "RUST",
+                        image: "../../assets/images/DIGITAL_OVERLAYS.jpeg"
+                    },
+                    {
+                        term: "VERTICAL WAR",
+                        definition: "The true conflict. The Gears (Workers/Producers) vs The Rust (Parasitic Elites). The blocking of this realization is the entire purpose of the Great Distraction.",
+                        type: "SOVEREIGN",
+                        image: "../../assets/images/HUMAN_AS_GEAR.jpeg"
+                    },
+                    "The Strategy: Stop fighting the puppet. Find the strings. Every time you engage in Horizontal War, you are fueling the machine that enslaves you."
+                ],
+                quiz: {
+                    question: "What is the strategic purpose of the 'Puppet Colosseum' (Partisan Conflict)?",
+                    options: [
+                        "To determine the best policy for the nation.",
+                        "To channel righteous anger into a 'Horizontal War' (Neighbor vs Neighbor) so the 'Vertical' looting continues unchecked.",
+                        "To entertain the voting demographic.",
+                        "To reduce polarization."
+                    ],
+                    correctAnswer: 1,
+                    explanation: "If you are fighting your neighbor in the Horizontal War, you are too distracted to notice the Rust extracting wealth from you both in the Vertical War."
+                }
+            },
+            {
+                id: 'MOD-03',
+                title: "III. THE SALVAGE",
+                subtitle: "THIRD PHASE: THE CONSTRUCTED MIRACLE",
+                content: [
+                    "Beneath the economic anxiety and the partisan distractions lies an even more insidious form of control: the deeply ingrained belief that meaningful change is impossible.",
+                    {
+                        term: "LEARNED HELPLESSNESS",
+                        definition: "The psychological condition where a prisoner believes the door is locked even when it is open. The cultivated belief that 'nothing matters' and 'resistance is futile.'",
+                        type: "RUST",
+                        image: "../../assets/images/BIO_ENFORECEMENT.jpeg"
+                    },
+                    "Decades of witnessing grassroots movements crushed or co-opted have fostered a pervasive cynicism. The narrative is clear: the system is too big to be challenged. This 'Learned Helplessness' is not a natural state; it is a carefully cultivated psychological barrier.",
+                    "THE AWAKENING begins when the prisoners understand the architecture of their cage. But understanding is not enough. We must build.",
+                    {
+                        term: "MASTER SALVAGER",
+                        definition: "The mandate to take trauma, failure, and pain and transmute them into fuel for the rebellion. We turn every wound into a weapon.",
+                        type: "SOVEREIGN",
+                        image: "../../assets/images/GUT_FEELING_RADAR.jpeg"
+                    },
+                    {
+                        term: "THE CONSTRUCTED MIRACLE",
+                        definition: "Our core philosophy. A miracle is not something we pray for; it is something we engineer. We build parallel systems (The Phalanx) to replace the broken ones.",
+                        type: "SOVEREIGN",
+                        image: "../../assets/images/TRUST_COMPRESSED_OUTPUT.jpeg"
+                    },
+                    "We do not ask for freedom. We break the lock."
+                ],
+                quiz: {
+                    question: "How is 'Learned Helplessness' defeated in Sovereign Doctrine?",
+                    options: [
+                        "By theoretical debate.",
+                        "By waiting for the system to collapse.",
+                        "By the 'Constructed Miracle'&rdquo;proving agency through the act of building tangible alternatives.",
+                        "By voting for a third party."
+                    ],
+                    correctAnswer: 2,
+                    explanation: "Belief follows action. You break the psychological prison by proving to yourself, through construction, that you have power."
+                }
+            },
+            {
+                id: 'MOD-04',
+                title: "IV. THE WEAPON",
+                subtitle: "ADVANCED DOCTRINE: RECEIPT PROTOCOL",
+                content: [
+                    "You have the map. Now you need the weapons. The Receipt Protocol is the method of engaging the Vertical War without getting trapped in the Horizontal one.",
+                    "It relies on distinguishing two types of data: REPORT (Narrative/Noise) and RECEIPT (Fact/Hardware).",
+                    {
+                        term: "TRUTH BULLET",
+                        definition: "A single, verifiable unit of truth. A receipt. A fact that shatters a specific lie. Weaponize your memory.",
+                        type: "SOVEREIGN",
+                        image: "../../assets/images/PROCUREMENT_CONTRACTS.jpeg"
+                    },
+                    "The Media Lens creates a muddy windshield. The Receipt Protocol uses somatic data (gut feeling) as radar, and hard data (receipts) as ammunition.",
+                    {
+                        term: "THE POCKET RAZOR",
+                        definition: "A sharp, simple argument used to cut through complex nonsense. 'If they are lying about X, why trust them on Y?'",
+                        type: "SOVEREIGN",
+                        image: "../../assets/images/3-SEC_PAUSE.jpeg"
+                    },
+                    "Access the full Receipt Protocol terminal for field verification training."
+                ],
+                quiz: {
+                    question: "What is the core function of the 'Receipt Protocol'?",
+                    options: [
+                        "To win arguments on Twitter.",
+                        "To bypass the 'Report' (Narrative) and anchor reality in the 'Receipt' (Hardware/Fact).",
+                        "To create new narratives.",
+                        "To ignore the news completely."
+                    ],
+                    correctAnswer: 1,
+                    explanation: "The Protocol exists to strip away the 'Software' overlay and reveal the 'Hardware' reality of the situation."
+                }
+            }
+        ];
+
+        // --- COMPONENTS ---
+        const Button = ({ children, variant = 'primary', isLoading, className = '', ...props }) => {
+            const baseStyles = "px-6 py-3 font-mono text-sm uppercase tracking-widest transition-all duration-200 border border-transparent disabled:opacity-50 disabled:cursor-not-allowed";
+            const variants = {
+                primary: "bg-command-red text-white hover:bg-red-700 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)]",
+                secondary: "bg-transparent border-command-muted text-command-muted hover:border-command-text hover:text-command-text",
+                danger: "bg-transparent border-command-red text-command-red hover:bg-command-red hover:text-white"
+            };
+            return (
+                <button className={`${baseStyles} ${variants[variant]} ${className}`} disabled={isLoading || props.disabled} {...props}>
+                    {isLoading ? "PROCESSING..." : children}
+                </button>
+            );
+        };
+
+        const LinkButton = ({ children, href, variant = 'primary', className = '' }) => {
+            const baseStyles = "inline-block text-center px-6 py-3 font-mono text-sm uppercase tracking-widest transition-all duration-200 border border-transparent";
+            const variants = {
+                primary: "bg-command-red text-white hover:bg-red-700 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)]",
+                secondary: "bg-transparent border-command-muted text-command-muted hover:border-command-text hover:text-command-text",
+                danger: "bg-transparent border-command-red text-command-red hover:bg-command-red hover:text-white"
+            };
+            return (
+                <a href={href} target="_blank" rel="noopener noreferrer" className={`${baseStyles} ${variants[variant]} ${className}`}>
+                    {children}
+                </a>
+            );
+        };
+
+        const SystemAlert = () => {
+            // Simplified Alert for Book Context
+            const [isOpen, setIsOpen] = React.useState(true);
+
+            return (
+                <div className="w-full bg-yellow-900/10 border-b border-command-amber">
+                    <div className="max-w-6xl mx-auto">
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="w-full flex items-center justify-between p-2 text-left hover:bg-yellow-900/20 transition-colors group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="text-command-amber animate-pulse">âš </span>
+                                <span className="font-mono text-xs md:text-sm text-command-amber uppercase tracking-widest font-bold">
+                                    DOCTRINE IN DEVELOPMENT
+                                </span>
+                            </div>
+                            <span className={`text-command-amber transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                                â–¼
+                            </span>
+                        </button>
+
+                        {isOpen && (
+                            <div className="px-4 pb-4 animate-fade-in-up">
+                                <p className="text-xs text-zinc-400 font-mono leading-relaxed max-w-4xl">
+                                    <span className="text-command-amber font-bold">:: STATUS ::</span> This is the living blueprint for "The Vertical War".
+                                    <span className="block mt-2 text-zinc-500"><a href="../../cmd/access/" className="text-command-red hover:text-white hover:underline font-bold">Pre-order the book</a> to secure the complete manual.</span>
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+
+
+        // --- GLOBAL IMAGE MODAL ---
+        const ImageModal = ({ src, alt, onClose }) => {
+            if (!src) return null;
+
+            React.useEffect(() => {
+                const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+                window.addEventListener('keydown', handleEsc);
+                return () => window.removeEventListener('keydown', handleEsc);
+            }, [onClose]);
+
+            return (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-fade-in-up"
+                    onClick={onClose}
+                >
+                    <div className="absolute top-6 right-6 z-[110]">
+                        <button
+                            onClick={onClose}
+                            className="text-zinc-500 hover:text-command-red font-mono text-sm uppercase tracking-widest border border-zinc-800 hover:border-command-red px-4 py-3 transition-all bg-black"
+                        >
+                            [ Close Protocol ]
+                        </button>
+                    </div>
+
+                    <div className="relative max-w-7xl w-full flex flex-col items-center">
+                        <img
+                            src={src}
+                            alt={alt}
+                            className="max-h-[85vh] w-auto object-contain border-2 border-zinc-800 shadow-[0_0_100px_rgba(220,38,38,0.1)] bg-zinc-900"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                        <div className="mt-4 text-center">
+                            <span className="font-mono text-command-red text-sm uppercase tracking-[0.2em] bg-black px-4 py-1 border border-zinc-900">
+                            // VISUAL RECORD: {alt}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ConceptBlock = ({ data }) => {
+            const styles = {
+                HARDWARE: { border: 'border-green-500/50', text: 'text-green-400', bg: 'bg-green-900/10', label: 'text-green-500/50' },
+                SOFTWARE: { border: 'border-blue-500/50', text: 'text-blue-400', bg: 'bg-blue-900/10', label: 'text-blue-500/50' },
+                RUST: { border: 'border-orange-500/50', text: 'text-orange-400', bg: 'bg-orange-900/10', label: 'text-orange-500/50' },
+                TACTIC: { border: 'border-red-500/50', text: 'text-red-400', bg: 'bg-red-900/10', label: 'text-red-500/50' },
+                SOVEREIGN: { border: 'border-yellow-500/50', text: 'text-yellow-400', bg: 'bg-yellow-900/10', label: 'text-yellow-500/50' }
+            };
+
+            const theme = styles[data.type] || styles.RUST;
+
+            return (
+                <div className={`my-8 border-l-2 ${theme.border} ${theme.bg} p-6 rounded-r-sm backdrop-blur-sm transition-all duration-300 hover:bg-zinc-900/40 relative group`}>
+                    <div className="absolute top-0 right-0 p-2 font-mono text-[10px] uppercase tracking-widest opacity-50 select-none group-hover:opacity-100 transition-opacity">
+                        //{data.type}
+                    </div>
+                    <h3 className={`font-mono text-xl font-bold uppercase tracking-widest mb-3 ${theme.text} drop-shadow-sm`}>
+                        {data.term}
+                    </h3>
+                    {data.image && (
+                        <div className="mb-4 overflow-hidden rounded-sm border border-zinc-800">
+                            <img src={data.image} alt={data.term} className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+                        </div>
+                    )}
+                    <p className="font-sans text-zinc-300 leading-relaxed text-lg tracking-wide">
+                        {data.definition}
+                    </p>
+                </div>
+            );
+        };
+
+        const Quiz = ({ data, onComplete }) => {
+            const [selected, setSelected] = React.useState(null);
+            const [status, setStatus] = React.useState('IDLE');
+            const [attempts, setAttempts] = React.useState(0);
+            const [showHint, setShowHint] = React.useState(false);
+
+            const handleVerify = () => {
+                if (selected === null) return;
+                setAttempts(prev => prev + 1);
+
+                if (selected === data.correctAnswer) {
+                    setStatus('CORRECT');
+                } else {
+                    setStatus('WRONG');
+                    // Show hint after 2 wrong attempts
+                    if (attempts >= 1) {
+                        setShowHint(true);
+                    }
+                }
+            };
+
+            const handleNext = () => {
+                onComplete();
+                setStatus('IDLE');
+                setSelected(null);
+                setAttempts(0);
+                setShowHint(false);
+            };
+
+            const handleRetry = () => {
+                setStatus('IDLE');
+                setSelected(null);
+            };
+
+            // Generate hint based on which wrong answer was selected
+            const getHint = () => {
+                if (!showHint || selected === null) return null;
+
+                // Provide contextual hints based on the question
+                const hints = {
+                    0: "Think about the GOAL, not the method. What is the system trying to ACHIEVE?",
+                    1: "Remember: Hardware = physical reality. Software = narrative overlay. Which one is this?",
+                    2: "Ask yourself: Does this make you TRUST your experience, or doubt it?",
+                    3: "Consider: What creates COVER for real changes to happen unnoticed?"
+                };
+
+                return hints[attempts - 1] || "Re-read the module content. The answer connects to a core concept.";
+            };
+
+            // Show which wrong answers are ruled out
+            const isWrongAnswer = (idx) => {
+                return status === 'WRONG' && selected === idx;
+            };
+
+            const getAccuracyEmoji = () => {
+                if (attempts === 1) return "ðŸŽ¯"; // First try
+                if (attempts === 2) return "âœ&ldquo;";  // Second try
+                return "ðŸ&rdquo;"; // Third+ try
+            };
+
+            return (
+                <div className="mt-8 border border-zinc-800 bg-zinc-900/40 p-6 rounded-sm relative overflow-hidden group">
+                    {/* Animated border pulse on correct */}
+                    {status === 'CORRECT' && (
+                        <div className="absolute inset-0 border-2 border-green-500 animate-pulse pointer-events-none" />
+                    )}
+
+                    <div className="absolute top-0 left-0 w-1 h-full bg-command-amber transition-all duration-500"
+                        style={{ width: status === 'CORRECT' ? '4px' : '4px', backgroundColor: status === 'CORRECT' ? '#22c55e' : '#d97706' }} />
+
+                    {/* Header with attempt counter */}
+                    <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-mono text-command-amber text-xs uppercase tracking-widest">// TACTICAL CHECKPOINT</h4>
+                        {attempts > 0 && status !== 'CORRECT' && (
+                            <span className="font-mono text-[10px] text-zinc-500">
+                                ATTEMPTS: {attempts}
+                            </span>
+                        )}
+                        {status === 'CORRECT' && (
+                            <span className="font-mono text-[10px] text-green-500 flex items-center gap-1">
+                                {getAccuracyEmoji()} VERIFIED
+                            </span>
+                        )}
+                    </div>
+
+                    <p className="font-sans text-lg font-medium text-white mb-6 leading-relaxed">{data.question}</p>
+
+                    {/* Hint Display */}
+                    {showHint && status === 'WRONG' && (
+                        <div className="mb-4 p-3 border border-blue-800 bg-blue-900/10 rounded animate-fade-in-up">
+                            <div className="flex items-start gap-2">
+                                <span className="text-blue-400 text-lg flex-none">ðŸ’¡</span>
+                                <a href="../index.html"
+                                    className="font-mono text-zinc-500 hover:text-white text-xs uppercase tracking-widest transition-colors flex items-center gap-2 group">
+                                    <span className="group-hover:-translate-x-1 transition-transform">&lt;</span> RETURN TO BRIEFING
+                                </a>
+                                <div>
+                                    <span className="font-mono text-[10px] text-blue-400 uppercase tracking-widest block mb-1">PROTOCOL HINT</span>
+                                    <p className="text-sm text-zinc-300">{getHint()}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="space-y-3 mb-6">
+                        {data.options.map((option, idx) => {
+                            const isCorrect = idx === data.correctAnswer;
+                            const isSelected = selected === idx;
+                            const showAsCorrect = status === 'CORRECT' && isSelected && isCorrect;
+                            const showAsWrong = status === 'WRONG' && isSelected && !isCorrect;
+
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => {
+                                        if (status !== 'CORRECT') setSelected(idx);
+                                    }}
+                                    className={`
+                                        w-full text-left p-4 text-sm font-mono border transition-all duration-300 rounded-sm
+                                        ${isSelected ? 'ring-2 ring-offset-2 ring-offset-zinc-900' : ''}
+                                        ${!isSelected && status === 'IDLE' ? 'border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/50 hover:text-white' : ''}
+                                        ${isSelected && status === 'IDLE' ? 'border-command-text bg-zinc-800 text-white ring-command-text' : ''}
+                                        ${showAsCorrect ? 'border-green-500 bg-green-900/30 text-green-300 ring-green-500 shadow-lg shadow-green-900/20' : ''}
+                                        ${showAsWrong ? 'border-red-500 bg-red-900/30 text-red-300 ring-red-500' : ''}
+                                        ${status === 'WRONG' && !isSelected ? 'opacity-40' : ''}
+                                    `}
+                                    disabled={status === 'CORRECT'}
+                                >
+                                    <div className="flex items-start gap-3">
+                                        <span className={`font-bold opacity-50 flex-none ${showAsCorrect ? 'opacity-100' : ''}`}>
+                                            [{String.fromCharCode(65 + idx)}]
+                                        </span>
+                                        <span className="flex-1">{option}</span>
+                                        {showAsCorrect && <span className="text-green-400 animate-pulse">âœ&ldquo;</span>}
+                                        {showAsWrong && <span className="text-red-400">âœ—</span>}
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex-1">
+                            {status === 'WRONG' && (
+                                <div className="space-y-1">
+                                    <span className="text-red-500 font-mono text-xs animate-pulse flex items-center gap-2">
+                                        âš  INCORRECT PROTOCOL
+                                    </span>
+                                    <p className="text-xs text-zinc-500">
+                                        Review the core concepts and try again
+                                    </p>
+                                </div>
+                            )}
+                            {status === 'CORRECT' && (
+                                <span className="text-green-500 font-mono text-xs flex items-center gap-2">
+                                    âœ&ldquo; DECRYPTION SUCCESSFUL
+                                    {attempts === 1 && <span className="text-green-400 text-[10px] border border-green-800 px-2 py-0.5 rounded">FIRST TRY</span>}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2">
+                            {status === 'WRONG' && (
+                                <Button onClick={handleRetry} variant="secondary" className="text-xs">
+                                    TRY AGAIN
+                                </Button>
+                            )}
+                            {status !== 'CORRECT' && (
+                                <Button
+                                    onClick={handleVerify}
+                                    disabled={selected === null}
+                                    variant="secondary"
+                                    className={selected !== null ? 'shadow-lg shadow-command-amber/20' : ''}
+                                >
+                                    VERIFY
+                                </Button>
+                            )}
+                            {status === 'CORRECT' && (
+                                <Button
+                                    onClick={handleNext}
+                                    className="animate-pulse-slow shadow-lg shadow-green-900/30"
+                                >
+                                    PROCEED &gt;&gt;
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Explanation - Enhanced */}
+                    {status === 'CORRECT' && (
+                        <div className="mt-6 pt-4 border-t border-green-800 animate-fade-in-up">
+                            <div className="bg-green-900/10 border-l-2 border-green-500 p-4 rounded-sm">
+                                <span className="text-green-400 font-mono text-xs uppercase block mb-2 flex items-center gap-2">
+                                    ðŸ&ldquo;– DOCTRINE NOTE
+                                </span>
+                                <p className="text-zinc-300 text-sm font-sans leading-relaxed">
+                                    {data.explanation}
+                                </p>
+                            </div>
+
+                            {/* Educational Takeaway */}
+                            <div className="mt-4 p-3 bg-zinc-900/50 border border-zinc-800 rounded-sm">
+                                <span className="text-command-amber font-mono text-[10px] uppercase tracking-widest block mb-2">
+                                    âš¡ KEY TAKEAWAY
+                                </span>
+                                <p className="text-xs text-zinc-400 leading-relaxed">
+                                    {data.takeaway || "This skill helps you distinguish between narratives (Software) and evidence (Hardware) - the core of media literacy."}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const TacticalLexicon = ({ onOpenModal }) => {
+            // Custom Slugs/IDs mapping
+            const TYPE_SLUGS = {
+                RUST: 'entropy-rust',
+                SOFTWARE: 'narrative-software',
+                HARDWARE: 'physical-hardware',
+                TACTIC: 'doctrine-tactics'
+            };
+
+            // Flatten definitions from all modules
+            const allDefinitions = React.useMemo(() => {
+                return TRAINING_MODULES.flatMap(mod =>
+                    mod.content.filter(item => typeof item === 'object' && item.term)
+                );
+            }, []);
+
+            // Group definitions by type (Archetype)
+            const definitionsByType = React.useMemo(() => {
+                const groups = {};
+                allDefinitions.forEach(def => {
+                    const type = def.type || 'UNCATEGORIZED';
+                    if (!groups[type]) groups[type] = [];
+                    groups[type].push(def);
+                });
+                return groups;
+            }, [allDefinitions]);
+
+            // Specific order for display
+            const typeOrder = ['RUST', 'SOFTWARE', 'HARDWARE', 'TACTIC'];
+
+            const scrollToArchetype = (slug) => {
+                const element = document.getElementById(slug);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+
+            return (
+                <div className="max-w-6xl mx-auto pb-20">
+                    <div className="mb-8 border-b border-zinc-800 pb-8">
+                        <h1 className="font-mono text-2xl md:text-3xl font-black uppercase text-command-text tracking-tighter">TACTICAL LEXICON</h1>
+                        <p className="font-mono text-command-red text-xs uppercase tracking-widest mt-1">VISUAL DATABASE // ARCHETYPE LIBRARY</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-12 sticky top-16 z-30 bg-command-black/95 backdrop-blur py-4 border-b border-zinc-800/50">
+                        <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest py-1 mr-2 self-center hidden sm:block">QUICK JUMP ::</span>
+                        {typeOrder.map(type => {
+                            const count = definitionsByType[type] ? definitionsByType[type].length : 0;
+                            if (count === 0) return null;
+
+                            const slug = TYPE_SLUGS[type];
+                            const btnStyles =
+                                type === 'RUST' ? 'border-command-amber text-command-amber hover:bg-command-amber/10' :
+                                    type === 'SOFTWARE' ? 'border-blue-800 text-blue-500 hover:bg-blue-900/10' :
+                                        type === 'HARDWARE' ? 'border-green-800 text-green-500 hover:bg-green-900/10' :
+                                            'border-command-red text-command-red hover:bg-command-red/10';
+
+                            return (
+                                <button
+                                    key={type}
+                                    onClick={() => scrollToArchetype(slug)}
+                                    className={`font-mono text-[10px] md:text-xs uppercase px-3 py-1 border transition-all rounded-sm ${btnStyles}`}
+                                >
+                                    {type} <span className="opacity-50 ml-1">[{count}]</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {typeOrder.map(type => {
+                        const items = definitionsByType[type];
+                        if (!items || items.length === 0) return null;
+                        const slug = TYPE_SLUGS[type];
+
+                        // Header styling based on archetype
+                        const typeColors = {
+                            HARDWARE: 'text-green-500 border-green-900',
+                            SOFTWARE: 'text-blue-500 border-blue-900',
+                            RUST: 'text-command-amber border-yellow-900',
+                            TACTIC: 'text-command-red border-red-900'
+                        };
+                        const colorClass = typeColors[type] || 'text-zinc-500 border-zinc-800';
+
+                        return (
+                            <div key={type} id={slug} className="mb-16 scroll-mt-36 animate-fade-in-up">
+                                <div className={`flex items-center gap-4 mb-6 pb-2 border-b ${colorClass.split(' ')[1]}`}>
+                                    <h2 className={`font-mono text-xl font-bold uppercase tracking-widest ${colorClass.split(' ')[0]}`}>// {type} ARCHETYPE</h2>
+                                    <div className="flex-grow bg-zinc-900/50 h-px"></div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {items.map((def, idx) => (
+                                        <div key={idx} className="h-full">
+                                            <ConceptBlock
+                                                data={def}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        };
+
+
+
+        const WarChest = () => {
+            return (
+                <div className="max-w-4xl mx-auto animate-fade-in-up">
+                    <h1 className="font-mono text-3xl font-black uppercase tracking-tighter mb-8">
+                        <span className="text-command-red">WAR CHEST</span> // ASSETS
+                    </h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <section>
+                            <h3 className="font-mono text-command-amber text-xs uppercase tracking-widest mb-4 border-b border-zinc-800 pb-2">OPERATIONAL DOCUMENTS</h3>
+                            <div className="space-y-4">
+                                {DOC_LINKS.map((doc, idx) => (
+                                    <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" className="block p-4 border border-zinc-800 hover:border-command-amber bg-zinc-900/50 hover:bg-zinc-900 transition-all group">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-zinc-500 group-hover:text-command-amber">ðŸ&ldquo;„</span>
+                                            <span className="font-mono text-xs md:text-sm text-zinc-300 group-hover:text-white transition-colors">{doc.title}</span>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        </section>
+                        <section>
+                            <h3 className="font-mono text-blue-500 text-xs uppercase tracking-widest mb-4 border-b border-zinc-800 pb-2">COMMUNICATION & SUPPORT</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                {SOCIAL_LINKS.map((link, idx) => (
+                                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="p-3 border border-zinc-800 hover:border-blue-500 text-center hover:bg-blue-900/10 transition-all">
+                                        <div className="font-mono text-xs text-zinc-400 hover:text-blue-400">{link.label}</div>
+                                    </a>
+                                ))}
+                                <a href="https://constructamiracle.com/" target="_blank" rel="noopener noreferrer" className="p-3 border border-command-red hover:bg-red-900/20 text-center transition-all col-span-2">
+                                    <div className="font-mono text-xs text-command-red font-bold">SUBSCRIBE ON SUBSTACK</div>
+                                </a>
+                                <a href="https://buymeacoffee.com/commonsenserebel" target="_blank" rel="noopener noreferrer" className="p-3 border border-yellow-600 hover:bg-yellow-900/20 text-center transition-all col-span-2">
+                                    <div className="font-mono text-xs text-yellow-500 font-bold">BUY WAR BONDS (COFFEE)</div>
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+                    <div className="mt-12 p-8 border border-command-red/30 bg-red-900/5 text-center">
+                        <h3 className="font-mono text-command-red text-lg font-bold mb-4">JOIN THE PHALANX</h3>
+                        <p className="text-zinc-400 text-sm mb-6 max-w-lg mx-auto">Access to the full Sovereign Systems toolset requires clearance. Join the network to receive mission updates.</p>
+                        <a href="http://verticalwar.com/register" target="_blank" rel="noopener noreferrer" className="inline-block text-center px-6 py-2 font-mono text-sm uppercase tracking-widest transition-all duration-200 border border-transparent bg-command-red text-white hover:bg-red-700 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)]">INITIATE CLEARANCE</a>
+                    </div>
+                </div>
+            );
+        };
+
+        const TrainingInterface = ({ onOpenModal }) => {
+            const [activeModuleIndex, setActiveModuleIndex] = React.useState(0);
+            const [completedModules, setCompletedModules] = React.useState([]);
+
+            React.useEffect(() => {
+                const root = document.getElementById('sovereign-systems-root');
+                if (root) root.scrollIntoView({ behavior: 'smooth' });
+            }, [activeModuleIndex]);
+
+            const handleModuleComplete = (index) => {
+                if (!completedModules.includes(index)) { setCompletedModules([...completedModules, index]); }
+                if (index + 1 < TRAINING_MODULES.length) { setActiveModuleIndex(index + 1); }
+            };
+            const progress = Math.round((completedModules.length / TRAINING_MODULES.length) * 100);
+
+            return (
+                <div className="max-w-4xl mx-auto pb-20">
+                    <div className="mb-12 border-b border-zinc-800 pb-8">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+                            <div>
+                                <h1 className="font-mono text-2xl md:text-3xl font-black uppercase text-command-text tracking-tighter">Training Interface</h1>
+                                <p className="font-mono text-command-red text-xs uppercase tracking-widest mt-1">Module {activeModuleIndex + 1} of {TRAINING_MODULES.length} // Phase I</p>
+                            </div>
+                            <div className="text-right"><div className="font-mono text-xs text-zinc-500 mb-1">CERTIFICATION PROGRESS</div><div className="text-command-amber font-mono font-bold text-xl">{progress}%</div></div>
+                        </div>
+                        <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden flex gap-0.5">
+                            {TRAINING_MODULES.map((_, idx) => (
+                                <div key={idx} className={`h-full flex-1 transition-all duration-500 ${idx < completedModules.length ? 'bg-command-amber' : idx === activeModuleIndex ? 'bg-zinc-600 animate-pulse' : 'bg-zinc-800'}`} />
+                            ))}
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div className="lg:col-span-3 space-y-2">
+                            {TRAINING_MODULES.map((mod, idx) => {
+                                const isLocked = idx > completedModules.length && idx !== activeModuleIndex;
+                                const isCompleted = completedModules.includes(idx);
+                                const isActive = idx === activeModuleIndex;
+                                return (
+                                    <button key={mod.id} onClick={() => !isLocked && setActiveModuleIndex(idx)} disabled={isLocked}
+                                        className={`w-full text-left p-3 text-xs font-mono border-l-2 transition-all duration-200 ${isActive ? 'border-command-red bg-zinc-900 text-white' : isCompleted ? 'border-command-amber text-zinc-400 hover:text-zinc-200' : 'border-zinc-800 text-zinc-700 cursor-not-allowed'}`}>
+                                        <div className="flex justify-between items-center"><span>{mod.id}</span>{isCompleted && <span>âœ&ldquo;</span>}{isLocked && <span>ðŸ&rdquo;’</span>}</div>
+                                        <div className={`mt-1 font-bold truncate ${isLocked ? 'blur-[2px]' : ''}`}>{mod.subtitle}</div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <div className="lg:col-span-9 min-h-[500px]">
+                            {TRAINING_MODULES.map((module, idx) => {
+                                if (idx !== activeModuleIndex) return null;
+                                const isLastModule = idx === TRAINING_MODULES.length - 1;
+                                return (
+                                    <div key={module.id} className="animate-fade-in-up">
+                                        <div className="border border-zinc-800 bg-black p-8 relative">
+                                            <div className="flex justify-between items-start mb-8 border-b border-zinc-900 pb-4 flex-col md:flex-row gap-4">
+                                                <div><h2 className="font-mono text-2xl font-bold text-white uppercase mb-2">{module.title}</h2><span className="inline-block bg-zinc-900 text-zinc-500 text-[10px] px-2 py-1 font-mono uppercase tracking-widest rounded">{module.subtitle}</span></div>
+                                                <div className="hidden md:block"><div className="w-16 h-16 border border-zinc-800 flex items-center justify-center"><span className="font-mono text-zinc-700 text-xs">SSC-IMG</span></div></div>
+                                            </div>
+                                            <div className="prose prose-invert prose-p:text-zinc-300 prose-p:leading-8 prose-p:text-lg prose-p:tracking-wide max-w-none mb-12">
+                                                {module.content.map((block, bIdx) => {
+                                                    if (typeof block === 'string') { return <p key={bIdx} className="mb-6">{block}</p>; }
+                                                    else { return <ConceptBlock key={bIdx} data={block} />; }
+                                                })}
+                                            </div>
+                                            {module.quiz ? <Quiz data={module.quiz} onComplete={() => handleModuleComplete(idx)} /> : <div className="mt-8 flex justify-center"><button onClick={() => handleModuleComplete(idx)} className="bg-command-red text-white px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-red-700">ACKNOWLEDGE PROTOCOL</button></div>}
+                                            {isLastModule && completedModules.includes(idx) && (
+                                                <div className="mt-12 p-6 border border-green-900 bg-green-900/10 text-center animate-pulse-slow"><h3 className="text-green-500 font-mono text-lg font-bold mb-2">TRAINING COMPLETE</h3><p className="text-zinc-400 text-sm">You are now authorized for Field Operations.</p></div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [view, setView] = React.useState(ViewState.TRAINING);
+            const [modalImage, setModalImage] = React.useState(null);
+
+            React.useEffect(() => {
+                const handleHashChange = () => {
+                    const hash = window.location.hash.slice(1);
+                    if (!hash) return;
+
+                    if (hash === 'training') setView(ViewState.TRAINING);
+                    else if (hash === 'war-chest') setView(ViewState.WAR_CHEST);
+                    else if (hash === 'lexicon') setView(ViewState.LEXICON);
+                    else if (['entropy-rust', 'narrative-software', 'physical-hardware', 'doctrine-tactics'].includes(hash)) {
+                        setView(ViewState.LEXICON);
+                        setTimeout(() => {
+                            const el = document.getElementById(hash);
+                            if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                    }
+                };
+
+                window.addEventListener('hashchange', handleHashChange);
+                handleHashChange(); // Check on initial load
+
+                return () => window.removeEventListener('hashchange', handleHashChange);
+            }, []);
+
+            const handleNav = (newView, hash) => {
+                setView(newView);
+                window.location.hash = hash;
+            };
+
+            const openModal = (src, alt) => {
+                setModalImage({ src, alt });
+            };
+
+            return (
+                <div className="min-h-screen bg-command-black text-command-text font-sans flex flex-col w-full overflow-hidden">
+                    {modalImage && <ImageModal src={modalImage.src} alt={modalImage.alt} onClose={() => setModalImage(null)} />}
+
+                    <SystemAlert />
+                    <header className="sticky top-0 z-50 bg-command-black/90 backdrop-blur-sm border-b border-zinc-800 w-full">
+                        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                            <a href="../../" className="flex items-center gap-2 group shrink-0">
+                                <div className="w-3 h-3 bg-command-red animate-pulse group-hover:shadow-[0_0_10px_red] transition-all" />
+                                <span className="font-mono font-bold tracking-tighter text-xs md:text-lg group-hover:text-white transition-colors">SOVEREIGN<span className="text-zinc-500 group-hover:text-zinc-300">SYSTEMS</span></span>
+                            </a>
+                            <nav className="hidden md:flex items-center gap-4 font-mono text-xs tracking-widest">
+                                <a href="../receipt-protocol/" className="flex items-center gap-2 text-zinc-500 hover:text-white cursor-pointer uppercase transition-colors"><span>[ 01 ]</span> TRAINING</a>
+                                <button onClick={() => handleNav(ViewState.WAR_CHEST, 'war-chest')} className={`flex items-center gap-2 ${view === ViewState.WAR_CHEST ? 'text-command-red cursor-default' : 'text-zinc-600 hover:text-white cursor-pointer'} uppercase transition-colors`}><span>[ 02 ]</span> WAR CHEST</button>
+                                <a href="../lexicon/" className="flex items-center gap-2 text-zinc-500 hover:text-white cursor-pointer uppercase transition-colors"><span>[ 03 ]</span> LEXICON</a>
+                                <div className="h-4 w-px bg-zinc-800 mx-1"></div>
+                                {/* Login/Reg Removed per Doctrine */}
+                            </nav>
+                            <div className="md:hidden"><span className="font-mono text-[10px] text-command-red animate-pulse">:: ONLINE ::</span></div>
+                        </div>
+                        <div className="md:hidden flex justify-start border-t border-zinc-900 py-3 bg-zinc-950 font-mono text-[10px] tracking-widest overflow-x-auto no-scrollbar space-x-6 px-4 w-full">
+                            <button onClick={() => handleNav(ViewState.TRAINING, 'training')} className={`whitespace-nowrap ${view === ViewState.TRAINING ? 'text-white border-b border-command-red' : 'text-zinc-600'}`}>TRAINING</button>
+                            <button onClick={() => handleNav(ViewState.WAR_CHEST, 'war-chest')} className={`whitespace-nowrap ${view === ViewState.WAR_CHEST ? 'text-white border-b border-command-red' : 'text-zinc-600'}`}>WAR CHEST</button>
+                            <button onClick={() => handleNav(ViewState.LEXICON, 'lexicon')} className={`whitespace-nowrap ${view === ViewState.LEXICON ? 'text-white border-b border-command-red' : 'text-zinc-600'}`}>LEXICON</button>
+                        </div>
+                    </header>
+
+                    <main className="flex-grow px-4 py-8 md:py-12 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] w-full">
+                        {view === ViewState.TRAINING && <TrainingInterface onOpenModal={openModal} />}
+                        {view === ViewState.WAR_CHEST && <WarChest />}
+                        {view === ViewState.LEXICON && <TacticalLexicon onOpenModal={openModal} />}
+                    </main>
+                    <footer className="border-t border-zinc-900 py-8 bg-zinc-950 w-full"><div className="max-w-5xl mx-auto px-4 text-center"><p className="font-mono text-xs text-zinc-600 mb-2">SOVEREIGN SYSTEMS COMMAND // OPERATOR: ETHAN</p><p className="font-mono text-[10px] text-zinc-800 uppercase tracking-widest">Training simulation active.</p></div></footer>
+                </div>
+            );
+        };
+
+
+        // --- MOUNT PROTOCOL (IGNITION SEQUENCE) ---
+        const initSovereignSystem = () => {
+            const rootElement = document.getElementById('sovereign-systems-root');
+            // Check if target exists and isn't already loaded
+            if (rootElement && !rootElement._reactRootContainer) {
+                console.log("System Status: Target Acquired. Initializing Core...");
+                const root = ReactDOM.createRoot(rootElement);
+                root._reactRootContainer = root; // Mark as loaded
+                root.render(<App />);
+            } else {
+                // If target missing, retry in 100ms
+                console.log("System Status: Target Missing. Retrying...");
+                setTimeout(initSovereignSystem, 100);
+            }
+        };
+
+        // Start the Sequence
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSovereignSystem);
+        } else {
+            initSovereignSystem();
+        }
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+

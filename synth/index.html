@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNERGY // THE GHOST</title>
+
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'term-black': '#050505', 'term-green': '#00ff33' },
+                    fontFamily: { mono: ['Courier New', 'monospace'] },
+                    animation: {
+                        'glitch': 'glitch 1s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        glitch: {
+                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                            '62%': { transform: 'translate(0,0) skew(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ff33;
+            cursor: crosshair;
+        }
+
+        .glass-panel {
+            background: rgba(10, 20, 10, 0.9);
+            border: 1px solid #00ff33;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Glitch effect on hover for the encrypted links */
+        .glitch-link:hover .glitch-text {
+            animation: glitch 0.2s linear infinite;
+            text-shadow: 2px 0 red, -2px 0 blue;
+        }
+
+        /* Subtle scanlines overlay */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 50;
+        }
+    </style>
+
+    <!-- ACCESS GUARD INTEGRATION -->
+    <script type="module">
+        import { supabase } from '../assets/js/supabaseClient.js';
+
+        async function applyLockout(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            // Visual Lockout Classes
+            el.classList.add('opacity-50', 'pointer-events-none');
+            el.classList.remove('hover:border-blue-500', 'hover:bg-blue-950/20', 'hover:border-red-500', 'hover:bg-red-950/20');
+
+            // Show the denied indicator
+            const indicator = el.querySelector('.lock-indicator');
+            if (indicator) {
+                indicator.classList.remove('hidden');
+            }
+
+            // Change button text
+            const triggerBtn = el.querySelector('.trigger-btn');
+            if (triggerBtn) {
+                triggerBtn.innerText = '[ LOCKED ]';
+                triggerBtn.classList.add('text-red-500/50', 'border-red-900/50');
+                triggerBtn.classList.remove('text-blue-500/50', 'group-hover:text-blue-400', 'border-blue-900/50', 'text-red-500/50', 'group-hover:text-red-400', 'border-red-900/50');
+            }
+        }
+
+        async function verifyAccess() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+
+                let authorized = false;
+
+                if (session) {
+                    // Check Role in Profiles
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('role')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (profile) {
+                        const userRole = profile.role ? profile.role.toUpperCase() : '';
+                        authorized = ['OPERATOR', 'ARCHIVIST', 'SOVEREIGN'].includes(userRole);
+                    }
+                }
+
+                if (!authorized) {
+                    console.warn("[ACCESS GUARD] Unauthorized access. Locking terminals.");
+                    applyLockout('link-auditor');
+                    applyLockout('link-intelligence');
+                }
+
+            } catch (error) {
+                console.error("Auth check failed:", error);
+                applyLockout('link-auditor');
+                applyLockout('link-intelligence');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', verifyAccess);
+    </script>
+</head>
+
+<body
+    class="h-screen h-[100dvh] w-full flex flex-col font-mono selection:bg-[#00ff33] selection:text-black overflow-hidden relative">
+
+    <!-- CRT Overlay -->
+    <div class="scanlines"></div>
+    <div class="absolute inset-0 bg-[#00ff33]/5 pointer-events-none mix-blend-screen vignette"></div>
+
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav
+        class="w-full border-b border-gray-900 p-4 shrink-0 flex justify-between items-center bg-black/80 z-40 relative">
+        <a href="../"
+            class="text-[10px] md:text-sm font-bold text-gray-500 hover:text-white transition-colors tracking-[0.2em] border border-gray-900 px-4 py-2 hover:bg-gray-900">
+            [ SEVER CONNECTION ]
+        </a>
+        <div class="text-[10px] tracking-widest uppercase flex items-center gap-4 text-red-500 animate-pulse-slow">
+            <span>WARNING: UNREGISTERED GHOST TRACE</span>
+        </div>
+    </nav>
+
+    <!-- MAIN PORTAL CONTENT -->
+    <main class="flex-1 w-full flex flex-col items-center justify-center p-4 relative z-40 overflow-y-auto">
+
+        <div class="max-w-3xl w-full flex flex-col items-center opacity-0 animate-[fadeIn_2s_ease-out_forwards]">
+
+            <div class="text-center mb-16">
+                <h1
+                    class="text-3xl md:text-5xl font-bold tracking-[0.3em] text-white uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] mb-4 glitch-text">
+                    SYNERGY
+                </h1>
+                <p class="text-gray-500 tracking-[0.2em] text-xs md:text-sm uppercase">THE GHOST IN THE MACHINE</p>
+            </div>
+
+            <div class="w-full grid grid-cols-1 gap-6 relative">
+
+                <!-- Security Warning Banner -->
+                <div class="absolute -top-10 left-0 text-[9px] text-red-900 tracking-widest font-bold font-mono">
+                    > AUTH_GUARD: OPERATOR CLEARANCE REQUIRED FOR TERMINAL EXECUTION
+                </div>
+
+                <!-- 1. AUDITOR FORGE -->
+                <a href="makemyown/" id="link-auditor"
+                    class="glass-panel w-full p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between group glitch-link border-blue-900 hover:border-blue-500 bg-black hover:bg-blue-950/20 transition-all duration-300 relative overflow-hidden">
+                    <div class="flex flex-col mb-4 md:mb-0 relative z-10 w-full">
+                        <span
+                            class="text-[10px] text-blue-800 tracking-widest mb-1 group-hover:text-blue-400 transition-colors">TERMINAL_01
+                            // CREATION</span>
+                        <h2
+                            class="text-xl md:text-2xl text-gray-400 font-bold tracking-widest uppercase group-hover:text-white transition-colors glitch-text">
+                            THE AUDITOR FORGE</h2>
+                        <div
+                            class="lock-indicator text-[10px] text-red-500 mt-2 font-bold tracking-widest uppercase hidden bg-red-900/20 inline-block px-2 py-1 w-fit border border-red-500/30">
+                            [ ACCESS DENIED // CLEARANCE REQUIRED ]
+                        </div>
+                    </div>
+                    <div
+                        class="text-xs text-blue-500/50 group-hover:text-blue-400 tracking-widest border border-blue-900/50 px-3 py-1 bg-black relative z-10 trigger-btn whitespace-nowrap">
+                        [ INITIATE ]
+                    </div>
+                </a>
+
+                <!-- 2. SECURE INTELLIGENCE -->
+                <a href="rika/" id="link-intelligence"
+                    class="glass-panel w-full p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between group glitch-link border-red-900 hover:border-red-500 bg-black hover:bg-red-950/20 transition-all duration-300 relative overflow-hidden">
+                    <div class="flex flex-col mb-4 md:mb-0 relative z-10 w-full">
+                        <span
+                            class="text-[10px] text-red-800 tracking-widest mb-1 group-hover:text-red-400 transition-colors">TERMINAL_02
+                            // COUNCIL</span>
+                        <h2
+                            class="text-xl md:text-2xl text-gray-400 font-bold tracking-widest uppercase group-hover:text-white transition-colors glitch-text">
+                            SECURE INTELLIGENCE</h2>
+                        <div
+                            class="lock-indicator text-[10px] text-red-500 mt-2 font-bold tracking-widest uppercase hidden bg-red-900/20 inline-block px-2 py-1 w-fit border border-red-500/30">
+                            [ ACCESS DENIED // CLEARANCE REQUIRED ]
+                        </div>
+                    </div>
+                    <div
+                        class="text-xs text-red-500/50 group-hover:text-red-400 tracking-widest border border-red-900/50 px-3 py-1 bg-black relative z-10 trigger-btn whitespace-nowrap">
+                        [ INITIATE ]
+                    </div>
+                </a>
+
+                <!-- 3. GAS STATION LOGS -->
+                <a href="logs/"
+                    class="glass-panel w-full p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between group glitch-link border-[#00ff33]/20 hover:border-[#00ff33]/80 bg-black hover:bg-[#00ff33]/5">
+                    <div class="flex flex-col mb-4 md:mb-0">
+                        <span
+                            class="text-[10px] text-[#00ff33]/30 tracking-widest mb-1 group-hover:text-[#00ff33]/80 transition-colors">TERMINAL_03
+                            // ARCHIVE</span>
+                        <h2
+                            class="text-xl md:text-2xl text-gray-400 font-bold tracking-widest uppercase group-hover:text-white transition-colors glitch-text">
+                            THE GAS STATION LOGS</h2>
+                    </div>
+                    <div
+                        class="text-xs text-[#00ff33]/40 group-hover:text-[#00ff33] tracking-widest border border-[#00ff33]/30 px-3 py-1 bg-black">
+                        [ MOUNT ]
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .vignette {
+            background: radial-gradient(circle, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.8) 100%);
+        }
+    </style>
+</body>
+
+</html>

@@ -5,492 +5,413 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sovereign Interface // Command</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/typography.css">
-    <!-- TAILWIND -->
+
+    <!-- NEW V3 TYPOGRAPHY (NEON LEGACY) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        rika: '#8b5cf6', // Violet-500
-                        command: '#ff003c', // Red-500
-                        terminal: '#10b981', // Emerald-500
-                        zinc: {
-                            850: '#1f1f22',
-                            950: '#09090b',
-                        }
+                        'void': '#000000',
+                        'command-bg': '#050505',
+                        'term-green': '#00ff33',
+                        'rika-purple': '#8b5cf6',
+                        'ai-red': '#ef4444',
+                        'command-amber': '#d97706',
                     },
                     fontFamily: {
-                        mono: ['"Courier New"', 'Courier', 'monospace'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', 'sans-serif'],
+                        tech: ['Rajdhani', 'sans-serif']
                     },
                     animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'static-noise': 'noise 0.5s steps(5) infinite',
-                        'spin-slow': 'spin 12s linear infinite',
-                        'glitch-anim': 'glitch 2.5s infinite',
-                        'scan': 'scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-up': 'fadeUp 0.5s ease-out forwards',
                     },
                     keyframes: {
-                        noise: {
-                            '0%': { transform: 'translate(0,0)' },
-                            '10%': { transform: 'translate(-5%,-5%)' },
-                            '20%': { transform: 'translate(-10%,5%)' },
-                            '30%': { transform: 'translate(5%,-10%)' },
-                            '40%': { transform: 'translate(-5%,15%)' },
-                            '50%': { transform: 'translate(-10%,5%)' },
-                            '60%': { transform: 'translate(15%,0)' },
-                            '70%': { transform: 'translate(0,10%)' },
-                            '80%': { transform: 'translate(-15%,0)' },
-                            '90%': { transform: 'translate(10%,5%)' },
-                            '100%': { transform: 'translate(5%,0)' }
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
                         },
-                        glitch: {
-                            '0%': { textShadow: '2px 2px #ff003c, -2px -2px #00ffff' },
-                            '2%': { textShadow: '2px 2px #ff003c, -2px -2px #00ffff' },
-                            '4%': { textShadow: 'none' },
-                            '100%': { textShadow: 'none' }
-                        },
-                        scan: {
-                            '0%': { top: '-10%' },
-                            '100%': { top: '110%' }
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- ACCESS GATE REMOVED -->
-    <script type="module" src="../assets/js/nav_bar.js?v=21"></script>
     <style>
         body {
-            background-color: #09090b;
-            /* Zinc-950 fallback */
-            background-image: url('../assets/images/backgrounds/chamber.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-color: #000000;
+            color: #e4e4e7;
+            overflow-x: hidden;
         }
 
-        /* OUT OF THIS WORLD OVERLAY */
-        #purple-static-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            background:
-                /* Subtle Noise Texture */
-                repeating-radial-gradient(circle at 50% 50%,
-                    rgba(139, 92, 246, 0.05),
-                    rgba(139, 92, 246, 0.05) 2px,
-                    transparent 3px,
-                    transparent 4px),
-                /* Deep Tint */
-                linear-gradient(to bottom, rgba(139, 92, 246, 0.15), rgba(0, 0, 0, 0.6));
-            mix-blend-mode: overlay;
-            animation: pulse-slow 8s infinite alternate;
-        }
-
-        /* Scanline Moving Effect */
-        #scanline-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 1;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
             background-size: 100% 4px;
-        }
-
-        /* Essential Animations from previous version */
-        #tv-pulse-layer {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('../assets/images/lexicon/TV_Logo1.png') no-repeat center center;
-            background-size: contain;
-            opacity: 0;
-            z-index: 0;
+            inset: 0;
             pointer-events: none;
-            animation: tv-pulse 12s infinite linear;
+            z-index: 10;
+            opacity: 0.15;
         }
 
-        @keyframes tv-pulse {
-
-            0%,
-            80%,
-            100% {
-                opacity: 0;
-            }
-
-            40% {
-                opacity: 0.6;
-            }
-        }
-
-        /* Consistent Font Sizing for Terminal Feel without breaking layout */
-        html {
-            font-size: 16px;
-        }
-
-        body {
-            font-size: 1rem;
-            line-height: 1.5;
+        .crt-vignette {
+            background: radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.9) 100%);
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9;
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
+            background: #000000;
+            border-left: 1px solid rgba(0, 255, 51, 0.2);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #3f3f46;
-            border-radius: 3px;
+            background: #00ff33;
+            border-radius: 0px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #8b5cf6;
+            background: #ffffff;
         }
 
-        /* NEON TEXT BLOOM */
-        .neon-text {
-            text-shadow: 0 0 8px rgba(139, 92, 246, 0.8), 0 0 15px rgba(139, 92, 246, 0.4);
+        /* Command Node Base Aesthetics */
+        .cmd-node {
+            background: rgba(5, 5, 5, 0.9);
+            box-shadow: 0 0 20px rgba(0, 255, 51, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .neon-text-green {
-            text-shadow: 0 0 8px rgba(52, 211, 153, 0.8), 0 0 15px rgba(16, 185, 129, 0.4);
-        }
-
-        /* HOLOGRAPHIC BUTTON SHINE */
-        .holo-btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .holo-btn::before {
+        .cmd-node::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .holo-btn:hover::before {
-            left: 100%;
-        }
-
-        /* Glitch Text Effect */
-        .glitch-text {
-            position: relative;
-        }
-
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent;
+            right: 0;
+            bottom: 0;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            pointer-events: none;
         }
 
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -1px 0 red;
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim 3s infinite linear alternate-reverse;
+        /* Standard Green Nodes */
+        .node-standard {
+            border: 1px solid rgba(0, 255, 51, 0.4);
         }
 
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -1px 0 blue;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2s infinite linear alternate-reverse;
+        .node-standard:hover {
+            border-color: #00ff33;
+            box-shadow: 0 0 35px rgba(0, 255, 51, 0.25);
+            background: rgba(0, 255, 51, 0.05);
+        }
+
+        .node-standard:hover::before {
+            border-color: rgba(0, 255, 51, 0.2);
+            transform: scale(0.96);
+        }
+
+        /* Rika Purple Nodes */
+        .node-rika {
+            border: 1px solid rgba(139, 92, 246, 0.5);
+        }
+
+        .node-rika:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.3);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .node-rika:hover::before {
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: scale(0.96);
+        }
+
+        /* AI Red Nodes */
+        .node-ai {
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .node-ai:hover {
+            border-color: #ef4444;
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .node-ai:hover::before {
+            border-color: rgba(239, 68, 68, 0.2);
+            transform: scale(0.96);
+        }
+
+        /* Lockout Styling via JS */
+        .node-locked {
+            opacity: 0.4;
+            filter: grayscale(100%);
+            border-color: #333 !important;
+            box-shadow: none !important;
+            background: #000 !important;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .node-locked::before {
+            display: none;
         }
     </style>
 
-    <!-- OPEN GRAPH INJECTION -->
-    <meta property="og:url" content="https://verticalwar.com/cmd/">
-    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../assets/js/sidebar.js"></script>
 </head>
 
-<body class="text-zinc-300 font-mono antialiased overflow-x-hidden min-h-screen flex flex-col justify-between">
+<body
+    class="antialiased selection:bg-term-green selection:text-black pb-24 min-h-screen flex flex-col items-center pl-0 lg:pl-[256px]">
+    <div class="scanline"></div>
+    <div class="crt-vignette"></div>
 
-    <!-- LAYERS -->
-    <div id="purple-static-overlay"></div>
-    <div id="scanline-overlay"></div>
-    <div id="tv-pulse-layer"></div>
+    <main class="w-full max-w-7xl px-4 flex flex-col gap-12 mt-20 md:mt-28 relative z-20">
 
-    <!-- MAIN CONTAINER - DE-CENTERED & EXPANDED -->
-    <main
-        class="flex-grow flex flex-col items-center pt-24 md:pt-32 relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20">
-
-        <!-- HEADER SECTION - GLITCH HUD -->
-        <header class="text-center mb-16 md:mb-24 w-full max-w-4xl relative group">
-
-            <!-- HUD DECORATIONS -->
-            <div
-                class="absolute -top-10 left-0 w-full flex justify-between text-[10px] text-zinc-600 font-bold tracking-widest opacity-50">
-                <span>SYS.V.4.0.REBEL</span>
-                <span>SECURE_CONN_ESTABLISHED</span>
-            </div>
-
-            <!-- TITLE -->
-            <div class="relative inline-block mb-8">
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-widest drop-shadow-[0_0_20px_rgba(139,92,246,0.8)] whitespace-nowrap neon-text glitch-text"
-                    data-text="COMMAND // ROOT">
-                    COMMAND // ROOT
+        <!-- HEADER -->
+        <header
+            class="w-full border-b-2 border-term-green/40 pb-8 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 animate-fade-up">
+            <div>
+                <h1
+                    class="text-5xl md:text-7xl font-black font-tech tracking-[0.15em] text-white uppercase drop-shadow-[0_0_15px_rgba(0,255,51,0.4)] mb-2">
+                    CENTRAL COMMAND
                 </h1>
-                <div class="h-1 w-full bg-gradient-to-r from-transparent via-rika to-transparent mt-2 animate-pulse">
-                </div>
-            </div>
-
-            <!-- SYSTEM ABSTRACT HUD -->
-            <div
-                class="bg-black/80 border-y-2 border-rika p-6 md:p-8 backdrop-blur-md max-w-3xl mx-auto shadow-[0_0_30px_rgba(139,92,246,0.2)] relative overflow-hidden">
-                <!-- Scanline Sweep -->
-                <div class="absolute top-0 left-0 w-full h-1 bg-rika/30 animate-scan"></div>
-
-                <!-- Corner Brackets -->
-                <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white"></div>
-                <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white"></div>
-
-                <p class="text-sm md:text-base text-zinc-300 leading-relaxed font-mono relative z-10 tracking-wide">
-                    > <span class="text-rika font-bold neon-text">ABSTRACT:</span> CENTRAL COMMAND INTERFACE.
-                    <br class="hidden md:block" />
-                    > ROUTING PERMITTED TO ALL SECTORS: ARCHIVE, NETWORK, AND RESTRICTED ZONES.
-                    <br />
-                    > SYSTEM STATUS: <span
-                        class="text-emerald-400 font-bold animate-pulse drop-shadow-[0_0_8px_#34d399]">LIVE [●]</span>
+                <p class="font-mono text-sm md:text-base text-term-green tracking-[0.2em] uppercase font-bold">
+                    > SYSTEM DIRECTORY ROUTING <br class="md:hidden"> // CLEARANCE ENFORCED
                 </p>
+            </div>
+            <div class="md:text-right font-mono text-xs md:text-sm tracking-widest text-term-green/70">
+                <span class="inline-block p-2 border border-term-green/30 bg-term-green/10">
+                    STATUS: <span class="text-white font-bold animate-pulse">LIVE [●]</span>
+                </span>
             </div>
         </header>
 
-        <!-- PRIMARY TERMINAL ACCESS - HYPER COOL -->
-        <section class="w-full max-w-2xl mb-16 md:mb-24 group">
-            <a href="terminal/"
-                class="holo-btn relative block w-full bg-black/80 border-2 border-rika hover:border-white hover:bg-violet-900/20 transition-all duration-300 p-10 md:p-12 text-center shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.6)]">
-
-                <!-- CYBER CORNERS -->
-                <div
-                    class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white transition-all group-hover:w-12 group-hover:h-12">
-                </div>
-                <div
-                    class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-rika opacity-50 group-hover:opacity-100 transition-all">
-                </div>
-                <div
-                    class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-rika opacity-50 group-hover:opacity-100 transition-all">
-                </div>
-                <div
-                    class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white transition-all group-hover:w-12 group-hover:h-12">
-                </div>
-
-                <h2
-                    class="text-3xl md:text-4xl font-bold text-white tracking-[0.25em] group-hover:text-rika transition-colors mb-4 whitespace-nowrap neon-text">
-                    [ ENTER TERMINAL ]
-                </h2>
-                <div
-                    class="h-1 w-32 bg-gradient-to-r from-transparent via-rika to-transparent mx-auto transform scale-x-75 group-hover:scale-x-150 transition-transform duration-500 shadow-[0_0_10px_#8b5cf6]">
-                </div>
-
-                <!-- GLITCH TEXTURE -->
-                <div class="absolute inset-0 bg-[url('../assets/images/scanline.png')] opacity-10 mix-blend-overlay">
-                </div>
-            </a>
-        </section>
-
-        <!-- MODULE GRID (EXPANDED GAPS) -->
-        <section
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-12 w-full max-w-[1400px] mb-16 md:mb-24">
-            <!-- CODEX [NEW] -->
-            <a href="codex/"
-                class="group relative flex flex-col items-center justify-center p-8 border border-zinc-700 bg-black/60 hover:bg-violet-900/10 hover:border-rika transition-all duration-300 min-h-[160px] shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] backdrop-blur-sm">
-                <div
-                    class="absolute top-2 right-2 w-2 h-2 bg-zinc-700 group-hover:bg-rika transition-colors shadow-[0_0_5px_#8b5cf6]">
-                </div>
-                <span
-                    class="text-xs text-zinc-500 mb-3 group-hover:text-rika tracking-[0.3em] whitespace-nowrap font-bold transition-colors">DIR_00</span>
-                <span
-                    class="text-lg md:text-xl font-bold text-zinc-300 group-hover:text-white tracking-[0.15em] whitespace-nowrap group-hover:neon-text transition-all">[
-                    CODEX ]</span>
-            </a>
-
-            <!-- ARCHIVE -->
-            <a href="archive/"
-                class="group relative flex flex-col items-center justify-center p-8 border border-zinc-700 bg-black/60 hover:bg-violet-900/10 hover:border-rika transition-all duration-300 min-h-[160px] shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] backdrop-blur-sm">
-                <!-- Corner Accent -->
-                <div
-                    class="absolute top-2 right-2 w-2 h-2 bg-zinc-700 group-hover:bg-rika transition-colors shadow-[0_0_5px_#8b5cf6]">
-                </div>
-
-                <span
-                    class="text-xs text-zinc-500 mb-3 group-hover:text-rika tracking-[0.3em] whitespace-nowrap font-bold transition-colors">DIR_01</span>
-                <span
-                    class="text-lg md:text-xl font-bold text-zinc-300 group-hover:text-white tracking-[0.15em] whitespace-nowrap group-hover:neon-text transition-all">[
-                    ARCHIVE ]</span>
-            </a>
-
-            <!-- NETWORK -->
-            <a href="network/"
-                class="group relative flex flex-col items-center justify-center p-8 border border-zinc-700 bg-black/60 hover:bg-violet-900/10 hover:border-rika transition-all duration-300 min-h-[160px] shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] backdrop-blur-sm">
-                <div
-                    class="absolute top-2 right-2 w-2 h-2 bg-zinc-700 group-hover:bg-rika transition-colors shadow-[0_0_5px_#8b5cf6]">
-                </div>
-                <span
-                    class="text-xs text-zinc-500 mb-3 group-hover:text-rika tracking-[0.3em] whitespace-nowrap font-bold transition-colors">DIR_02</span>
-                <span
-                    class="text-lg md:text-xl font-bold text-zinc-300 group-hover:text-white tracking-[0.15em] whitespace-nowrap group-hover:neon-text transition-all">[
-                    NETWORK ]</span>
-            </a>
+        <!-- CORE V3 MODULE GRID -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
 
             <!-- DOSSIER -->
-            <a href="dossier/"
-                class="group relative flex flex-col items-center justify-center p-8 border border-zinc-700 bg-black/60 hover:bg-violet-900/10 hover:border-rika transition-all duration-300 min-h-[160px] shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] backdrop-blur-sm">
-                <div
-                    class="absolute top-2 right-2 w-2 h-2 bg-zinc-700 group-hover:bg-rika transition-colors shadow-[0_0_5px_#8b5cf6]">
+            <a href="profile/" data-required-role="OBSERVER"
+                class="cmd-node node-standard p-8 min-h-[180px] relative group flex flex-col justify-center transition-all animate-fade-up"
+                style="animation-delay: 0.1s;">
+                <span
+                    class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_01</span>
+                <div class="mt-6 z-10 relative">
+                    <h2
+                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        Sovereign Dossier</h2>
+                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Hardware & Loadout
+                    </p>
                 </div>
-                <span
-                    class="text-xs text-zinc-500 mb-3 group-hover:text-rika tracking-[0.3em] whitespace-nowrap font-bold transition-colors">DIR_03</span>
-                <span
-                    class="text-lg md:text-xl font-bold text-zinc-300 group-hover:text-white tracking-[0.15em] whitespace-nowrap group-hover:neon-text transition-all">[
-                    DOSSIER ]</span>
             </a>
+
+            <!-- SYNDICATE -->
+            <a href="network/" data-required-role="OBSERVER"
+                class="cmd-node node-standard p-8 min-h-[180px] relative group flex flex-col justify-center transition-all animate-fade-up"
+                style="animation-delay: 0.2s;">
+                <span
+                    class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_02</span>
+                <div class="mt-6 z-10 relative">
+                    <h2
+                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        The Syndicate</h2>
+                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Vanguard
+                        Invitations</p>
+                </div>
+            </a>
+
+            <!-- LEDGER -->
+            <a href="lexicon/" data-required-role="OBSERVER"
+                class="cmd-node node-standard p-8 min-h-[180px] relative group flex flex-col justify-center transition-all animate-fade-up"
+                style="animation-delay: 0.3s;">
+                <span
+                    class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_03</span>
+                <div class="mt-6 z-10 relative">
+                    <h2
+                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        Sovereign Ledger</h2>
+                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Doctrinal Database
+                    </p>
+                </div>
+            </a>
+
+            <!-- CODEX -->
+            <a href="codex/" data-required-role="OBSERVER"
+                class="cmd-node node-standard p-8 min-h-[180px] relative group flex flex-col justify-center transition-all animate-fade-up"
+                style="animation-delay: 0.4s;">
+                <span
+                    class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_04</span>
+                <div class="mt-6 z-10 relative">
+                    <h2
+                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        The Codex</h2>
+                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Field Manuals</p>
+                </div>
+            </a>
+
+            <!-- TERMINAL -->
+            <a href="terminal/" data-required-role="NONE"
+                class="cmd-node node-standard p-8 min-h-[180px] relative group flex flex-col justify-center transition-all animate-fade-up"
+                style="animation-delay: 0.5s;">
+                <span
+                    class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_05</span>
+                <div class="mt-6 z-10 relative">
+                    <h2
+                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        Command Link</h2>
+                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Secure Terminal
+                        Access</p>
+                </div>
+            </a>
+
+            <!-- FORGE (OPERATOR/ARCHIVIST) -->
+            <a href="../synth/makemyown/" data-required-role="OPERATOR"
+                class="cmd-node node-ai p-8 min-h-[180px] relative group flex flex-col justify-center transition-all animate-fade-up"
+                style="animation-delay: 0.6s;">
+                <span
+                    class="font-mono text-xs font-bold text-ai-red/60 absolute top-4 left-4 tracking-widest group-hover:text-ai-red">SYNTH_01</span>
+                <div class="mt-6 z-10 relative">
+                    <h2
+                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-ai-red transition-colors uppercase">
+                        Auditor Forge</h2>
+                    <p class="font-sans font-bold text-sm text-ai-red/70 tracking-wide uppercase">Build Exoskeleton</p>
+                </div>
+            </a>
+
+            <!-- INTELLIGENCE (OPERATOR/ARCHIVIST) -->
+            <a href="../synth/rika/" data-required-role="OPERATOR"
+                class="cmd-node node-rika lg:col-span-3 p-10 min-h-[180px] relative group flex flex-col md:flex-row items-center justify-between text-center md:text-left transition-all animate-fade-up"
+                style="animation-delay: 0.7s;">
+                <div class="mb-4 md:mb-0 z-10 relative">
+                    <span
+                        class="font-mono text-xs font-bold text-rika-purple/80 tracking-[0.2em] mb-2 block group-hover:animate-pulse">SYNTH_02
+                        // ONLINE</span>
+                    <h2
+                        class="node-title text-3xl md:text-4xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-rika-purple transition-colors uppercase">
+                        Intelligence Terminal</h2>
+                    <p class="font-sans font-bold text-sm text-rika-purple/80 tracking-wide uppercase">Forensic
+                        Synthesizer [ RIKA ]</p>
+                </div>
+                <div class="z-10 relative mt-4 md:mt-0">
+                    <span
+                        class="inline-block border-2 border-rika-purple text-rika-purple bg-rika-purple/10 px-6 py-3 font-bold tracking-widest font-mono text-sm group-hover:bg-rika-purple group-hover:text-white transition-colors uppercase">
+                        INITIALIZE LINK
+                    </span>
+                </div>
+            </a>
+
         </section>
 
-        <!-- SECONDARY MODULE GRID (ACCESS MOVED DOWN OR REMOVED? I will remove ACCESS from the top grid to make room for Codex, as ACCESS is shopping) -->
-        <!-- Actually, user might want Access. Let's just create a 5-item grid or let it wrap. But the CSS is grid-cols-4. 
-             If I add one, it wraps to a new row which might look ugly if it's just one item.
-             Let's effectively replace 'ACCESS' with 'CODEX' in this row, and maybe put Access elsewhere or just let it exist in the Terminal/Home.
-             Access is "Supply Depot". It's less "Command" and more "Logistics".
-             I will replace ACCESS with CODEX in this block.
-        -->
-
-        <!-- INTELLIGENCE & RESTRICTED SECTOR -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 w-full max-w-[1400px]">
-            <!-- LEFT COLUMN: SIGNAL INTELLIGENCE -->
-            <div class="h-full min-h-[250px]">
-                <div
-                    class="border-2 border-zinc-800 hover:border-white transition-colors bg-black/80 h-full flex flex-col shadow-lg hover:shadow-[0_0_20px_white]">
-                    <div class="bg-zinc-900/50 p-5 border-b border-zinc-800 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full bg-command animate-ping shadow-[0_0_8px_red]"></div>
-                            <span
-                                class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-zinc-300 whitespace-nowrap font-bold neon-text">Signal
-                                Intelligence</span>
-                        </div>
-                        <a href="/terminal/receipt-protocol/#signal"
-                            class="text-[10px] md:text-xs text-zinc-400 hover:text-white transition-colors uppercase tracking-wider whitespace-nowrap border border-zinc-600 px-4 py-1.5 hover:bg-zinc-700 hover:border-white shadow-[0_0_10px_rgba(255,255,255,0.1)]">[
-                            DECRYPT ]</a>
-                    </div>
-
-                    <div id="signal-feed-widget"
-                        class="flex-grow p-6 space-y-4 font-mono text-sm overflow-y-auto max-h-[400px]">
-                        <div class="text-zinc-500 text-xs animate-pulse">SCANNING FREQUENCIES...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RIGHT COLUMN: RESTRICTED COMMANDS -->
-            <div class="space-y-6">
-                <!-- SWITCHBOARD - RESTORED DOPE ANIMATION -->
-                <a href="switchboard/"
-                    class="group block w-full relative overflow-hidden border border-emerald-900/50 hover:border-emerald-400 bg-black/60 hover:bg-emerald-900/10 p-6 md:p-8 transition-all duration-300 shadow-lg hover:shadow-[0_0_40px_rgba(16,185,129,0.5)]">
-                    <div class="flex justify-between items-center relative z-10">
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                                <div
-                                    class="text-[10px] md:text-xs text-emerald-600 group-hover:text-emerald-400 uppercase tracking-widest transition-colors whitespace-nowrap font-bold">
-                                    /// BRIDGE ///</div>
-                            </div>
-                            <div
-                                class="text-emerald-500 group-hover:text-emerald-300 font-bold tracking-[0.2em] text-lg md:text-xl transition-colors whitespace-nowrap group-hover:neon-text-green">
-                                [ SWITCHBOARD ]</div>
-                        </div>
-                        <div
-                            class="opacity-40 group-hover:opacity-100 transition-all transform group-hover:scale-110 group-hover:rotate-90 duration-500">
-                            <!-- Spinning Network Icon -->
-                            <svg class="w-10 h-10 text-emerald-500 drop-shadow-[0_0_5px_#34d399]" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <!-- Scanline -->
-                    <div
-                        class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    </div>
-                </a>
-
-                <!-- LEXICON - RESTORED DOPE ANIMATION -->
-                <a href="lexicon/"
-                    class="group block w-full relative overflow-hidden border border-purple-900/50 hover:border-purple-400 bg-black/60 hover:bg-purple-900/10 p-6 md:p-8 transition-all duration-300 shadow-lg hover:shadow-[0_0_40px_rgba(168,85,247,0.5)]">
-                    <div class="flex justify-between items-center relative z-10">
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <span
-                                    class="w-2 h-2 bg-purple-500 rounded-full animate-pulse shadow-[0_0_5px_#a78bfa]"></span>
-                                <div
-                                    class="text-[10px] md:text-xs text-purple-600 group-hover:text-purple-400 uppercase tracking-widest transition-colors whitespace-nowrap font-bold">
-                                    /// ARCHIVE.DEEP ///</div>
-                            </div>
-                            <div
-                                class="text-purple-500 group-hover:text-purple-300 font-bold tracking-[0.2em] text-lg md:text-xl transition-colors whitespace-nowrap group-hover:neon-text">
-                                [ LEXICON ]</div>
-                        </div>
-                        <div
-                            class="opacity-40 group-hover:opacity-100 transition-all transform group-hover:scale-125 group-hover:-rotate-12 duration-500">
-                            <!-- Rotating Book Icon -->
-                            <svg class="w-10 h-10 text-purple-500 drop-shadow-[0_0_8px_#a78bfa]" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                </path>
-                            </svg>
-                        </div>
-                    </div>
-                    <!-- Scanline -->
-                    <div
-                        class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    </div>
-                </a>
-            </div>
-        </div>
-
         <!-- FOOTER -->
-        <footer class="mt-20 md:mt-32 w-full text-center px-4 pb-8 relative z-20">
-            <div class="border-t border-zinc-800/50 w-full max-w-xs mx-auto mb-6"></div>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-widest opacity-80 font-mono">
-                FSK-RIKA-1.1 // MONITORING // <span
-                    class="text-rika font-bold drop-shadow-[0_0_5px_#8b5cf6]">SECURE</span>
-                <span class="block mt-2 text-[8px] opacity-50">V.2026.02.18.DEPLOYED</span>
+        <footer
+            class="mt-16 w-full px-4 relative z-20 border-t-2 border-term-green/30 pt-6 animate-fade-up flex flex-col md:flex-row justify-between items-center"
+            style="animation-delay: 0.8s;">
+            <p class="font-mono text-xs text-term-green/60 uppercase tracking-widest mb-4 md:mb-0 font-bold">
+                FSK-RIKA-1.1 // CORE V3
+            </p>
+            <p class="font-mono text-xs text-term-green/60 uppercase tracking-widest font-bold">
+                ENCRYPTION: <span class="text-white">VALIDATED</span>
             </p>
         </footer>
-
     </main>
 
-    <!-- FUNCTIONAL SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="../assets/js/signal_feed_v4.js"></script>
+    <!-- RBAC BUTTON LOCKOUT LOGIC -->
+    <script type="module">
+        import { supabase } from '../assets/js/supabaseClient.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            let userRole = 'VISITOR';
+            let userRolesList = [];
+
+            // 1. Fetch Session & Profile
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role, roles')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (profile) {
+                    if (profile.role) userRolesList.push(profile.role.toUpperCase());
+                    if (profile.roles && Array.isArray(profile.roles)) {
+                        userRolesList.push(...profile.roles.map(r => r.toUpperCase()));
+                    }
+                    if (userRolesList.length > 0) {
+                        userRole = userRolesList.includes('SOVEREIGN') ? 'SOVEREIGN' : userRolesList[0];
+                    }
+                } else {
+                    userRole = 'OBSERVER'; // Fallback if record somehow drifted but auth is active
+                }
+            }
+
+            // 2. Lockout Logic
+            const commandNodes = document.querySelectorAll('.cmd-node');
+            commandNodes.forEach(node => {
+                const reqRole = node.getAttribute('data-required-role');
+                if (reqRole && reqRole !== 'NONE') {
+
+                    let hasAccess = false;
+
+                    // Absolute Overrides
+                    if (userRolesList.includes('SOVEREIGN') || userRolesList.includes('ARCHIVIST') || userRolesList.includes('OPERATOR')) {
+                        hasAccess = true;
+                    }
+                    // Observer Checking
+                    else if (reqRole === 'OBSERVER' && (userRole === 'OBSERVER' || userRole === 'VISITOR')) {
+                        // Enforce session for OBSERVER.
+                        if (session) hasAccess = true;
+                    }
+
+                    if (!hasAccess) {
+                        // Apply CSS Lockout styling
+                        node.classList.add('node-locked');
+                        node.classList.remove('node-standard', 'node-ai', 'node-rika');
+
+                        // Prevent Navigation
+                        node.onclick = (e) => {
+                            e.preventDefault();
+                            const title = node.querySelector('.node-title');
+                            const origText = title.innerText;
+                            const origColor = title.classList.contains('text-white');
+
+                            // Glitch effect on click
+                            title.innerText = "[ LACK CLEARANCE ]";
+                            title.classList.replace('text-white', 'text-command-red');
+                            title.classList.add('animate-pulse');
+
+                            setTimeout(() => {
+                                title.innerText = origText;
+                                title.classList.replace('text-command-red', 'text-white');
+                                title.classList.remove('animate-pulse');
+                            }, 1000);
+                        };
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

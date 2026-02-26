@@ -1,0 +1,302 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE MAP // VERTICAL WAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+
+        body {
+            background-color: #05010a;
+            color: #e4e4e7;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.3;
+        }
+
+        .hud-text {
+            text-shadow: 0 0 5px rgba(220, 38, 38, 0.5);
+        }
+
+        /* CARD STYLES */
+        .layer-card {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .layer-card:hover {
+            border-color: #ef4444;
+            transform: translateX(10px);
+        }
+
+        .layer-card.active {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* 3D CANVAS CONTAINER */
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+    </style>
+    <!-- NAV BAR INJECTION -->
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/terminal/induction/map.html">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../../assets/js/sidebar.js"></script>
+</head>
+
+<body class="pl-0 lg:pl-[256px] h-[100dvh] w-full flex overflow-hidden">
+
+    <div class="scanline"></div>
+
+    <!-- MOBILE CONTAINER: Flex Column -->
+    <div class="relative z-20 w-full h-full flex flex-col md:flex-row pointer-events-none md:pointer-events-auto">
+
+        <!-- SIDEBAR: TACTICAL CONTROL -->
+        <!-- Mobile: Order 2 (Bottom), H-[55%], pointer-events-auto -->
+        <!-- Desktop: Order 1 (Left), W-1/3, Full Height -->
+        <div
+            class="w-full h-[55%] md:h-full md:w-1/3 bg-black/90 md:bg-black/80 backdrop-blur-md border-t md:border-t-0 md:border-r border-zinc-800 flex flex-col p-6 pb-24 md:p-8 md:pb-8 order-2 md:order-1 pointer-events-auto overflow-y-auto">
+
+            <!-- HEADER -->
+            <div class="mb-4 md:mb-12">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-3 h-3 bg-red-600 animate-pulse"></div>
+                    <span class="font-mono text-[10px] md:text-xs text-red-500 tracking-[0.2em]">TACTICAL VIEW // PHASE
+                        2</span>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 leading-none">THE MAP</h1>
+                <p class="text-zinc-500 font-mono text-xs md:text-sm border-l-2 border-red-900 pl-3">
+                    Look Up vs Down.
+                </p>
+            </div>
+
+            <!-- LAYER CONTROLS -->
+            <div class="flex flex-col gap-3 mb-4">
+
+                <!-- LAYER 1 -->
+                <div class="layer-card p-3 md:p-4 group" onmouseenter="highlightLayer(2)" onclick="selectLayer(2)">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-mono text-red-500 text-xs md:text-sm">03 // THE CLOUD</h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-zinc-400 line-clamp-2">Media, Academia, Culture. The narrative
+                        windshield.</p>
+                </div>
+
+                <!-- LAYER 2 -->
+                <div class="layer-card p-3 md:p-4 group" onmouseenter="highlightLayer(1)" onclick="selectLayer(1)">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-mono text-orange-500 text-xs md:text-sm">02 // THE RUST</h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-zinc-400 line-clamp-2">Bureaucrats, NGOs. The parasitic layer.</p>
+                </div>
+
+                <!-- LAYER 3 -->
+                <div class="layer-card p-3 md:p-4 group" onmouseenter="highlightLayer(0)" onclick="selectLayer(0)">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-mono text-blue-500 text-xs md:text-sm">01 // THE GEARS</h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-zinc-400 line-clamp-2">Workers, Creators. The host organism.</p>
+                </div>
+
+            </div>
+
+            <!-- DATA READOUT (Hidden on small mobile if needed, or compact) -->
+            <div id="data-readout" class="mt-auto border-t border-zinc-800 pt-4 min-h-[80px] md:min-h-[150px]">
+                <h4 class="font-mono text-[10px] text-zinc-500 mb-1">ANALYSIS:</h4>
+                <div id="analysis-text" class="text-sm md:text-lg text-white font-medium leading-relaxed">
+                    Select a layer...
+                </div>
+            </div>
+
+            <!-- NAVIGATION -->
+            <div class="mt-4 flex justify-between items-center bg-black md:bg-transparent pb-4 md:pb-0">
+                <a href="./" class="text-zinc-600 hover:text-white font-mono text-xs uppercase transition-colors">
+                    < BACK</a>
+                        <button onclick="window.location.href='drill'"
+                            class="px-4 md:px-6 py-2 bg-red-900/20 border border-red-500/50 text-red-400 font-mono text-xs hover:bg-red-900/50 hover:text-white transition-all uppercase tracking-widest">
+                            PHASE 3 >
+                        </button>
+            </div>
+        </div>
+
+        <!-- 3D AREA SPACER -->
+        <div class="w-full h-[45%] md:h-full md:w-2/3 order-1 md:order-2 pointer-events-none"></div>
+
+    </div>
+
+    <!-- 3D VISUALIZATION -->
+    <div id="canvas-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // --- THREE.JS SETUP ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x05010a, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // RENDERER
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // CONTROLS
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enableZoom = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 2.0;
+
+        // --- LAYERS ---
+        const layers = [];
+        const layerGroup = new THREE.Group();
+        scene.add(layerGroup);
+
+        // GEOMETRY
+        const geometry = new THREE.BoxGeometry(4, 0.2, 4);
+
+        // MATERIALS
+        const materialGears = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.5 });
+        const materialRust = new THREE.MeshBasicMaterial({ color: 0xf97316, wireframe: true, transparent: true, opacity: 0.5 });
+        const materialCloud = new THREE.MeshBasicMaterial({ color: 0xef4444, wireframe: true, transparent: true, opacity: 0.5 });
+
+        // CREATE MESHES
+        const meshGears = new THREE.Mesh(geometry, materialGears);
+        meshGears.position.y = -1.5;
+        layerGroup.add(meshGears);
+        layers.push(meshGears);
+
+        const meshRust = new THREE.Mesh(geometry, materialRust);
+        meshRust.position.y = 0;
+        layerGroup.add(meshRust);
+        layers.push(meshRust);
+
+        const meshCloud = new THREE.Mesh(geometry, materialCloud);
+        meshCloud.position.y = 1.5;
+        layerGroup.add(meshCloud);
+        layers.push(meshCloud);
+
+        // CONNECTIONS (The Extraction Lines)
+        const lineGeo = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, -1.5, 0),
+            new THREE.Vector3(0, 1.5, 0)
+        ]);
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x333333 });
+        const line = new THREE.Line(lineGeo, lineMat);
+        layerGroup.add(line);
+
+        // --- RESPONSIVE LOGIC ---
+        function updateLayout() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+
+            // CAMERA POSITIONING
+            if (width < 768) {
+                // MOBILE: Shift UP (Positive Y) in world space or move camera
+                // Actually, best to move the Group UP so it sits in the top void
+                layerGroup.position.y = 2.5;
+                camera.position.set(4, 4, 4);
+            } else {
+                // DESKTOP: Centered
+                layerGroup.position.y = 0;
+                camera.position.set(3, 2, 5);
+            }
+        }
+
+        // Initial Call
+        updateLayout();
+
+        // ANIMATION LOOP
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            // Float effect
+            layers.forEach((layer, index) => {
+                layer.position.y = (index - 1) * 1.5 + Math.sin(Date.now() * 0.001 + index) * 0.1;
+            });
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- INTERACTION ---
+        const analysisText = document.getElementById('analysis-text');
+
+        const descriptions = [
+            "THE Gears (Production): The foundation. Value is created here. Note the strain from the weight above.",
+            "THE RUST (Extraction): The middle-men. Regulatory bodies, HR departments, Consultants. They produce nothing but consume 40% of the energy.",
+            "THE CLOUD (Narrative): The distraction. Culture war nonsense designed to keep The Gears fighting each other instead of looking up at The Rust."
+        ];
+
+        function highlightLayer(index) {
+            // Reset all
+            layers.forEach(l => {
+                l.material.opacity = 0.2;
+                l.scale.set(1, 1, 1);
+            });
+
+            // Highlight target
+            if (layers[index]) {
+                layers[index].material.opacity = 0.8;
+                layers[index].scale.set(1.1, 1.1, 1.1);
+
+                // Update text type-in effect could go here
+                analysisText.innerText = descriptions[index];
+            }
+        }
+
+        function selectLayer(index) {
+            highlightLayer(index);
+        }
+
+        // Handle Window Resize
+        window.addEventListener('resize', updateLayout);
+
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+

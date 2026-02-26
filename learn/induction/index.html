@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sovereign Terminal // Induction</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'command-black': '#09090b',
+                        'command-red': '#dc2626',
+                        'command-amber': '#d97706',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', "Helvetica Neue", 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'scanline': 'scanline 8s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #e4e4e7;
+            overflow: hidden;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.10;
+        }
+
+        .crt-vignette {
+            background: radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9;
+        }
+
+        /* Diagnostic Wizard Transitions */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: flex;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../../assets/js/sidebar.js"></script>
+</head>
+
+<body class="pl-0 lg:pl-[256px] antialiased selection:bg-command-red selection:text-white flex items-center justify-center min-h-screen">
+    <div class="scanline"></div>
+    <div class="crt-vignette"></div>
+
+    <div class="relative z-20 w-full max-w-2xl px-4 md:px-0 mx-auto">
+        <!-- HEADER / RETURN -->
+        <div class="absolute -top-16 left-4 md:left-0">
+            <a href="../"
+                class="font-mono text-[10px] text-zinc-500 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-2">
+                <span class="text-zinc-600">&lt;</span> ABORT INDUCTION
+            </a>
+        </div>
+
+        <div
+            class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-6 md:p-10 backdrop-blur-md shadow-2xl relative overflow-hidden">
+            <!-- decorative corner accents -->
+            <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-zinc-500"></div>
+            <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-zinc-500"></div>
+            <div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-zinc-500"></div>
+            <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-zinc-500"></div>
+
+            <!-- PROGRESS TRACKER -->
+            <div class="mb-8 border-b border-zinc-800 pb-4 flex justify-between items-center" id="progress-container">
+                <span
+                    class="font-mono text-[10px] text-zinc-400 uppercase tracking-widest font-bold flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-command-red animate-pulse-slow"></span>
+                    CALIBRATION DIAGNOSTIC
+                </span>
+                <span class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest" id="step-indicator">STEP 01
+                    // 03</span>
+            </div>
+
+            <!-- WIZARD CONTINER -->
+            <div id="wizard-container" class="min-h-[250px] flex flex-col justify-center">
+
+                <!-- STEP 1 -->
+                <div class="step active flex-col gap-6" id="step-1">
+                    <h2 class="text-2xl md:text-3xl font-bold font-sans text-white tracking-tight leading-snug">
+                        Do you sense a growing dissonance between the official media narrative and your lived economic
+                        reality?
+                    </h2>
+                    <p class="font-sans text-zinc-400 text-base leading-relaxed">
+                        The 'Somatic Radar' is the instinct that senses misalignment between what you are told is
+                        happening and what your wallet knows is happening.
+                    </p>
+                    <div class="mt-4 flex flex-col gap-3">
+                        <button onclick="nextStep(2)"
+                            class="w-full text-left px-6 py-4 bg-zinc-900 border border-zinc-800 rounded-lg font-sans text-white hover:border-zinc-500 hover:bg-zinc-800 transition-all focus:outline-none focus:ring-1 focus:ring-zinc-500 group">
+                            <span class="font-mono text-[10px] text-zinc-500 mr-3 group-hover:text-zinc-400">01</span>
+                            Yes. The ledger is broken.
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="step flex-col gap-6" id="step-2">
+                    <h2 class="text-2xl md:text-3xl font-bold font-sans text-white tracking-tight leading-snug">
+                        Are you prepared to abandon the comfort of the Horizontal War to map the Vertical War?
+                    </h2>
+                    <p class="font-sans text-zinc-400 text-base leading-relaxed">
+                        The Horizontal War (Left vs. Right) is a Jamming Signal designed to exhaust you. The Sovereign
+                        Academy focuses strictly on the Vertical War (The Rust vs. The Gears).
+                    </p>
+                    <div class="mt-4 flex flex-col gap-3">
+                        <button onclick="nextStep(3)"
+                            class="w-full text-left px-6 py-4 bg-zinc-900 border border-zinc-800 rounded-lg font-sans text-white hover:border-command-red/40 hover:bg-zinc-800 transition-all focus:outline-none focus:ring-1 focus:ring-command-red group">
+                            <span
+                                class="font-mono text-[10px] text-zinc-500 mr-3 group-hover:text-command-red">01</span>
+                            Understood. Cut the noise.
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: THE GATEWAY (SUPABASE REGISTRATION) -->
+                <div class="step flex-col gap-6" id="step-3">
+                    <h2 class="text-2xl md:text-3xl font-bold font-sans text-white tracking-tight leading-snug mb-2">
+                        BANDWIDTH CALIBRATED.
+                    </h2>
+                    <p
+                        class="font-mono text-zinc-400 text-xs uppercase tracking-widest border-l-2 border-command-red pl-3 py-1 mb-4">
+                        ESTABLISH OPERATIVE ID TO ACCESS TERMINAL ARCHIVES.
+                    </p>
+
+                    <form id="induction-form" class="flex flex-col gap-4">
+                        <div>
+                            <label
+                                class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest block mb-1">Operative
+                                Email</label>
+                            <input type="email" id="email" required
+                                class="w-full px-4 py-3 bg-command-black border border-zinc-800 rounded-md font-sans text-white focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors"
+                                placeholder="email@provider.com">
+                        </div>
+                        <div>
+                            <label
+                                class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest block mb-1">Passphrase</label>
+                            <input type="password" id="password" required
+                                class="w-full px-4 py-3 bg-command-black border border-zinc-800 rounded-md font-sans text-white focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors"
+                                placeholder="••••••••" minlength="6">
+                        </div>
+
+                        <div id="error-message" class="text-command-red text-sm font-sans hidden"></div>
+
+                        <button type="submit" id="submit-btn"
+                            class="w-full mt-4 bg-zinc-100 hover:bg-white text-black font-sans font-bold py-3 px-4 rounded-md transition-all flex justify-center items-center gap-2">
+                            <span>INITIALIZE PROFILE // ENTER TERMINAL</span>
+                        </button>
+
+                        <div class="mt-4 text-center">
+                            <p class="font-sans text-[11px] text-zinc-500">Already have clearance? <a href="../../gate/"
+                                    class="text-zinc-300 hover:text-white underline decoration-zinc-700 underline-offset-4">Authenticate
+                                    via Gate</a>.</p>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ENCRYPTED FOOTER -->
+        <div class="text-center mt-8">
+            <span class="font-mono text-[10px] text-zinc-700 uppercase tracking-widest">SOVEREIGN SYSTEMS // V3
+                ARCHITECTURE</span>
+        </div>
+    </div>
+
+    <!-- WIZARD LOGIC -->
+    <script>
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + stepNumber).classList.add('active');
+            document.getElementById('step-indicator').innerText = `STEP 0${stepNumber} // 03`;
+
+            if (stepNumber === 3) {
+                // Change terminal red accent to show final step
+                document.getElementById('progress-container').classList.add('border-command-red/30');
+                document.querySelector('#progress-container span').classList.replace('text-zinc-400', 'text-command-red');
+            }
+        }
+    </script>
+
+    <!-- SUPABASE INTEGRATION -->
+    <script type="module">
+        import { supabase } from '../../assets/js/supabase_client.js';
+
+        const form = document.getElementById('induction-form');
+        const errorMsg = document.getElementById('error-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.classList.add('hidden');
+
+            // UI Loading state
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="w-4 h-4 rounded-full border-2 border-black border-t-transparent animate-spin"></span> AUTHENTICATING...';
+            submitBtn.disabled = true;
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // 1. Sign up user via Supabase Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                if (authError) throw authError;
+
+                if (authData.user) {
+                    // Check if profile exists, if not, insert
+                    const { data: existingProfile } = await supabase
+                        .from('profiles')
+                        .select('id')
+                        .eq('id', authData.user.id)
+                        .single();
+
+                    if (!existingProfile) {
+                        const { error: profileError } = await supabase
+                            .from('profiles')
+                            .insert([
+                                {
+                                    id: authData.user.id,
+                                    email: email,
+                                    role: 'OBSERVER' // Default role for new recruits
+                                }
+                            ]);
+
+                        // Ignore RLS errors if insert fails because triggers might handle it.
+                        if (profileError && profileError.code !== '42501') {
+                            console.warn("Profile Insert Warning:", profileError);
+                        }
+                    }
+
+                    // Success! Redirect directly back to the learn terminal root
+                    window.location.replace('../');
+                } else {
+                    throw new Error("Unable to create profile. Please check verification email if required.");
+                }
+
+            } catch (error) {
+                console.error('Induction Error:', error);
+                errorMsg.innerText = error.message;
+                errorMsg.classList.remove('hidden');
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

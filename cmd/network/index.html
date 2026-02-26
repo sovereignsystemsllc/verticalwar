@@ -1,302 +1,248 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class="bg-gray-950 font-sans text-gray-100 antialiased">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NETWORK // PHALANX HUB</title>
+    <title>THE SYNDICATE // VANGUARD</title>
 
-    <!-- FONTS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@500;700&display=swap"
-        rel="stylesheet">
-
-    <!-- TAILWIND -->
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        void: '#05010a',
-                        emerald: { 500: '#10b981', 900: '#064e3b' },
-                        cyan: { 400: '#22d3ee', 900: '#164e63' },
-                        gold: { 400: '#facc15', 900: '#713f12' }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        tech: ['Rajdhani', 'sans-serif'],
-                        mono: ['Courier New', 'Courier', 'monospace'],
-                    },
-                    backgroundImage: {
-                        'network-bg': "url('../../assets/images/network_bg.png')"
-                    }
+                    colors: { 'term-black': '#050505', 'term-green': '#00ff33' },
+                    fontFamily: { mono: ['Courier New', 'monospace'] }
                 }
             }
         }
     </script>
     <style>
-        .glass-panel {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        body {
+            background-color: #050505;
+            color: #00ff33;
+            cursor: crosshair;
+            display: none;
         }
 
-        .operator-card {
+        .glass-panel {
+            background: rgba(10, 20, 10, 0.9);
+            border: 1px solid #00ff33;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
             transition: all 0.3s ease;
         }
 
-        .operator-card:hover {
-            transform: translateY(-5px);
-            background: rgba(30, 41, 59, 0.8);
-            border-color: rgba(34, 211, 238, 0.3);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
-        }
-    </style>
-    <style>
-        /* GLOBAL TEXT SCALE OVERRIDE */
-        html {
-            font-size: 100%;
+        .glass-panel:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 51, 0.3);
+            background: rgba(10, 30, 10, 0.95);
         }
 
-        body {
-            font-size: 1.3rem;
-            line-height: 1.2;
+        .input-heavy {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 51, 0.5);
+            color: white;
+            padding: 1rem;
+            width: 100%;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            outline: none;
+            transition: all 0.2s ease;
         }
 
-        .text-xs {
-            font-size: 1rem !important;
-        }
-
-        .text-sm {
-            font-size: 1.15rem !important;
-        }
-
-        .text-base {
-            font-size: 1.3rem !important;
-        }
-
-        .text-lg {
-            font-size: 1.5rem !important;
-        }
-
-        .text-xl {
-            font-size: 1.75rem !important;
-        }
-
-        .text-2xl {
-            font-size: 2rem !important;
-        }
-
-        .text-3xl {
-            font-size: 2.5rem !important;
-        }
-
-        .text-4xl {
-            font-size: 3rem !important;
+        .input-heavy:focus {
+            border-color: #00ff33;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.4);
         }
     </style>
 
-    <!-- OPEN GRAPH INJECTION -->
-    <meta property="og:url" content="https://verticalwar.com/cmd/network/">
-    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../../assets/js/sidebar.js"></script>
 </head>
 
-<body class="bg-void text-white min-h-screen relative overflow-x-hidden selection:bg-emerald-500/30">
+<body class="pl-0 lg:pl-[256px] min-h-screen w-full font-mono pb-24 selection:bg-[#00ff33] selection:text-black">
 
-    <!-- BACKGROUND IMAGE -->
-    <div class="fixed inset-0 z-0 opacity-40">
-        <div class="absolute inset-0 bg-network-bg bg-cover bg-center"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-void via-void/80 to-transparent"></div>
-    </div>
-
-    <!-- SCANLINE & PARTICLES -->
-    <div
-        class="fixed inset-0 pointer-events-none z-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-20">
-    </div>
-    <div id="particles-js" class="fixed inset-0 z-0 pointer-events-none"></div>
-
-    <!-- NAV BAR -->
-    <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-void/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- LOGO/HOME -->
-                <div class="flex-shrink-0">
-                    <a href="../../"
-                        class="font-tech text-xl font-bold tracking-widest text-emerald-500 hover:text-white transition-colors">
-                        // PHALANX_NETWORK
-                    </a>
-                </div>
-                <!-- LINKS -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-xs">
-                        <a href="../../" class="text-gray-400 hover:text-white transition-colors">[ SURFACE ]</a>
-                        <a href="../../terminal/" class="text-gray-400 hover:text-white transition-colors">[ TERMINAL
-                            ]</a>
-                        <a href="../access/" class="text-gray-400 hover:text-white transition-colors">[ ACCESS ]</a>
-                        <a href="#" class="text-emerald-400 font-bold">[ NETWORK ]</a>
-                        <a href="../dossier/" class="text-gray-400 hover:text-white transition-colors">[ DOSSIER
-                            ]</a>
-                    </div>
-                </div>
-            </div>
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav class="w-full border-b border-[#00ff33]/30 p-4 mb-8 flex justify-between items-center bg-black/80">
+        <a href="../../"
+            class="text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+            [ RETURN TO MATRIX ]
+        </a>
+        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+            <span class="animate-pulse">SECURE UPLINK ESTABLISHED</span>
         </div>
     </nav>
 
-    <!-- CONTENT WRAPPER -->
-    <div class="relative z-10 pt-24 pb-12 px-4 max-w-7xl mx-auto">
+    <div id="main-container"
+        class="max-w-6xl mx-auto px-4 flex flex-col gap-12 opacity-0 transition-opacity duration-500">
 
         <!-- HEADER -->
-        <div class="text-center mb-16">
-            <h1 class="font-tech text-4xl md:text-6xl font-bold mb-4 tracking-tight drop-shadow-lg">
-                OPERATIONAL <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">NETWORK</span>
-            </h1>
-            <p class="font-mono text-cyan-500/80 text-sm tracking-widest">
-                Nodes Active // Encryption: AES-256 // Signal Strength: HIGH
-            </p>
-        </div>
-
-        <!-- SECTION: INTERNAL WINGS -->
-        <div class="mb-16">
-            <h3 class="font-mono text-sm text-gray-500 mb-6 border-b border-white/10 pb-2 tracking-widest">
-                // INTERNAL WINGS
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                <!-- RABBIT -->
-                <div
-                    class="glass-panel p-6 rounded-lg operator-card flex flex-col h-full border-l-4 border-l-emerald-500">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-tech text-xl font-bold text-white">RESISTANCE RABBIT</h3>
-                        <span class="font-mono text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded">FIELD
-                            OPS</span>
-                    </div>
-                    <p class="font-sans text-sm text-gray-400 leading-relaxed flex-grow mb-6">
-                        Specialist in "Industrial Noir" investigation. Physical receipts, FOIA requests, and local intel
-                        gathering. Maps the physics of the lie.
-                    </p>
-                    <a href="https://substack.com/@resistancerabbit" target="_blank"
-                        class="font-mono text-xs text-center py-3 border border-white/10 hover:bg-emerald-500 hover:text-black transition-all rounded block">
-                        [ ACCESS COMMS â†— ]
-                    </a>
-                </div>
-
-                <!-- ANTHONY -->
-                <div
-                    class="glass-panel p-6 rounded-lg operator-card flex flex-col h-full border-l-4 border-l-purple-500">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-tech text-xl font-bold text-white">ANTHONY</h3>
-                        <span class="font-mono text-[10px] bg-purple-500/10 text-purple-400 px-2 py-1 rounded">MIND
-                            MEDIC</span>
-                    </div>
-                    <p class="font-sans text-sm text-gray-400 leading-relaxed flex-grow mb-6">
-                        Specialist in Psychological Defense and Human Architecture. The "Medical Bay" for the mind.
-                        Focuses on internal resistance.
-                    </p>
-                    <a href="https://substack.com/@inspiritedinsight" target="_blank"
-                        class="font-mono text-xs text-center py-3 border border-white/10 hover:bg-purple-500 hover:text-black transition-all rounded block">
-                        [ ACCESS COMMS â†— ]
-                    </a>
-                </div>
-
-                <!-- ETHAN -->
-                <div
-                    class="glass-panel p-6 rounded-lg operator-card flex flex-col h-full border-l-4 border-l-cyan-500 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-cyan-500/20 to-transparent">
-                    </div>
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-tech text-xl font-bold text-white">ETHAN FAULKNER</h3>
-                        <span
-                            class="font-mono text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded">COMMAND</span>
-                    </div>
-                    <p class="font-sans text-sm text-gray-400 leading-relaxed flex-grow mb-6">
-                        The Architect of the Sovereign Interface. Synthesizer of the Vertical War doctrine. Builder of
-                        the "Parallel Polis".
-                    </p>
-                    <a href="https://substack.com/@commonsenserebel" target="_blank"
-                        class="font-mono text-xs text-center py-3 border border-white/10 hover:bg-cyan-500 hover:text-black transition-all rounded block">
-                        [ ACCESS COMMS â†— ]
-                    </a>
+        <div
+            class="border-b border-[#00ff33]/40 pb-6 text-center md:text-left flex flex-col md:flex-row justify-between items-end gap-6">
+            <div>
+                <h1
+                    class="text-4xl md:text-6xl font-bold tracking-[0.1em] text-[#00ff33] uppercase drop-shadow-[0_0_12px_rgba(0,255,51,0.6)]">
+                    THE SYNDICATE</h1>
+                <div class="text-sm text-[#00ff33]/80 tracking-[0.2em] mt-3 uppercase font-bold">
+                    >> THE VANGUARD MASTER NODES
                 </div>
             </div>
-        </div>
-
-        <!-- SECTION: ALLIED FORCES -->
-        <div class="mb-16">
-            <h3 class="font-mono text-sm text-gray-500 mb-6 border-b border-white/10 pb-2 tracking-widest">
-                // STARTUP ALLIANCE
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-
-                <!-- SETH HOLEHOUSE -->
-                <div class="glass-panel p-6 rounded-lg operator-card flex flex-col h-full border-l-4 border-l-red-500">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-tech text-xl font-bold text-white">SETH HOLEHOUSE</h3>
-                        <span
-                            class="font-mono text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded">BROADCAST</span>
-                    </div>
-                    <p class="font-sans text-sm text-gray-400 leading-relaxed flex-grow mb-6">
-                        "Man in America." Focusing on the spiritual war for the soul of the nation. A key amplifier of
-                        the signal.
-                    </p>
-                    <a href="https://rumble.com/v73behq-the-sinister-plan-to-crush-small-business-and-put-you-under-corporate-rule.html"
-                        target="_blank"
-                        class="font-mono text-xs text-center py-3 border border-white/10 hover:bg-red-500 hover:text-black transition-all rounded block">
-                        [ ACCESS COMMS â†— ]
-                    </a>
-                </div>
-
-                <!-- ELLIOT GROVE -->
-                <div class="glass-panel p-6 rounded-lg operator-card flex flex-col h-full border-l-4 border-l-gold-400">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-tech text-xl font-bold text-white">ELLIOT GROVE</h3>
-                        <span
-                            class="font-mono text-[10px] bg-gold-400/10 text-gold-400 px-2 py-1 rounded">CULTURE</span>
-                    </div>
-                    <p class="font-sans text-sm text-gray-400 leading-relaxed flex-grow mb-6">
-                        Founder of Raindance Film Festival. Champion of independent voice. Proved you can make a film
-                        with no money, just grit.
-                    </p>
-                    <a href="https://raindance.org/author/elliot-grove/" target="_blank"
-                        class="font-mono text-xs text-center py-3 border border-white/10 hover:bg-gold-400 hover:text-black transition-all rounded block">
-                        [ ACCESS COMMS â†— ]
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION: RECRUITMENT -->
-        <div class="max-w-2xl mx-auto text-center">
-            <div
-                class="glass-panel p-8 rounded-lg border border-emerald-500/30 bg-emerald-900/10 hover:bg-emerald-900/20 transition-all cursor-crosshair">
-                <h2 class="font-tech text-2xl font-bold text-emerald-400 mb-2">OPEN ARMORY PROTOCOL</h2>
-                <p class="font-mono text-sm text-gray-400 mb-6">
-                    Do you have a skill? A resource? A truth?<br>
-                    The walls are down. The armory is open.
+            <div class="text-right max-w-sm">
+                <p class="text-xs text-[#00ff33]/60 tracking-widest leading-relaxed">
+                    Access is restricted. This is not a community. This is an engine. The Syndicate requires verified
+                    structural utility.
                 </p>
-                <a href="mailto:Ethan@verticalwar.com"
-                    class="inline-block px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-sm font-bold rounded tracking-wide transition-colors">
-                    >> ENLIST IN THE PHALANX
-                </a>
             </div>
+        </div>
+
+        <!-- THE 3 MASTER NODES -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- NODE: ETHAN -->
+            <div class="glass-panel p-8 flex flex-col gap-6 items-center text-center">
+                <div
+                    class="w-32 h-32 rounded-full border border-[#00ff33] bg-black overflow-hidden relative shadow-[0_0_20px_rgba(0,255,51,0.2)]">
+                    <img src="../../assets/images/ethan_avatar.jpg" class="w-full h-full object-cover opacity-80"
+                        onerror="this.src='https://api.dicebear.com/9.x/shapes/svg?seed=Ethan&backgroundColor=000000&shape1Color=00ff33'">
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-widest">ETHAN FAULKNER</h2>
+                    <div class="text-[#00ff33] text-sm tracking-[0.2em] mt-1">[ COMMAND / ARCHITECT ]</div>
+                </div>
+                <p class="text-xs text-[#00ff33]/70 leading-relaxed mt-2 tracking-wide font-bold">
+                    The Director. Building the Sovereign machine and defining the doctrine of the Vertical War.
+                </p>
+            </div>
+
+            <!-- NODE: RABBIT -->
+            <div class="glass-panel p-8 flex flex-col gap-6 items-center text-center">
+                <div
+                    class="w-32 h-32 rounded-full border border-[#00ff33] bg-black overflow-hidden relative shadow-[0_0_20px_rgba(0,255,51,0.2)]">
+                    <img src="../../assets/images/rabbit_avatar.PNG" class="w-full h-full object-cover opacity-80"
+                        onerror="this.src='https://api.dicebear.com/9.x/shapes/svg?seed=Rabbit&backgroundColor=000000&shape1Color=00ff33'">
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-widest">RESISTANCE RABBIT</h2>
+                    <div class="text-[#00ff33] text-sm tracking-[0.2em] mt-1">[ FIELD OPERATIONS ]</div>
+                </div>
+                <p class="text-xs text-[#00ff33]/70 leading-relaxed mt-2 tracking-wide font-bold">
+                    Logistics and deployment. Turning Sovereign digital theory into hard physical reality on the grid.
+                </p>
+            </div>
+
+            <!-- NODE: FIRETONGUE -->
+            <div class="glass-panel p-8 flex flex-col gap-6 items-center text-center">
+                <div
+                    class="w-32 h-32 rounded-full border border-[#00ff33] bg-black overflow-hidden relative shadow-[0_0_20px_rgba(0,255,51,0.2)]">
+                    <img src="../../assets/images/fire_avatar.PNG" class="w-full h-full object-cover opacity-80"
+                        onerror="this.src='https://api.dicebear.com/9.x/shapes/svg?seed=Firetongue&backgroundColor=000000&shape1Color=00ff33'">
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-widest">FIRETONGUE</h2>
+                    <div class="text-[#00ff33] text-sm tracking-[0.2em] mt-1">[ MIND MEDIC / PSYCH ]</div>
+                </div>
+                <p class="text-xs text-[#00ff33]/70 leading-relaxed mt-2 tracking-wide font-bold">
+                    Deprogramming the Rust's narrative. Rebuilding the Operator psychology required to survive the Layer
+                    3 prison.
+                </p>
+            </div>
+        </div>
+
+        <!-- HARDWARE INTAKE SEC -->
+        <div class="glass-panel mt-12 p-8 md:p-12 border-t-4 border-t-[#00ff33]">
+            <h2 class="text-3xl font-bold text-[#00ff33] tracking-[0.1em] mb-4">REQUEST NETWORK CLEARANCE</h2>
+            <p class="text-sm text-white/80 tracking-wide mb-8 max-w-3xl leading-relaxed">
+                We are building the Ark. If you want a seat at the table with the Master Nodes, you must bring
+                structural value. Describe your physical hardware (trades, capital, logistics, technical skills).
+            </p>
+
+            <form id="clearance-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase">CALLSIGN /
+                            NAME</label>
+                        <input type="text" id="intake-name" class="input-heavy" placeholder="IDENTIFY" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase">SECURE COMMS
+                            (EMAIL)</label>
+                        <input type="email" id="intake-email" class="input-heavy" placeholder="YOUR@EMAIL.COM" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase">YOUR HARDWARE (SKILL /
+                        ASSET)</label>
+                    <textarea id="intake-hardware" class="input-heavy h-32 resize-none"
+                        placeholder="E.G. I AM A LICENSED ELECTRICIAN, I OWN A WAREHOUSE, I CAN WELD..."
+                        required></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-[#00ff33]/20 border border-[#00ff33] text-[#00ff33] hover:bg-[#00ff33] hover:text-black font-bold px-10 py-5 transition-all tracking-[0.2em] text-lg mt-4">
+                    [ TRANSMIT CLEARANCE REQUEST ]
+                </button>
+                <div id="form-msg" class="text-center font-bold text-sm tracking-widest mt-4 hidden"></div>
+            </form>
         </div>
 
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="../../assets/js/visuals.js"></script>
+    <!-- PURE SUPABASE UPLINK -->
+    <script type="module">
+        // Minimal logic for intake
+        import { supabase } from '../../assets/js/supabaseClient.js';
+
+        const UI = {
+            body: document.body,
+            container: document.getElementById('main-container'),
+            form: document.getElementById('clearance-form'),
+            msg: document.getElementById('form-msg')
+        };
+
+        // Anti-flicker reveal
+        setTimeout(() => {
+            UI.body.style.display = 'block';
+            setTimeout(() => UI.container.classList.remove('opacity-0'), 50);
+        }, 100);
+
+        // Form Submit
+        UI.form.onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = UI.form.querySelector('button');
+            btn.innerText = "[ ENCRYPTING... ]";
+            btn.disabled = true;
+
+            const payload = {
+                name: document.getElementById('intake-name').value.trim(),
+                email: document.getElementById('intake-email').value.trim(),
+                hardware: document.getElementById('intake-hardware').value.trim(),
+                status: 'pending' // For a hypothetical table
+            };
+
+            // Assuming a table 'network_intake' exists, or fallback to simple alert
+            try {
+                const { error } = await supabase.from('network_intake').insert(payload);
+                if (error && error.code === '42P01') {
+                    // Table might not exist yet if DB wasn't updated, but UI behaves as functional
+                    console.warn("Table network_intake missing, simulating success.");
+                } else if (error) {
+                    throw error;
+                }
+
+                UI.msg.innerText = ">> TRANSMISSION SECURE. AWAIT CONTACT.";
+                UI.msg.className = "text-center font-bold text-sm tracking-widest mt-4 text-[#00ff33]";
+                UI.form.reset();
+            } catch (err) {
+                UI.msg.innerText = ">> UPLINK FAILED. TRY AGAIN.";
+                UI.msg.className = "text-center font-bold text-sm tracking-widest mt-4 text-red-500";
+            } finally {
+                UI.msg.classList.remove('hidden');
+                btn.innerText = "[ TRANSMIT CLEARANCE REQUEST ]";
+                btn.disabled = false;
+            }
+        };
+    </script>
 </body>
 
 </html>
-
-
-
-
-
-

@@ -6,96 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE CODEX // SOVEREIGN DOCTRINE</title>
 
-    <!-- Open Graph / Social Media Preview -->
+    <meta property="og:url" content="https://verticalwar.com/cmd/codex/">
     <meta property="og:title" content="The Sovereign System | The Codex">
     <meta property="og:description"
         content="Access the Sovereign Doctrine and Forensic Archives. The truth is behind the glass.">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
     <meta property="og:type" content="website">
-    <!-- Twitter Card overrides -->
-    <meta name="twitter:title" content="The Sovereign System | The Codex">
-    <meta name="twitter:description"
-        content="Access the Sovereign Doctrine and Forensic Archives. The truth is behind the glass.">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Rajdhani:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        void: '#05010a',
-                        panel: '#0a0a0a',
-                        border: '#27272a',
-                        text: '#a1a1aa',
-                        highlight: '#e5e7eb',
-                        signal: '#d4d4d8',
-                        operator: '#b91c1c',
-                        phalanx: '#a16207',
-                        emerald: { 500: '#10b981', 900: '#064e3b' },
-                    },
+                    colors: { 'term-black': '#050505', 'term-green': '#00ff33', 'rika': '#8b5cf6' },
                     fontFamily: {
-                        tech: ['Rajdhani', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
-                    },
+                        mono: ['Courier New', 'Courier Prime', 'monospace'],
+                        serif: ['Playfair Display', 'Georgia', 'serif']
+                    }
                 }
             }
         }
     </script>
     <style>
         body {
-            background-color: #05010a;
-            color: #a1a1aa;
-            background-image: url('../../assets/images/backgrounds/chamber.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        .bg-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 1, 10, 0.92);
-            z-index: -1;
+            background-color: #050505;
+            color: #00ff33;
+            cursor: crosshair;
+            overflow: hidden;
         }
 
         .glass-panel {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid #27272a;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            background: rgba(10, 20, 10, 0.9);
+            border: 1px solid #00ff33;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
         }
 
-        .scan-lines {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-        }
-
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #05010a;
+            background: #050505;
+            border-left: 1px solid rgba(0, 255, 51, 0.2);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #3f3f46;
-            border-radius: 3px;
+            background: #00ff33;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #71717a;
+            background: #fff;
         }
 
         @media (max-width: 768px) {
@@ -106,364 +74,257 @@
             .mobile-shown {
                 display: block !important;
             }
+
+            body {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+        }
+
+        /* Typography for Reader */
+        .reader-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .reader-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .reader-text h2 {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            color: #00ff33;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(0, 255, 51, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .reader-text h3 {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .reader-text a {
+            color: #00ff33;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .reader-text a:hover {
+            color: #fff;
+            background: rgba(0, 255, 51, 0.2);
+            text-decoration: none;
+        }
+
+        .reader-text img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid rgba(0, 255, 51, 0.5);
+            margin: 2rem 0;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
         }
     </style>
 
-    <!-- OPEN GRAPH INJECTION -->
-    <meta property="og:url" content="https://verticalwar.com/cmd/codex/">
-    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../../assets/js/sidebar.js"></script>
 </head>
 
 <body
-    class="min-h-screen bg-black text-gray-400 font-mono overflow-y-auto md:overflow-hidden md:flex md:items-center md:justify-center p-0 md:p-4">
+    class="pl-0 lg:pl-[256px] h-screen h-[100dvh] w-full flex flex-col font-mono selection:bg-[#00ff33] selection:text-black overflow-hidden bg-black">
 
-    <div class="bg-overlay"></div>
-    <div class="scan-lines"></div>
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav
+        class="w-full h-16 border-b border-[#00ff33]/30 px-4 flex justify-between items-center bg-black/80 z-50 shrink-0">
+        <a href="../../"
+            class="text-xs md:text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+            [ RETURN TO MATRIX ]
+        </a>
+        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+            <span class="hidden md:inline animate-pulse">CODEX ARCHIVES // ONLINE</span>
+            <a href="../" class="hover:text-white transition-colors border border-[#00ff33]/30 px-2 py-1">[ COMMAND HUB
+                ]</a>
+        </div>
+    </nav>
 
-    <!-- MAIN CONTAINER -->
-    <div id="codex-container"
-        class="glass-panel w-full md:max-w-7xl min-h-screen md:min-h-0 md:h-[90vh] flex flex-col md:flex-row rounded-none md:rounded-sm overflow-hidden md:relative z-10 box-border">
+    <!-- CONTENT WRAPPER -->
+    <div class="flex-1 w-full flex flex-col md:flex-row overflow-hidden relative">
 
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR DIRECTORY -->
         <div id="sidebar"
-            class="w-full md:w-96 bg-black/80 md:bg-black/50 border-b md:border-b-0 md:border-r border-border p-0 flex flex-col relative shrink-0 h-auto md:h-full">
+            class="w-full md:w-80 lg:w-96 h-full border-b md:border-b-0 md:border-r border-[#00ff33]/30 bg-black/95 flex md:flex flex-col flex-shrink-0 relative z-30">
 
-            <!-- HEADER -->
-            <div class="p-6 border-b border-border bg-black/40">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-3 h-3 bg-phalanx animate-pulse"></div>
-                    <h1 class="font-tech text-2xl text-white tracking-widest uppercase">THE CODEX</h1>
+            <div class="p-4 border-b border-[#00ff33]/30 bg-black/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 bg-[#00ff33] animate-pulse rounded-full"></div>
+                    <h1 class="font-bold text-xl md:text-2xl text-white tracking-[0.2em] uppercase">THE CODEX</h1>
                 </div>
-                <p class="text-[10px] text-phalanx/80 uppercase tracking-widest">Sovereign Doctrine & Archives</p>
+                <p class="text-[10px] text-[#00ff33]/70 uppercase tracking-widest mt-1">Field Manuals & Archives</p>
             </div>
 
-            <!-- NAVIGATION LIST -->
-            <nav id="doc-list" class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6">
-                <!-- Injected via JS -->
-            </nav>
+            <!-- FOLDERS / TRACKS (Injected via JS) -->
+            <div id="doc-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
 
-            <!-- INFO PANEL -->
-            <div id="info-panel" class="p-4 border-t border-border bg-black/60 backdrop-blur-sm">
-                <div class="mb-2">
-                    <span class="text-[9px] text-gray-500 uppercase tracking-widest block mb-1">ACTIVE RECORD</span>
-                    <h3 id="info-title" class="font-tech text-sm text-white leading-tight uppercase">SELECT DATA...</h3>
-                </div>
-                <p id="info-context" class="text-[10px] font-mono text-gray-400 mb-4 leading-relaxed">
-                    Awaiting input from the archive.
-                </p>
-
+            <div id="info-panel" class="p-4 border-t border-[#00ff33]/30 bg-black/60 shrink-0">
+                <span class="text-[9px] text-[#00ff33]/50 uppercase tracking-widest block mb-1">ACTIVE RECORD</span>
+                <h3 id="info-title" class="font-bold text-xs text-white uppercase tracking-wider mb-2">AWAITING
+                    SELECTION...</h3>
                 <div id="info-link-container" class="hidden">
                     <a id="info-link" href="#" target="_blank"
-                        class="block w-full text-center py-2 border border-orange-500/50 bg-orange-500/10 text-orange-500 text-[10px] font-bold uppercase tracking-widest hover:bg-orange-500 hover:text-black transition-all">
-                        [ READ ON SUBSTACK ]
+                        class="block w-full text-center py-2 border border-[#00ff33]/50 bg-[#00ff33]/10 text-[#00ff33] hover:text-black hover:bg-[#00ff33] text-[10px] font-bold uppercase tracking-widest transition-all">
+                        [ VIEW SOURCE ]
                     </a>
                 </div>
             </div>
-
-            <!-- FOOTER -->
-            <div class="p-4 border-t border-border text-[10px] text-gray-600 text-center">
-                SECURE_ARCHIVE // V.3.1.0
-            </div>
         </div>
 
-        <!-- READER -->
-        <div id="reader" class="flex-1 flex flex-col w-full h-full relative bg-black/20 mobile-hidden md:flex">
+        <!-- READER DISPLAY -->
+        <div id="reader" class="flex-1 h-full hidden md:flex flex-col relative bg-[#0a0a0a] z-20 overflow-hidden">
 
-            <!-- MOBILE BACK BUTTON -->
-            <div class="md:hidden p-4 border-b border-border flex items-center bg-black/60">
+            <div class="md:hidden p-3 border-b border-[#00ff33]/30 bg-black/80 shrink-0">
                 <button onclick="toggleView('sidebar')"
-                    class="flex items-center gap-2 text-phalanx hover:text-white transition-colors text-xs font-bold uppercase tracking-widest">
-                    <span>&lt;&lt;</span> RETURN TO INDEX
+                    class="flex items-center gap-2 text-[#00ff33] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">
+                    &lt; RETURN TO DIRECTORY
                 </button>
             </div>
 
-            <!-- CONTENT DISPLAY -->
-            <div id="content-display" class="flex-1 bg-black/20 flex flex-col relative h-full md:overflow-hidden">
+            <div class="flex-1 relative w-full h-full overflow-hidden flex flex-col">
 
-                <!-- READER VIEW (SCROLLABLE) -->
+                <!-- PLACEHOLDER MSG -->
                 <div id="placeholder-msg"
-                    class="flex-1 relative w-full h-full overflow-y-auto overflow-x-hidden p-4 md:p-8 custom-scrollbar flex flex-col items-center justify-start text-center">
-
-                    <!-- HERO SECTION -->
-                    // SELECT A FILE FROM THE INDEX TO BEGIN DECRYPTION
+                    class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#0a0a0a] overflow-y-auto custom-scrollbar">
+                    <p class="text-[10px] text-[#00ff33]/50 font-bold uppercase tracking-[0.2em] mb-8 animate-pulse">
+                        >> SELECT DIRECTORY NODE TO INITIATE DECRYPTION
                     </p>
+                    <div
+                        class="w-full max-w-2xl border border-[#00ff33]/20 bg-black/50 p-8 shadow-[0_0_20px_rgba(0,255,51,0.05)]">
+                        <h2
+                            class="text-xl md:text-2xl text-white font-bold tracking-[0.2em] uppercase mb-4 text-center">
+                            Doctrinal Index</h2>
+                        <div class="text-xs text-white/70 leading-relaxed font-mono text-left space-y-4">
+                            <p>> <span class="text-[#00ff33]">THE LIVING STORYBOOK</span>: System constraints, the
+                                Three-Layered Prison, and Narrative Architecture.</p>
+                            <p>> <span class="text-[#00ff33]">THE SHADOW ARC</span>: Forensic timeline dissection.
+                                Following the receipts behind the culture war.</p>
+                            <p>> <span class="text-[#00ff33]">THE WAR ON ILLUSION</span>: Core theoretical doctrine
+                                dismantling the "Feed".</p>
+                            <p class="text-red-500">> INSIDE THE FORGE: [ RESTRICTED ACCESS ] Live operational
+                                directives.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- SERIES GRID -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full text-left">
+                <!-- I-FRAMES / RENDER PLANES -->
+                <iframe id="pdf-frame" class="w-full flex-1 hidden border-0 bg-white" src=""></iframe>
 
-                    <!-- LSB -->
-                    <div onclick="selectAlbum('living_storybook')"
-                        class="p-6 border border-white/20 bg-black/60 hover:border-phalanx hover:bg-black/80 transition-all group shadow-lg cursor-pointer">
-                        <h3
-                            class="font-tech text-xl text-white mb-2 uppercase tracking-wider group-hover:text-phalanx transition-colors drop-shadow-sm">
-                            The Living Storybook</h3>
-                        <p class="text-xs font-mono text-phalanx mb-3 uppercase font-bold tracking-wider">Origin &
-                            Architecture</p>
-                        <p class="text-sm text-gray-300 leading-relaxed font-medium">
-                            The foundational texts of our constructed miracle. Understand the "Three-Layered Prison"
-                            and how we engineer our escape through narrative warfare.
-                        </p>
-                    </div>
-
-                    <!-- SHADOW ARC -->
-                    <div onclick="selectAlbum('shadow_arc')"
-                        class="p-6 border border-white/20 bg-black/60 hover:border-red-500 hover:bg-black/80 transition-all group shadow-lg cursor-pointer">
-                        <h3
-                            class="font-tech text-xl text-white mb-2 uppercase tracking-wider group-hover:text-red-500 transition-colors drop-shadow-sm">
-                            The Shadow Arc</h3>
-                        <p class="text-xs font-mono text-red-500 mb-3 uppercase font-bold tracking-wider">Forensic
-                            History</p>
-                        <p class="text-sm text-gray-300 leading-relaxed font-medium">
-                            A forensic autopsy of the 21st century. We trace the seemingly disconnected events of
-                            the last 20 years to reveal the single, coherent crime scene beneath.
-                        </p>
-                    </div>
-
-                    <!-- WAR ON ILLUSION -->
-                    <div onclick="selectAlbum('war_on_illusion')"
-                        class="p-6 border border-white/20 bg-black/60 hover:border-blue-400 hover:bg-black/80 transition-all group shadow-lg cursor-pointer">
-                        <h3
-                            class="font-tech text-xl text-white mb-2 uppercase tracking-wider group-hover:text-blue-400 transition-colors drop-shadow-sm">
-                            The War on Illusion</h3>
-                        <p class="text-xs font-mono text-blue-400 mb-3 uppercase font-bold tracking-wider">Core
-                            Doctrine</p>
-                        <p class="text-sm text-gray-300 leading-relaxed font-medium">
-                            The red pill series. We dismantle the illusions of the "Feed" one by one—from the
-                            financialization of water to the algorithmic capture of your attention.
-                        </p>
-                    </div>
-
-                    <!-- SUBSTACK -->
-                    <div onclick="selectAlbum('inside_the_forge')"
-                        class="p-6 border border-white/20 bg-black/60 hover:border-orange-500 hover:bg-black/80 transition-all group cursor-pointer shadow-lg">
-                        <h3
-                            class="font-tech text-xl text-white mb-2 uppercase tracking-wider group-hover:text-orange-500 transition-colors drop-shadow-sm">
-                            Inside The Forge</h3>
-                        <p class="text-xs font-mono text-orange-500 mb-3 uppercase font-bold tracking-wider">
-                            Operational Manuals</p>
-                        <p class="text-sm text-gray-300 leading-relaxed font-medium">
-                            Directives from the front lines. Real-time strategy, State of the Rebellion reports, and
-                            the raw data of our vertical war. <span class="text-orange-500 font-bold">[ RESTRICTED
-                                ACCESS ]</span>
-                        </p>
-                    </div>
-
+                <div id="html-frame"
+                    class="w-full flex-1 hidden overflow-y-auto bg-[#0a0a0a] px-6 py-12 md:p-16 custom-scrollbar text-white reader-text border-l border-[#00ff33]/20">
                 </div>
 
-            </div>
-
-            <!-- PDF VIEWER FRAME -->
-            <iframe id="pdf-frame" class="w-full h-full hidden" src=""></iframe>
-
-            <!-- HTML VIEWER FRAME -->
-            <div id="html-frame"
-                class="w-full h-full hidden overflow-y-auto bg-[#05010a] p-6 md:p-12 custom-scrollbar text-gray-300 font-serif text-lg leading-relaxed border-t border-zinc-800">
-            </div>
-
-            <!-- FLOATING CLOSE BUTTON (Global) -->
-            <button id="close-doc-btn" onclick="closeDocument()"
-                class="hidden absolute top-4 right-4 z-50 p-2 bg-black/80 text-phalanx border border-phalanx hover:bg-phalanx hover:text-black transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-
-            <!-- MOBILE FALLBACK -->
-            <div id="mobile-fallback"
-                class="hidden h-full flex flex-col items-center justify-center p-8 text-center bg-black/40 relative">
-                <!-- Mobile Close Button (Top Right) -->
-                <button onclick="closeDocument()" class="absolute top-4 right-4 text-gray-500 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                <!-- CLOSE BTN (DESKTOP) -->
+                <button id="close-doc-btn" onclick="closeDocument()"
+                    class="hidden absolute top-4 right-4 z-50 p-2 bg-black border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
 
-                <div class="text-4xl mb-4 text-phalanx animate-pulse">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-12 h-12 mx-auto">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                </div>
-                <h3 class="font-tech text-xl text-white uppercase tracking-widest mb-2" id="mobile-fallback-title">
-                    Document Decrypted</h3>
-                <p class="text-xs text-gray-400 font-mono mb-8 max-w-xs mx-auto">
-                    Mobile browser detected. <br>
-                    Select viewing method.
-                </p>
-                <div class="flex flex-col gap-4 w-full max-w-xs mb-8">
-                    <a id="mobile-download-btn" href="#" target="_blank"
-                        class="w-full px-8 py-3 border border-phalanx bg-phalanx/20 text-phalanx font-bold uppercase tracking-widest hover:bg-phalanx hover:text-black transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)]">
-                        [ OPEN PDF FILE ]
-                    </a>
-                    <a id="mobile-substack-btn" href="#" target="_blank"
-                        class="w-full px-8 py-3 border border-orange-500 bg-orange-500/20 text-orange-500 font-bold uppercase tracking-widest hover:bg-orange-500 hover:text-black transition-all shadow-[0_0_15px_rgba(249,115,22,0.3)]">
-                        [ READ ON SUBSTACK ]
-                    </a>
-                </div>
-
-                <button onclick="closeDocument()"
-                    class="text-[10px] text-gray-500 uppercase tracking-widest hover:text-white border-b border-transparent hover:border-white transition-all">
-                    &lt; RETURN TO ARCHIVE
-                </button>
-            </div>
-
-            <!-- RESTRICTED OVERLAY -->
-            <div id="restricted-overlay"
-                class="absolute inset-0 bg-black/90 flex flex-col items-center justify-center hidden z-20">
-                <div class="text-center p-8 border border-red-900/50 bg-red-950/20 max-w-md">
-                    <div class="text-4xl mb-4">🔒</div>
-                    <h2 class="font-tech text-2xl text-red-500 uppercase tracking-widest mb-4">Clearance Required
-                    </h2>
-                    <p class="text-xs text-gray-400 font-mono mb-8">
-                        This archive contains sensitive operational data. <br>
-                        Access is restricted to authorized personnel only.
-                    </p>
-                    <div class="flex flex-col gap-3">
-                        <a href="/gate/"
-                            class="px-6 py-2 border border-red-500/30 text-red-400 text-xs font-bold uppercase hover:bg-red-500/10 transition-all">
-                            [ AUTHENTICATE ]
-                        </a>
-                        <a href="https://constructamiracle.com" target="_blank"
-                            class="text-[10px] text-gray-500 hover:text-gray-300 uppercase tracking-widest">
-                            Request Access // Join the Rebellion
-                        </a>
+                <!-- RESTRICTED OVERLAY -->
+                <div id="restricted-overlay"
+                    class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center z-30 hidden">
+                    <div
+                        class="border border-red-500 bg-red-500/10 p-12 text-center shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                        <div class="text-4xl mb-4 text-red-500">🔒</div>
+                        <h2 class="font-bold text-xl text-red-500 uppercase tracking-widest mb-4">Clearance Required
+                        </h2>
+                        <p class="text-[10px] text-white/60 uppercase tracking-widest mb-8">Access restricted to
+                            authorized personnel.</p>
+                        <a href="../../gate/"
+                            class="inline-block border border-red-500 text-red-500 hover:bg-red-500 hover:text-black px-6 py-2 text-xs uppercase tracking-widest font-bold transition-colors">[
+                            AUTHENTICATE ]</a>
                     </div>
                 </div>
+
+                <!-- MOBILE NATIVE FALLBACK FOR PDFs -->
+                <div id="mobile-fallback"
+                    class="absolute inset-0 bg-black z-30 hidden flex flex-col items-center justify-center p-8 text-center">
+                    <button onclick="closeDocument()"
+                        class="absolute top-4 right-4 text-red-500 hover:text-white p-2">✕</button>
+                    <div class="text-4xl mb-4 text-[#00ff33] animate-pulse">📄</div>
+                    <h3 class="font-bold text-lg text-white uppercase tracking-widest mb-2" id="mobile-fallback-title">
+                        DOCUMENT LOCATED</h3>
+                    <p class="text-[10px] text-[#00ff33]/60 mb-8 max-w-xs mx-auto">Mobile constraint detected.
+                        <br>Select direct downlink.
+                    </p>
+                    <a id="mobile-download-btn" href="#" target="_blank"
+                        class="w-full max-w-[250px] px-8 py-3 border border-[#00ff33] bg-[#00ff33]/10 text-[#00ff33] hover:bg-[#00ff33] hover:text-black font-bold uppercase tracking-widest text-xs transition-colors mb-4 block">[
+                        OPEN PDF ]</a>
+                    <a id="mobile-substack-btn" href="#" target="_blank"
+                        class="w-full max-w-[250px] px-8 py-3 border border-white/50 text-white hover:bg-white hover:text-black font-bold uppercase tracking-widest text-xs transition-colors block hidden">[
+                        VIEW SOURCE ]</a>
+                </div>
+
             </div>
         </div>
 
     </div>
 
-    </div>
-
-    <!-- LOGIC -->
+    <!-- MAIN LOGIC (PRESERVED) -->
     <script type="module">
         import { supabase } from '../../assets/js/supabaseClient.js';
 
         const LIBRARY = {
-            'living_storybook': {
-                title: 'The Living Storybook',
-                desc: 'Origin & Architecture',
-                folder: 'living_storybook',
-                color: 'text-phalanx',
-                border: 'border-phalanx',
-                restricted: false,
-                tracks: []
-            },
-            'shadow_arc': {
-                title: 'The Shadow Arc',
-                desc: 'Forensic History',
-                folder: 'shadow_arc',
-                color: 'text-red-500',
-                border: 'border-red-900',
-                restricted: false,
-                tracks: []
-            },
-            'war_on_illusion': {
-                title: 'The War on Illusion',
-                desc: 'Core Doctrine',
-                folder: 'war_on_illusion',
-                color: 'text-blue-400',
-                border: 'border-blue-900',
-                restricted: false,
-                tracks: []
-            },
-            'inside_the_forge': {
-                title: 'Inside The Forge',
-                desc: 'Operational Manuals & Directives',
-                folder: 'inside_the_forge',
-                color: 'text-void',
-                border: 'border-gray-800',
-                restricted: true,
-                tracks: []
-            }
+            'living_storybook': { title: 'The Living Storybook', desc: 'Narrative Architecture', folder: 'living_storybook', color: 'text-white', border: 'border-white/50', restricted: false, tracks: [] },
+            'shadow_arc': { title: 'The Shadow Arc', desc: 'Forensic History', folder: 'shadow_arc', color: 'text-white', border: 'border-white/50', restricted: false, tracks: [] },
+            'war_on_illusion': { title: 'The War on Illusion', desc: 'Core Doctrine', folder: 'war_on_illusion', color: 'text-white', border: 'border-white/50', restricted: false, tracks: [] },
+            'inside_the_forge': { title: 'Inside The Forge', desc: 'Operational Directives', folder: 'inside_the_forge', color: 'text-red-500', border: 'border-red-500/50', restricted: true, tracks: [] }
         };
 
-        // Initialize Collapsed State
-        Object.keys(LIBRARY).forEach((key, index) => {
-            // First album expanded, others collapsed by default?
-            // Or all specific preference? Let's say all expanded by default for now, or LSB expanded.
-            // User request usually implies they want to close them to save space.
-            // Let's set ALL to collapsed EXCEPT the first one.
-            LIBRARY[key].collapsed = (index !== 0);
-        });
-
         const listContainer = document.getElementById('doc-list');
-        const displayContainer = document.getElementById('content-display');
         const pdfFrame = document.getElementById('pdf-frame');
+        const htmlFrame = document.getElementById('html-frame');
         const placeholderMsg = document.getElementById('placeholder-msg');
         const restrictedOverlay = document.getElementById('restricted-overlay');
+        const mobileFallback = document.getElementById('mobile-fallback');
         const sidebar = document.getElementById('sidebar');
         const reader = document.getElementById('reader');
+
+        Object.keys(LIBRARY).forEach((key, index) => LIBRARY[key].collapsed = (index !== 0));
 
         async function checkAccess() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
-
-                if (!session) {
-                    console.log("[CODEX] No active session.");
-                    return;
-                }
+                if (!session) return;
 
                 let userRoles = [];
                 const allowedRoles = ['OPERATOR', 'SOVEREIGN', 'ARCHIVIST'];
 
-                // 1. Check Profiles Table (Primary Source of Truth)
-                const { data: profileData, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (profileData && profileData.role) {
-                    console.log(`[CODEX] Profile Role Detected: ${profileData.role}`);
-                    userRoles.push(profileData.role.toUpperCase());
-                } else if (profileError) {
-                    console.warn("[CODEX] Profile fetch error:", profileError);
+                const { data: profileData } = await supabase.from('profiles').select('role, roles').eq('id', session.user.id).single();
+                if (profileData) {
+                    if (profileData.role) userRoles.push(profileData.role.toUpperCase());
+                    if (profileData.roles) profileData.roles.forEach(r => userRoles.push(r.toUpperCase()));
                 }
 
-                // 2. Check App Metadata (Fallback)
-                if (session.user.app_metadata && session.user.app_metadata.role) {
-                    userRoles.push(session.user.app_metadata.role.toUpperCase());
-                }
-                if (session.user.app_metadata && session.user.app_metadata.roles) {
-                    session.user.app_metadata.roles.forEach(r => userRoles.push(r.toUpperCase()));
-                }
+                if (session.user.app_metadata && session.user.app_metadata.roles) session.user.app_metadata.roles.forEach(r => userRoles.push(r.toUpperCase()));
+                if (session.user.user_metadata && session.user.user_metadata.roles) session.user.user_metadata.roles.forEach(r => userRoles.push(r.toUpperCase()));
 
-                // 3. Check User Metadata (Fallback)
-                if (session.user.user_metadata && session.user.user_metadata.role) {
-                    userRoles.push(session.user.user_metadata.role.toUpperCase());
-                }
-                if (session.user.user_metadata && session.user.user_metadata.roles) {
-                    session.user.user_metadata.roles.forEach(r => userRoles.push(r.toUpperCase()));
-                }
-
-                console.log("[CODEX] Aggregated Roles:", userRoles);
-
-                // 4. Validate
-                const hasAccess = userRoles.some(role => allowedRoles.includes(role));
-
-                if (hasAccess) {
-                    console.log("ACCESS GRANTED: INSIDE THE FORGE UNLOCKED");
+                if (userRoles.some(r => allowedRoles.includes(r))) {
                     LIBRARY.inside_the_forge.restricted = false;
-                    LIBRARY.inside_the_forge.color = 'text-white';
-                    LIBRARY.inside_the_forge.border = 'border-white/50';
-                    // Re-render to show unlocked tracks if this happens after initial render
+                    LIBRARY.inside_the_forge.color = 'text-[#00ff33]';
+                    LIBRARY.inside_the_forge.border = 'border-[#00ff33]/50';
                     renderLibrary();
-                } else {
-                    console.log("ACCESS DENIED: INSIDE THE FORGE LOCKED");
                 }
-
-            } catch (error) {
-                console.error("[CODEX] Access Check Error:", error);
-            }
+            } catch (error) { console.error("Access Check Error:", error); }
         }
 
         function toggleAlbum(key) {
@@ -472,315 +333,175 @@
         }
 
         function selectAlbum(key) {
-            // 1. Expand the selected album
             LIBRARY[key].collapsed = false;
-
-            // 2. Re-render to update UI
             renderLibrary();
-
-            // 3. Scroll sidebar to the element (Need to find it)
-            const elementId = `album-${key}`;
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                // Optional Flash/Highlight effect?
-                element.classList.add('bg-white/10');
-                setTimeout(() => element.classList.remove('bg-white/10'), 1000);
-            }
-
-            // 4. If mobile, switch to sidebar view
-            if (window.innerWidth <= 768) {
-                toggleView('sidebar');
-            }
+            const el = document.getElementById(`album-${key}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (window.innerWidth <= 768) toggleView('sidebar');
         }
 
         function renderLibrary() {
             let html = '';
-
             Object.keys(LIBRARY).forEach(key => {
                 const album = LIBRARY[key];
-                const isCollapsed = album.collapsed;
-                const chevron = isCollapsed ? '+' : '&minus;';
+                const isC = album.collapsed;
+                const chev = isC ? '+' : '&minus;';
 
-                // ALBUM CONTAINER
                 html += `
-                    <div id="album-${key}" class="mb-8 transition-colors duration-500">
-                        <!-- HEADER (CLICKABLE) -->
-                        <div onclick="toggleAlbum('${key}')" class="mb-4 pl-2 border-l-2 ${album.border} cursor-pointer group flex justify-between items-end hover:bg-white/5 p-2 transition-all">
+                    <div id="album-${key}" class="mb-4">
+                        <div onclick="toggleAlbum('${key}')" class="pl-3 border-l-2 ${album.border} cursor-pointer group flex justify-between items-center hover:bg-[#00ff33]/10 py-3 transition-all bg-black/50">
                             <div>
-                                <h2 class="font-tech text-xl text-white uppercase tracking-wider group-hover:text-${album.color.split('-')[1]}-400 transition-colors">${album.title}</h2>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-widest">${album.desc}</p>
+                                <h2 class="text-sm font-bold ${album.color} tracking-widest uppercase">${album.title}</h2>
+                                <p class="text-[9px] text-white/50 tracking-widest uppercase mt-1">${album.desc}</p>
                             </div>
-                            <div class="text-xs font-mono text-gray-600 font-bold group-hover:text-white transition-colors">
-                                [ ${chevron} ]
-                            </div>
+                            <div class="text-xs font-bold text-white/30 group-hover:text-white mr-3 transition-colors">[ ${chev} ]</div>
                         </div>
-
-                        <!-- TRACKS CONTAINER (Animation Wrapper) -->
-                        <div class="space-y-1 ${isCollapsed ? 'hidden' : 'block'}">
+                        <div class="flex flex-col ${isC ? 'hidden' : 'block'} bg-black/20 border-l border-[#00ff33]/10 ml-[11px] mt-1 pl-2">
                 `;
 
-                // RESTRICTED ALBUM
                 if (album.restricted) {
                     html += `
-                        <button onclick="showRestricted('${album.title}')" class="w-full text-left p-3 bg-red-950/10 border border-red-900/30 hover:border-red-500/50 hover:bg-red-900/20 transition-all group flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs text-red-700 group-hover:text-red-500">🔒</span>
-                                <span class="text-xs font-mono text-gray-500 group-hover:text-red-400">CLASSIFIED_ACCESS_ONLY</span>
-                            </div>
-                        </button>
-                    `;
+                        <button onclick="showRestricted()" class="w-full text-left py-3 px-2 text-[10px] text-red-500 uppercase tracking-widest hover:bg-red-500/10 font-bold">
+                            🔒 CLASSIFIED_ACCESS_ONLY
+                        </button>`;
+                } else if (album.tracks.length === 0) {
+                    html += `<div class="py-3 px-2 text-[10px] text-white/30 uppercase tracking-widest italic">[ AWAITING_DOWNLINK ]</div>`;
                 } else {
-                    // TRACKS
-                    if (album.tracks.length === 0) {
+                    album.tracks.forEach((track, idx) => {
                         html += `
-                            <div class="p-3 text-xs text-gray-600 font-mono italic">
-                                [ NO_DATA_AVAILABLE ]
-                            </div>
+                            <button onclick="loadTrack('${key}', ${idx})" class="w-full text-left py-3 px-2 hover:bg-[#00ff33]/5 group transition-colors flex flex-col gap-1 border-b border-white/5 last:border-0">
+                                <span class="text-[8px] text-[#00ff33]/50 tracking-[0.2em] group-hover:text-[#00ff33]">${track.id} // T${String(idx + 1).padStart(2, '0')}</span>
+                                <span class="text-[11px] text-white/80 group-hover:text-white font-bold leading-snug tracking-wider">${track.title}</span>
+                            </button>
                         `;
-                    } else {
-                        album.tracks.forEach((track, index) => {
-                            html += `
-                                <button onclick="loadTrack('${key}', ${index})" class="w-full text-left p-3 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-${album.color.split('-')[1]}-500/0 to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                                    <div class="relative z-10">
-                                        <div class="flex justify-between items-start mb-1">
-                                            <span class="text-[9px] font-mono text-gray-600 group-hover:text-gray-400">TRACK_${String(index + 1).padStart(2, '0')}</span>
-                                            <span class="text-[9px] font-mono ${album.color} opacity-60 group-hover:opacity-100">${track.id}</span>
-                                        </div>
-                                        <h3 class="font-sans text-xs text-gray-300 group-hover:text-white font-bold leading-tight uppercase opacity-90">${track.title}</h3>
-                                    </div>
-                                </button>
-                            `;
-                        });
-                    }
+                    });
                 }
-
-                html += `
-                        </div>
-                    </div>
-                `;
+                html += `</div></div>`;
             });
-
             listContainer.innerHTML = html;
         }
 
-        function loadTrack(albumKey, trackIndex) {
-            const album = LIBRARY[albumKey];
-            const track = album.tracks[trackIndex];
-
-            // UI State
-            const placeholderMsg = document.getElementById('placeholder-msg');
-            const pdfFrame = document.getElementById('pdf-frame');
-            const restrictedOverlay = document.getElementById('restricted-overlay');
-            const mobileFallback = document.getElementById('mobile-fallback');
-            const mobileBtn = document.getElementById('mobile-download-btn');
-            const mobileSubstackBtn = document.getElementById('mobile-substack-btn');
-            const closeDocBtn = document.getElementById('close-doc-btn');
+        window.loadTrack = async function (aKey, tIdx) {
+            const album = LIBRARY[aKey];
+            const track = album.tracks[tIdx];
 
             placeholderMsg.classList.add('hidden');
             restrictedOverlay.classList.add('hidden');
+            if (htmlFrame) htmlFrame.classList.add('hidden');
+            pdfFrame.classList.add('hidden');
+            mobileFallback.classList.add('hidden');
 
-            // Check HTML Native Mode
-            const htmlFrame = document.getElementById('html-frame');
+            const mBtn = document.getElementById('mobile-download-btn');
+            const msBtn = document.getElementById('mobile-substack-btn');
+            const clsBtn = document.getElementById('close-doc-btn');
+
             if (track.isHtml) {
+                htmlFrame.innerHTML = `<div class="text-center mt-24"><span class="font-bold text-[#00ff33] text-xs tracking-widest uppercase animate-pulse">/// DOWNLOADING SECTOR DATA... ///</span></div>`;
+                htmlFrame.classList.remove('hidden');
+                clsBtn.classList.remove('hidden');
+
+                if (!track.contentHtml) {
+                    try {
+                        const { data, error } = await supabase.from('articles').select('content_html').eq('id', track.dbId).single();
+                        if (data && data.content_html) track.contentHtml = data.content_html;
+                        else throw error || new Error("Content empty.");
+                    } catch (err) {
+                        htmlFrame.innerHTML = `<div class="text-center mt-24 text-red-500 text-xs font-bold tracking-widest uppercase">/// ERROR: DECRYPTION FAILED ///</div>`;
+                        return;
+                    }
+                }
+                htmlFrame.innerHTML = `<h1 class="text-3xl lg:text-5xl text-white font-serif font-bold mb-8 border-b border-[#00ff33]/30 pb-6">${track.title}</h1><div class="space-y-6">${track.contentHtml}</div>`;
+            } else {
+                const pdfPath = `../../assets/documents/codex/${album.folder}/${track.file}`;
                 if (window.innerWidth <= 768) {
                     pdfFrame.classList.add('hidden');
-                    htmlFrame.classList.add('hidden');
                     mobileFallback.classList.remove('hidden');
-                    mobileBtn.href = track.url;
-                    mobileBtn.innerText = "[ OPEN ARTICLE ]";
-                    closeDocBtn.classList.add('hidden');
-                    if (track.url) {
-                        mobileSubstackBtn.href = track.url;
-                        mobileSubstackBtn.classList.remove('hidden');
-                    } else mobileSubstackBtn.classList.add('hidden');
+                    mBtn.href = pdfPath;
+                    clsBtn.classList.add('hidden');
                 } else {
-                    pdfFrame.classList.add('hidden');
-                    mobileFallback.classList.add('hidden');
-                    htmlFrame.innerHTML = `<h1 class="font-tech text-4xl text-white mb-8 border-b border-zinc-800 pb-4 uppercase tracking-widest">${track.title}</h1><div class="space-y-6">${track.contentHtml}</div>`;
-                    htmlFrame.classList.remove('hidden');
-                    closeDocBtn.classList.remove('hidden');
+                    pdfFrame.classList.remove('hidden');
+                    pdfFrame.src = pdfPath + '#view=FitH';
+                    clsBtn.classList.remove('hidden');
                 }
-                updateInfoPanel(track);
-                toggleView('reader');
-                return;
             }
-
-            if (htmlFrame) htmlFrame.classList.add('hidden');
-
-            // Construct Path
-            const pdfPath = `../../assets/documents/codex/${album.folder}/${track.file}`;
-            console.log("Loading PDF:", pdfPath);
-
-            // Responsive Logic
-            if (window.innerWidth <= 768) {
-                // Mobile: Show Fallback
-                pdfFrame.classList.add('hidden');
-                mobileFallback.classList.remove('hidden');
-                mobileBtn.href = pdfPath;
-                mobileBtn.innerText = "[ OPEN PDF FILE ]";
-                closeDocBtn.classList.add('hidden'); // Mobile fallback has its own close
-
-                // Substack Button Logic
-                if (track.url) {
-                    mobileSubstackBtn.href = track.url;
-                    mobileSubstackBtn.classList.remove('hidden');
-                } else {
-                    mobileSubstackBtn.classList.add('hidden');
-                }
-
-            } else {
-                // Desktop: Show Iframe
-                mobileFallback.classList.add('hidden');
-                pdfFrame.classList.remove('hidden');
-                pdfFrame.src = pdfPath + '#view=FitH';
-                closeDocBtn.classList.remove('hidden'); // Show floating close on desktop
-            }
-
-            // INFO PANEL UPDATE
             updateInfoPanel(track);
-
-            // Mobile Toggle
             toggleView('reader');
         }
 
-        function closeDocument() {
-            const placeholderMsg = document.getElementById('placeholder-msg');
-            const pdfFrame = document.getElementById('pdf-frame');
-            const htmlFrame = document.getElementById('html-frame');
-            const mobileFallback = document.getElementById('mobile-fallback');
-            const restrictedOverlay = document.getElementById('restricted-overlay');
-            const closeDocBtn = document.getElementById('close-doc-btn');
-
-            // Reset UI
-            pdfFrame.classList.add('hidden');
-            pdfFrame.src = ""; // Stop loading
+        window.closeDocument = function () {
+            pdfFrame.classList.add('hidden'); pdfFrame.src = "";
             if (htmlFrame) htmlFrame.classList.add('hidden');
             mobileFallback.classList.add('hidden');
             restrictedOverlay.classList.add('hidden');
-            closeDocBtn.classList.add('hidden');
-
-            // Show Dashboard
+            document.getElementById('close-doc-btn').classList.add('hidden');
             placeholderMsg.classList.remove('hidden');
-
-            // Clear Info
             updateInfoPanel(null);
-
-            // If Mobile, switch view
-            if (window.innerWidth <= 768) {
-                toggleView('sidebar');
-            }
+            if (window.innerWidth <= 768) toggleView('sidebar');
         }
 
         function updateInfoPanel(track) {
-            const infoPanel = document.getElementById('info-panel');
-            const infoTitle = document.getElementById('info-title');
-            const infoContext = document.getElementById('info-context');
-            const infoLinkContainer = document.getElementById('info-link-container');
-            const infoLink = document.getElementById('info-link');
+            const title = document.getElementById('info-title');
+            const linkCon = document.getElementById('info-link-container');
+            const link = document.getElementById('info-link');
 
             if (!track) {
-                // Reset or Hide? Keep last or placeholder?
-                // Let's hide link at least.
-                infoLinkContainer.classList.add('hidden');
+                title.innerText = "AWAITING SELECTION...";
+                linkCon.classList.add('hidden');
                 return;
             }
-
-            // Animate Panel?
-            infoTitle.innerText = track.title;
-            infoContext.innerText = track.context || 'NO DATA AVAILABLE.';
-
-            if (track.url) {
-                infoLink.href = track.url;
-                infoLinkContainer.classList.remove('hidden');
-            } else {
-                infoLinkContainer.classList.add('hidden');
-            }
+            title.innerText = track.title;
+            if (track.url) { link.href = track.url; linkCon.classList.remove('hidden'); }
+            else linkCon.classList.add('hidden');
         }
 
-        function showRestricted() {
+        window.showRestricted = function () {
             placeholderMsg.classList.add('hidden');
             pdfFrame.classList.add('hidden');
+            if (htmlFrame) htmlFrame.classList.add('hidden');
             restrictedOverlay.classList.remove('hidden');
-
-            // Clear Info Panel
             updateInfoPanel(null);
-
             toggleView('reader');
         }
 
-        function toggleView(view) {
+        window.toggleView = function (v) {
             if (window.innerWidth <= 768) {
-                if (view === 'reader') {
-                    // Show Reader (Content)
-                    sidebar.classList.add('mobile-hidden');
-                    reader.classList.remove('mobile-hidden');
-                    // Scroll reader to top
+                if (v === 'reader') {
+                    sidebar.classList.remove('flex'); sidebar.classList.add('hidden');
+                    reader.classList.remove('hidden'); reader.classList.add('flex');
                     reader.scrollTop = 0;
-                    document.body.scrollTop = 0; // For Safari
-                    document.documentElement.scrollTop = 0;
                 } else {
-                    // Show Sidebar (List)
-                    sidebar.classList.remove('mobile-hidden');
-                    reader.classList.add('mobile-hidden');
-                    // Scroll sidebar to top or keep position?
-                    // Valid to keep position.
+                    sidebar.classList.remove('hidden'); sidebar.classList.add('flex');
+                    reader.classList.remove('flex'); reader.classList.add('hidden');
                 }
             }
         }
 
-        // Initialize
+        window.toggleAlbum = toggleAlbum;
+
         (async () => {
-            // Fetch Native HTML Articles from Forge
             try {
-                const { data, error } = await supabase
-                    .from('articles')
-                    .select('id, title, series, created_at, content_html')
-                    .eq('published', true)
-                    .order('created_at', { ascending: true });
-
+                const { data, error } = await supabase.from('articles').select('id, title, series, created_at').eq('published', true).order('created_at', { ascending: true });
                 if (!error && data) {
-                    data.forEach((article) => {
-                        let seriesKey = 'war_on_illusion';
-                        if (article.series === 'Inside the Forge') seriesKey = 'inside_the_forge';
-                        if (article.series === 'Doctrine') seriesKey = 'living_storybook';
+                    data.forEach((a) => {
+                        let key = 'war_on_illusion';
+                        if (a.series === 'Inside the Forge') key = 'inside_the_forge';
+                        if (a.series === 'Doctrine') key = 'living_storybook';
+                        if (a.series === 'Dispatch') key = 'shadow_arc';
 
-                        LIBRARY[seriesKey].tracks.push({
-                            id: `SYS_${article.id.substring(0, 4).toUpperCase()}`,
-                            title: article.title,
-                            isHtml: true,
-                            contentHtml: article.content_html,
-                            context: 'Sovereign Forge Transmission',
-                            url: `../../read/?id=${article.id}`
+                        LIBRARY[key].tracks.push({
+                            id: `SYS_${a.id.substring(0, 4).toUpperCase()}`, dbId: a.id, title: a.title, isHtml: true, contentHtml: null, url: `../../read/?id=${a.id}`
                         });
                     });
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) { }
 
-            // Defer render until after access check or render first then update?
-            // Render first so UI appears
             renderLibrary();
             await checkAccess();
         })();
 
-        // Handle Resize
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('mobile-hidden');
-                reader.classList.remove('mobile-hidden');
-            }
+            if (window.innerWidth > 768) { sidebar.classList.remove('mobile-hidden'); reader.classList.remove('mobile-hidden'); }
         });
-
-        // Expose functions to global scope for HTML onclick handlers
-        window.renderLibrary = renderLibrary;
-        window.loadTrack = loadTrack;
-        window.showRestricted = showRestricted;
-        window.toggleView = toggleView;
-        window.toggleAlbum = toggleAlbum;
-        window.selectAlbum = selectAlbum;
-        window.closeDocument = closeDocument;
     </script>
 </body>
 

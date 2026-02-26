@@ -1,0 +1,675 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Paper Trail // Sovereign Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'command-black': '#09090b',
+                        'command-dark': '#18181b',
+                        'command-red': '#dc2626',
+                        'command-amber': '#d97706',
+                        'command-text': '#e4e4e7',
+                        'command-muted': '#71717a',
+                        'terminal-green': '#22c55e',
+                        'software-blue': '#3b82f6',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', "Helvetica Neue", 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'scanline': 'scanline 8s linear infinite',
+                        'blink': 'blink 1s step-end infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        },
+                        blink: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #e4e4e7;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            height: 100%;
+        }
+
+        html {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border: 1px solid #000;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #dc2626;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.15;
+        }
+
+        .crt-vignette {
+            background: radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.6) 100%);
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9;
+        }
+
+        /* HIDE GLOBAL NAV ON THIS PAGE */
+        #sov-nav-bar {
+            display: none !important;
+        }
+    </style>
+
+    <!-- NAV BAR INJECTION -->
+</head>
+
+<body>
+    <style>
+        body {
+            display: none;
+        }
+    </style>
+    <script type="module">
+        import { checkGuard } from '../../assets/js/accessGuard.js';
+
+        // --- AUTH GUARD RESTORED TO ORIGINAL BEHAVIOR ---
+        // If users have no roles, the guard will pass.
+        // If users HAVE roles (Operator/Archivist), it checks them.
+        checkGuard(['OPERATOR', 'ARCHIVIST', 'SOVEREIGN']).then(authorized => {
+            if (authorized) document.body.style.display = 'block';
+        });
+    </script>
+
+    <div class="scanline"></div>
+    <div class="crt-vignette"></div>
+    <div id="sovereign-systems-root" class="min-h-screen flex flex-col items-center justify-center font-mono text-sm">
+        <div class="text-center animate-pulse">
+            <span class="text-command-red">[ SYSTEM INITIALIZING ]</span><br>
+            <span class="text-zinc-600">RESTORING TACTICAL ASSETS...</span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="module">
+        import { progressManager, ACHIEVEMENTS, CURRICULUM } from '../../assets/js/progressManager.js';
+        window.progressManager = progressManager;
+        window.ACHIEVEMENTS = ACHIEVEMENTS;
+        window.CURRICULUM = CURRICULUM;
+    </script>
+
+    <script type="text/babel" data-presets="react,typescript">
+
+        // --- DATA CONSTANTS (RESTORED FULLY) ---
+        const ViewState = { TRAINING: 'TRAINING', ANALYZER: 'ANALYZER', MISSIONS: 'MISSIONS', LEXICON: 'LEXICON' };
+
+        const WIRE_CUTTER_MISSIONS = [
+            {
+                id: "WC-008",
+                title: "The Ledger Check",
+                difficulty: "STARTER",
+                description: "Go to openpaymentsdata.cms.gov. Type in your personal doctor or a TV doctor. Record the dollar amount they took from Pharma last year.",
+                action: "Search Open Payments database for one medical authority figure.",
+                why: "Because the report is the abstract; the receipt is the ledger."
+            },
+            {
+                id: "WC-009",
+                title: "The Grant Hunt",
+                difficulty: "INTERMEDIATE",
+                description: "Go to reporter.nih.gov. Look up the lead author of a 'breakthrough' study you saw this week.",
+                action: "Cross-reference an 'independent' expert with NIH grant funding.",
+                why: "To trace State dependencies in 'objective' scientific literature."
+            },
+            {
+                id: "WC-010",
+                title: "The Abstract Bypass",
+                difficulty: "INTERMEDIATE",
+                description: "Download a medical study PDF. Skip the abstract. Ctrl+F for 'Competing Interests'. Report the findings.",
+                action: "Ignore the press release. Read the conflicts of interest section of a raw study.",
+                why: "The abstract is PR. The disclosures are legally mandated reality."
+            },
+            {
+                id: "WC-011",
+                title: "The Amgen Deployment",
+                difficulty: "ADVANCED",
+                description: "The next time someone says 'Trust the settled science' online, deploy the Amgen 89% replication failure statistic to shatter the frame.",
+                action: "Use the Replication Crisis as a Philosophical Shield against appeals to authority.",
+                why: "To break the spell of the 'Prestige Hierarchy'."
+            }
+        ];
+
+        const TRAINING_MODULES = [
+            {
+                id: 'MOD-06',
+                title: "I. THE CHOCOLATE LIE",
+                subtitle: "DIAGNOSIS PHASE",
+                content: [
+                    "How to build a scientific consensus out of thin air.",
+                    { term: "P-HACKING", definition: "Manipulating a dataset to find \"significant\" patterns by testing multiple hypotheses and only reporting the ones that \"work.\"", type: "RUST", image: "../../assets/images/lexicon/ep2/P-HACKING.jpeg" },
+                    { term: "DATA DREDGING", definition: "The process of sifting through massive amounts of data to find coincidental correlations.", type: "SOFTWARE", image: "../../assets/images/lexicon/ep2/DATA_DREDGE.jpeg" }
+                ],
+                quiz: {
+                    question: "SITUATION: You read a headline: 'New Study Shows Daily Butter Consumption Extends Lifespan.' You check the methodology. The sample size is 12 people. They measured 50 different health metrics over 2 weeks and only reported on the one that improved. What is this?",
+                    options: ["A breakthrough in nutritional science.", "P-Hacking (Data Dredging).", "A randomized control trial.", "The Semmelweis Reflex."],
+                    correctAnswer: 1, explanation: "P-Hacking. Roll the dice enough times, and eventually, you'll get Yahtzee. They only published the Yahtzee."
+                }
+            },
+            {
+                id: 'MOD-07',
+                title: "II. PROJECT 226",
+                subtitle: "HISTORICAL TRACE",
+                content: [
+                    "The blueprint for buying reality.",
+                    { term: "THE SUGAR BRIBE", definition: "In 1965, the Sugar Research Foundation paid Harvard scientists to publish a literature review blaming fat—not sugar—for heart disease.", type: "HARDWARE", image: "../../assets/images/lexicon/ep2/PROJ_226.jpeg" },
+                    { term: "APPEAL TO AUTHORITY", definition: "Bypassing logic by relying on the perceived prestige of the source (e.g., 'Harvard Scientists').", type: "SOFTWARE", image: "../../assets/images/lexicon/ep2/APPEAL_TO_AUTH.jpeg" }
+                ],
+                quiz: {
+                    question: "SITUATION: A prestigious Ivy League nutritionist publishes a review article urging Congress to classify pizza as a vegetable. You run a Conflict Scan and find he received a $150,000 'unrestricted grant' from the Frozen Food Institute. What is the operational term for his review?",
+                    options: ["Independent Policy Recommendation.", "An Appeal to Authority.", "Laundered Public Relations (Project 226).", "A valid scientific consensus."],
+                    correctAnswer: 2, explanation: "Project 226 demonstrated that industry doesn't argue the data; they just buy the loudest microphone in the room."
+                }
+            },
+            {
+                id: 'MOD-08',
+                title: "III. THE FUNDING EFFECT",
+                subtitle: "STATISTICAL CORRELATION",
+                content: [
+                    "The mechanism of capture.",
+                    { term: "FUNDING BIAS", definition: "The statistical reality that industry-sponsored research consistently yields outcomes favorable to the sponsor.", type: "RUST", image: "../../assets/images/lexicon/ep2/FUND_BIAS.jpeg" },
+                    { term: "THE SPONSORSHIP EFFECT", definition: "The phenomenon where who pays for the study is the single greatest predictor of the result.", type: "HARDWARE", image: "../../assets/images/lexicon/ep2/SPONSORSHIP.jpeg" }
+                ],
+                quiz: {
+                    question: "SITUATION: A pharmaceutical company funds 100 trials for a new anti-depressant. According to the Funding Effect (Sponsorship Bias) statistics, how many of those trials are likely to conclude the drug is completely ineffective?",
+                    options: ["Roughly 50%.", "Around 25%.", "Zero percent (0%).", "100%."],
+                    correctAnswer: 2, explanation: "Zero. In biological sciences, a 0% failure rate is statistically impossible without steering the outcome. Funding is the primary predictive variable."
+                }
+            },
+            {
+                id: 'MOD-09',
+                title: "IV. EPISTEMOLOGICAL DEFENSE",
+                subtitle: "THE SHIELD",
+                content: [
+                    "How to survive the information war.",
+                    { term: "THE POPPERIAN BLADE", definition: "The principle of Falsifiability. If a theory cannot, even in principle, be proven wrong, it is not science; it is dogma.", type: "TACTIC", image: "../../assets/images/lexicon/ep2/PAP_BLADE.jpeg" },
+                    { term: "THE AMGEN AUDIT", definition: "In 2012, Amgen attempted to replicate 53 \"landmark\" cancer biology studies. Only 6 (11%) could be replicated.", type: "HARDWARE", image: "../../assets/images/lexicon/ep2/AMGEN_AUDIT.jpeg" }
+                ],
+                quiz: {
+                    question: "SITUATION: A prominent scientist appears on CNN stating that 'The science is settled' regarding a new experimental treatment, and anyone asking for long-term data is 'anti-science.' Which epistemic weapon do you deploy?",
+                    options: ["The Appeal to Authority.", "The Popperian Blade.", "The Semmelweis Reflex.", "The Funding Effect."],
+                    correctAnswer: 1, explanation: "The Popperian Blade. If a theory cannot be questioned or falsified, it is not Science; it is Dogma."
+                }
+            }
+        ];
+
+        // --- SERVICES (PRESERVED) ---
+        const analyzeNarrative = async (text) => {
+            try {
+                const systemPrompt = `YOU ARE THE CONFLICT SCANNER... (Full prompt implied)`;
+                const r = await fetch("/api/antigravity.php", {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ model: "gemini-3-flash-preview", contents: [{ role: "user", parts: [{ text: systemPrompt }] }] })
+                });
+                const data = await r.json();
+                if (data.error) throw new Error(data.error);
+                const textResponse = data.text || "";
+                return JSON.parse(textResponse.replace(/```json/g, '').replace(/```/g, '').trim());
+            } catch (error) {
+                return { verdict: "ERROR", explanation: "SYSTEM JAMMED: " + error.message };
+            }
+        };
+
+        // --- COMPONENTS ---
+        const Button = ({ children, variant = 'primary', isLoading, className = '', ...props }) => {
+            const styles = {
+                primary: "bg-command-red/10 border-command-red text-command-red hover:bg-command-red hover:text-white hover:shadow-[0_0_15px_rgba(220,38,38,0.5)]",
+                secondary: "bg-transparent border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white",
+                success: "bg-green-900/10 border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+            };
+            return <button className={`px-6 py-3 font-mono text-xs uppercase tracking-widest border transition-all ${styles[variant]} ${className}`} disabled={isLoading || props.disabled} {...props}>{isLoading ? "[ PROCESSING ]" : children}</button>;
+        };
+
+        const DefinitionCard = ({ data }) => {
+            const colors = { HARDWARE: 'green', SOFTWARE: 'blue', RUST: 'amber', TACTIC: 'red' };
+            const c = colors[data.type] || 'zinc';
+            const br = c === 'zinc' ? 'border-zinc-800' : (c === 'amber' ? 'border-command-amber' : (c === 'red' ? 'border-command-red' : `border-${c}-800`));
+            const tx = c === 'zinc' ? 'text-zinc-500' : (c === 'amber' ? 'text-command-amber' : (c === 'red' ? 'text-command-red' : `text-${c}-500`));
+
+            return (
+                <div className={`my-8 border-l-2 ${br} bg-black/50 group hover:bg-black/80 transition-all`}>
+                    {data.image && (
+                        <div className="w-full h-48 overflow-hidden border-b border-zinc-900 relative">
+                            <img src={data.image} alt={data.term} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute top-2 right-2 bg-black/80 px-2 py-1 text-[10px] font-mono text-white border border-white/20">IMG_REF</div>
+                        </div>
+                    )}
+                    <div className="p-6">
+                        <div className={`font-mono text-[10px] uppercase tracking-widest mb-2 opacity-70 ${tx}`}>{data.type} ARCHETYPE</div>
+                        <h3 className="font-mono text-lg font-bold mb-2 uppercase text-white">{data.term}</h3>
+                        <p className="font-mono text-zinc-400 text-xs leading-relaxed">{data.definition}</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const Quiz = ({ data, onComplete }) => {
+            const [sel, setSel] = React.useState(null);
+            const [sts, setSts] = React.useState('IDLE');
+            const verify = () => setSts(sel === data.correctAnswer ? 'CORRECT' : 'WRONG');
+
+            return (
+                <div className={`mt-8 border border-zinc-800 bg-zinc-900/20 p-6 ${sts === 'WRONG' ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : ''}`}>
+                    <h4 className="font-mono text-command-red text-xs uppercase tracking-widest mb-4">[ TACTICAL CHECKPOINT ]</h4>
+                    <p className="font-mono text-sm text-white mb-6">{data.question}</p>
+                    <div className="space-y-3 mb-6">
+                        {data.options.map((opt, i) => (
+                            <button key={i} onClick={() => sts !== 'CORRECT' && setSel(i)}
+                                className={`w-full text-left p-4 text-xs font-mono border transition-all ${sel === i ? (sts === 'IDLE' ? 'border-white text-white' : (sts === 'CORRECT' ? 'border-green-500 text-green-500 bg-green-900/20' : 'border-red-500 text-red-500 bg-red-900/10')) : 'border-zinc-800 text-zinc-500 hover:border-zinc-600'}`}>
+                                <span className="mr-3 opacity-50">[{String.fromCharCode(65 + i)}]</span>{opt}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex justify-end">
+                        {sts === 'IDLE' && <Button onClick={verify} disabled={sel === null}>VERIFY</Button>}
+                        {sts === 'WRONG' && <Button variant="secondary" onClick={() => setSts('IDLE')}>RETRY</Button>}
+                        {sts === 'CORRECT' && <Button variant="success" onClick={() => { onComplete(); setSts('IDLE'); setSel(null) }}>PROCEED &gt;&gt;</Button>}
+                    </div>
+                    {sts === 'CORRECT' && <div className="mt-4 p-4 border border-green-900 bg-green-900/10 text-xs font-mono text-green-400"><span className="block font-bold mb-1">DOCTRINE:</span>{data.explanation}</div>}
+                    {sts === 'WRONG' && <div className="mt-4 p-4 border border-red-900 bg-red-900/10 text-xs font-mono text-red-400"><span className="block font-bold mb-1 text-white">WARNING // LOGIC FAILURE:</span>"You are letting them win. Re-evaluate the target." - Ryuko</div>}
+                </div>
+            );
+        };
+
+        const TrainingInterface = ({ onAllComplete }) => {
+            const [idx, setIdx] = React.useState(0);
+            const [done, setDone] = React.useState([]);
+
+            const complete = (i) => {
+                if (!done.includes(i)) {
+                    const newDone = [...done, i];
+                    setDone(newDone);
+
+                    // CHECK ALL COMPLETE
+                    if (newDone.length === TRAINING_MODULES.length) {
+                        if (onAllComplete) onAllComplete();
+                    }
+                }
+                if (i + 1 < TRAINING_MODULES.length) setIdx(i + 1);
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto pb-20 animate-fade-in-up">
+                    <div className="mb-12 border-b border-zinc-800 pb-8 flex justify-between items-end">
+                        <div><h1 className="font-mono text-2xl font-bold uppercase text-white tracking-tighter">TRAINING INTERFACE</h1></div>
+                        <div className="text-right font-mono text-xs"><span className="text-zinc-500">COMPLETE:</span> <span className="text-command-amber font-bold">{Math.round((done.length / TRAINING_MODULES.length) * 100)}%</span></div>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div className="lg:col-span-3 space-y-1">
+                            {TRAINING_MODULES.map((m, i) => (
+                                <button key={i} onClick={() => i <= done.length && setIdx(i)} className={`w-full text-left px-4 py-3 font-mono text-xs border-l-2 transition-colors ${i === idx ? 'border-command-red text-white bg-zinc-900' : (done.includes(i) ? 'border-transparent text-green-500' : 'border-transparent text-zinc-600')}`}>
+                                    {i + 1 < 10 ? `0${i + 1}` : i + 1} // {m.subtitle}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="lg:col-span-9 min-h-[500px]">
+                            {TRAINING_MODULES.map((m, i) => i === idx && (
+                                <div key={m.id} className="animate-fade-in-up border border-zinc-800 bg-black/80 p-8">
+                                    <h2 className="font-mono text-xl font-bold text-white uppercase mb-8 border-b border-zinc-900 pb-4">{m.title}</h2>
+                                    <div className="space-y-6">{m.content.map((b, bi) => typeof b === 'string' ? <p key={bi} className="font-mono text-zinc-400 text-sm leading-relaxed">{b}</p> : <DefinitionCard key={bi} data={b} />)}</div>
+                                    {m.quiz && <Quiz data={m.quiz} onComplete={() => complete(i)} />}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const MissionLog = () => {
+            const [cpy, setCpy] = React.useState(null);
+            const cp = (t, i) => { navigator.clipboard.writeText(t); setCpy(i); setTimeout(() => setCpy(null), 2000); };
+            return (
+                <div className="max-w-5xl mx-auto pb-20 animate-fade-in-up">
+                    <div className="mb-8 border-b border-zinc-800 pb-8"><h1 className="font-mono text-2xl font-bold uppercase text-white tracking-tighter">MISSION LOG</h1></div>
+                    <div className="grid gap-6">
+                        {WIRE_CUTTER_MISSIONS.map(m => (
+                            <div key={m.id} className="border border-zinc-800 bg-black/50 p-6 group hover:border-zinc-600 transition-colors">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-3"><span className="font-mono text-xs text-zinc-500">[{m.id}]</span><h3 className="font-mono text-lg font-bold uppercase text-white">{m.title}</h3></div>
+                                    <button onClick={() => cp(m.action, m.id)} className="font-mono text-[10px] text-zinc-500 hover:text-white uppercase border border-zinc-800 px-2 py-1 hover:border-white transition-all">{cpy === m.id ? '[ COPIED ]' : '[ C P Y ]'}</button>
+                                </div>
+                                <p className="font-mono text-sm text-zinc-400 mb-4">{m.description}</p>
+                                <div className="border-l-2 border-command-red pl-4 py-1 bg-command-red/5"><span className="block font-mono text-[10px] text-command-red uppercase mb-1">MANDATE:</span><p className="font-mono text-xs text-white">{m.action}</p></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )
+        };
+
+        const ConflictScanner = () => {
+            const [input, setInput] = React.useState(''); const [loading, setLoading] = React.useState(false); const [res, setRes] = React.useState(null);
+            const analyze = async () => { if (!input.trim()) return; setLoading(true); setRes(null); setRes(await analyzeNarrative(input)); setLoading(false); };
+            return (
+                <div className="max-w-4xl mx-auto pb-20 animate-fade-in-up">
+                    <div className="mb-8 border-b border-zinc-800 pb-8"><h1 className="font-mono text-2xl font-bold uppercase text-white tracking-tighter">CONFLICT SCANNER</h1></div>
+                    <textarea value={input} onChange={(e) => setInput(e.target.value)} className="w-full h-40 bg-black border border-zinc-700 text-white font-mono text-sm p-4 focus:outline-none focus:border-command-red placeholder-zinc-700 mb-4" placeholder="ENTER EXPERT NAME OR URL..." />
+                    <div className="flex justify-end mb-8"><Button onClick={analyze} isLoading={loading} disabled={!input.trim()}>SCAN</Button></div>
+                    {res && <div className="border border-zinc-800 bg-black p-6 space-y-6"><div className="flex justify-between border-b pb-4"><span className="text-xs uppercase text-zinc-500">ASSESSMENT</span><span className={`font-bold text-xl ${res.verdict === 'RECEIPT' ? 'text-green-500' : 'text-red-500'}`}>[{res.verdict}]</span></div><p className="font-mono text-sm text-zinc-300">{res.explanation}</p></div>}
+                </div>
+            )
+        };
+
+        // --- PROGRESS INTEGRATION ---
+
+        const BriefingInterface = ({ onComplete }) => {
+            const [checked, setChecked] = React.useState(false);
+            const [loading, setLoading] = React.useState(false);
+
+            const handleComplete = async () => {
+                setLoading(true);
+                await progressManager.saveAchievement(ACHIEVEMENTS.PT_BRIEFING_READ);
+                setLoading(false);
+                onComplete();
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto pb-20 animate-fade-in-up">
+                    <div className="mb-12 border-b border-zinc-800 pb-8">
+                        <h1 className="font-mono text-2xl font-bold uppercase text-white tracking-tighter">PROTOCOL BRIEFING // PHASE 0</h1>
+                        <p className="text-zinc-500 font-mono text-xs mt-2">MANDATORY INTELLIGENCE REVIEW</p>
+                    </div>
+
+                    <div className="grid gap-8 mb-12">
+                        <div className="border border-zinc-800 bg-black/50 p-8 hover:border-command-red/50 transition-colors group">
+                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-command-red transition-colors">TYPE 1: THE AUTHORITY TRAP</h3>
+                            <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+                                Understand how authority is manufactured and weaponized to bypass your internal logic.
+                            </p>
+                            <a href="https://constructamiracle.com/p/the-artificial-horizon" target="_blank" className="inline-flex items-center gap-2 text-command-red font-bold text-xs uppercase tracking-widest border border-command-red/30 px-4 py-2 hover:bg-command-red hover:text-white transition-all">
+                                [ ACCESS FILE ]
+                            </a>
+                        </div>
+
+                        <div className="border border-zinc-800 bg-black/50 p-8 hover:border-command-red/50 transition-colors group">
+                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-command-red transition-colors">TYPE 2: THE PAPER TRAIL (EP.2)</h3>
+                            <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+                                The Director's Cut. How to follow the ledger, identify financial conflicts, and deploy the Philosophical Shield.
+                            </p>
+                            <a href="https://constructamiracle.com/p/early-release-the-paper-trail-episode" target="_blank" className="inline-flex items-center gap-2 text-command-red font-bold text-xs uppercase tracking-widest border border-command-red/30 px-4 py-2 hover:bg-command-red hover:text-white transition-all">
+                                [ ACCESS FILE ]
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="border-t border-zinc-800 pt-8 flex flex-col items-center gap-6">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                            <div className={`w-5 h-5 border transition-all flex items-center justify-center ${checked ? 'bg-command-red border-command-red' : 'border-zinc-600 bg-black group-hover:border-zinc-400'}`}>
+                                {checked && <span className="text-white text-xs font-bold">X</span>}
+                            </div>
+                            <input type="checkbox" className="hidden" checked={checked} onChange={(e) => setChecked(e.target.checked)} />
+                            <span className={`font-mono text-sm ${checked ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
+                                I HAVE REVIEWED THE BRIEFING MATERIALS.
+                            </span>
+                        </label>
+
+                        <Button
+                            onClick={handleComplete}
+                            disabled={!checked || loading}
+                            isLoading={loading}
+                            className={!checked ? 'opacity-50 cursor-not-allowed' : ''}
+                        >
+                            INITIALIZE PROTOCOL &gt;&gt;
+                        </Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [view, setView] = React.useState(null); // Null initially for loading
+            const [dataLoaded, setDataLoaded] = React.useState(false);
+            const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+            const [progress, setProgress] = React.useState({});
+
+            // Initialize Progress
+            React.useEffect(() => {
+                const load = async () => {
+                    await progressManager.init();
+
+                    // Determine initial view based on progress
+                    if (!progressManager.isUnlocked('pt_briefing')) {
+                        setView('LOCKED');
+                    } else if (!progressManager.isUnlocked('pt_training')) {
+                        setView('BRIEFING');
+                    } else if (!progressManager.isUnlocked('pt_missions')) {
+                        setView(ViewState.TRAINING);
+                    } else {
+                        setView(ViewState.MISSIONS); // Default to missions if all done taking them to the "end game"
+                    }
+
+                    // Force refresh trigger
+                    setProgress({ ...progressManager.progressCache });
+                    setDataLoaded(true);
+                };
+                load();
+            }, []);
+
+            const handleNav = (v) => {
+                // LOCK CHECK
+                if (v === ViewState.TRAINING && !progressManager.isUnlocked('pt_training')) {
+                    alert("ACCESS DENIED. COMPLETE BRIEFING FIRST.");
+                    return;
+                }
+                if (v === ViewState.MISSIONS && !progressManager.isUnlocked('pt_missions')) {
+                    alert("ACCESS DENIED. COMPLETE TRAINING MODULES.");
+                    return;
+                }
+
+                setView(v);
+                setMobileMenuOpen(false);
+            };
+
+            const handleBriefingComplete = () => {
+                setProgress({ ...progressManager.progressCache });
+                setView(ViewState.TRAINING);
+                window.scrollTo(0, 0);
+            };
+
+            const handleTrainingComplete = async () => {
+                await progressManager.saveAchievement(ACHIEVEMENTS.PT_TRAINING_COMPLETE);
+                await progressManager.saveAchievement(ACHIEVEMENTS.PT_MISSIONS_COMPLETE); // Unlock Ep 2 immediately upon finishing training? 
+                // Or wait for Missions? Detailed plan said "Unlock Missions only after training". 
+                // Let's stick to: Training unlocks Missions. Viewing Missions unlocks Ep 2.
+
+                setProgress({ ...progressManager.progressCache });
+                // We don't force nav, visual feedback is enough usually, but let's prompt
+                if (confirm("TRAINING COMPLETE. MISSIONS UNLOCKED. PROCEED?")) {
+                    setView(ViewState.MISSIONS);
+                    window.scrollTo(0, 0);
+                }
+            };
+
+            // On view missions, unlock Ep 2 (if not already)
+            React.useEffect(() => {
+                if (view === ViewState.MISSIONS && !progressManager.hasAchievement(ACHIEVEMENTS.PT_MISSIONS_COMPLETE)) {
+                    progressManager.saveAchievement(ACHIEVEMENTS.PT_MISSIONS_COMPLETE);
+                }
+            }, [view]);
+
+            if (!dataLoaded) return (
+                <div className="min-h-screen flex items-center justify-center text-command-red font-mono animate-pulse">
+                    LOADING TACTICAL PROFILE...
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen bg-void w-full flex flex-col">
+                    <header className="relative md:sticky top-0 z-50 bg-void/90 backdrop-blur border-b border-zinc-800 h-16 flex items-center px-4 md:px-6 justify-between">
+
+                        {/* LOGO AREA */}
+                        <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
+                            <a href="../../" className="font-mono font-bold text-white tracking-tighter text-xs md:text-sm flex items-center gap-2 group shrink-0">
+                                <div className="w-2 h-2 bg-command-red group-hover:shadow-[0_0_10px_red] transition-all" />
+                                <span className="hidden md:inline">SOVEREIGN//SYSTEMS</span>
+                                <span className="md:hidden">SOVEREIGN</span>
+                            </a>
+                            <span className="text-zinc-700 text-xs">/</span>
+                            <span className="font-mono text-zinc-500 text-[10px] md:text-xs tracking-widest truncate">PAPER TRAIL</span>
+                        </div>
+
+                        {/* DESKTOP NAV */}
+                        <nav className="hidden md:flex items-center gap-6 font-mono text-xs absolute left-1/2 transform -translate-x-1/2">
+                            <button onClick={() => handleNav('BRIEFING')} className={`hover:text-white uppercase ${view === 'BRIEFING' ? 'text-command-red' : 'text-zinc-500'}`}>[00] Briefing</button>
+
+                            <button onClick={() => handleNav(ViewState.TRAINING)} className={`uppercase flex items-center gap-2 ${view === ViewState.TRAINING ? 'text-command-red' : 'text-zinc-500 hover:text-white'}`}>
+                                [01] Training
+                                {!progressManager.isUnlocked('pt_training') && <span className="text-[10px]">🔒</span>}
+                            </button>
+
+                            <button onClick={() => handleNav(ViewState.ANALYZER)} className={`hover:text-white uppercase ${view === ViewState.ANALYZER ? 'text-command-red' : 'text-zinc-500'}`}>[02] Analyzer</button>
+
+                            <button onClick={() => handleNav(ViewState.MISSIONS)} className={`uppercase flex items-center gap-2 ${view === ViewState.MISSIONS ? 'text-command-red' : 'text-zinc-500 hover:text-white'}`}>
+                                [03] Missions
+                                {!progressManager.isUnlocked('pt_missions') && <span className="text-[10px]">🔒</span>}
+                            </button>
+
+                            <button onClick={() => handleNav(ViewState.LEXICON)} className={`hover:text-white uppercase ${view === ViewState.LEXICON ? 'text-command-red' : 'text-zinc-500'}`}>[04] Lexicon</button>
+                        </nav>
+
+                        {/* RIGHT AREA */}
+                        <div className="flex items-center gap-4">
+                            <a href="../" className="hidden md:block font-mono text-[10px] text-zinc-500 hover:text-white uppercase border border-zinc-800 px-3 py-1 hover:border-zinc-500 transition-all">EXIT</a>
+                            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-command-red font-mono text-xs border border-command-red/50 px-3 py-1 bg-command-red/10">
+                                {mobileMenuOpen ? 'CLOSE [X]' : 'MENU [=]'}
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* MOBILE MENU */}
+                    {mobileMenuOpen && (
+                        <div className="fixed inset-0 z-40 bg-black/95 pt-20 px-6 flex flex-col gap-6 md:hidden animate-fade-in-up">
+                            <div className="space-y-4 font-mono text-sm border-b border-zinc-800 pb-6">
+                                <button onClick={() => handleNav('BRIEFING')} className={`block w-full text-left py-2 ${view === 'BRIEFING' ? 'text-command-red border-l-2 border-command-red pl-4' : 'text-zinc-500'}`}>[00] BRIEFING</button>
+                                <button onClick={() => handleNav(ViewState.TRAINING)} className={`block w-full text-left py-2 ${view === ViewState.TRAINING ? 'text-command-red border-l-2 border-command-red pl-4' : 'text-zinc-500'}`}>
+                                    [01] TRAINING {!progressManager.isUnlocked('pt_training') && '(LOCKED)'}
+                                </button>
+                                <button onClick={() => handleNav(ViewState.ANALYZER)} className={`block w-full text-left py-2 ${view === ViewState.ANALYZER ? 'text-command-red border-l-2 border-command-red pl-4' : 'text-zinc-500'}`}>[02] SCANNER</button>
+                                <button onClick={() => handleNav(ViewState.MISSIONS)} className={`block w-full text-left py-2 ${view === ViewState.MISSIONS ? 'text-command-red border-l-2 border-command-red pl-4' : 'text-zinc-500'}`}>
+                                    [03] MISSIONS {!progressManager.isUnlocked('pt_missions') && '(LOCKED)'}
+                                </button>
+                                <button onClick={() => handleNav(ViewState.LEXICON)} className={`block w-full text-left py-2 ${view === ViewState.LEXICON ? 'text-command-red border-l-2 border-command-red pl-4' : 'text-zinc-500'}`}>[04] LEXICON</button>
+                            </div>
+                            <a href="../" className="block w-full text-center py-4 border border-zinc-800 text-zinc-500 hover:text-white hover:border-white transition-colors font-mono text-xs tracking-widest uppercase">&lt; EXIT TERMINAL &gt;</a>
+                        </div>
+                    )}
+
+                    <main className="flex-grow p-4 md:p-12 pb-32 md:pb-12 max-w-7xl mx-auto w-full">
+                        {view === 'LOCKED' && (
+                            <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur flex items-center justify-center flex-col text-center p-8 border border-zinc-800">
+                                <div className="text-4xl mb-4">🔒</div>
+                                <h2 className="text-xl font-bold text-command-red mb-2">RESTRICTED ACCESS</h2>
+                                <p className="text-zinc-500 text-sm mb-6">EPISODE 1 MUST BE COMPLETED PRIOR TO INITIATING EPISODE 2.</p>
+                                <a href="../receipt-protocol/" className="bg-command-red/10 border border-command-red text-command-red hover:bg-command-red hover:text-white transition-all px-6 py-3 font-mono text-xs uppercase tracking-widest">
+                                    RETURN TO EPISODE 1
+                                </a>
+                            </div>
+                        )}
+                        {view === 'BRIEFING' && <BriefingInterface onComplete={handleBriefingComplete} />}
+                        {view === ViewState.TRAINING && (
+                            <div className="relative">
+                                {/* LOCKED OVERLAY IF BYPASSED SOMEHOW */}
+                                {!progressManager.isUnlocked('pt_training') && (
+                                    <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur flex items-center justify-center flex-col text-center p-8 border border-zinc-800">
+                                        <div className="text-4xl mb-4">🔒</div>
+                                        <h2 className="text-xl font-bold text-command-red mb-2">RESTRICTED ACCESS</h2>
+                                        <p className="text-zinc-500 text-sm mb-6">COMPLETE MANDATORY BRIEFING TO UNLOCK TRAINING.</p>
+                                        <Button onClick={() => setView('BRIEFING')}>GO TO BRIEFING</Button>
+                                    </div>
+                                )}
+                                {/* We need to pass a callback to TrainingInterface logic to save individual module progress? 
+                                    The current TrainingInterface stores local state. 
+                                    We should ideally update it to save partial progress, but for this first pass, 
+                                    we just need to know when EVERYTHING is done to unlock Missions.
+                                    The existing code has `complete(i)` logic. We can modify TrainingInterface slightly 
+                                    or just wrap it. 
+                                    Actually, I cannot easily modify TrainingInterface without replacing it too. 
+                                    Let's pass a prop `onAllComplete`.
+                                */}
+                                <TrainingInterface onAllComplete={handleTrainingComplete} />
+                            </div>
+                        )}
+                        {view === ViewState.ANALYZER && <ConflictScanner />}
+                        {view === ViewState.MISSIONS && (
+                            <div className="relative">
+                                {!progressManager.isUnlocked('pt_missions') && (
+                                    <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur flex items-center justify-center flex-col text-center p-8 border border-zinc-800">
+                                        <div className="text-4xl mb-4">🔒</div>
+                                        <h2 className="text-xl font-bold text-command-red mb-2">CLASSIFIED CLEARANCE NEEDED</h2>
+                                        <p className="text-zinc-500 text-sm mb-6">COMPLETE ALL TRAINING MODULES TO ACCESS MISSION LOG.</p>
+                                        <Button onClick={() => setView(ViewState.TRAINING)}>RESUME TRAINING</Button>
+                                    </div>
+                                )}
+                                <MissionLog />
+                            </div>
+                        )}
+                        {view === ViewState.LEXICON && <iframe src="../../cmd/lexicon/index.html" className="w-full h-[600px] md:h-[800px] border border-zinc-800 bg-black" title="Lexicon"></iframe>}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('sovereign-systems-root'));
+        root.render(<App />);
+
+    </script>
+</body>
+
+</html>

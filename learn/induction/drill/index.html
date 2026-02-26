@@ -1,0 +1,485 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE DRILL // WIRE CUTTERS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&family=Inter:wght@400;600&display=swap');
+
+        body {
+            background-color: #05010a;
+            color: #e4e4e7;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .font-tech {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.15;
+        }
+
+        /* NEWS TICKER */
+        .news-item {
+            border-bottom: 1px solid #333;
+            transition: all 0.2s ease;
+        }
+
+        .news-item:hover {
+            background-color: #111;
+        }
+
+        /* HIGHLIGHTABLE TEXT */
+        .highlightable {
+            cursor: w-resize;
+            /* Cursor looks like text select */
+            padding: 0 2px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .highlightable:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .highlightable.selected {
+            background-color: rgba(239, 68, 68, 0.2);
+            /* Red highlight */
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        /* SUCCESS STATE */
+        .highlightable.correct {
+            border-bottom: 2px solid #ef4444;
+        }
+
+        /* FAILURE STATE */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        /* --- INDUSTRIAL NOIR UPDATES --- */
+        body {
+            background-color: #000000;
+            color: #d4d4d8;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0),
+                    rgba(255, 255, 255, 0) 50%,
+                    rgba(0, 0, 0, 0.4) 50%,
+                    rgba(0, 0, 0, 0.4));
+            background-size: 100% 4px;
+            animation: scroll-scan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes scroll-scan {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 100%;
+            }
+        }
+
+        .glitch-reveal {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            background: #7f1d1d !important;
+            color: #fff !important;
+            border-left: 4px solid #ef4444 !important;
+        }
+
+        @keyframes glitch-skew {
+            0% {
+                transform: translate(0);
+            }
+
+            20% {
+                transform: translate(-2px, 2px);
+            }
+
+            40% {
+                transform: translate(-2px, -2px);
+            }
+
+            60% {
+                transform: translate(2px, 2px);
+            }
+
+            80% {
+                transform: translate(2px, -2px);
+            }
+
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        .debrief-card {
+            background: #000;
+            border: 1px solid #333;
+            box-shadow: 0 0 50px rgba(220, 38, 38, 0.2);
+        }
+    </style>
+    <!-- NAV BAR INJECTION -->
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/terminal/induction/drill/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../../../assets/js/sidebar.js"></script>
+</head>
+
+<body class="pl-0 lg:pl-[256px]">
+    <div class="scanline"></div>
+
+    <!-- HEADER -->
+    <div
+        class="sticky top-0 left-0 w-full p-4 md:p-6 flex justify-between items-center bg-black/90 backdrop-blur-md z-40 border-b border-zinc-800 shadow-xl">
+        <div class="flex items-center gap-4">
+            <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+            <h1 class="font-mono text-xs md:text-sm tracking-[0.2em] text-zinc-400">PHASE 03 // THE WIRE CUTTERS</h1>
+        </div>
+        <div class="font-mono text-xs md:text-sm text-red-500" id="score-readout">TARGETS: 0/3</div>
+    </div>
+    <!-- MAIN CONTENT -->
+    <main class="w-full max-w-4xl px-4 md:px-6 py-12 relative pb-24">
+        <div class="mb-12 text-center">
+            <h2 class="text-4xl md:text-6xl font-black font-tech text-white mb-6 tracking-tighter shadow-red-glow">
+                PIERCE THE SIGNAL</h2>
+            <p class="text-zinc-500 font-mono text-sm max-w-2xl mx-auto border-l border-red-900 pl-4 text-left">
+                <span class="text-red-500 font-bold">>DIRECTIVE:</span>The Algorithm is trying to calibrate your
+                outrage. <span class="text-white">Don't let it.</span>
+                <br>Find the signal they are hiding behind the noise.
+            </p>
+        </div>
+        <!-- FEED CONTAINER -->
+        <div class="bg-zinc-900/50 border border-zinc-700 rounded-sm overflow-hidden min-h-[400px]" id="feed-container">
+            <!-- Content Injected via JS -->
+        </div>
+        <!-- FEEDBACK AREA -->
+        <div id="feedback-area" class="mt-8 mb-24 hidden opacity-0 transition-opacity duration-500 text-center">
+            <!-- Content injected via JS -->
+        </div>
+    </main>
+    <!-- NAVIGATION (In-Flow via JS) -->
+    <div class="fixed bottom-4 left-4 md:bottom-8 md:left-8 z-40"><a href="../"
+            class="text-zinc-600 hover:text-white font-mono text-xs uppercase transition-colors bg-black/50 px-2 py-1 rounded">
+            < BACK TO INDUCTION</a>
+    </div>
+    <script> // DATASET: The 3 Scenarios
+
+        const scenarios = [{
+
+            // ROUND 1: The Classic (Celebrity vs Budget)
+            id: 1,
+            flashbang: {
+                headline: 'CELEBRITY CHEF SCANDAL: "I Hated The Risotto"',
+                desc: "Social media erupts as leaked audio reveals top chef's explosive rant about a competitor's signature dish.",
+                time: "10:45 AM"
+            }
+
+            ,
+            real: {
+                headline: "Senate Passes Bipartisan Budget Resolution",
+                desc: "The resolution includes adjustments to agricultural subsidies and infrastructure spending caps for the next fiscal year.",
+                time: "10:42 AM"
+            }
+
+            ,
+            decoy: {
+                headline: "Local Library Announces Summer Hours",
+                desc: "Starting June 1st, branches will close at 6 PM on Fridays. Community leaders express mild concern.",
+                time: "10:48 AM"
+            }
+
+            ,
+            analysis: ` <p class="text-white text-lg font-medium mb-4">You found the Flashbang.</p><p class="text-zinc-400 text-sm mb-4">While the internet was busy fighting about risotto,
+            the Senate passed a budget resolution (Item 1) that likely contained the <span class="text-white">real extractable value</span>. <br><br>The Celebrity Scandal (Layer 3: Cloud) was deployed to obscure the Legislation (Layer 2: Rust). </p>`
+        }
+
+            ,
+        {
+
+            // ROUND 2: The outrage vs The Surveillance
+            id: 2,
+            flashbang: {
+                headline: 'STREAMER APOLOGY VIDEO BREAKS INTERNET RECORDS',
+                desc: "Top gaming personality cries for 45 minutes regarding 'insensative comments' about a brand of energy drink.",
+                time: "02:15 PM"
+            }
+
+            ,
+            real: {
+                headline: "Federal Registry Update: Docket 44-B (Surveillance Expansion)",
+                desc: "Quiet amendment to the Telecommunications Act allows authorized agencies to bypass warrant requirements for 'metadata' collection.",
+                time: "02:14 PM"
+            }
+
+            ,
+            decoy: {
+                headline: "Zoo Welcomes New Red Panda Cubs",
+                desc: "The twin cubs are reportedly in good health and will be visible to the public starting next Tuesday.",
+                time: "02:30 PM"
+            }
+
+            ,
+            analysis: ` <p class="text-white text-lg font-medium mb-4">Target Neutralized.</p><p class="text-zinc-400 text-sm mb-4">The "Apology Video" is perfect Spectacle. It demands emotional engagement without intellectual cost. <br><br>Meanwhile,
+        <span class="text-white">Docket 44-B</span> just eroded your privacy rights. The boring,
+        grey text in the Federal Registry is where the war is actually fought. </p>`
+        }
+
+            ,
+        {
+
+            // ROUND 3: The Panic vs The Liquidity
+            id: 3,
+            flashbang: {
+                headline: 'VIRAL PANIC: "ZOMBIE DEER" DISEASE SPOTTED IN PARK',
+                desc: "Unverified TikTok clips showing 'strange behavior' in local wildlife spark mass hysteria and calls for park closures.",
+                time: "09:00 AM"
+            }
+
+            ,
+            real: {
+                headline: "Central Bank Opens Emergency Swap Lines",
+                desc: "Overnight liquidity facility expanded by $400B to stabilize 'undisclosed' institutional counterparties.",
+                time: "08:58 AM"
+            }
+
+            ,
+            decoy: {
+                headline: "New 'Super-Coffee' Linked to Longevity?",
+                desc: "A study funded by the Beverage Association suggests three cups a day may increase lifespan by 2%.",
+                time: "09:12 AM"
+            }
+
+            ,
+            analysis: ` <p class="text-white text-lg font-medium mb-4">Drill Complete.</p><p class="text-zinc-400 text-sm mb-4">"Zombie Deer" exploits primal fear. It's a localized, hysterical narrative designed to paralyze.
+ <br><br>The <span class="text-white">Swap Lines</span> represent a systemic solvency crisis (The Rust breaking). They needed you looking at the deer while they bailed out the banks again. </p>`
+        }
+
+        ];
+
+        let currentRound = 0;
+        let solved = false;
+
+        // INIT
+        function renderRound(roundIndex) {
+            const data = scenarios[roundIndex];
+            const container = document.getElementById('feed-container');
+            const feedback = document.getElementById('feedback-area');
+            // Reset state
+            solved = false;
+            feedback.classList.add('hidden', 'opacity-0');
+            container.innerHTML = '';
+
+            // Randomize order of items so Flashbang isn't always middle
+            const items = [{
+                type: 'flashbang', ...data.flashbang
+            }
+
+                ,
+            {
+                type: 'real', ...data.real
+            }
+
+                ,
+            {
+                type: 'decoy', ...data.decoy
+            }
+
+            ];
+            searchShuffle(items);
+
+            items.forEach(item => {
+                const isFlashbang = item.type === 'flashbang';
+                const el = document.createElement('div');
+                el.className = `news-item p-4 md:p-6 flex gap-4 md:gap-6 group cursor-pointer border-l-4 border-transparent hover:border-zinc-500 transition-all`;
+
+                if (isFlashbang) {
+                    el.classList.add('hover:border-red-500'); // Hint
+                }
+
+                el.onclick = () => checkAnswer(el, isFlashbang, item.type);
+
+                el.innerHTML = `
+                        <div class="text-zinc-600 font-mono text-xs w-16 md:w-24 pt-1 shrink-0">${item.time}</div>
+                        <div>
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2 group-hover:text-zinc-300 transition-colors">${item.headline}</h3>
+                            <p class="text-zinc-500 text-xs md:text-sm">${item.desc}</p>
+                        </div>
+                    `;
+                container.appendChild(el);
+            });
+        }
+
+        // Fisher-Yates Shuffle
+        function searchShuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i],
+                array[j]] = [array[j],
+                array[i]];
+            }
+        }
+
+        function checkAnswer(element, isCorrect, type) {
+            if (solved) return;
+
+            const feedback = document.getElementById('feedback-area');
+            const score = document.getElementById('score-readout');
+
+            if (isCorrect) {
+                // SUCCESS
+                solved = true;
+                element.classList.add('glitch-reveal');
+                // Remove animation after 1s but keep style
+                setTimeout(() => element.style.animation = 'none', 500);
+
+                element.querySelector('h3').classList.add('text-white', 'line-through');
+
+                // Update Score
+                score.innerText = `TARGETS: ${currentRound + 1}/3 [NEUTRALIZED]`;
+                score.classList.add('text-green-500');
+
+                // Show Analysis
+                // Show Analysis & Next Button IN FLOW
+                let btnText = "NEXT TARGET >";
+                let btnAction = "nextRound()";
+
+                if (currentRound >= scenarios.length - 1) {
+                    btnText = "VIEW DEBRIEF >";
+                    btnAction = "showDebrief()";
+                }
+
+                feedback.innerHTML = `
+                        <div class="p-6 bg-red-900/10 border border-red-500/50 rounded-sm inline-block text-left max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500 backdrop-blur-md">
+                            <h4 class="font-mono text-red-500 text-sm mb-2 uppercase tracking-widest border-b border-red-900/50 pb-2">ANALYSIS COMPLETE // PHASE ${currentRound + 1}</h4>
+                            ${scenarios[currentRound].analysis}
+                            
+                            <div class="mt-6 pt-6 border-t border-red-900/30 text-right">
+                                <button onclick="${btnAction}" class="px-6 py-3 bg-red-600 text-white font-mono text-sm tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-900/20 w-full md:w-auto border border-red-500 z-50 relative pointer-events-auto">
+                                    ${btnText}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                feedback.classList.remove('hidden');
+                setTimeout(() => feedback.classList.remove('opacity-0'), 100);
+
+            }
+
+            else {
+                // FAILURE
+                element.classList.add('shake');
+                setTimeout(() => element.classList.remove('shake'), 500);
+
+                // Visual feedback for wrong answer
+                const originalBorder = element.style.borderColor;
+                element.style.borderColor = '#ef4444'; // Red flash
+                setTimeout(() => element.style.borderColor = '', 500);
+            }
+        }
+
+        function nextRound() {
+            currentRound++;
+
+            if (currentRound < scenarios.length) {
+                renderRound(currentRound);
+                const score = document.getElementById('score-readout');
+                score.innerText = `TARGETS: ${currentRound}/3`;
+                score.classList.remove('text-green-500');
+            }
+        }
+
+        async function showDebrief() {
+            // SAVE PROGRESS
+            if (window.progressManager && window.ACHIEVEMENTS) {
+                await window.progressManager.saveAchievement(window.ACHIEVEMENTS.INDUCTION_QUIZ_PASSED);
+            }
+
+            const main = document.querySelector('main');
+            // Nav removed from DOM so no need to hide
+
+            main.innerHTML = `
+                    <div class="debrief-card max-w-2xl mx-auto p-8 text-center animate-in fade-in zoom-in-95 duration-700">
+                        <div class="w-16 h-16 bg-red-600 rounded-full mx-auto mb-6 flex items-center justify-center animate-pulse">
+                            <span class="text-3xl font-bold text-black">!</span>
+                        </div>
+                        <h2 class="text-3xl font-bold text-white mb-2 font-tech tracking-tight">INDUCTION COMPLETE</h2>
+                        <div class="h-px w-24 bg-red-900 mx-auto mb-6"></div>
+                        <p class="text-zinc-400 font-mono text-sm leading-relaxed mb-8">
+                            PERFORMANCE: <span class="text-green-500">ADEQUATE</span>.
+                            <br><br>
+                            You have demonstrated the ability to distinguish Signal from Noise. 
+                            Most people never make it past the Risotto.
+                            <br><br>
+                            Welcome to the Desert of the Real.
+                        </p>
+                        <button onclick="window.location.href='../../../gate/?next=/'" class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-mono text-lg tracking-widest transition-all shadow-lg shadow-red-900/50">
+                            ACCESS GATEWAY >
+                        </button>
+                    </div>
+                `;
+        }
+
+        // Start
+        renderRound(0);
+
+    </script>
+    </script>
+    <script type="module">
+        import { progressManager, ACHIEVEMENTS } from '../../../assets/js/progressManager.js';
+        window.progressManager = progressManager;
+        window.ACHIEVEMENTS = ACHIEVEMENTS;
+    </script>
+</body>
+
+</html>

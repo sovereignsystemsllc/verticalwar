@@ -1,1240 +1,317 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>GEAR PROFILE // SOVEREIGN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN DOSSIER // PHALANX</title>
+    
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY. NO EXTERNAL OR LEGACY SCRIPTS. -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
     <script>
-        window.onerror = function (msg, url, line, col, error) {
-            alert("CRITICAL ERROR:\n" + msg + "\nLine: " + line);
-            document.body.style.display = 'block'; // Force show
-            document.body.innerHTML += '<div style="color:red; background:black; padding:20px;">' + msg + '</div>';
-        };
-
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'term-black': '#050505', 'term-red': 'var(--term-color)', 'term-dim': '#441111', 'term-gold': '#ffd700', 'term-blue': '#00bfff' },
-                    fontFamily: { mono: ['Courier New', 'monospace'] },
-                    animation: { 'scan': 'scan 4s linear infinite', 'blink': 'blink 1s step-end infinite', 'glitch': 'glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite' },
-                    keyframes: {
-                        glitch: {
-                            '0%': { transform: 'translate(0)' },
-                            '20%': { transform: 'translate(-2px, 2px)' },
-                            '40%': { transform: 'translate(-2px, -2px)' },
-                            '60%': { transform: 'translate(2px, 2px)' },
-                            '80%': { transform: 'translate(2px, -2px)' },
-                            '100%': { transform: 'translate(0)' }
-                        }
-                    }
+                    colors: { 'term-black': '#050505', 'term-green': '#00ff33' },
+                    fontFamily: { mono: ['Courier New', 'monospace'] }
                 }
             }
         }
     </script>
     <style>
-        :root {
-            --term-color: #00ff33;
-            /* MATRIX GREEN DEFAULT */
-        }
-
         body {
             background-color: #050505;
-            color: var(--term-color);
+            color: #00ff33;
             cursor: crosshair;
-            display: none;
-            /* Hidden until loaded */
+            display: none; /* Anti-flicker */
         }
-
+        
         .glass-panel {
-            background: rgba(20, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--term-color);
-            box-shadow: 0 0 20px rgba(0, 255, 51, 0.2);
-            /* Keep slight green tint or make dynamic? Let's genericize or keep pulse */
-            transition: all 0.3s ease;
+            background: rgba(10, 20, 10, 0.9);
+            border: 1px solid #00ff33;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
         }
 
-        .avatar-glow {
-            box-shadow: 0 0 30px var(--term-color);
-        }
-
-        /* DOSSIER MODE STYLES */
-        body.dossier-mode {
-            background-color: #0a0a0a;
-            color: #a1a1aa;
-        }
-
-        .dossier-mode .glass-panel {
-            background: rgba(10, 10, 10, 0.9);
-            border-color: #333;
-            box-shadow: none;
-        }
-
-        .dossier-mode .text-term-red {
-            /* color: #d4d4d8 !important; */
-            /* Force gray text */
-        }
-
-        .dossier-mode .border-term-red {
-            /* border-color: #333 !important; */
-        }
-
-        .dossier-mode .avatar-glow {
-            box-shadow: none;
-            /* border-color: #333; */
-            /* filter: grayscale(100%); */
-        }
-
-        /* ROLE TAGS */
-        .tag-operator {
-            color: #ffd700 !important;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            border-color: #ffd700 !important;
-        }
-
-        .tag-archivist {
-            color: #00bfff !important;
-            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
-            border-color: #00bfff !important;
-        }
-
-        /* 404 GLITCH SCREEN */
-        #error-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: black;
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .glitch-text {
-            font-size: 4rem;
-            font-weight: bold;
-            color: red;
-            text-transform: uppercase;
-            animation: glitch 0.3s infinite;
-            letter-spacing: 0.2em;
-        }
-
-        .dossier-mode input:disabled {
-            background: transparent;
-            border: none;
+        .input-heavy {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 51, 0.5);
             color: white;
-            padding: 0;
-            box-shadow: none;
-            cursor: default;
+            padding: 1rem;
+            width: 100%;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            outline: none;
+            transition: all 0.2s ease;
         }
-    </style>
 
-    <!-- OPEN GRAPH INJECTION -->
-    <meta property="og:url" content="https://verticalwar.com/cmd/profile/">
-    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+        .input-heavy:focus {
+            border-color: #00ff33;
+            box-shadow: 0 0 15px rgba(0, 255, 51, 0.4);
+        }
+
+        /* Dossier Read-Only Mode */
+        body.mode-read-only .glass-panel {
+            border-color: #444;
+            box-shadow: none;
+        }
+        body.mode-read-only .text-term-green { color: #888; text-shadow: none; }
+    </style>
 </head>
 
-<body
-    class="min-h-screen w-full bg-term-black text-term-red font-mono selection:bg-term-red selection:text-black overflow-y-auto pb-24">
+<body class="min-h-screen w-full font-mono pb-24 selection:bg-[#00ff33] selection:text-black">
 
-    <!-- 404 ERROR SCREEN -->
-    <div id="error-screen">
-        <div class="glitch-text">404: OPERATIVE NOT FOUND</div>
-        <div class="mt-4 text-red-500 font-mono text-sm tracking-widest">>> SYSTEM FAILURE // TARGET DOES NOT EXIST
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav class="w-full border-b border-[#00ff33]/30 p-4 mb-8 flex justify-between items-center bg-black/80">
+        <a href="../../" class="text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+            [ RETURN TO MATRIX ]
+        </a>
+        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+            <span id="nav-status-indicator" class="animate-pulse">LOCAL SYNC ACTIVE</span>
+            <button id="nav-logout-btn" class="hidden hover:text-red-500 transition-colors">[ DE-LINK ]</button>
         </div>
-        <a href="../../"
-            class="mt-8 border border-red-500 text-red-500 px-6 py-3 hover:bg-red-500 hover:text-black transition-all">RETURN
-            TO BASE</a>
-    </div>
+    </nav>
 
-    <!-- INBOX MODAL (Private Only) -->
-    <div id="inbox-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-2xl max-h-[80vh] flex flex-col relative">
-            <button onclick="toggleInbox()" class="absolute top-4 right-4 text-term-red hover:text-white font-bold">[ X
-                ]</button>
-            <div class="p-6 border-b border-term-red/30">
-                <h2 class="text-2xl font-bold tracking-widest text-term-red">INBOX // TRANSMISSIONS</h2>
-            </div>
-            <div id="inbox-feed" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-                <div class="text-center text-term-red/50 py-12">SCANNING FREQUENCIES...</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN CONTAINER -->
-    <div id="main-container"
-        class="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-12 flex flex-col gap-6 md:gap-12 transition-opacity duration-500 opacity-0">
-
+    <div id="main-container" class="max-w-4xl mx-auto px-4 flex flex-col gap-8 opacity-0 transition-opacity duration-500">
+        
         <!-- HEADER -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-term-red/40 pb-4 gap-4">
-            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold tracking-[0.1em] text-term-red animate-pulse"
-                id="page-title">GEAR
-                PROFILE</h1>
-            <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto">
-                <!-- Private Mode Inbox Button -->
-                <button onclick="toggleInbox()" class="group relative private-only hidden">
-                    <span
-                        class="text-xs md:text-sm font-bold text-term-red tracking-widest group-hover:text-white transition-colors">[
-                        INBOX <span id="inbox-count"
-                            class="hidden text-white bg-term-red px-1 ml-1 text-[10px]">0</span> ]</span>
-                </button>
-                <div class="text-xs md:text-sm font-bold text-term-red/80 tracking-widest block">SOVEREIGN NET // V3.1
-                </div>
+        <div class="border-b border-[#00ff33]/40 pb-4">
+            <h1 class="text-3xl md:text-5xl font-bold tracking-[0.1em] text-[#00ff33] uppercase drop-shadow-[0_0_8px_rgba(0,255,51,0.5)]">SOVEREIGN DOSSIER</h1>
+            <div class="text-xs text-[#00ff33]/60 tracking-widest mt-3 uppercase font-bold" id="mode-indicator">
+                >> OPERATOR UPLINK ESTABLISHED. EDIT MODE ACTIVE.
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
-
-            <!-- COL 1: IDENTITY CARD + PROGRESS -->
-            <div class="flex flex-col gap-6 md:gap-8">
-                <!-- IDENTITY CARD -->
-                <div class="glass-panel p-4 md:p-8 relative overflow-hidden flex flex-col gap-6 md:gap-8">
-                    <div id="mode-badge"
-                        class="absolute top-0 left-0 bg-term-red text-black text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1 tracking-widest z-10">
-                        EDIT MODE</div>
-
-                    <div class="flex flex-col sm:flex-row gap-6 md:gap-8 items-center sm:items-start mt-6 md:mt-4">
-
-                        <!-- AVATAR -->
-                        <div class="flex flex-col items-center gap-4 shrink-0 w-full sm:w-auto">
-                            <div id="avatar-container"
-                                class="w-32 h-32 md:w-56 md:h-56 border-2 border-term-red relative overflow-hidden bg-black avatar-glow group cursor-pointer transition-all hover:border-white rounded-sm">
-                                <img id="avatar-img"
-                                    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmYwMDMzIiBzdHJva2Utd2lkdGg9IjEiPjxwYXRoIGQ9Ik0yMCAyMXYtMmE0IDQgMCAwIDAtNC00SDhhNCA0IDAgMCAwLTQgNHYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+"
-                                    class="w-full h-full object-cover p-6 md:p-8 opacity-50 group-hover:opacity-100 transition-all">
-
-                                <!-- Upload Overlay (Private Only) -->
-                                <div id="upload-overlay"
-                                    class="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 group-hover:opacity-100 transition-all private-only hidden">
-                                    <span class="text-term-red font-bold tracking-widest text-xs md:text-sm">[ UPLOAD
-                                        ]</span>
-                                </div>
-                                <input type="file" id="avatar-upload" class="hidden" accept="image/*"
-                                    onchange="uploadAvatar(this)">
-                            </div>
-                            <div
-                                class="text-sm font-bold text-term-red/80 tracking-widest text-center flex flex-col gap-2 w-full">
-                                <!-- <div>ID: <span id="user-id-display" class="text-white">LOADING...</span></div> -->
-                                <div class="private-only hidden">
-                                    <label class="text-[10px] text-zinc-500 uppercase tracking-widest block mb-1">THEME
-                                        COLOR</label>
-                                    <input type="color" id="theme-color-picker" value="#00ff33"
-                                        class="w-full h-8 bg-transparent border border-term-red/50 cursor-pointer hover:border-white transition-colors"
-                                        title="CUSTOMIZE THEME">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- INPUTS -->
-                        <div class="flex-1 w-full space-y-4 md:space-y-6">
-                            <div class="space-y-2">
-                                <label
-                                    class="text-xs md:text-sm font-bold uppercase text-term-red tracking-widest">CALLSIGN</label>
-                                <input type="text" id="username-input"
-                                    class="w-full bg-black/40 border border-term-red/40 p-3 md:p-4 text-white text-lg md:text-xl font-bold focus:border-term-red focus:bg-black/60 focus:outline-none transition-all uppercase placeholder-term-red/30 shadow-[0_0_10px_rgba(255,0,51,0.1)]"
-                                    placeholder="UNKNOWN">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label
-                                    class="text-xs md:text-sm font-bold uppercase text-term-red tracking-widest">RANK</label>
-                                <div id="role-display"
-                                    class="w-full bg-term-dim/20 border border-term-red/20 p-3 md:p-4 text-term-red text-lg md:text-xl font-bold opacity-90 cursor-not-allowed">
-                                    LOADING...
-                                </div>
-                            </div>
-
-                            <!-- Save Button (Private Only) -->
-                            <div class="pt-2 md:pt-4 flex justify-end private-only hidden">
-                                <button onclick="updateProfile()"
-                                    class="w-full sm:w-auto bg-term-red text-black font-bold px-6 py-3 md:px-8 md:py-3 hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center justify-center gap-3 text-xs md:text-sm shadow-[0_0_15px_rgba(255,0,51,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.6)]">
-                                    <span>SAVE DATA</span> <span id="save-status">>></span>
-                                </button>
-                            </div>
-
-                            <!-- Joined Date (Public Only) -->
-                            <div id="joined-date-container" class="space-y-2 public-only hidden">
-                                <label
-                                    class="text-xs md:text-sm font-bold uppercase text-gray-500 tracking-widest">ACTIVE
-                                    SINCE</label>
-                                <div id="joined-date-display" class="text-white font-mono text-base md:text-lg">UNKNOWN
-                                </div>
-                            </div>
-
-                            <!-- Message Button (Public + Auth Only) -->
-                            <div id="dm-button-container" class="pt-2 md:pt-4 flex justify-end hidden">
-                                <button onclick="openMessageModal()"
-                                    class="w-full sm:w-auto bg-term-green/20 text-term-green border border-term-green/50 font-bold px-6 py-3 md:px-8 md:py-3 hover:bg-term-green hover:text-black transition-all uppercase tracking-widest flex items-center justify-center gap-3 text-xs md:text-sm shadow-[0_0_15px_rgba(0,255,51,0.2)]">
-                                    <span>[ TX: MESSAGE ]</span>
-                                </button>
-                            </div>
-                        </div>
+        <!-- DOSSIER CARD -->
+        <div class="glass-panel p-6 md:p-10 flex flex-col md:flex-row gap-10 relative">
+            
+            <!-- AVATAR UPLOAD -->
+            <div class="flex flex-col items-center gap-4 shrink-0">
+                <div id="avatar-container" class="w-48 h-48 border border-[#00ff33]/50 bg-black relative group cursor-pointer hover:border-[#00ff33] transition-all overflow-hidden rounded-sm shadow-[0_0_20px_rgba(0,255,51,0.1)]">
+                    <img id="avatar-img" src="" alt="Avatar" class="w-full h-full object-cover p-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <div id="upload-overlay" class="absolute inset-0 bg-black/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="text-xs font-bold tracking-widest text-[#00ff33] border border-[#00ff33] px-3 py-1">[ UPLOAD BIO-SCAN ]</span>
                     </div>
-
-                    <!-- DM MODAL -->
-                    <div id="dm-modal"
-                        class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-4">
-                        <div
-                            class="glass-panel w-full max-w-lg p-6 md:p-8 relative flex flex-col gap-4 md:gap-6 border-term-green shadow-[0_0_30px_rgba(0,255,51,0.15)]">
-                            <button onclick="closeMessageModal()"
-                                class="absolute top-4 right-4 text-term-green/50 hover:text-white font-bold">[ X
-                                ]</button>
-
-                            <h2
-                                class="text-lg md:text-xl font-bold tracking-widest text-term-green border-b border-term-green/30 pb-4">
-                                >> SECURE TRANSMISSION
-                            </h2>
-
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold text-term-green/70">RECIPIENT</label>
-                                <div class="text-white font-mono text-base md:text-lg">@<span
-                                        id="dm-recipient-name">UNKNOWN</span>
-                                </div>
-                            </div>
-
-                            <textarea id="dm-content"
-                                class="bg-black/50 border border-term-green/30 p-3 md:p-4 text-white font-mono text-xs md:text-sm h-32 focus:border-term-green focus:outline-none placeholder-term-green/20"
-                                placeholder="ENTER PAYLOAD..."></textarea>
-
-                            <div class="flex justify-end">
-                                <button onclick="sendPrivateMessage()"
-                                    class="w-full sm:w-auto bg-term-green text-black font-bold px-6 py-3 hover:bg-white transition-all uppercase tracking-widest text-xs md:text-sm">
-                                    SEND TRANSMISSION
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- LOG -->
-                    <div id="status-log"
-                        class="mt-2 pt-4 border-t border-term-red/30 text-xs md:text-sm font-bold text-term-red/80 h-20 md:h-24 overflow-y-auto leading-relaxed scrollbar-hide bg-black/20 p-2">
-                        > INITIALIZING INTERFACE...<br>
-                    </div>
+                    <input type="file" id="avatar-upload" class="hidden" accept="image/*">
                 </div>
-
-                <!-- OPERATIONAL STATUS (PROGRESS) -->
-                <div class="glass-panel p-4 md:p-8 relative flex flex-col gap-4 md:gap-6">
-                    <div
-                        class="absolute top-0 left-0 bg-zinc-800 text-white text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1 tracking-widest">
-                        OPERATIONAL STATUS</div>
-
-                    <div
-                        class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 md:mt-4 border-b border-term-red/20 pb-4 gap-2">
-                        <h3 class="text-lg md:text-xl font-bold text-term-red tracking-widest">CAMPAIGN PROGRESS</h3>
-                        <!-- VISIBILITY TOGGLE (Private Only) -->
-                        <div class="private-only hidden flex items-center gap-3">
-                            <span class="text-[10px] md:text-xs font-bold text-zinc-500">PUBLIC:</span>
-                            <button id="visibility-toggle" onclick="toggleProgressVisibility()"
-                                class="text-[10px] md:text-xs font-mono border border-term-red px-2 py-1 text-term-red hover:bg-term-red hover:text-black transition-all">
-                                [ OFF ]
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="progress-container" class="space-y-4 md:space-y-6">
-                        <!-- PROGRESS ITEMS INJECTED HERE -->
-                        <div class="text-center py-8 text-zinc-600 animate-pulse">LOADING DATA...</div>
-                    </div>
-                </div>
+                <div class="text-[10px] font-bold text-[#00ff33]/70 tracking-widest text-center uppercase" id="join-date">> CHRONOLOGY: UNKNOWN</div>
             </div>
 
-            <!-- COL 2: COMMENTS -->
-            <div class="glass-panel p-4 md:p-8 relative flex flex-col h-full min-h-[400px] md:min-h-[500px]">
-                <div
-                    class="absolute top-0 left-0 bg-term-red text-black text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1 tracking-widest">
-                    COMMS // PUBLIC</div>
+            <!-- CORE DATA -->
+            <div class="flex-1 flex flex-col gap-8 w-full">
+                
+                <div class="space-y-3">
+                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase block">I. CALLSIGN (IDENTITY)</label>
+                    <input type="text" id="username-input" class="input-heavy font-bold" placeholder="ENTER CALLSIGN...">
+                </div>
 
-                <div id="comments-feed"
-                    class="flex-1 space-y-4 md:space-y-6 mt-6 overflow-y-auto pr-2 custom-scrollbar">
-                    <div class="text-xs md:text-sm text-term-red/60 font-bold text-center py-12">NO TRANSMISSIONS FOUND.
+                <div class="space-y-3">
+                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase block">II. CLEARANCE LEVEL</label>
+                    <div id="rank-display" class="w-full bg-[#00ff33]/10 border border-[#00ff33]/30 p-4 text-[#00ff33] text-lg font-bold tracking-widest cursor-not-allowed">
+                        AWAITING SYNC...
                     </div>
                 </div>
 
-                <!-- Comment Input (Auth Required - handled by JS) -->
-                <div class="mt-4 md:mt-6 flex flex-col sm:flex-row gap-3 border-t border-term-red/30 pt-4 md:pt-6">
-                    <input type="text" id="comment-input" placeholder="TRANSMIT MESSAGE..."
-                        class="flex-1 bg-black/40 border border-term-red/40 p-3 md:p-4 text-white text-xs md:text-sm font-bold focus:border-term-red focus:outline-none uppercase placeholder-term-red/40 shadow-[0_0_10px_rgba(255,0,51,0.1)] w-full">
-                    <button onclick="postComment()"
-                        class="w-full sm:w-auto bg-term-red text-black font-bold px-6 py-3 text-xs md:text-sm hover:bg-white transition-all uppercase tracking-widest">SEND</button>
+                <div class="space-y-3">
+                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase block">III. HARDWARE (SKILL / TRADE)</label>
+                    <input type="text" id="hardware-input" class="input-heavy placeholder-[#00ff33]/30" placeholder="E.G. WELDER, FARMER, EMT...">
+                    <div class="text-[10px] text-[#00ff33]/60 tracking-widest mt-2 uppercase">Physical real-world utility required for Syndicate deployment.</div>
                 </div>
-            </div>
 
+                <!-- SAVE / TX -->
+                <div class="pt-6 border-t border-[#00ff33]/20 flex justify-end" id="action-bar">
+                    <button id="save-btn" class="bg-[#00ff33]/20 border border-[#00ff33] text-[#00ff33] hover:bg-[#00ff33] hover:text-black font-bold px-10 py-4 transition-all tracking-[0.2em] flex items-center gap-3 w-full sm:w-auto justify-center text-sm">
+                        [ COMMIT TO LEDGER ]
+                    </button>
+                </div>
+
+            </div>
         </div>
+
+        <!-- PUBLIC READ-ONLY WARNING -->
+        <div id="public-warning" class="hidden text-center text-[10px] text-zinc-500 font-bold tracking-[0.2em] mt-8 border border-zinc-800 p-4 bg-black/80">
+            THIS DOSSIER IS CLASSIFIED. YOU ARE VIEWING CACHED PUBLIC METADATA.
+        </div>
+
     </div>
 
+    <!-- PURE SUPABASE UPLINK -->
     <script type="module">
         import { supabase } from '../../assets/js/supabaseClient.js';
 
-        let sessionUser = null;
-        let viewMode = 'private'; // 'private' or 'public'
-        let targetUserId = null; // The ID of the profile we are viewing
-        let profileSettings = {}; // Local cache of settings
+        const UI = {
+            body: document.body,
+            container: document.getElementById('main-container'),
+            modeIndicator: document.getElementById('mode-indicator'),
+            avatarImg: document.getElementById('avatar-img'),
+            avatarContainer: document.getElementById('avatar-container'),
+            avatarUpload: document.getElementById('avatar-upload'),
+            usernameInput: document.getElementById('username-input'),
+            rankDisplay: document.getElementById('rank-display'),
+            hardwareInput: document.getElementById('hardware-input'),
+            saveBtn: document.getElementById('save-btn'),
+            joinDate: document.getElementById('join-date'),
+            actionBar: document.getElementById('action-bar'),
+            publicWarning: document.getElementById('public-warning'),
+            logoutBtn: document.getElementById('nav-logout-btn')
+        };
 
-        // DUAL MODE INITIALIZATION
-        async function init() {
+        let Session = { user: null, mode: 'private', targetId: null, settings: {} };
+
+        // 1. INIT - ZERO PLUGINS
+        async function bootstrap() {
             try {
                 const params = new URLSearchParams(window.location.search);
-                const targetUsername = params.get('user');
+                const queryUser = params.get('user');
 
-                if (targetUsername) {
-                    // MODE A: PUBLIC DOSSIER
-                    viewMode = 'public';
-                    await initPublicMode(targetUsername);
+                if (queryUser) {
+                    Session.mode = 'public';
+                    await loadPublicDossier(queryUser);
                 } else {
-                    // MODE B: PRIVATE EDIT
-                    viewMode = 'private';
-                    await initPrivateMode();
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) return window.location.href = '/gate/';
+                    Session.user = session.user;
+                    Session.targetId = session.user.id;
+                    
+                    UI.logoutBtn.classList.remove('hidden');
+                    UI.logoutBtn.onclick = async () => {
+                        await supabase.auth.signOut();
+                        window.location.href = '/gate/';
+                    };
+
+                    await loadPrivateDossier();
                 }
             } catch (err) {
-                console.error("INIT FATAL ERROR:", err);
-                alert("SYSTEM ERROR: " + err.message);
-                if (confirm("CRITICAL FAILURE. RETURN TO GATE?")) {
-                    window.location.href = '/gate/';
-                }
+                console.error("FATAL BIND ERROR:", err);
+                alert("UPLINK FAILED.");
             }
         }
 
-        /* =========================================
-           MODE A: PUBLIC DOSSIER LOGIC
-           ========================================= */
-        async function initPublicMode(username) {
-            log(`SEARCHING ARCHIVES FOR: ${username}...`);
-            applyPublicStyling();
-
-            // 1. Fetch from Public View (Safe)
+        // 2. FETCH DATA DIRECT FROM SOURCE
+        async function loadPrivateDossier() {
             const { data, error } = await supabase
-                .from('profiles') // Changed from public_profiles to profiles to ensure we get the new columns if RLS allows
-                .select('username, id, avatar_url, role, sovereign_progress, settings, created_at')
+                .from('profiles')
+                .select('username, role, avatar_url, settings, created_at')
+                .eq('id', Session.targetId)
+                .single();
+
+            if (error) return console.error(error);
+            render(data);
+            bindEvents();
+            showInterface();
+        }
+
+        async function loadPublicDossier(username) {
+            UI.body.classList.add('mode-read-only');
+            UI.modeIndicator.innerText = `>> DOSSIER QUERY: ${username.toUpperCase()}`;
+            
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('username, role, avatar_url, settings, created_at')
                 .eq('username', username)
                 .single();
 
             if (error || !data) {
-                showErrorScreen();
-                return;
+                UI.container.innerHTML = `<div class="text-center text-red-500 font-bold text-2xl mt-40 tracking-[0.2em] border border-red-500 p-8 bg-black/90">>> 404: TARGET NOT FOUND <<</div>`;
+                return showInterface();
             }
 
-            // 2. Render Data
-            targetUserId = data.id;
-            profileSettings = data.settings || {}; // Store settings
-
-            // APPLY THEME
-            if (profileSettings.theme_color) {
-                applyTheme(profileSettings.theme_color);
-            }
-
-            renderProfileData(data);
-
-            // 3. Fetch Comments for this profile
-            fetchComments(data.id);
-
-            // 4. Check if viewer is logged in (for commenting capability)
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                sessionUser = session.user;
-                // If viewing own profile via public link, maybe allow edit redirect? 
-                // For now, just enable commenting.
-
-                // Show DM Button if not viewing self
-                if (sessionUser.id !== targetUserId) {
-                    document.getElementById('dm-button-container').classList.remove('hidden');
-                }
-            } else {
-                // Viewer is guest: Disable commenting
-                disableCommenting();
-            }
-
-            revealInterface();
+            render(data, true);
+            showInterface();
+            
+            // UI Locks
+            UI.usernameInput.disabled = true;
+            UI.hardwareInput.disabled = true;
+            UI.avatarContainer.classList.remove('cursor-pointer', 'hover:border-[#00ff33]');
+            document.getElementById('upload-overlay').remove();
+            UI.actionBar.style.display = 'none';
+            UI.publicWarning.classList.remove('hidden');
         }
 
-        function applyPublicStyling() {
-            document.body.classList.add('dossier-mode');
-            document.getElementById('page-title').innerText = "OPERATIVE DOSSIER";
-            document.getElementById('mode-badge').innerText = "READ ONLY";
-            document.getElementById('mode-badge').style.backgroundColor = "#333";
-            document.getElementById('mode-badge').style.color = "#fff";
+        // 3. PURE RENDER
+        function render(data, isPublic = false) {
+            UI.usernameInput.value = data.username || '';
+            UI.rankDisplay.innerText = `[ ${data.role ? data.role.toUpperCase() : 'OPERATIVE'} ]`;
+            
+            // Hardware Extractor
+            Session.settings = data.settings || {};
+            UI.hardwareInput.value = Session.settings.hardware_skill || '';
 
-            // Hide Private Elements
-            document.querySelectorAll('.private-only').forEach(el => el.classList.add('hidden'));
+            // Pure Avatar Logic
+            let avSrc = data.avatar_url;
+            if (avSrc && !avSrc.startsWith('http')) {
+                const { data: pUrl } = supabase.storage.from('avatars').getPublicUrl(avSrc);
+                avSrc = pUrl.publicUrl;
+            }
+            if (!avSrc) avSrc = `https://api.dicebear.com/9.x/shapes/svg?seed=${data.username || 'anon'}&backgroundColor=000000&shape1Color=00ff33`;
+            UI.avatarImg.src = avSrc;
 
-            // Show Public Elements
-            document.querySelectorAll('.public-only').forEach(el => el.classList.remove('hidden'));
-
-            // Disable Inputs
-            document.getElementById('username-input').disabled = true;
-            document.getElementById('avatar-container').onclick = null; // Disable click
-            document.getElementById('avatar-container').classList.remove('cursor-pointer', 'hover:border-white');
-        }
-
-        function showErrorScreen() {
-            document.body.style.display = 'block'; // Ensure body is visible
-            document.getElementById('error-screen').style.display = 'flex';
-            document.getElementById('main-container').style.display = 'none';
-        }
-
-        /* =========================================
-           MODE B: PRIVATE EDIT LOGIC
-           ========================================= */
-        async function initPrivateMode() {
-            log("AUTHENTICATING LOCAL SESSION...");
-            try {
-                const { data, error } = await supabase.auth.getSession();
-
-                if (error) throw error;
-                if (!data || !data.session) {
-                    console.warn("NO SESSION DETECTED. REDIRECTING TO GATE.");
-                    window.location.href = '/gate/?next=' + encodeURIComponent(window.location.pathname);
-                    return;
-                }
-
-                sessionUser = data.session.user;
-                targetUserId = sessionUser.id; // Viewing self
-            } catch (authErr) {
-                console.error("AUTH ERROR:", authErr);
-                log("AUTH SUBSYSTEM FAILURE.");
-                return;
+            if (data.created_at) {
+                const d = new Date(data.created_at);
+                UI.joinDate.innerText = `> CHRONOLOGY: ${d.toLocaleDateString()}`;
             }
 
-            // Show Private Elements
-            document.querySelectorAll('.private-only').forEach(el => el.classList.remove('hidden'));
-
-            // Enable Upload Click
-            document.getElementById('avatar-container').onclick = () => document.getElementById('avatar-upload').click();
-
-            // Fetch My Profile
-            await fetchMyProfile();
-            fetchComments(sessionUser.id);
-
-            // Start Notifications
-            fetchNotifications();
-            setInterval(fetchNotifications, 30000);
-
-            revealInterface();
-
-            // THEME LISTENER
-            const picker = document.getElementById('theme-color-picker');
-            if (picker) {
-                picker.addEventListener('input', (e) => {
-                    applyTheme(e.target.value);
-                });
+            if(data.role === 'Operator') {
+                UI.rankDisplay.classList.replace('text-[#00ff33]', 'text-yellow-400');
+                UI.rankDisplay.classList.replace('bg-[#00ff33]/10', 'bg-yellow-400/10');
             }
         }
 
-
-
-        // --- THEME ENGINE ---
-        function applyTheme(hexColor) {
-            document.documentElement.style.setProperty('--term-color', hexColor);
-            // Also update local storage for immediate persistence feeling
-            // but real save happens on "SAVE DATA"
+        function showInterface() {
+            UI.body.style.display = 'block';
+            setTimeout(() => UI.container.classList.remove('opacity-0'), 50);
         }
 
-        async function fetchMyProfile() {
-            log("FETCHING NEURO-DATA...");
-            // Private fetch from 'profiles' table to get full access
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('id, username, role, avatar_url, sovereign_progress, settings, created_at')
-                .eq('id', sessionUser.id)
-                .single();
+        // 4. BINDINGS
+        function bindEvents() {
+            UI.avatarContainer.onclick = () => UI.avatarUpload.click();
+            UI.avatarUpload.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('user_id', Session.targetId);
 
-            if (error) {
-                log(`ERROR: ${error.message}`);
-            } else {
-                profileSettings = data.settings || {};
-                renderProfileData(data);
-
-                // APPLY SAVED THEME
-                if (profileSettings.theme_color) {
-                    applyTheme(profileSettings.theme_color);
-                    const picker = document.getElementById('theme-color-picker');
-                    if (picker) picker.value = profileSettings.theme_color;
-                } else {
-                    // Default Matrix Green
-                    applyTheme('#00ff33');
-                }
-
-                log("DATA UPLINK SECURE.");
-            }
-        }
-
-        /* =========================================
-           SHARED RENDER LOGIC
-           ========================================= */
-        function renderProfileData(data) {
-            // Header Info
-            // document.getElementById('profile-username').innerText = data.username || 'UNKNOWN'; // REMOVED
-            if (document.getElementById('user-id-display')) document.getElementById('user-id-display').innerText = data.id || 'UNKNOWN';
-
-            const roleDisplay = document.getElementById('role-display');
-            if (roleDisplay) roleDisplay.innerText = `// ${data.role || 'OPERATIVE'} //`;
-
-            const usernameInput = document.getElementById('username-input');
-            if (usernameInput) usernameInput.value = data.username || '';
-
-            // Avatar
-            const avatarImg = document.getElementById('avatar-img');
-            if (avatarImg) {
-                if (data.avatar_url) {
-                    if (data.avatar_url.startsWith('http')) {
-                        avatarImg.src = data.avatar_url;
-                    } else {
-                        // Supabase Storage
-                        const { data: publicData } = supabase.storage.from('avatars').getPublicUrl(data.avatar_url);
-                        avatarImg.src = publicData.publicUrl;
+                UI.saveBtn.innerText = "[ UPLOADING BIO-SCAN... ]";
+                try {
+                    const res = await fetch('../../api/upload_avatar.php', { method: 'POST', body: formData });
+                    const resData = await res.json();
+                    if(resData.success) {
+                        const { data } = supabase.storage.from('avatars').getPublicUrl(resData.path);
+                        UI.avatarImg.src = data.publicUrl;
                     }
-                } else {
-                    avatarImg.src = `https://api.dicebear.com/9.x/identicon/svg?seed=${data.username}`;
-                }
-            }
-
-            // Role Badge Styling
-            if (roleDisplay) {
-                roleDisplay.className = "w-full bg-term-dim/20 border border-term-red/20 p-4 text-term-red text-xl font-bold opacity-90 cursor-not-allowed"; // Reset
-                if (data.role === 'Operator') roleDisplay.classList.add('tag-operator');
-                if (data.role === 'Archivist') roleDisplay.classList.add('tag-archivist');
-            }
-
-            // Render Progress
-            renderProgress(data.sovereign_progress || {});
-
-            // Active Since
-            const activeSince = document.getElementById('joined-date-display');
-            if (activeSince && data.created_at) {
-                const date = new Date(data.created_at);
-                activeSince.innerText = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
-            } else if (activeSince) {
-                activeSince.innerText = "UNKNOWN";
-            }
-        }
-
-        // --- PROGRESS INTEGRATION ---
-        import { ACHIEVEMENTS, CURRICULUM, progressManager } from '../../assets/js/progressManager.js';
-
-        // --- RENDER PROGRESS LIST ---
-        function renderProgress(progressData) {
-            const container = document.getElementById('progress-container');
-            if (!container) return;
-
-            // CLEAR & SETUP
-            container.innerHTML = '';
-            container.className = "flex flex-col gap-4 mt-6"; // Add spacing
-
-            // 1. Group by Track
-            const tracks = {};
-            CURRICULUM.forEach(item => {
-                const tName = item.track || 'MISC';
-                if (!tracks[tName]) tracks[tName] = [];
-                tracks[tName].push(item);
-            });
-
-            // 2. Render Each Track
-            Object.keys(tracks).sort().forEach(trackName => {
-                const items = tracks[trackName];
-
-                // Calculate Status
-                let unlockedCount = 0;
-                let completedCount = 0;
-
-                // Create Items HTML first to check locks
-                const itemsHtml = items.map(step => {
-                    // Check logic manually since we have the data right here, 
-                    // OR use progressManager helper if initialized.
-                    // Let's use raw data for speed/sync or progressManager if available.
-                    // progressManager might need init, but we passed "progressData" in.
-                    // Let's rely on progressData passed in.
-
-                    const isDone = progressData[step.achievement];
-
-                    // Unlock check: step.req is array of achievement IDs.
-                    // Unlocked if ALL reqs are in progressData
-                    const isUnlocked = step.req.every(r => progressData[r] || r === 'WC_BRIEFING_READ');
-                    // Note: 'WC_BRIEFING_READ' is an achievement, but first item has empty reqs.
-                    // Empty reqs = Unlocked.
-                    // Also check for 'IMPOSSIBLE_KEY' -> Locked.
-
-                    const isImpossible = step.req.includes('IMPOSSIBLE_KEY');
-                    const actuallyUnlocked = !isImpossible && (step.req.length === 0 || step.req.every(r => progressData[r]));
-
-                    if (actuallyUnlocked) unlockedCount++;
-                    if (isDone) completedCount++;
-
-                    let statusIcon = '🔒';
-                    let statusClass = 'text-zinc-700';
-                    let titleClass = 'text-zinc-600';
-                    let hoverClass = '';
-                    let linkUrl = '#';
-
-                    if (isDone) {
-                        statusIcon = '[ COMPLETE ]';
-                        statusClass = 'text-term-gold';
-                        titleClass = 'text-white/50 line-through';
-                        hoverClass = 'hover:bg-white/5';
-                        linkUrl = step.url;
-                    } else if (actuallyUnlocked) {
-                        statusIcon = '[ ACTIVE ]';
-                        statusClass = 'text-term-red animate-pulse';
-                        titleClass = 'text-white font-bold tracking-wider';
-                        hoverClass = 'hover:bg-white/10 cursor-pointer';
-                        linkUrl = step.url;
-                    }
-
-                    return `
-                        <a href="${linkUrl}" class="block group/item">
-                            <div class="flex justify-between items-center p-3 border-b border-white/5 last:border-0 transition-colors ${hoverClass}">
-                                <div class="flex items-center gap-4">
-                                    <span class="text-xs font-mono text-zinc-600 w-6">${items.indexOf(step) + 1}</span>
-                                    <span class="${titleClass} text-xs uppercase transition-colors group-hover/item:text-term-red">
-                                        ${step.title}
-                                    </span>
-                                </div>
-                                <span class="font-mono text-[10px] ${statusClass}">${statusIcon}</span>
-                            </div>
-                        </a>
-                    `;
-                }).join('');
-
-                // Track Header Logic
-                // If it's the "Future" tracks (3/4), they might be totally locked.
-                const isTrackLocked = unlockedCount === 0 && !trackName.includes('TRACK 01');
-                const opacityClass = isTrackLocked ? 'opacity-50 grayscale' : 'opacity-100';
-
-                // "X / ?" Display
-                const isFuture = trackName.includes('???');
-                const totalDisplay = isFuture ? '?' : '?'; // User requested '?' for all
-                const statusDisplay = isTrackLocked ? '[ LOCKED ]' : `[ ${completedCount} / ${totalDisplay} ]`;
-
-                // Collapsible Logic: Default Open if it's Track 01 OR has active items
-                const isOpen = (trackName.includes('TRACK 01') || completedCount < items.length) && !isTrackLocked ? 'open' : '';
-
-                const trackHtml = `
-                    <details ${isOpen} class="group border border-zinc-800 bg-black/40 ${opacityClass} rounded-sm overflow-hidden mb-2">
-                        <summary class="flex justify-between items-center p-3 bg-zinc-900/50 cursor-pointer hover:bg-zinc-800/80 select-none list-none transition-colors">
-                            <div class="flex items-center gap-3">
-                                <span class="text-term-red font-bold font-mono text-xs transition-transform duration-200 group-open:rotate-90">>></span>
-                                <span class="text-xs font-bold tracking-[0.2em] text-zinc-300 uppercase group-hover:text-white">${trackName}</span>
-                            </div>
-                            <span class="font-mono text-[10px] text-term-gold/80 bg-black/50 px-2 py-1 rounded border border-zinc-800">${statusDisplay}</span>
-                        </summary>
-                        <div class="bg-black/20 border-t border-zinc-800/50 pl-2">
-                            ${itemsHtml}
-                        </div>
-                    </details>
-                `;
-
-                container.insertAdjacentHTML('beforeend', trackHtml);
-            });
-        }
-
-        window.toggleProgressVisibility = async function () {
-            if (viewMode !== 'private') return;
-
-            const btn = document.getElementById('visibility-toggle');
-            const isCurrentlyOn = btn.innerText.includes("ON");
-            const newState = !isCurrentlyOn;
-
-            // Optimistic Update
-            btn.innerText = newState ? "[ ... ]" : "[ ... ]";
-
-            // Update local cache
-            profileSettings.public_progress = newState;
-
-            // Save
-            const { error } = await supabase
-                .from('profiles')
-                .update({ settings: profileSettings })
-                .eq('id', targetUserId);
-
-            if (error) {
-                alert("UPDATE FAILED");
-                renderProfileData({ sovereign_progress: {}, settings: { public_progress: isCurrentlyOn } }); // Revert visually
-                return;
-            }
-
-            // Reload local state logic
-            // We need to fetch settings again or just fake it. 
-            // Since we don't have a full global state object here easily accessible, let's just re-fetch profile.
-            await fetchMyProfile();
-        }
-
-        function revealInterface() {
-            document.body.style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('main-container').classList.remove('opacity-0');
-            }, 100);
-        }
-
-        function disableCommenting() {
-            document.getElementById('comment-input').disabled = true;
-            document.getElementById('comment-input').placeholder = "LOGIN REQUIRED TO TRANSMIT";
-            document.querySelector('#comments-feed + div button').disabled = true;
-            document.querySelector('#comments-feed + div button').classList.add('opacity-50', 'cursor-not-allowed');
-        }
-
-        /* =========================================
-           NOTIFICATIONS LOGIC (PRIVATE ONLY)
-           ========================================= */
-        window.toggleInbox = function () {
-            if (viewMode !== 'private') return;
-            const modal = document.getElementById('inbox-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                markAllRead();
-            }
-        }
-
-        async function fetchNotifications() {
-            if (viewMode !== 'private') return;
-            const { data, error } = await supabase
-                .from('notifications')
-                .select(`
-                    id, type, is_read, created_at, resource_id, message,
-                    actor:actor_id (username, avatar_url)
-                `)
-                .eq('user_id', sessionUser.id)
-                .order('created_at', { ascending: false })
-                .limit(20);
-
-            if (data) {
-                const unread = data.filter(n => !n.is_read).length;
-                const badge = document.getElementById('inbox-count');
-                if (unread > 0) {
-                    badge.innerText = unread;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
-                renderInbox(data);
-            }
-        }
-
-        function renderInbox(notifications) {
-            const container = document.getElementById('inbox-feed');
-            if (!notifications || notifications.length === 0) {
-                container.innerHTML = '<div class="text-center text-term-red/50 py-12">NO NEW SIGNALS.</div>';
-                return;
-            }
-
-            container.innerHTML = notifications.map(n => {
-                const actorName = n.actor?.username || 'UNKNOWN';
-                const message = n.message || (n.type === 'reply' ? 'Replied to your transmission.' : 'Pinged you on the network.');
-                const time = new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const isUnread = !n.is_read;
-
-                // Avatar Logic
-                let avatarSrc = n.actor?.avatar_url;
-                if (avatarSrc && !avatarSrc.startsWith('http')) {
-                    const { data } = supabase.storage.from('avatars').getPublicUrl(avatarSrc);
-                    avatarSrc = data.publicUrl;
-                } else if (!avatarSrc) {
-                    avatarSrc = `https://api.dicebear.com/9.x/identicon/svg?seed=${actorName}`;
-                }
-
-                return `
-                    <div class="border-b border-term-red/20 pb-4 pt-2 flex gap-4 hover:bg-white/5 transition-colors p-2 rounded ${isUnread ? 'bg-term-red/5 border-l-2 border-l-term-red' : ''}">
-                        <!-- Avatar -->
-                        <div class="w-10 h-10 min-w-[40px] border border-term-red/50 rounded-full overflow-hidden bg-black shrink-0">
-                            <img src="${avatarSrc}" class="w-full h-full object-cover opacity-80" onerror="this.src='https://api.dicebear.com/9.x/identicon/svg?seed=${actorName}'">
-                        </div>
-                        
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-sm text-term-red tracking-wide">@${actorName}</span>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs text-term-red/40 font-mono">${time}</span>
-                                    <button onclick="deleteNotification('${n.id}')" class="text-[10px] text-term-red/40 hover:text-red-500 transition-colors uppercase tracking-wider font-bold">[DEL]</button>
-                                </div>
-                            </div>
-                            <div class="text-white/90 text-sm font-mono leading-tight break-words line-clamp-2">
-                                ${escapeHtml(message)}
-                            </div>
-                             <div class="text-[10px] text-term-red/50 mt-1 uppercase tracking-widest">${n.type}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function escapeHtml(text) { return text ? text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : ''; }
-
-        async function markAllRead() {
-            await supabase
-                .from('notifications')
-                .update({ is_read: true })
-                .eq('user_id', sessionUser.id)
-                .is('is_read', false);
-
-            document.getElementById('inbox-count').classList.add('hidden');
-        }
-
-        window.deleteNotification = async function (id) {
-            // No confirm for quicker cleanup? Or keep it safe? Let's keep it safe for now.
-            if (!confirm("DELETE SIGNAL?")) return;
-
-            const { error } = await supabase
-                .from('notifications')
-                .delete()
-                .eq('id', id);
-
-            if (error) {
-                console.error("Delete Error:", error);
-                alert("DELETE FAILED: " + error.message);
-            } else {
-                fetchNotifications(); // Refresh
-            }
-        }
-
-
-        /* =========================================
-           COMMENTS LOGIC (SHARED)
-           ========================================= */
-
-        let replyingTo = null; // State for reply mode
-        let replyTargetUser = null; // Track WHO we are replying to
-
-        window.fetchComments = async function (profileId) {
-            const { data, error } = await supabase
-                .from('profile_comments')
-                .select(`
-                    id,
-                    content,
-                    created_at,
-                    parent_id,
-                    profile_id,
-                    profiles:profile_id (username, role, avatar_url)
-                `)
-                .eq('target_profile_id', profileId) // Use the passed ID, not just sessionUser
-                .order('created_at', { ascending: true });
-
-            if (error) {
-                console.error("Comment Error:", error);
-                return;
-            }
-
-            const feed = document.getElementById('comments-feed');
-            feed.innerHTML = '';
-
-            if (data && data.length > 0) {
-                // 1. Build Map
-                const commentMap = {};
-                data.forEach(c => commentMap[c.id] = { ...c, children: [] });
-
-                // 2. Build Tree
-                const rootComments = [];
-                data.forEach(c => {
-                    if (c.parent_id && commentMap[c.parent_id]) {
-                        commentMap[c.parent_id].children.push(commentMap[c.id]);
-                    } else {
-                        rootComments.push(commentMap[c.id]);
-                    }
-                });
-
-                // 3. Render Recursive
-                if (rootComments.length === 0 && data.length > 0) {
-                    feed.innerHTML = '<div class="text-xs text-term-red/50">ORPHANED DATA DETECTED.</div>';
-                } else {
-                    rootComments.forEach(c => renderComment(c, feed, 0));
-                }
-
-                feed.scrollTop = feed.scrollHeight;
-            } else {
-                feed.innerHTML = '<div class="text-sm text-term-red/60 font-bold text-center py-12">NO TRANSMISSIONS FOUND.</div>';
-            }
-        };
-
-        function renderComment(comment, container, depth) {
-            const author = comment.profiles;
-            const name = author.username || 'UNKNOWN';
-            const role = author.role || 'GHOST';
-            let avatarSrc = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmYwMDMzIiBzdHJva2Utd2lkdGg9IjEiPjxwYXRoIGQ9Ik0yMCAyMXYtMmE0IDQgMCAwIDAtNC00SDhhNCA0IDAgMCAwLTQgNHYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+";
-
-            if (author.avatar_url) {
-                const { data: publicURL } = supabase.storage.from('avatars').getPublicUrl(author.avatar_url);
-                avatarSrc = publicURL.publicUrl;
-            }
-
-            const marginLeft = depth * 20;
-            const isChild = depth > 0;
-
-            const wrapper = document.createElement('div');
-            const borderClass = isChild ? 'border-l-2 border-term-red/20 pl-4 ml-2' : '';
-            wrapper.className = `flex gap-4 items-start group mb-4 ${borderClass}`;
-
-            // Check if we can delete this comment
-            const canDelete = sessionUser && (sessionUser.id === comment.profile_id || sessionUser.id === comment.target_profile_id);
-            const canReply = !!sessionUser; // Only if logged in
-
-            wrapper.innerHTML = `
-                <div class="w-10 h-10 min-w-[40px] border border-term-red/30 bg-black overflow-hidden relative shrink-0">
-                    <img src="${avatarSrc}" class="w-full h-full object-cover opacity-80">
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-center text-xs md:text-sm text-term-red font-mono uppercase font-bold tracking-wider">
-                        <span>${name} [${role}]</span>
-                        <span class="opacity-70 flex gap-4">
-                            <span>${new Date(comment.created_at).toLocaleTimeString()}</span>
-                            ${canReply ? `<button onclick="initiateReply('${comment.id}', '${name}', '${comment.profile_id}')" class="hover:text-white transition-colors cursor-pointer text-term-red underline decoration-dotted">[REPLY]</button>` : ''}
-                            ${canDelete ? `<button onclick="deleteComment('${comment.id}')" class="hover:text-white transition-colors cursor-pointer text-term-red/50 hover:text-term-red">[DEL]</button>` : ''}
-                        </span>
-                    </div>
-                    <div class="text-sm md:text-base text-white font-mono mt-2 break-words leading-relaxed opacity-90">${comment.content}</div>
-                </div>
-            `;
-
-            container.appendChild(wrapper);
-
-            if (comment.children && comment.children.length > 0) {
-                const childContainer = document.createElement('div');
-                childContainer.className = "mt-2";
-                container.appendChild(childContainer);
-                comment.children.forEach(child => renderComment(child, childContainer, depth + 1));
-            }
-        }
-
-        /* =========================================
-           INTERACTION FUNCTIONS
-           ========================================= */
-
-        window.initiateReply = function (id, username, userId) {
-            replyingTo = id;
-            replyTargetUser = userId;
-            const input = document.getElementById('comment-input');
-            const placeholder = document.getElementById('reply-indicator');
-
-            if (!placeholder) {
-                const div = document.createElement('div');
-                div.id = 'reply-indicator';
-                div.className = "text-xs text-term-red mb-2 font-bold animate-pulse";
-                div.innerHTML = `REPLYING TO: ${username} <span class="cursor-pointer hover:text-white underline ml-2" onclick="cancelReply()">[CANCEL]</span>`;
-                input.parentNode.insertBefore(div, input);
-            } else {
-                placeholder.innerHTML = `REPLYING TO: ${username} <span class="cursor-pointer hover:text-white underline ml-2" onclick="cancelReply()">[CANCEL]</span>`;
-            }
-
-            input.focus();
-            input.placeholder = `Replying to ${username}...`;
-        }
-
-        window.cancelReply = function () {
-            replyingTo = null;
-            replyTargetUser = null;
-            const placeholder = document.getElementById('reply-indicator');
-            if (placeholder) placeholder.remove();
-
-            const input = document.getElementById('comment-input');
-            input.placeholder = "TRANSMIT MESSAGE...";
-        }
-
-        window.deleteComment = async function (id) {
-            if (!confirm("CONFIRM DELETION?")) return;
-
-            const { error } = await supabase
-                .from('profile_comments')
-                .delete()
-                .eq('id', id);
-
-            if (error) {
-                log(`DELETE FAILED: ${error.message}`);
-                alert("Deletion Failed: " + error.message);
-            } else {
-                fetchComments(targetUserId); // Refresh current target
-                log("MESSAGE PURGED.");
-            }
-        }
-
-        window.postComment = async function () {
-            if (!sessionUser) return; // Guard
-
-            const input = document.getElementById('comment-input');
-            const content = input.value.trim();
-            if (!content) return;
-
-            input.value = '';
-            input.placeholder = "TRANSMITTING...";
-            input.disabled = true;
-
-            const payload = {
-                profile_id: sessionUser.id,        // ME
-                target_profile_id: targetUserId,   // THEM (or ME)
-                content: content
+                } catch(err) { console.error("Upload failed", err); }
+                UI.saveBtn.innerHTML = "[ COMMIT TO LEDGER ]";
             };
 
-            if (replyingTo) {
-                payload.parent_id = replyingTo;
-            }
+            UI.saveBtn.onclick = async () => {
+                const newUsername = UI.usernameInput.value.trim();
+                Session.settings.hardware_skill = UI.hardwareInput.value.trim();
 
-            const { data, error } = await supabase
-                .from('profile_comments')
-                .insert(payload)
-                .select()
-                .single();
+                const originalHTML = UI.saveBtn.innerHTML;
+                UI.saveBtn.innerText = "[ COMMITTING... ]";
 
-            if (error) {
-                log(`TX FAILED: ${error.message}`);
-                alert("Transmission Failed: " + error.message);
-                input.disabled = false;
-                input.placeholder = "TRANSMIT MESSAGE...";
-                return;
-            }
-
-            // SUCCESS - Notification Logic (Only if not self)
-            // SUCCESS - Notification Logic (Only if not self)
-            const preview = content.length > 50 ? content.substring(0, 50) + "..." : content;
-
-            if (replyingTo && replyTargetUser && replyTargetUser !== sessionUser.id) {
-                await supabase.from('notifications').insert({
-                    user_id: replyTargetUser,
-                    actor_id: sessionUser.id,
-                    type: 'reply',
-                    resource_id: data.id,
-                    message: preview // Save truncated content for inbox preview
-                });
-            } else if (!replyingTo && targetUserId !== sessionUser.id) {
-                // Notify profile owner of new root comment
-                await supabase.from('notifications').insert({
-                    user_id: targetUserId,
-                    actor_id: sessionUser.id,
-                    type: 'comment',
-                    resource_id: data.id,
-                    message: preview // Save truncated content
-                });
-            }
-
-            input.disabled = false;
-            cancelReply(); // Reset UI
-            fetchComments(targetUserId); // Refresh
-        };
-
-
-        window.uploadAvatar = async function (input) {
-            if (viewMode !== 'private') return; // Guard
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-
-            log("UPLOADING BIOMETRICS (PROXY)...");
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('user_id', sessionUser.id);
-
-            try {
-                // 1. Upload via PHP Proxy (Bypasses RLS)
-                const response = await fetch('../../api/upload_avatar.php', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-                if (!result.success) throw new Error(result.error || 'Upload failed');
-
-                const filePath = result.path;
-
-                log("DATABASE UPDATED (VIA PROXY).");
-
-                // Refresh Image
-                const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-                document.getElementById('avatar-img').src = data.publicUrl;
-                log("AVATAR UPDATED.");
-
-            } catch (error) {
-                log(`UPLOAD FAILED: ${error.message}`);
-                console.error(error);
-            }
-        };
-
-        window.updateProfile = async function () {
-            if (viewMode !== 'private') return; // Guard
-
-            const username = document.getElementById('username-input').value;
-            const picker = document.getElementById('theme-color-picker');
-
-            // Update Settings from Picker
-            if (picker) {
-                profileSettings.theme_color = picker.value;
-            }
-
-            const btn = document.getElementById('save-status');
-            btn.innerText = "...";
-
-            log("SAVING CONFIG...");
-            try {
                 const { error } = await supabase
                     .from('profiles')
-                    .update({
-                        username: username,
-                        settings: profileSettings
-                    })
-                    .eq('id', sessionUser.id);
+                    .update({ username: newUsername, settings: Session.settings })
+                    .eq('id', Session.targetId);
 
-                if (error) throw error;
-                log("PROFILE SAVED.");
-                btn.innerText = "OK";
-            } catch (error) {
-                log(`SAVE FAILED: ${error.message}`);
-                btn.innerText = "ERR";
-            }
-            setTimeout(() => btn.innerText = ">>", 2000);
-        };
-
-        function log(msg) {
-            const logDiv = document.getElementById('status-log');
-            logDiv.innerHTML += `> ${msg}<br>`;
-            logDiv.scrollTop = logDiv.scrollHeight;
+                if (error) {
+                    alert("ERROR SAVING DOSSIER.");
+                } else {
+                    UI.saveBtn.innerText = "[ DATABANK SYNCED ]";
+                    UI.saveBtn.classList.replace('border-[#00ff33]', 'border-white');
+                    UI.saveBtn.classList.replace('text-[#00ff33]', 'text-white');
+                }
+                
+                setTimeout(() => {
+                    UI.saveBtn.innerHTML = originalHTML;
+                    UI.saveBtn.classList.replace('border-white', 'border-[#00ff33]');
+                    UI.saveBtn.classList.replace('text-white', 'text-[#00ff33]');
+                }, 2000);
+            };
         }
 
-        /* =========================================
-           DIRECT MESSAGE LOGIC
-           ========================================= */
-        window.openMessageModal = function () {
-            if (!sessionUser) return;
-            document.getElementById('dm-recipient-name').innerText = document.getElementById('username-input').value;
-            document.getElementById('dm-modal').classList.remove('hidden');
-            document.getElementById('dm-content').focus();
-        }
-
-        window.closeMessageModal = function () {
-            document.getElementById('dm-modal').classList.add('hidden');
-            document.getElementById('dm-content').value = '';
-        }
-
-        window.sendPrivateMessage = async function () {
-            const content = document.getElementById('dm-content').value.trim();
-            if (!content) return;
-
-            const btn = document.querySelector('#dm-modal button:last-child');
-            const originalText = btn.innerText;
-            btn.innerText = "ENCRYPTING...";
-            btn.disabled = true;
-
-            try {
-                const { error } = await supabase.from('notifications').insert({
-                    user_id: targetUserId, // The profile we are viewing
-                    actor_id: sessionUser.id, // Me
-                    type: 'message',
-                    message: content, // Full content
-                    is_read: false
-                });
-
-                if (error) throw error;
-
-                alert("TRANSMISSION SENT.");
-                closeMessageModal();
-            } catch (err) {
-                alert("ERROR: " + err.message);
-                console.error(err);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Expose functions globally for HTML onclick
-
-        init();
+        bootstrap();
     </script>
 </body>
-
 </html>

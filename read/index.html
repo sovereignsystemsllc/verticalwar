@@ -6,67 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOVEREIGN DISPATCH</title>
 
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="../assets/js/nav_bar.js?v=21"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Rajdhani:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        void: '#05010a',
-                        panel: '#0a0a0a',
-                        signal: '#d4d4d8',
-                    },
+                    colors: { 'term-black': '#050505', 'term-green': '#00ff33' },
                     fontFamily: {
-                        tech: ['Rajdhani', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
-                        serif: ['Georgia', 'serif']
-                    },
+                        mono: ['Courier New', 'Courier Prime', 'monospace'],
+                        serif: ['Playfair Display', 'Georgia', 'serif']
+                    }
                 }
             }
         }
     </script>
     <style>
         body {
-            background-color: #05010a;
+            background-color: #050505;
             color: #d4d4d8;
-            background-image: url('../assets/images/backgrounds/chamber.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            cursor: crosshair;
         }
 
-        .bg-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 1, 10, 0.95);
-            z-index: -1;
-        }
-
-        .scan-lines {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-        }
-
-        /* Article Styling */
+        /* V3 Reader Typography */
         .article-content {
-            font-family: 'Georgia', serif;
+            font-family: 'Playfair Display', serif;
             font-size: 1.25rem;
             line-height: 1.8;
-            color: #d4d4d8;
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .article-content p {
@@ -74,41 +46,48 @@
         }
 
         .article-content h2 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 2.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
             font-weight: bold;
-            color: white;
+            color: #00ff33;
             text-transform: uppercase;
-            margin-top: 3rem;
+            margin-top: 3.5rem;
             margin-bottom: 1.5rem;
             letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(0, 255, 51, 0.3);
+            padding-bottom: 0.5rem;
         }
 
         .article-content h3 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.75rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #d4d4d8;
+            color: white;
             text-transform: uppercase;
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
 
         .article-content a {
-            color: #3b82f6;
+            color: #00ff33;
             text-decoration: underline;
             text-underline-offset: 4px;
+            transition: all 0.2s ease;
         }
 
         .article-content a:hover {
-            color: #60a5fa;
+            color: white;
+            background: rgba(0, 255, 51, 0.2);
+            text-decoration: none;
         }
 
         .article-content img {
             max-width: 100%;
             height: auto;
-            border: 1px solid #27272a;
-            margin: 2rem 0;
+            border: 1px solid rgba(0, 255, 51, 0.5);
+            margin: 3rem auto;
+            display: block;
+            box-shadow: 0 0 20px rgba(0, 255, 51, 0.1);
         }
 
         .article-content ul,
@@ -122,70 +101,111 @@
         }
 
         .article-content ul {
-            list-style-type: disc;
+            list-style-type: square;
+            color: #00ff33;
         }
 
-        .article-content ol {
-            list-style-type: decimal;
+        .article-content ul span {
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .article-content blockquote {
-            border-left: 4px solid #52525b;
-            padding-left: 1rem;
-            margin-left: 0;
-            margin-right: 0;
+            border-left: 4px solid #00ff33;
+            background: rgba(0, 255, 51, 0.05);
+            padding: 1.5rem;
+            margin: 2.5rem 0;
             font-style: italic;
-            color: #a1a1aa;
+            color: white;
+            font-family: 'Courier Prime', monospace;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff33;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fff;
         }
     </style>
+
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../assets/js/sidebar.js"></script>
 </head>
 
-<body class="min-h-screen bg-black text-gray-400 font-mono flex flex-col justify-between">
+<body class="pl-0 lg:pl-[256px] min-h-screen w-full flex flex-col font-mono selection:bg-[#00ff33] selection:text-black">
 
-    <div class="bg-overlay"></div>
-    <div class="scan-lines"></div>
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav
+        class="w-full border-b border-[#00ff33]/30 p-4 mb-8 flex justify-between items-center bg-black/80 sticky top-0 z-50">
+        <a href="../"
+            class="text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+            [ RETURN TO MATRIX ]
+        </a>
+        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+            <span class="hidden md:inline animate-pulse">PUBLIC DISPATCH UPLINK</span>
+            <a href="../cmd/" class="hover:text-white transition-colors border border-[#00ff33]/30 px-2 py-1">[ CMD
+                ]</a>
+        </div>
+    </nav>
 
-    <main class="flex-grow w-full max-w-[800px] mx-auto px-6 pt-32 pb-24 relative z-10 flex flex-col">
+    <main class="flex-grow w-full max-w-[800px] mx-auto px-6 pt-12 pb-24 relative z-10 flex flex-col">
 
         <!-- LOADING / ERROR -->
         <div id="status-container" class="text-center py-24">
-            <span class="font-mono text-signal text-sm animate-pulse">/// ESTABLISHING SECURE UPLINK... ///</span>
+            <span class="font-bold text-[#00ff33] text-sm tracking-widest animate-pulse uppercase">/// DOWNLOADING
+                HARDWARE RECEIPT... ///</span>
         </div>
 
         <!-- ARTICLE RENDER AREA -->
         <article id="article-container" class="hidden">
 
-            <header class="mb-12 border-b border-zinc-800 pb-8">
-                <div class="flex items-center gap-4 mb-6">
-                    <span id="article-date" class="text-xs font-mono text-gray-500 uppercase tracking-widest"></span>
-                    <span class="text-xs font-mono text-zinc-700">|</span>
+            <header class="mb-16 border-b border-[#00ff33]/30 pb-10 text-center">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <span id="article-date" class="text-[10px] text-[#00ff33]/60 uppercase tracking-widest"></span>
+                    <span class="text-[10px] text-[#00ff33]/60">|</span>
                     <span id="article-series"
-                        class="text-xs font-mono text-emerald-500 font-bold uppercase tracking-widest"></span>
+                        class="text-[10px] text-white font-bold uppercase tracking-widest border border-white/20 px-2 py-1"></span>
                 </div>
 
-                <h1 id="article-title" class="font-serif text-5xl md:text-6xl text-white font-bold leading-tight mb-8">
+                <h1 id="article-title" class="font-serif text-4xl md:text-6xl text-white font-bold leading-tight mb-8">
                 </h1>
 
-                <div class="flex items-center gap-3">
-                    <div
-                        class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-xs font-bold text-white">
-                        OP</div>
-                    <div>
-                        <div id="article-author" class="text-sm font-bold text-white uppercase tracking-wider"></div>
-                        <div class="text-[10px] text-gray-500 tracking-widest uppercase">Sovereign Architect</div>
-                    </div>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-[#00ff33] animate-pulse"></div>
+                    <div id="article-author" class="text-xs font-bold text-[#00ff33] uppercase tracking-[0.2em]"></div>
+                </div>
+
+                <div id="edit-controls" class="hidden mt-8">
+                    <a id="edit-btn" href="#"
+                        class="inline-block px-4 py-2 border border-red-500 text-red-500 hover:bg-red-500/20 hover:text-white text-[10px] uppercase tracking-widest transition-colors shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+                        [ OVERRIDE DISPATCH ]
+                    </a>
                 </div>
             </header>
 
             <div id="article-content" class="article-content"></div>
 
-            <footer class="mt-24 pt-8 border-t border-zinc-800 flex flex-col items-center text-center">
-                <p class="text-sm text-gray-500 font-mono uppercase tracking-widest mb-4">/// END OF TRANSMISSION ///
-                </p>
-                <a href="../"
-                    class="inline-block border border-gray-600 text-gray-400 hover:text-white hover:border-white px-6 py-3 font-tech text-xl uppercase transition-colors">
-                    &lt;&lt; RETURN TO BASE
-                </a>
+            <footer class="mt-24 pt-8 border-t border-[#00ff33]/30 flex flex-col items-center text-center">
+                <p class="text-[10px] text-[#00ff33]/50 uppercase tracking-widest mb-8">/// END OF TRANSMISSION ///</p>
+                <div class="flex gap-4">
+                    <a href="../"
+                        class="inline-block border border-[#00ff33]/50 text-[#00ff33] hover:text-black hover:bg-[#00ff33] px-6 py-3 text-sm font-bold tracking-widest uppercase transition-colors">
+                        [ HOME ]
+                    </a>
+                    <a href="../cmd/codex/"
+                        class="inline-block border border-white/30 text-white hover:text-black hover:bg-white px-6 py-3 text-sm font-bold tracking-widest uppercase transition-colors">
+                        [ THE CODEX ]
+                    </a>
+                </div>
             </footer>
 
         </article>
@@ -199,63 +219,85 @@
         const articleContainer = document.getElementById('article-container');
 
         async function fetchArticle() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-
-            if (!id) {
-                showError("INVALID TRANSMISSION ID.");
-                return;
-            }
+            const id = new URLSearchParams(window.location.search).get('id');
+            if (!id) { showError("INVALID TRANSMISSION ID."); return; }
 
             try {
-                const { data, error } = await supabase
-                    .from('articles')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
+                const { data, error } = await supabase.from('articles').select('*').eq('id', id).single();
+                if (error || !data) throw new Error("Article not found.");
 
-                if (error) throw error;
-                if (!data) throw new Error("Article not found.");
-
-                // Check Guard if it is Restricted
+                // Guard Check for Restricted Series
                 if (data.series === 'Inside the Forge') {
                     const { checkGuard } = await import('../assets/js/accessGuard.js');
-                    const authorized = await checkGuard(['OPERATOR', 'ARCHIVIST']);
-                    if (!authorized) {
-                        window.location.replace('../gate/?mode=login&next=' + encodeURIComponent(window.location.pathname + window.location.search));
-                        return;
-                    }
+                    const auth = await checkGuard(['OPERATOR', 'ARCHIVIST']);
+                    if (!auth) { window.location.replace('../gate/?mode=login&next=' + encodeURIComponent(window.location.pathname + window.location.search)); return; }
                 }
 
                 renderArticle(data);
 
+                // Edit Permission Check
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const { data: profile } = await supabase.from('profiles').select('role, roles').eq('id', session.user.id).single();
+                    let isSov = false;
+                    if (profile && (profile.role === 'SOVEREIGN' || (profile.roles && profile.roles.includes('SOVEREIGN')))) isSov = true;
+
+                    if (data.author_id === session.user.id || isSov) {
+                        document.getElementById('edit-controls').classList.remove('hidden');
+                        document.getElementById('edit-btn').href = `../cmd/dispatch/?id=${data.id}`;
+                    }
+                }
             } catch (err) {
-                console.error(err);
-                showError("TRANSMISSION LOST OR DELETED.");
+                showError("TRANSMISSION LOST OR REDACTED.");
             }
         }
 
         function renderArticle(data) {
             statusContainer.classList.add('hidden');
             articleContainer.classList.remove('hidden');
-
             document.title = data.title + " // SOVEREIGN DISPATCH";
 
             document.getElementById('article-title').textContent = data.title;
             document.getElementById('article-series').textContent = data.series || 'DISPATCH';
             document.getElementById('article-author').textContent = data.author_name || 'UNKNOWN OPERATIVE';
             document.getElementById('article-content').innerHTML = data.content_html;
+            document.getElementById('article-date').textContent = new Date(data.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-            const dateObj = new Date(data.created_at);
-            document.getElementById('article-date').textContent = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            injectSEO(data);
+        }
+
+        function injectSEO(data) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.content_html;
+            let text = (tempDiv.textContent || tempDiv.innerText || "").replace(/\s+/g, ' ').substring(0, 160).trim();
+            let desc = text.length > 155 ? text + "..." : text;
+            const img = tempDiv.querySelector('img')?.src || 'https://verticalwar.com/assets/images/sovereign_og.png';
+
+            const setMeta = (prop, cont, isName = false) => {
+                const attr = isName ? 'name' : 'property';
+                let tag = document.querySelector(`meta[${attr}="${prop}"]`);
+                if (!tag) { tag = document.createElement('meta'); tag.setAttribute(attr, prop); document.head.appendChild(tag); }
+                tag.setAttribute('content', cont);
+            };
+
+            setMeta('description', desc, true);
+            setMeta('og:title', data.title);
+            setMeta('og:description', desc);
+            setMeta('og:image', img);
+            setMeta('og:type', 'article');
+            setMeta('og:url', window.location.href);
+            setMeta('twitter:card', 'summary_large_image');
+            setMeta('twitter:title', data.title);
+            setMeta('twitter:description', desc);
+            setMeta('twitter:image', img);
         }
 
         function showError(msg) {
             statusContainer.innerHTML = `
-                <div class="border border-red-900/50 bg-red-900/10 p-12 inline-block">
-                    <div class="text-3xl mb-4">⚠️</div>
-                    <div class="font-mono text-red-500 text-sm tracking-widest uppercase">${msg}</div>
-                    <a href="../" class="block mt-6 text-xs text-gray-500 hover:text-white uppercase underline">[ RETURN TO MAIN ]</a>
+                <div class="border border-red-500 bg-red-500/10 p-12 text-center max-w-md mx-auto shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                    <div class="text-3xl mb-4 text-red-500">⚠️</div>
+                    <div class="font-bold text-red-500 tracking-widest uppercase mb-6">${msg}</div>
+                    <a href="../" class="inline-block border border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-6 py-2 text-xs uppercase tracking-widest transition-colors">[ RETURN TO MAIN ]</a>
                 </div>
             `;
         }

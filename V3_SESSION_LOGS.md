@@ -54,6 +54,13 @@ We initiated **The Great Wipe Reboot** to build `sovereign_v3`.
 * Added `.gitignore` rules to prevent the key from ever touching GitHub.
 * Locked the area strictly to `OPERATOR` and `ARCHIVIST` roles.
 
+**Phase 6: Legacy Codex Direct Injection (Native HTML Metamorphosis)**
+
+* Bypassed the browser's 500MB payload limitation by engineering a direct Python-to-Supabase REST API injection script (`inject_codex.py`).
+* Scraped, encoded (via Base64 for 100% platform independence), and successfully injected all 35 legacy Substack articles into the `articles` database.
+* Refactored the `index.html` Dispatch Feed and `/cmd/codex/index.html` Library to use a **Lazy-Load Architecture** (fetching only metadata on initial load, and deferring heavy HTML rendering until user selection) to eliminate Supabase statement timeouts.
+* The Codex CMS is now running on a 100% sovereign, dynamic HTML engine.
+
 ### 3. THE GOLDEN PAIR REFUSAL OF DEFEAT
 
 The wipe could have broken the momentum. Instead, the Operator identified the structural flaw in the old system and we rebuilt a significantly more efficient, converting, and scalable machine in a single sprint. The friction is gone. The aesthetic remains.

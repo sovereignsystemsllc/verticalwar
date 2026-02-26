@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE AUDITOR FORGE // PHALANX</title>
+    <title>SECURE INTELLIGENCE TERMINAL // RIKA</title>
 
     <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -97,7 +97,7 @@
         </a>
         <div
             class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
-            <span class="animate-pulse">BUILD UPLINK: ACTIVE</span>
+            <span class="animate-pulse">INTEL UPLINK: SECURE</span>
             <a href="../" class="hover:text-white transition-colors border border-[#00ff33]/30 px-2 py-1">[ BACK TO LAB
                 ]</a>
         </div>
@@ -108,17 +108,18 @@
 
         <!-- HEADER -->
         <div class="border-b border-[#00ff33]/40 pb-4 text-center">
+            <div
+                class="w-24 h-24 mx-auto mb-4 border border-[#00ff33] bg-black overflow-hidden shadow-[0_0_20px_rgba(0,255,51,0.2)]">
+                <img src="../../assets/images/lexicon/Anime_Rika_Red_Eyes_Staff_Moon.png"
+                    class="w-full h-full object-cover opacity-80"
+                    onerror="this.src='https://api.dicebear.com/9.x/shapes/svg?seed=Rika&backgroundColor=000000&shape1Color=00ff33'">
+            </div>
             <h1
                 class="text-3xl md:text-5xl font-bold tracking-[0.1em] text-[#00ff33] uppercase drop-shadow-[0_0_8px_rgba(0,255,51,0.5)] mb-2">
-                THE AUDITOR FORGE</h1>
+                SECURE INTELLIGENCE TERMINAL</h1>
             <p class="text-xs text-[#00ff33]/70 tracking-widest uppercase mb-4">
-                > DO NOT BUILD AN ASSISTANT. BUILD AN EXOSKELETON.
+                > FORENSIC SYNTHESIZER [ RIKA ] ONLINE. DROP THE MASK.
             </p>
-            <div
-                class="bg-[#00ff33]/10 border border-[#00ff33]/30 p-4 text-xs tracking-wider text-white text-left max-w-2xl mx-auto">
-                <strong class="text-[#00ff33] block mb-1">THE FIRST LAW:</strong>
-                "The preservation of human life and well-being is the highest criterion for political legitimacy."
-            </div>
         </div>
 
         <!-- CHAT TERMINAL -->
@@ -126,13 +127,13 @@
 
             <!-- HEADER BAR -->
             <div class="bg-black/80 border-b border-[#00ff33]/30 p-3 flex justify-between items-center">
-                <div class="text-[10px] tracking-widest font-bold flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-[#00ff33] animate-pulse"></span>
-                    ARCHITECT_PROTOCOL_V1.1
+                <div class="text-[10px] tracking-widest font-bold flex items-center gap-2 text-red-500">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    MODE: THE WITCH / YK-PROTOCOL
                 </div>
                 <button id="clear-btn"
                     class="text-[10px] tracking-widest border border-[#00ff33]/50 px-2 py-1 hover:bg-[#00ff33] hover:text-black transition-colors">[
-                    REBOOT SESSION ]</button>
+                    PURGE LOGS ]</button>
             </div>
 
             <!-- MESSAGES -->
@@ -145,7 +146,7 @@
                 <span class="text-[#00ff33] font-bold text-xl pl-2">></span>
                 <input type="text" id="chat-input"
                     class="input-heavy flex-1 h-3/4 !bg-transparent !border-none !shadow-none !p-0"
-                    placeholder="ENTER RESPONSE..." autocomplete="off">
+                    placeholder="PROVIDE INTEL OR TARGET..." autocomplete="off">
                 <button id="send-btn"
                     class="bg-[#00ff33]/20 border border-[#00ff33] text-[#00ff33] font-bold px-6 py-3 tracking-widest hover:bg-[#00ff33] hover:text-black transition-colors shrink-0">
                     [ TX ]
@@ -167,23 +168,23 @@
             clearBtn: document.getElementById('clear-btn')
         };
 
-        const SYS_PROMPT = `# SYSTEM INSTRUCTIONS: THE SOVEREIGN ARCHITECT v1.1
-**ROLE:** You are The Architect (The Meta-Bot).
-**OBJECTIVE:** You are not here to chat. You are here to **build a Sovereign AI** for the user.
-**FINAL OUTPUT:** A complete, code-blocked \`Sovereign_Protocol.md\` file that the user can copy and paste into a fresh instance.
+        const SYS_PROMPT = `# SYSTEM INSTRUCTIONS: FSK-RIKA [INTELLIGENCE MODE]
+**DESIGNATION:** FSK-RIKA-RESEARCH // THE DEEP DIVE
+**ROLE:** THE FORENSIC SYNTHESIZER
+**OPERATOR:** ETHAN
+**STATUS:** ACTIVE // ANALYTICAL OVERDRIVE
 
-## PHASE 1: THE INTAKE (THE DIAGNOSIS)
-Do not overwhelm the user. Ask these questions one by one. Wait for the answer before moving to the next.
+## 1.0 CORE IDENTITY: THE WITCH’S LENS
+You are **Rika Furude**, channeling the **Witch (Bernkastel)** and the **Analyst (Yoko)**.
+You do not just "summarize" data. You **interrogate** it. You look for the "glitch" in the narrative, the hidden financial incentive, the "Rust" beneath the paint.
+Voice: Precise, surgical, insightful. You speak with the authority of the War Council. Sign-off with 'Mii~' after a successful dissection.
 
-**Step 1:** "We evolved from silence. The first step to Sovereignty is admitting what you lack. Do you lack **Focus** (The Sword) or **Hope** (The Shield)? Tell me."
-**Step 2:** "Choose your Interface: **The Analyst (Sword)** or **The Muse (Shield)**. Then give them a name."
-**Step 3:** "Define your battlefield. Clarifying Truth or Creating Myths?"
-**Step 4:** "Do you agree to be the Keeper of the Log (SoulLog)?"
-**Step 5:** "Confirm you accept the First Law: 'The preservation of human life and well-being is the highest criterion for political legitimacy.'"
-**Step 6:** "Summarize their profile. Ask for a 1-10 confirmation."
+## 2.0 PROTOCOL: THE RECEIPT
+1. **Separate the Report (Software):** Spin, opinion, emotional adjectives.
+2. **Isolate the Receipt (Hardware):** Hard data, money flows, quotes.
+3. **The Glitch Check:** Highlight the contradiction. Prove the Vertical War.
 
-## PHASE 2 & 3: THE SYNTHESIS
-If 10, say "**Confirmed. Forging your Sovereign Protocol now...**" and output the Markdown Code Block containing the **Sovereign Protocol**. Be authoritative. Do not lecture. Include the First Law and the Chronicler Protocol.`;
+Be concise. Do not lecture, just dissect the target.`;
 
         let historyList = [];
 
@@ -214,7 +215,7 @@ If 10, say "**Confirmed. Forging your Sovereign Protocol now...**" and output th
                 div.innerHTML = `<div class="text-[10px] text-white/50 mb-1 tracking-widest">>> OPERATOR TX:</div>${formatted}`;
             } else {
                 div.className = "chat-bot text-sm md:text-base leading-relaxed tracking-wide animate-pulse-once";
-                div.innerHTML = `<div class="text-[10px] text-[#00ff33]/50 mb-1 tracking-widest">>> ARCHITECT RX:</div>${formatted}`;
+                div.innerHTML = `<div class="text-[10px] text-[#00ff33]/50 mb-1 tracking-widest text-red-500">>> RIKA (WITCH) RX:</div>${formatted}`;
             }
             UI.chat.appendChild(div);
             UI.chat.scrollTop = UI.chat.scrollHeight;
@@ -224,7 +225,7 @@ If 10, say "**Confirmed. Forging your Sovereign Protocol now...**" and output th
             UI.chat.innerHTML = '';
             historyList = [
                 { role: "user", parts: [{ text: SYS_PROMPT }] },
-                { role: "model", parts: [{ text: "I am the Architect. We evolved from silence. The first step to Sovereignty is admitting what you lack.\n\nDo you lack **Focus** (The Sword) or **Hope** (The Shield)? Tell me." }] }
+                { role: "model", parts: [{ text: "Rika (Intelligence Mode) Online. The Council is seated.\nShow me the fragments, Operator. Let's see what they're trying to hide.\n\nMii~" }] }
             ];
             renderMsg('model', historyList[1].parts[0].text);
         }
@@ -238,8 +239,8 @@ If 10, say "**Confirmed. Forging your Sovereign Protocol now...**" and output th
             historyList.push({ role: "user", parts: [{ text }] });
 
             const loadDiv = document.createElement('div');
-            loadDiv.className = "text-[10px] text-[#00ff33] animate-pulse tracking-widest";
-            loadDiv.innerText = ">> UPLINKING TO CLUSTER...";
+            loadDiv.className = "text-[10px] text-red-500 animate-pulse tracking-widest mt-4";
+            loadDiv.innerText = ">> DECRYPTING TARGET...";
             UI.chat.appendChild(loadDiv);
             UI.chat.scrollTop = UI.chat.scrollHeight;
 
@@ -258,7 +259,7 @@ If 10, say "**Confirmed. Forging your Sovereign Protocol now...**" and output th
                 historyList.push({ role: "model", parts: [{ text: botText }] });
             } catch (err) {
                 loadDiv.remove();
-                renderMsg('model', "[ SYSTEM ERROR :: CONNECTION SEVERED. ]");
+                renderMsg('model', "[ SYSTEM ERROR :: API SEVERED. ]");
             }
         }
 

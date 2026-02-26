@@ -6,24 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE FORGE // DISPATCH</title>
 
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;800&family=Rajdhani:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
 
-    <!-- Native Editor Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'term-black': '#050505', 'term-red': '#ef4444' },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier Prime', 'monospace'],
+                        serif: ['Playfair Display', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        body {
+            background-color: #050505;
+            color: #ef4444;
+            cursor: crosshair;
+        }
+
         /* Toolbar Styles */
         #native-toolbar {
-            background: rgba(10, 10, 10, 0.9);
-            border-bottom: 1px solid #27272a;
+            background: #050505;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
             padding: 12px;
             position: sticky;
             top: 0;
-            z-index: 60;
+            z-index: 40;
             display: flex;
             gap: 10px;
             align-items: center;
@@ -31,39 +49,42 @@
         }
 
         .toolbar-btn {
-            background: transparent;
-            border: 1px solid #27272a;
-            color: #a1a1aa;
-            padding: 4px 8px;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 6px 12px;
             cursor: pointer;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.1em;
             transition: all 0.2s;
         }
 
         .toolbar-btn:hover,
         .toolbar-btn.active {
-            background: #27272a;
+            background: rgba(239, 68, 68, 0.2);
             color: white;
-            border-color: #52525b;
+            border-color: #ef4444;
         }
 
-        /* Custom Dropdown Styles */
         .custom-dropdown {
             position: relative;
             display: inline-block;
         }
 
         .dropdown-btn {
-            background: #0a0a0a;
-            border: 1px solid #27272a;
-            color: #a1a1aa;
-            padding: 4px 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 6px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             cursor: pointer;
-            border-radius: 4px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -71,21 +92,21 @@
         }
 
         .dropdown-btn:hover {
-            background: #27272a;
+            background: rgba(239, 68, 68, 0.2);
             color: white;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #0a0a0a;
+            background-color: #050505;
             min-width: 140px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.8);
-            border: 1px solid #27272a;
-            z-index: 70;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            z-index: 50;
             top: 100%;
             left: 0;
             margin-top: 4px;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
         }
 
         .dropdown-content.show {
@@ -93,22 +114,26 @@
         }
 
         .dropdown-content button {
-            color: #a1a1aa;
-            padding: 8px 12px;
+            color: #ef4444;
+            padding: 10px 12px;
             text-decoration: none;
             display: block;
             width: 100%;
             text-align: left;
             background: transparent;
             border: none;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             cursor: pointer;
             transition: all 0.2s;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
         }
 
         .dropdown-content button:hover {
-            background-color: #27272a;
+            background-color: rgba(239, 68, 68, 0.2);
             color: white;
         }
 
@@ -116,261 +141,212 @@
         #native-editor {
             min-height: 500px;
             padding: 2rem;
-            font-family: 'Georgia', serif;
-            font-size: 1.125rem;
-            line-height: 1.7;
-            color: #d4d4d8;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
             outline: none;
         }
 
         #native-editor[data-placeholder]:empty:before {
             content: attr(data-placeholder);
-            color: #52525b;
+            color: rgba(239, 68, 68, 0.5);
             font-style: italic;
             cursor: text;
+            font-family: 'Courier Prime', monospace;
         }
 
-        /* Override Tailwind Resets for Editor Content */
         #native-editor ul {
-            list-style-type: disc;
+            list-style-type: square;
             padding-left: 2rem;
             margin-bottom: 1rem;
+            color: #ef4444;
+        }
+
+        #native-editor ul span {
+            color: rgba(255, 255, 255, 0.85);
         }
 
         #native-editor ol {
             list-style-type: decimal;
             padding-left: 2rem;
             margin-bottom: 1rem;
+            color: #ef4444;
         }
 
         #native-editor li {
             margin-bottom: 0.5rem;
         }
 
+        #native-editor p {
+            margin-bottom: 1.5rem;
+        }
+
         #native-editor h2 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            color: #ef4444;
             margin-top: 2rem;
             margin-bottom: 1rem;
             text-transform: uppercase;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+            padding-bottom: 0.5rem;
         }
 
         #native-editor h3 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #d4d4d8;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: white;
             margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
         }
 
         #native-editor a {
-            color: #3b82f6;
-            /* Blue-500 */
+            color: #ef4444;
             text-decoration: underline;
             text-underline-offset: 4px;
             transition: color 0.2s;
         }
 
         #native-editor a:hover {
-            color: #60a5fa;
-            /* Blue-400 */
-        }
-    </style>
-
-    <script>
-        // Speed Lock
-        // if (!localStorage.getItem('sb-zazzwdaexhkeusfjdphv-auth-token')) {
-        //     window.location.replace('../../gate/index.html?mode=login');
-        // }
-    </script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        void: '#05010a',
-                        panel: '#0a0a0a',
-                        border: '#27272a',
-                        text: '#a1a1aa',
-                        highlight: '#e5e7eb',
-                        signal: '#d4d4d8',
-                        operator: '#b91c1c',
-                        phalanx: '#a16207',
-                        emerald: { 500: '#10b981', 900: '#064e3b' },
-                    },
-                    fontFamily: {
-                        tech: ['Rajdhani', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
-                        serif: ['Georgia', 'serif']
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #05010a;
-            color: #a1a1aa;
-            background-image: url('../../assets/images/backgrounds/chamber.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            color: white;
+            background: rgba(239, 68, 68, 0.2);
+            text-decoration: none;
         }
 
-        .bg-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 1, 10, 0.92);
-            z-index: -1;
+        #native-editor img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
         }
 
-        .glass-panel {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid #27272a;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        #native-editor blockquote {
+            border-left: 4px solid #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            font-family: 'Courier Prime', monospace;
+            color: white;
         }
 
-        .scan-lines {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-        }
-
-        /* Reading constraints */
-        .editor-container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #05010a;
+            background: #050505;
+            border-left: 1px solid rgba(239, 68, 68, 0.1);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #3f3f46;
-            border-radius: 3px;
+            background: #ef4444;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #71717a;
+            background: #fff;
         }
     </style>
 </head>
 
-<body class="min-h-screen bg-black text-gray-400 font-mono flex flex-col items-center justify-start p-4">
+<body class="min-h-screen bg-black text-red-500 font-mono flex flex-col selection:bg-red-500 selection:text-black">
 
-    <div class="bg-overlay"></div>
-    <div class="scan-lines"></div>
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav
+        class="w-full border-b border-red-500/30 p-4 mb-4 flex justify-between items-center bg-black/80 sticky top-0 z-50">
+        <a href="../../cmd/"
+            class="text-[10px] md:text-sm font-bold text-red-500 hover:text-white transition-colors tracking-[0.2em] border border-red-500/50 px-4 py-2 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.1)]">
+            [ COMMAND HUB ]
+        </a>
+        <div class="flex gap-4">
+            <button id="btn-save-draft"
+                class="px-4 py-2 text-[10px] font-bold text-red-500/70 border border-red-500/30 hover:text-white hover:border-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest">
+                [ SAVE FILE ]
+            </button>
+            <button id="btn-publish"
+                class="px-4 py-2 text-[10px] font-bold text-black border border-red-500 bg-red-500 hover:bg-white hover:text-black transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                [ TRANSMIT ]
+            </button>
+        </div>
+    </nav>
 
-    <div class="w-full max-w-5xl mt-16 glass-panel flex flex-col relative z-10 min-h-[85vh]">
+    <main class="flex-1 w-full max-w-4xl mx-auto p-4 flex flex-col">
 
-        <!-- HEADER -->
-        <div class="p-6 border-b border-border bg-black/40 flex justify-between items-center sticky top-0 z-50">
-            <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-3 h-3 bg-red-500 animate-pulse"></div>
-                    <h1 class="font-tech text-2xl text-white tracking-widest uppercase">THE FORGE // DISPATCH</h1>
-                </div>
-                <p class="text-[10px] text-red-500/80 uppercase tracking-widest font-mono">Sovereign Intel Transmitter
-                </p>
-            </div>
+        <h1 class="text-xl md:text-2xl font-bold text-white tracking-[0.2em] uppercase mb-1 flex items-center gap-3">
+            <div class="w-2 h-2 bg-red-500 animate-pulse"></div> THE FORGE
+        </h1>
+        <p class="text-[10px] text-red-500/70 uppercase tracking-widest mb-8 border-b border-red-500/20 pb-4">Secure
+            Dispatch Transmitter // LEVEL_4</p>
 
-            <div class="flex gap-4">
-                <button id="btn-save-draft"
-                    class="px-4 py-2 text-xs font-mono text-gray-400 border border-gray-700 hover:text-white hover:border-white transition-all">
-                    [ SAVE DRAFT ]
-                </button>
-                <button id="btn-publish"
-                    class="px-6 py-2 text-xs font-tech font-bold text-black bg-red-600 hover:bg-red-500 uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)]">
-                    [ BROADCAST ]
-                </button>
-            </div>
+        <!-- TITLE INPUT -->
+        <input type="text" id="draft-title" placeholder="ENTER SUBJECT HEADING..."
+            class="w-full bg-transparent border-none text-2xl md:text-4xl font-serif font-bold text-white mb-6 focus:outline-none placeholder-red-500/20 transition-all">
+
+        <!-- SERIES SELECTION -->
+        <div class="mb-8 flex items-center gap-4 bg-red-500/5 p-4 border border-red-500/20">
+            <span class="text-[10px] font-bold text-red-500/80 uppercase tracking-widest">CLASSIFICATION:</span>
+            <select id="draft-series"
+                class="bg-black border border-red-500/30 text-[10px] uppercase font-bold text-white p-2 focus:border-red-500 outline-none w-full max-w-[300px] cursor-pointer">
+                <option value="Dispatch">DISPATCH (PUBLIC)</option>
+                <option value="Doctrine">DOCTRINE</option>
+                <option value="Inside the Forge">[RESTRICTED] INSIDE THE FORGE</option>
+            </select>
         </div>
 
-        <!-- MAIN EDITOR AREA -->
-        <div class="flex-1 flex flex-col relative bg-black/20 overflow-y-auto">
-            <div class="w-full max-w-[750px] mx-auto px-6 py-12 flex flex-col flex-1">
+        <!-- NATIVE EDITOR -->
+        <div id="editor-wrapper"
+            class="flex-1 border border-red-500/30 bg-black/40 flex flex-col relative shadow-[0_0_20px_rgba(239,68,68,0.05)]">
 
-                <!-- TITLE INPUT -->
-                <input type="text" id="draft-title" placeholder="ENTER SUBJECT HEADING..."
-                    class="w-full bg-transparent border-none text-4xl md:text-5xl font-tech font-bold text-white mb-8 focus:outline-none placeholder-gray-700 uppercase tracking-wider">
-
-                <!-- SERIES SELECTION -->
-                <div class="mb-8 flex items-center gap-4">
-                    <span class="text-xs font-mono text-gray-500 uppercase">CLASSIFICATION:</span>
-                    <select id="draft-series"
-                        class="bg-black border border-border text-xs font-mono text-gray-300 p-2 focus:border-red-500 outline-none w-64 uppercase">
-                        <option value="Dispatch">Field Dispatch (Public)</option>
-                        <option value="Doctrine">Sovereign Doctrine</option>
-                        <option value="Inside the Forge">[RESTRICTED] Inside the Forge</option>
-                    </select>
-                </div>
-
-                <!-- NATIVE HTML EDITOR -->
-                <div id="editor-wrapper"
-                    class="flex-1 flex flex-col border border-border bg-black/30 rounded-sm overflow-hidden mb-12">
-
-                    <div id="native-toolbar">
-                        <!-- Custom Formatting Dropdown -->
-                        <div class="custom-dropdown">
-                            <button type="button" class="dropdown-btn" onclick="toggleFormatDropdown(event)"
-                                id="format-btn">
-                                FORMAT ▼
-                            </button>
-                            <div id="format-dropdown" class="dropdown-content">
-                                <button type="button" onclick="applyFormat('H2', 'HEADING 1')">Heading 1</button>
-                                <button type="button" onclick="applyFormat('H3', 'HEADING 2')">Heading 2</button>
-                                <button type="button" onclick="applyFormat('P', 'PARAGRAPH')">Paragraph</button>
-                            </div>
-                        </div>
-                        <button type="button" class="toolbar-btn" data-cmd="bold" onclick="formatDoc('bold')"
-                            title="Bold">B</button>
-                        <button type="button" class="toolbar-btn" data-cmd="italic" onclick="formatDoc('italic')"
-                            title="Italic">I</button>
-                        <button type="button" class="toolbar-btn" data-cmd="underline" onclick="formatDoc('underline')"
-                            title="Underline">U</button>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('insertUnorderedList')"
-                            title="Bullet List">• List</button>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('insertOrderedList')"
-                            title="Number List">1. List</button>
-                        <button type="button" class="toolbar-btn" onclick="addLink()" title="Insert Link">Link</button>
-                        <button type="button" class="toolbar-btn"
-                            onclick="document.getElementById('image-upload').click()"
-                            title="Insert Image">Image</button>
-                        <input type="file" id="image-upload" accept="image/*" style="display:none;"
-                            onchange="uploadImage(this)">
+            <div id="native-toolbar">
+                <div class="custom-dropdown">
+                    <button type="button" class="dropdown-btn" onclick="toggleFormatDropdown(event)"
+                        id="format-btn">FORMAT ▼</button>
+                    <div id="format-dropdown" class="dropdown-content">
+                        <button type="button" onclick="applyFormat('H2', 'HEADING 1')">[ OVERRIDE H1 ]</button>
+                        <button type="button" onclick="applyFormat('H3', 'HEADING 2')">[ OVERRIDE H2 ]</button>
+                        <button type="button" onclick="applyFormat('P', 'PARAGRAPH')">[ PARAGRAPH ]</button>
                     </div>
-
-                    <div id="native-editor" contenteditable="true" data-placeholder="Commence transcription..."></div>
-
                 </div>
+                <button type="button" class="toolbar-btn" data-cmd="bold" onclick="formatDoc('bold')"
+                    title="Bold">B</button>
+                <button type="button" class="toolbar-btn" data-cmd="italic" onclick="formatDoc('italic')"
+                    title="Italic">I</button>
+                <button type="button" class="toolbar-btn" data-cmd="underline" onclick="formatDoc('underline')"
+                    title="Underline">U</button>
+                <button type="button" class="toolbar-btn" onclick="formatDoc('insertUnorderedList')"
+                    title="Bullet List">• LI</button>
+                <button type="button" class="toolbar-btn" onclick="formatDoc('insertOrderedList')"
+                    title="Number List">1. LI</button>
+                <button type="button" class="toolbar-btn" onclick="addLink()" title="Insert Link">LINK</button>
+                <button type="button" class="toolbar-btn" onclick="document.getElementById('image-upload').click()"
+                    title="Insert Image">IMAGE</button>
+                <input type="file" id="image-upload" accept="image/*" style="display:none;"
+                    onchange="uploadImage(this)">
+            </div>
 
+            <div id="native-editor" contenteditable="true" data-placeholder="Commence transcription..."></div>
+
+            <!-- Loading Overlay -->
+            <div id="editor-loading-overlay"
+                class="absolute inset-0 bg-black/90 z-40 flex flex-col items-center justify-center hidden border border-red-500/50">
+                <div class="w-4 h-4 rounded-full bg-red-500 animate-pulse mb-4"></div>
+                <span class="font-bold text-red-500 tracking-widest text-[10px] uppercase">/// DECRYPTING SECURE
+                    TRANSMISSION... ///</span>
             </div>
         </div>
 
-    </div>
+    </main>
 
     <!-- NOTIFICATION SYSTEM -->
     <div id="status-toast"
-        class="fixed bottom-6 right-6 p-4 border border-border bg-black/90 font-mono text-xs text-white z-50 transform translate-y-[200%] transition-transform duration-300 flex items-center gap-3 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+        class="fixed bottom-6 right-6 p-4 border border-red-500/50 bg-black/95 text-[10px] font-bold text-white z-50 transform translate-y-[200%] transition-transform duration-300 flex items-center gap-3 shadow-[0_0_20px_rgba(239,68,68,0.3)] uppercase tracking-widest">
         <div id="toast-indicator" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-        <span id="toast-message">STATUS UPDATE</span>
+        <span id="toast-message">SYSTEM STANDBY</span>
     </div>
 
     <script>
@@ -381,7 +357,6 @@
             updateToolbarState();
         };
 
-        // Custom Dropdown Logic
         window.toggleFormatDropdown = function (event) {
             event.stopPropagation();
             document.getElementById("format-dropdown").classList.toggle("show");
@@ -391,77 +366,53 @@
             formatDoc('formatBlock', blockType);
             document.getElementById("format-btn").innerHTML = label + ' ▼';
             document.getElementById("format-dropdown").classList.remove("show");
-
-            setTimeout(() => {
-                document.getElementById("format-btn").innerHTML = 'FORMAT ▼';
-            }, 1000);
+            setTimeout(() => { document.getElementById("format-btn").innerHTML = 'FORMAT ▼'; }, 1000);
         };
 
-        // Close dropdown when clicking outside
         window.onclick = function (event) {
             if (!event.target.matches('.dropdown-btn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
                 }
             }
         };
 
         window.addLink = function () {
-            const url = prompt("Enter link URL:");
-            if (url) {
-                document.execCommand("createLink", false, url);
-                updateToolbarState();
-            }
+            const url = prompt("ENTER UPLINK URL:");
+            if (url) { document.execCommand("createLink", false, url); updateToolbarState(); }
         };
 
-        // Active State Toggling
         function updateToolbarState() {
             const buttons = document.querySelectorAll('#native-toolbar .toolbar-btn[data-cmd]');
             buttons.forEach(btn => {
-                const cmd = btn.getAttribute('data-cmd');
-                if (document.queryCommandState(cmd)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                if (document.queryCommandState(btn.getAttribute('data-cmd'))) btn.classList.add('active');
+                else btn.classList.remove('active');
             });
         }
 
-        // Listen for cursor movement or clicks to update button states
         const editor = document.getElementById('native-editor');
         editor.addEventListener('keyup', updateToolbarState);
         editor.addEventListener('mouseup', updateToolbarState);
         editor.addEventListener('focus', updateToolbarState);
 
-        // Custom Image Upload Pipeline
+        // Upload Pipeline
         window.uploadImage = async function (input) {
             const file = input.files[0];
             if (!file) return;
 
-            showToast('UPLOADING ASSET TO MAINFRAME...', 'blue');
+            showToast('UPLOADING HARDWARE ASSET...', 'blue');
             try {
-                // Determine user folder or use 'public' if disabled currently
-                const folderName = currentUserId || 'guest_uploads';
+                const folderName = window.currentUserId || 'guest_uploads';
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
                 const filePath = `${folderName}/${fileName}`;
 
-                const { data, error } = await supabase.storage
-                    .from('article_assets')
-                    .upload(filePath, file);
-
+                const { data, error } = await window.supabase.storage.from('article_assets').upload(filePath, file);
                 if (error) throw error;
 
-                // Get Public URL
-                const { data: { publicUrl } } = supabase.storage
-                    .from('article_assets')
-                    .getPublicUrl(filePath);
+                const { data: { publicUrl } } = window.supabase.storage.from('article_assets').getPublicUrl(filePath);
 
-                // Insert into Editor
                 document.getElementById('native-editor').focus();
                 document.execCommand('insertImage', false, publicUrl);
                 showToast('ASSET UPLOAD COMPLETE.', 'green');
@@ -470,47 +421,60 @@
                 console.error("Upload Error:", err);
                 showToast('UPLOAD FAILED: ' + err.message, 'red');
             }
-
-            // Reset input
             input.value = '';
         };
+
+        function showToast(msg, color) {
+            const toast = document.getElementById('status-toast');
+            const dot = document.getElementById('toast-indicator');
+            document.getElementById('toast-message').innerText = msg;
+
+            dot.className = 'w-2 h-2 rounded-full animate-pulse ' +
+                (color === 'red' ? 'bg-red-500' :
+                    color === 'green' ? 'bg-[#00ff33]' :
+                        color === 'yellow' ? 'bg-yellow-500' : 'bg-blue-500');
+
+            toast.style.transform = 'translateY(0)';
+            setTimeout(() => { toast.style.transform = 'translateY(200%)'; }, 4000);
+        }
+        window.showToast = showToast;
     </script>
 
     <script type="module">
-        // Main Access Flow
+        import { supabase } from '../../assets/js/supabaseClient.js';
+        window.supabase = supabase;
+        window.currentUserId = null;
+        let activeDraftId = null;
+
         async function verifyAccess() {
-            // CheckGuard restricts the Forge to Authors/Archivists/Command
-            // const isAuthorized = await checkGuard(['OPERATOR', 'ARCHIVIST']);
-            // if (!isAuthorized) {
-            // window.location.replace('../../gate/index.html');
-            // return;
-            // }
+            const { data: { session } } = await window.supabase.auth.getSession();
+            if (!session) { window.location.replace('../../gate/'); return; }
+            window.currentUserId = session.user.id;
 
-            const { data: { session } } = await supabase.auth.getSession();
-            currentUserId = session.user.id;
+            let userRoles = [];
+            try {
+                const { data: profile } = await window.supabase.from('profiles').select('role, roles').eq('id', window.currentUserId).single();
+                if (profile) {
+                    if (profile.role) userRoles.push(profile.role.toUpperCase());
+                    if (profile.roles && Array.isArray(profile.roles)) userRoles.push(...profile.roles.map(r => r.toUpperCase()));
+                }
+            } catch (e) { }
 
-            // Check URL for edit mode
-            const urlParams = new URLSearchParams(window.location.search);
-            const editId = urlParams.get('id');
-            if (editId) {
-                loadDraft(editId);
-            }
+            const editId = new URLSearchParams(window.location.search).get('id');
+            if (editId) loadDraft(editId, userRoles);
         }
 
-        // Load Existing Draft
-        async function loadDraft(id) {
-            showToast('RETRIEVING ENCRYPTED FILE...', 'yellow');
-            try {
-                const { data, error } = await supabase
-                    .from('articles')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
+        async function loadDraft(id, userRoles = []) {
+            showToast('RETRIEVING ENCRYPTED SECRETS...', 'yellow');
+            document.getElementById('editor-loading-overlay').classList.remove('hidden');
 
+            try {
+                const { data, error } = await window.supabase.from('articles').select('*').eq('id', id).single();
                 if (error) throw error;
 
-                if (data.author_id !== currentUserId) {
-                    showToast('ACCESS DENIED: IMMUTABLE FILE', 'red');
+                if (data.author_id !== window.currentUserId && !userRoles.includes('SOVEREIGN')) {
+                    showToast('ACCESS DENIED: IMMUTABLE RECORDING', 'red');
+                    setTimeout(() => window.location.replace('../codex/'), 2000);
                     return;
                 }
 
@@ -519,81 +483,52 @@
                 document.getElementById('draft-series').value = data.series;
                 document.getElementById('native-editor').innerHTML = data.content_html;
 
-                showToast(`DECRYPTION COMPLETE: ${data.status.toUpperCase()}`, 'green');
-
+                showToast(`DECRYPTION COMPLETE: ${data.published ? 'PUBLISHED' : 'DRAFT'}`, 'green');
             } catch (err) {
-                console.error("Draft Load Error:", err);
-                showToast('FAILED TO RETRIEVE FILE.', 'red');
+                showToast('FAILED TO LOCATE TRANSMISSION.', 'red');
+            } finally {
+                document.getElementById('editor-loading-overlay').classList.add('hidden');
             }
         }
 
-        // Save Function
         async function saveArticle(status) {
             const title = document.getElementById('draft-title').value.trim();
             const series = document.getElementById('draft-series').value;
             const editorDiv = document.getElementById('native-editor');
             const content_html = editorDiv.innerHTML;
 
-            if (!title) {
-                showToast('FATAL: SUBJECT HEADING REQUIRED.', 'red');
-                return;
+            if (!title) { showToast('FATAL: SUBJECT HEADING REQUIRED.', 'red'); return; }
+            if (!editorDiv.textContent.trim() && !content_html.includes('<img')) { showToast('FATAL: TRANSCRIPTION EMPTY.', 'red'); return; }
+
+            showToast(`INITIATING ${status.toUpperCase()} SEQUENCE...`, 'yellow');
+
+            const payload = { title, content_html, series, published: (status === 'published') };
+            if (!activeDraftId) payload.author_id = window.currentUserId;
+
+            try {
+                if (activeDraftId) {
+                    const { error } = await window.supabase.from('articles').update({ ...payload, updated_at: new Date() }).eq('id', activeDraftId);
+                    if (error) throw error;
+                } else {
+                    const { data, error } = await window.supabase.from('articles').insert([payload]).select().single();
+                    if (error) throw error;
+                    activeDraftId = data.id;
+                    const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?id=' + data.id;
+                    window.history.pushState({ path: newurl }, '', newurl);
+                }
+
+                if (status === 'published') {
+                    showToast('TRANSMISSION SENT SUCCESSFULLY.', 'green');
+                    setTimeout(() => window.location.href = '../codex/', 2000);
+                } else showToast('DRAFT SAVED TO LOCAL NODE.', 'green');
+            } catch (err) {
+                showToast('TRANSMISSION FAILED.', 'red');
             }
-            if (!editorDiv.textContent.trim() && !content_html.includes('<img')) {
-                showToast('FATAL: TRANSCRIPTION
-        EMPTY.', 'red' ); return; } showToast(`INITIATING ${status.toUpperCase()} SEQUENCE...`, 'yellow' ); const
-        payload = { title: title, content_html: content_html, series: series, status: status, author_id: currentUserId, };
-                try {
-                    if (activeDraftId) { // Update const { error }=await supabase .from('articles') .update({ ...payload,
-                        updated_at: new Date()
-                    }) .eq('id', activeDraftId); if (error) throw error;
-                } else { // Insert const { data,
-                    error
-                }=await supabase.from('articles').insert([payload]).select().single(); if (error) throw error;
-                activeDraftId = data.id; // Store new ID // Update URL silently const newurl=window.location.protocol + "//" +
-                window.location.host + window.location.pathname + '?id=' + data.id; window.history.pushState({
-                    path: newurl
-                }, '', newurl);
-            } if (status === 'published') {
-                showToast('TRANSMISSION SENT SUCCESSFULLY.', 'green');
-                setTimeout(() => window.location.href = '../codex/index.html', 2000);
-            } else {
-                showToast('DRAFT SAVED TO LOCAL NODE.', 'green');
-            }
-
-        } catch (err) {
-            console.error("Save Error:", err);
-            showToast('TRANSMISSION FAILED.', 'red');
-        }
         }
 
-        // Toast Helper
-        function showToast(msg, color) {
-            const toast = document.getElementById('status-toast');
-            const dot = document.getElementById('toast-indicator');
-            document.getElementById('toast-message').innerText = msg;
-
-            // Reset colors
-            dot.classList.remove('bg-red-500', 'bg-green-500', 'bg-yellow-500', 'bg-blue-500');
-
-            if (color === 'red') dot.classList.add('bg-red-500');
-            if (color === 'green') dot.classList.add('bg-green-500');
-            if (color === 'yellow') dot.classList.add('bg-yellow-500');
-            if (color === 'blue') dot.classList.add('bg-blue-500');
-
-            // Slide In
-            toast.style.transform = 'translateY(0)';
-
-            // Auto Hide
-            setTimeout(() => {
-                toast.style.transform = 'translateY(200%)';
-            }, 4000);
-        }
-
-        // Event Listeners
         document.getElementById('btn-save-draft').addEventListener('click', () => saveArticle('draft'));
         document.getElementById('btn-publish').addEventListener('click', () => saveArticle('published'));
 
-        // Boot
         verifyAccess();
     </script>
 </body>

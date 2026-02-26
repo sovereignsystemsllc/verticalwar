@@ -70,7 +70,6 @@
         }
     </style>
     <!-- NAV BAR INJECTION -->
-    <script type="module" src="../../assets/js/nav_bar.js?v=21"></script>
 </head>
 
 <body class="flex items-center justify-center min-h-screen p-4">

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Archives // The Paper Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
+
+        body {
+            background-color: #05010a;
+            color: #d1d5db;
+            /* gray-300 */
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+
+        /* Scanline effect */
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.15;
+        }
+
+        .dotted-border {
+            border-bottom: 1px dotted #4b5563;
+            /* gray-600 */
+        }
+
+        .main-container {
+            max-width: 1024px;
+            margin: 0 auto;
+            border: 1px solid #1f2937;
+            /* gray-800 */
+            background-color: #0a0b0d;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            min-height: 90vh;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        /* Ascii specific styles */
+        .ascii-tree {
+            color: #4b5563;
+            /* gray-600 */
+        }
+
+        .ascii-accent {
+            color: #dc2626;
+            /* command-red */
+        }
+
+        .ascii-link {
+            color: #22d3ee;
+            /* cyan-400 */
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .ascii-link:hover {
+            color: #f8fafc;
+            /* slate-50 */
+            background-color: #dc2626;
+            /* command-red */
+        }
+
+        .archive-button {
+            display: inline-block;
+            border: 1px solid #22d3ee;
+            color: #22d3ee;
+            padding: 0.25rem 1rem;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .archive-button:hover {
+            background-color: #22d3ee;
+            color: #000;
+        }
+    </style>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/terminal/archives/ep2/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+</head>
+
+<body class="antialiased selection:bg-red-500 selection:text-white relative">
+    <div class="scanline"></div>
+
+    <div class="main-container flex flex-col md:flex-row">
+
+        <!-- SIDEBAR -->
+        <aside class="w-full md:w-64 border-b md:border-b-0 md:border-r border-gray-800 p-6 flex flex-col">
+            <div class="mb-8">
+                <h1 class="text-white font-bold tracking-widest text-sm mb-1">SOVEREIGN_OS</h1>
+                <p class="text-xs text-gray-500">v11.4.2 [ARCHIVE_NODE]</p>
+            </div>
+
+            <nav class="space-y-4 text-xs font-mono">
+                <div>
+                    <span class="ascii-tree">/</span> <a href="../../../"
+                        class="text-gray-400 hover:text-white">ROOT</a>
+                </div>
+                <div>
+                    <span class="ascii-tree">/</span> <a href="../../"
+                        class="text-gray-400 hover:text-white">TERMINAL</a>
+                </div>
+                <div>
+                    <span class="ascii-tree">/</span> <span class="text-white bg-gray-900 px-1">ARCHIVES</span>
+                </div>
+
+                <div class="pt-4 pl-4 space-y-2 border-l border-dotted border-gray-700 ml-1">
+                    <div>
+                        <span class="ascii-accent">+</span> <a href="#" class="ascii-link">ep1_wire_cutters</a>
+                    </div>
+                    <div>
+                        <span class="ascii-accent">-</span> <span
+                            class="text-cyan-400 font-bold bg-cyan-900/20 px-1">ep2_paper_trail</span>
+                    </div>
+                    <div>
+                        <span class="ascii-accent">+</span> <a href="#"
+                            class="ascii-link opacity-50 cursor-not-allowed">ep3_classified...</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="mt-auto pt-8 text-[10px] text-gray-600">
+                CONNECTION: SECURE<br>
+                USER: GUEST_OP
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-10 bg-[#0f1115]">
+            <!-- HEADER -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 pb-4 border-b border-gray-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-tighter uppercase mb-2">Episode 2: The Paper Trail
+                    </h2>
+                    <p class="text-xs text-gray-400">MODULE VI: THE AUTHORITY TRAP // RECEIPT PACK</p>
+                </div>
+                <div class="mt-4 md:mt-0 text-right">
+                    <span id="manifest-date" class="block text-[10px] text-gray-500 mb-1">UPDATED: --/--/----</span>
+                    <span id="manifest-version"
+                        class="block text-[10px] text-red-500 border border-red-500/30 px-2 py-0.5">VERSION: --</span>
+                </div>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="mb-10 text-sm text-gray-400 max-w-2xl leading-relaxed">
+                <p class="mb-4">
+                    ACCESS GRANTED. The following directory contains the unaltered research binders, financial ledgers,
+                    and institutional audits used to construct the logic tree for Episode 2.
+                </p>
+                <p>
+                    <span class="text-red-500 font-bold">WARNING:</span> Do not trust the summary. Verify the primary
+                    data. SHA-256 cryptographic hashes are provided for all files to ensure chain of custody.
+                </p>
+            </div>
+
+            <!-- MASTER DOWNLOAD -->
+            <div class="mb-12" id="master-download-container">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- DIRECTORY LISTING -->
+            <div>
+                <h3 class="text-xs font-bold text-white mb-4 uppercase tracking-widest"><span class="ascii-tree">ls
+                        -la</span> ./binders/</h3>
+
+                <div id="file-list" class="space-y-6">
+                    <div class="animate-pulse text-red-500 text-xs">[ SYSTEM QUERYING DATABASE... ]</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT TO LOAD MANIFEST -->
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                // Add a cache-busting query parameter to ensure we get the latest manifest
+                const response = await fetch(`files/manifest.json?v=${new Date().getTime()}`);
+                if (!response.ok) throw new Error("Manifest not found.");
+                const manifest = await response.json();
+
+                // Update Header
+                document.getElementById('manifest-date').innerText = `UPDATED: ${manifest.last_updated}`;
+                document.getElementById('manifest-version').innerText = `VERSION: ${manifest.version}`;
+
+                // Update Master Archive
+                const master = manifest.master_archive;
+                if (master) {
+                    const mContainer = document.getElementById('master-download-container');
+                    mContainer.innerHTML = `
+                        <a href="files/${master.filename}" download class="archive-button flex items-center justify-between w-full md:w-auto md:inline-flex p-4 bg-cyan-900/10 hover:bg-cyan-400">
+                            <span class="mr-6 font-bold">[ DOWNLOAD MASTER ARCHIVE .ZIP ]</span>
+                            <span>${master.size_kb} KB</span>
+                        </a>
+                        <div class="mt-2 text-[10px] text-gray-600 font-mono">
+                            <span class="ascii-tree">master_hash:</span> ${master.sha256}
+                        </div>
+                    `;
+                }
+
+                // Update File List
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = ''; // clear loading state
+
+                manifest.files.forEach(file => {
+                    const row = document.createElement('div');
+                    row.className = "flex flex-col";
+
+                    row.innerHTML = `
+                        <div class="flex flex-col md:flex-row md:items-end justify-between dotted-border pb-2 mb-1">
+                            <div class="flex items-center mb-2 md:mb-0">
+                                <span class="text-xs text-gray-500 w-12 shrink-0">[${file.type}]</span>
+                                <a href="files/${file.filename}" target="_blank" class="text-sm font-bold ascii-link truncate max-w-[200px] md:max-w-md">
+                                    ${file.title}
+                                </a>
+                            </div>
+                            <div class="text-xs text-gray-400 whitespace-nowrap">
+                                ${file.size_kb} KB
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-gray-600 truncate pl-12 hover:text-gray-400 transition-colors">
+                            <span class="text-gray-700">sha256:</span> ${file.sha256}
+                        </div>
+                    `;
+                    fileList.appendChild(row);
+                });
+
+            } catch (error) {
+                document.getElementById('file-list').innerHTML = `
+                    <div class="text-red-500 border border-red-500/50 bg-red-900/10 p-4 text-xs">
+                        [ERROR] FAILED TO RETRIEVE REPOSITORY MANIFEST.<br>
+                        CONTACT SYSOPS OR VERIFY PATH.
+                    </div>
+                `;
+                console.error("Archive Load Error:", error);
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+

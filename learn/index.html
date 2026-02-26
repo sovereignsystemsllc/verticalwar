@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sovereign Terminal // Curriculum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'command-black': '#09090b',
+                        'command-dark': '#18181b',
+                        'command-red': '#dc2626',
+                        'command-amber': '#d97706',
+                        'command-text': '#e4e4e7',
+                        'command-muted': '#71717a',
+                        'terminal-green': '#22c55e',
+                        'software-blue': '#3b82f6',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', "Helvetica Neue", 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #e4e4e7;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            height: 100%;
+        }
+
+        html {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border: 1px solid #000;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #dc2626;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.10;
+        }
+
+        .crt-vignette {
+            background: radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9;
+        }
+    </style>
+
+    <!-- MSX SIDEBAR INJECTION -->
+    <script type="module" src="../assets/js/sidebar.js"></script>
+
+    <!-- OPEN GRAPH INJECTION -->
+    <meta property="og:url" content="https://verticalwar.com/learn/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_terminal_preview.png">
+</head>
+
+<body class="bg-void text-command-text antialiased selection:bg-command-red selection:text-white pl-0 lg:pl-[256px]">
+    <div class="scanline"></div>
+    <div class="crt-vignette"></div>
+
+    <div class="min-h-screen w-full flex flex-col relative z-20 pt-24 pb-32 md:pb-12 px-4 md:px-8 max-w-5xl mx-auto">
+
+        <!-- COMPONENT A: TERMINAL BRIEFING -->
+        <div class="mb-12 animate-fade-in-up">
+            <h1 class="text-3xl md:text-5xl font-bold font-sans tracking-tight text-white mb-4">SOVEREIGN ARMORY</h1>
+            <div class="max-w-3xl">
+                <p class="font-sans text-lg md:text-xl text-zinc-300 leading-relaxed font-semibold">
+                    The Horizontal War is a distraction designed to keep your eyes level. You are a Gear being ground
+                    down by the Rust.
+                </p>
+                <p class="font-sans text-base text-zinc-400 mt-4 leading-relaxed">
+                    This terminal provides the tactical curriculum to see the Vertical War. Learn the systems, track the
+                    ledgers, and cut the wires.
+                </p>
+            </div>
+        </div>
+
+        <!-- COMPONENT B: SUBSTACK CONVERSION HOOK -->
+        <a href="induction/" class="group block mb-16 animate-fade-in-up" style="animation-delay: 0.1s;">
+            <div
+                class="border border-amber-500/30 bg-[#0a0501]/80 backdrop-blur-md rounded-xl p-6 md:p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] hover:border-amber-500/60">
+                <!-- Glowing Accent Bar -->
+                <div class="absolute top-0 left-0 w-1 bg-amber-500 h-full shadow-[0_0_10px_#f59e0b]"></div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse-slow"></span>
+                            <span
+                                class="font-mono text-[10px] uppercase tracking-widest text-amber-500/80 font-bold">PREMIUM
+                                GRID TRANSFER</span>
+                        </div>
+                        <h2 class="text-xl font-bold font-sans text-white mb-2">Migrate Your Substack Subscription</h2>
+                        <p class="font-sans text-sm text-zinc-400 leading-relaxed max-w-2xl">
+                            Cancel the noise. Transition your paid Substack contract to the Sovereign Grid. It will be
+                            cheaper, and you will secure an OPERATOR profile with uninterrupted access to the complete
+                            terminal archive.
+                        </p>
+                    </div>
+                    <div class="shrink-0">
+                        <span
+                            class="inline-flex items-center justify-center px-6 py-3 font-sans font-bold text-sm bg-amber-500/10 text-amber-500 border border-amber-500 rounded-lg group-hover:bg-amber-500 group-hover:text-black transition-colors">
+                            INITIATE TRANSFER &rarr;
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- COMPONENT C: THE MODULE DASHBOARD -->
+        <div class="mb-8">
+            <h3
+                class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2 mb-6">
+                AVAILABLE CURRICULUM</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+
+                <!-- MODULE 1: WIRE CUTTERS -->
+                <a href="receipt-protocol/" class="group block h-full">
+                    <div
+                        class="h-full border border-zinc-800 bg-zinc-950/80 backdrop-blur-md rounded-xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:border-command-red/50 hover:-translate-y-1 hover:shadow-lg">
+                        <div>
+                            <span
+                                class="font-mono text-[10px] text-command-red uppercase tracking-widest font-bold block mb-4">MODULE
+                                01 // ACTIVE</span>
+                            <h2
+                                class="text-2xl font-bold font-sans text-white mb-3 tracking-tight group-hover:text-red-400 transition-colors">
+                                The Wire Cutters (Ep. 1)</h2>
+                            <p class="font-sans text-sm text-zinc-400 leading-relaxed mb-8">
+                                Deconstruct the Jamming Signal. Learn the foundational Receipt Protocol to separate Hard
+                                Data (Hardware) from Narrative Spin (Software). Includes the AI Analyzer.
+                            </p>
+                        </div>
+                        <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden mt-auto">
+                            <div
+                                class="h-full bg-zinc-700 w-0 group-hover:w-full transition-all duration-1000 ease-out">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- MODULE 2: PAPER TRAIL -->
+                <a href="paper-trail/" class="group block h-full">
+                    <div
+                        class="h-full border border-zinc-800 bg-zinc-950/80 backdrop-blur-md rounded-xl p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:border-software-blue/50 hover:-translate-y-1 hover:shadow-lg">
+                        <div>
+                            <span
+                                class="font-mono text-[10px] text-software-blue uppercase tracking-widest font-bold block mb-4">MODULE
+                                02 // ACTIVE</span>
+                            <h2
+                                class="text-2xl font-bold font-sans text-white mb-3 tracking-tight group-hover:text-blue-400 transition-colors">
+                                The Paper Trail (Ep. 2)</h2>
+                            <p class="font-sans text-sm text-zinc-400 leading-relaxed mb-8">
+                                Follow the money behind the narrative. Deploy the integrated Conflict Scanner to detect
+                                institutional capture and funding biases in 'objective' reports.
+                            </p>
+                        </div>
+                        <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden mt-auto">
+                            <div
+                                class="h-full bg-zinc-700 w-0 group-hover:w-full transition-all duration-1000 ease-out">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- LOCKED MODULES (TEASERS) -->
+                <div
+                    class="h-full border border-zinc-900 bg-zinc-950/30 rounded-xl p-6 md:p-8 flex flex-col justify-between opacity-50 grayscale select-none cursor-not-allowed">
+                    <div>
+                        <span
+                            class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest font-bold block mb-4">MODULE
+                            03 // ENCRYPTED</span>
+                        <h2 class="text-2xl font-bold font-sans text-zinc-500 mb-3 tracking-tight">The Food Cartels</h2>
+                        <p class="font-sans text-sm text-zinc-600 leading-relaxed mb-8">
+                            Deconstructing the illusion of choice in the grocery aisle. Access restricted pending
+                            clearance.
+                        </p>
+                    </div>
+                    <div
+                        class="w-full font-mono text-[10px] text-zinc-700 uppercase tracking-widest flex items-center gap-2">
+                        <span>🔒 LOCKED</span>
+                    </div>
+                </div>
+
+                <div
+                    class="h-full border border-zinc-900 bg-zinc-950/30 rounded-xl p-6 md:p-8 flex flex-col justify-between opacity-50 grayscale select-none cursor-not-allowed">
+                    <div>
+                        <span
+                            class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest font-bold block mb-4">MODULE
+                            04 // ENCRYPTED</span>
+                        <h2 class="text-2xl font-bold font-sans text-zinc-500 mb-3 tracking-tight">The Body Brokers</h2>
+                        <p class="font-sans text-sm text-zinc-600 leading-relaxed mb-8">
+                            Pharmacy Benefit Managers and health extraction. Access restricted pending clearance.
+                        </p>
+                    </div>
+                    <div
+                        class="w-full font-mono text-[10px] text-zinc-700 uppercase tracking-widest flex items-center gap-2">
+                        <span>🔒 LOCKED</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
