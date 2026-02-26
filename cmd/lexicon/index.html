@@ -12,7 +12,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'term-black': '#050505', 'term-green': '#00ff33' },
+                    colors: { 'term-black': '#050505', 'term-green': '#22c55e' },
                     fontFamily: { mono: ['Courier New', 'monospace'] }
                 }
             }
@@ -21,21 +21,21 @@
     <style>
         body {
             background-color: #050505;
-            color: #00ff33;
+            color: #22c55e;
             cursor: crosshair;
             display: none;
         }
 
         .glass-panel {
             background: rgba(10, 20, 10, 0.9);
-            border: 1px solid #00ff33;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
+            border: 1px solid #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
             transition: all 0.3s ease;
         }
 
         .input-heavy {
             background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(0, 255, 51, 0.5);
+            border: 1px solid rgba(34, 197, 94, 0.5);
             color: white;
             padding: 1rem;
             width: 100%;
@@ -46,8 +46,8 @@
         }
 
         .input-heavy:focus {
-            border-color: #00ff33;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.4);
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
         }
 
         /* Custom Scrollbar */
@@ -60,7 +60,7 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #00ff33;
+            background: #22c55e;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -73,53 +73,66 @@
 </head>
 
 <body
-    class="pl-0 lg:pl-[256px] h-screen h-[100dvh] w-full font-mono selection:bg-[#00ff33] selection:text-black flex flex-col items-center overflow-hidden bg-black">
+    class="pl-0 lg:pl-[256px] h-screen h-[100dvh] w-full flex flex-col font-mono selection:bg-[#22c55e] selection:text-black overflow-hidden bg-[#05010a]">
 
     <!-- PURE V3 MINIMAL NAV -->
     <nav
-        class="w-full border-b border-[#00ff33]/30 p-4 mb-8 flex justify-between items-center bg-black/80 sticky top-0 z-50">
+        class="w-full h-16 border-b border-[#22c55e]/30 px-4 flex justify-between items-center bg-[#05010a]/80 z-50 shrink-0">
         <a href="../../"
-            class="text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+            class="text-xs md:text-sm font-bold text-[#22c55e] hover:text-white transition-colors tracking-[0.2em] border border-[#22c55e]/50 px-4 py-2 hover:bg-[#22c55e]/20">
             [ RETURN TO MATRIX ]
         </a>
-        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
-            <span class="animate-pulse">DATABASE: ONLINE</span>
+        <div class="text-[10px] text-[#22c55e]/60 tracking-widest uppercase flex items-center gap-4">
+            <span class="hidden md:inline animate-pulse">DATABASE: ONLINE</span>
         </div>
     </nav>
 
     <div id="main-container"
-        class="flex-1 w-full max-w-7xl px-4 md:px-8 flex flex-col md:flex-row gap-8 opacity-0 transition-opacity duration-500 overflow-hidden relative pb-4 md:pb-8">
+        class="flex-1 w-full flex flex-col md:flex-row overflow-hidden relative opacity-0 transition-opacity duration-500">
 
-        <!-- SIDEBAR: INDEX SEARCH -->
-        <div id="sidebar" class="glass-panel w-full md:w-80 flex md:flex flex-col h-full shrink-0 z-30 relative">
-            <div class="p-6 border-b border-[#00ff33]/30">
-                <h1
-                    class="text-2xl font-bold tracking-[0.1em] text-[#00ff33] uppercase drop-shadow-[0_0_8px_rgba(0,255,51,0.5)]">
-                    THE LEDGER</h1>
-                <div class="text-[10px] tracking-widest mt-2 uppercase text-white/50">> TERMINOLOGY INDEX</div>
+        <!-- SIDEBAR DIRECTORY -->
+        <div id="sidebar"
+            class="w-full md:w-80 lg:w-96 h-full border-b md:border-b-0 md:border-r border-[#22c55e]/30 bg-[#05010a]/95 flex md:flex flex-col flex-shrink-0 relative z-30">
 
-                <input type="text" id="search-input" class="input-heavy text-sm p-3 mt-4" placeholder="QUERY_DB..."
-                    autocomplete="off">
+            <div class="p-4 border-b border-[#22c55e]/30 bg-[#05010a]/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 bg-[#22c55e] animate-pulse rounded-full"></div>
+                    <h1 class="font-bold text-xl md:text-2xl text-white tracking-[0.2em] uppercase">THE LEDGER</h1>
+                </div>
+                <p class="text-[10px] text-[#22c55e]/70 uppercase tracking-widest mt-1">Terminology Index</p>
+                <input type="text" id="search-input"
+                    class="w-full bg-[#05010a]/50 border border-[#22c55e]/30 text-[#22c55e] text-xs p-2 mt-4 uppercase tracking-widest focus:outline-none focus:border-[#22c55e] transition-colors"
+                    placeholder="QUERY_DB..." autocomplete="off">
             </div>
 
-            <div id="index-list" class="flex-1 overflow-y-auto p-2 space-y-1">
+            <!-- INDEX LIST -->
+            <div id="index-list" class="flex-1 overflow-y-auto p-4 space-y-2">
                 <!-- Javascript Injection -->
+            </div>
+
+            <div id="info-panel" class="p-4 border-t border-[#22c55e]/30 bg-[#05010a]/60 shrink-0">
+                <span class="text-[9px] text-[#22c55e]/50 uppercase tracking-widest block mb-1">ACTIVE RECORD</span>
+                <h3 id="info-title" class="font-bold text-xs text-white uppercase tracking-wider mb-2">AWAITING
+                    SELECTION...</h3>
             </div>
         </div>
 
         <!-- MAIN TERMINAL: DEFINITION -->
-        <div id="reader" class="glass-panel flex-1 hidden md:flex flex-col h-full overflow-hidden relative z-20">
+        <div id="reader" class="flex-1 h-full hidden md:flex flex-col relative bg-[#0a0a0a] z-20 overflow-hidden">
             <!-- MOBILE RETURN BTN -->
-            <div class="md:hidden p-3 border-b border-[#00ff33]/30 bg-black/80 shrink-0">
+            <div class="md:hidden p-3 border-b border-[#22c55e]/30 bg-[#05010a]/80 shrink-0">
                 <button onclick="toggleView('sidebar')"
-                    class="flex items-center gap-2 text-[#00ff33] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">
+                    class="flex items-center gap-2 text-[#22c55e] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">
                     &lt; RETURN TO INDEX
                 </button>
             </div>
 
-            <div id="content-display" class="p-8 md:p-12 overflow-y-auto h-full relative custom-scrollbar">
-                <div class="text-center text-[#00ff33]/50 tracking-[0.2em] mt-32 animate-pulse">
-                    AWAITING OPERATOR QUERY...
+            <div id="content-display"
+                class="flex-1 w-full h-full overflow-y-auto bg-[#0a0a0a] px-6 py-12 md:p-16 custom-scrollbar text-white border-l border-[#22c55e]/20">
+                <div class="flex-1 flex flex-col items-center justify-center text-center p-8 h-full">
+                    <div class="text-center text-[#22c55e]/50 tracking-[0.2em] animate-pulse">
+                        >> SELECT LEDGER NODE TO INITIATE DECRYPTION
+                    </div>
                 </div>
             </div>
         </div>
@@ -185,8 +198,8 @@
 
         function renderList(keys) {
             UI.list.innerHTML = keys.map((key, i) => `
-                <button id="btn-${key}" onclick="loadTerm('${key}')" class="w-full text-left px-4 py-3 text-xs font-bold font-mono text-white/50 hover:text-[#00ff33] hover:bg-[#00ff33]/10 transition-colors border-l-4 border-transparent hover:border-[#00ff33] uppercase">
-                    ${(i + 1).toString().padStart(2, '0')}. ${DB[key].title}
+                <button id="btn-${key}" onclick="loadTerm('${key}')" class="w-full text-left px-3 py-2 text-xs font-mono font-bold text-white/70 hover:text-white hover:bg-[#22c55e]/10 transition-colors uppercase border border-transparent">
+                    ${(i + 1).toString().padStart(2, '0')} // ${DB[key].title}
                 </button>
             `).join('');
         }
@@ -200,24 +213,27 @@
 
             // Active Stylings
             document.querySelectorAll('#index-list button').forEach(b => {
-                b.classList.remove('text-[#00ff33]', 'bg-[#00ff33]/20', 'border-[#00ff33]');
-                b.classList.add('text-white/50', 'border-transparent');
+                b.classList.remove('text-[#22c55e]', 'bg-[#22c55e]/10', 'border-[#22c55e]/50');
+                b.classList.add('text-white/70', 'border-transparent');
             });
             const btn = document.getElementById(`btn-${key}`);
-            if (btn) btn.classList.add('text-[#00ff33]', 'bg-[#00ff33]/20', 'border-[#00ff33]');
+            if (btn) btn.classList.add('text-[#22c55e]', 'bg-[#22c55e]/10', 'border-[#22c55e]/50');
+
+            // Update info panel
+            document.getElementById('info-title').innerText = data.title;
 
             if (window.innerWidth <= 768) toggleView('reader');
 
             // Render
-            let imgHTML = data.img ? `<div class="mb-8 border border-[#00ff33]/30 shadow-[0_0_20px_rgba(0,255,51,0.1)] bg-black/50 p-2"><img src="${data.img}" class="w-full max-h-64 object-cover opacity-80" alt="${data.title}"></div>` : '';
+            let imgHTML = data.img ? `<div class="mb-8 border border-[#22c55e]/30  bg-[#05010a]/50 p-2"><img src="${data.img}" class="w-full max-h-64 object-cover opacity-80" alt="${data.title}"></div>` : '';
 
             let linkHTML = '';
             if (data.links && data.links.length > 0) {
-                linkHTML = `<div class="mt-8 pt-6 border-t border-[#00ff33]/20 flex flex-wrap gap-4">` +
-                    data.links.map(l => `<a href="${l.url}" target="_blank" class="border border-[#00ff33]/50 text-[#00ff33] px-4 py-2 text-xs font-bold hover:bg-[#00ff33]/20 transition-colors">[ ${l.text} ]</a>`).join('') +
+                linkHTML = `<div class="mt-8 pt-6 border-t border-[#22c55e]/20 flex flex-wrap gap-4">` +
+                    data.links.map(l => `<a href="${l.url}" target="_blank" class="border border-[#22c55e]/50 text-[#22c55e] px-4 py-2 text-xs font-bold hover:bg-[#22c55e]/20 transition-colors">[ ${l.text} ]</a>`).join('') +
                     `</div>`;
             } else if (data.link) {
-                linkHTML = `<div class="mt-8 pt-6 border-t border-[#00ff33]/20"><a href="${data.link}" target="_blank" class="border border-[#00ff33]/50 text-[#00ff33] px-4 py-2 text-xs font-bold hover:bg-[#00ff33]/20 transition-colors">[ EXTERNAL DOCUMENT ]</a></div>`;
+                linkHTML = `<div class="mt-8 pt-6 border-t border-[#22c55e]/20"><a href="${data.link}" target="_blank" class="border border-[#22c55e]/50 text-[#22c55e] px-4 py-2 text-xs font-bold hover:bg-[#22c55e]/20 transition-colors">[ EXTERNAL DOCUMENT ]</a></div>`;
             }
 
             // Cross-linking logic
@@ -225,18 +241,18 @@
             Object.keys(DB).forEach(iterKey => {
                 if (iterKey !== key) {
                     const regex = new RegExp(`\\b${DB[iterKey].title}\\b`, 'gi');
-                    linkedDef = linkedDef.replace(regex, `<span class="text-[#00ff33] cursor-pointer hover:underline font-bold" onclick="loadTerm('${iterKey}')">$&</span>`);
+                    linkedDef = linkedDef.replace(regex, `<span class="text-[#22c55e] cursor-pointer hover:underline font-bold" onclick="loadTerm('${iterKey}')">$&</span>`);
                 }
             });
 
             UI.display.innerHTML = `
-                <div class="animate-pulse mb-2 text-[10px] tracking-widest text-[#00ff33]/50">[ DECRYPTING_RECORD_ID: ${key} ]</div>
+                <div class="animate-pulse mb-2 text-[10px] tracking-widest text-[#22c55e]/50">[ DECRYPTING_RECORD_ID: ${key} ]</div>
                 <div class="flex items-center gap-4 mb-6">
                     <h2 class="text-4xl md:text-5xl font-bold tracking-[0.1em] text-white">${data.title}</h2>
-                    <span class="px-2 py-1 bg-[#00ff33]/20 text-[#00ff33] text-xs font-bold tracking-widest">${data.type}</span>
+                    <span class="px-2 py-1 bg-[#22c55e]/20 text-[#22c55e] text-xs font-bold tracking-widest">${data.type}</span>
                 </div>
                 ${imgHTML}
-                <p class="text-lg leading-relaxed text-white/80 border-l-2 border-[#00ff33]/50 pl-6 mt-6">
+                <p class="text-lg leading-relaxed text-white/80 border-l-2 border-[#22c55e]/50 pl-6 mt-6">
                     ${linkedDef}
                 </p>
                 ${linkHTML}

@@ -7,11 +7,9 @@
     <title>Sovereign Interface // Command</title>
 
     <!-- NEW V3 TYPOGRAPHY (NEON LEGACY) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap"
-        rel="stylesheet">
+    
+    
+    
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -20,9 +18,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'void': '#000000',
+                        'void': '#05010a',
                         'command-bg': '#050505',
-                        'term-green': '#00ff33',
+                        'term-green': '#22c55e',
                         'rika-purple': '#8b5cf6',
                         'ai-red': '#ef4444',
                         'command-amber': '#d97706',
@@ -53,7 +51,7 @@
     </script>
     <style>
         body {
-            background-color: #000000;
+            background-color: #05010a;
             color: #e4e4e7;
             overflow-x: hidden;
         }
@@ -82,12 +80,12 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #000000;
-            border-left: 1px solid rgba(0, 255, 51, 0.2);
+            background-color: #05010a;
+            border-left: 1px solid rgba(34, 197, 94, 0.2);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #00ff33;
+            background: #22c55e;
             border-radius: 0px;
         }
 
@@ -98,7 +96,7 @@
         /* Command Node Base Aesthetics */
         .cmd-node {
             background: rgba(5, 5, 5, 0.9);
-            box-shadow: 0 0 20px rgba(0, 255, 51, 0.05);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.05);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -116,17 +114,17 @@
 
         /* Standard Green Nodes */
         .node-standard {
-            border: 1px solid rgba(0, 255, 51, 0.4);
+            border: 1px solid rgba(34, 197, 94, 0.4);
         }
 
         .node-standard:hover {
-            border-color: #00ff33;
-            box-shadow: 0 0 35px rgba(0, 255, 51, 0.25);
-            background: rgba(0, 255, 51, 0.05);
+            border-color: #22c55e;
+            box-shadow: 0 0 35px rgba(34, 197, 94, 0.25);
+            background: rgba(34, 197, 94, 0.05);
         }
 
         .node-standard:hover::before {
-            border-color: rgba(0, 255, 51, 0.2);
+            border-color: rgba(34, 197, 94, 0.2);
             transform: scale(0.96);
         }
 
@@ -194,7 +192,7 @@
             class="w-full border-b-2 border-term-green/40 pb-8 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 animate-fade-up">
             <div>
                 <h1
-                    class="text-5xl md:text-7xl font-black font-tech tracking-[0.15em] text-white uppercase drop-shadow-[0_0_15px_rgba(0,255,51,0.4)] mb-2">
+                    class="text-5xl md:text-7xl font-black font-mono tracking-[0.15em] text-white uppercase  mb-2">
                     CENTRAL COMMAND
                 </h1>
                 <p class="font-mono text-sm md:text-base text-term-green tracking-[0.2em] uppercase font-bold">
@@ -219,9 +217,9 @@
                     class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_01</span>
                 <div class="mt-6 z-10 relative">
                     <h2
-                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        class="node-title text-2xl md:text-3xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
                         Sovereign Dossier</h2>
-                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Hardware & Loadout
+                    <p class="font-mono font-bold text-sm text-term-green/70 tracking-wide uppercase">Hardware & Loadout
                     </p>
                 </div>
             </a>
@@ -234,9 +232,9 @@
                     class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_02</span>
                 <div class="mt-6 z-10 relative">
                     <h2
-                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        class="node-title text-2xl md:text-3xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
                         The Syndicate</h2>
-                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Vanguard
+                    <p class="font-mono font-bold text-sm text-term-green/70 tracking-wide uppercase">Vanguard
                         Invitations</p>
                 </div>
             </a>
@@ -249,9 +247,9 @@
                     class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_03</span>
                 <div class="mt-6 z-10 relative">
                     <h2
-                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        class="node-title text-2xl md:text-3xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
                         Sovereign Ledger</h2>
-                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Doctrinal Database
+                    <p class="font-mono font-bold text-sm text-term-green/70 tracking-wide uppercase">Doctrinal Database
                     </p>
                 </div>
             </a>
@@ -264,9 +262,9 @@
                     class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_04</span>
                 <div class="mt-6 z-10 relative">
                     <h2
-                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        class="node-title text-2xl md:text-3xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
                         The Codex</h2>
-                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Field Manuals</p>
+                    <p class="font-mono font-bold text-sm text-term-green/70 tracking-wide uppercase">Field Manuals</p>
                 </div>
             </a>
 
@@ -278,9 +276,9 @@
                     class="font-mono text-xs font-bold text-term-green/60 absolute top-4 left-4 tracking-widest group-hover:text-term-green">DIR_05</span>
                 <div class="mt-6 z-10 relative">
                     <h2
-                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
+                        class="node-title text-2xl md:text-3xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-term-green transition-colors uppercase">
                         Command Link</h2>
-                    <p class="font-sans font-bold text-sm text-term-green/70 tracking-wide uppercase">Secure Terminal
+                    <p class="font-mono font-bold text-sm text-term-green/70 tracking-wide uppercase">Secure Terminal
                         Access</p>
                 </div>
             </a>
@@ -293,9 +291,9 @@
                     class="font-mono text-xs font-bold text-ai-red/60 absolute top-4 left-4 tracking-widest group-hover:text-ai-red">SYNTH_01</span>
                 <div class="mt-6 z-10 relative">
                     <h2
-                        class="node-title text-2xl md:text-3xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-ai-red transition-colors uppercase">
+                        class="node-title text-2xl md:text-3xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-ai-red transition-colors uppercase">
                         Auditor Forge</h2>
-                    <p class="font-sans font-bold text-sm text-ai-red/70 tracking-wide uppercase">Build Exoskeleton</p>
+                    <p class="font-mono font-bold text-sm text-ai-red/70 tracking-wide uppercase">Build Exoskeleton</p>
                 </div>
             </a>
 
@@ -308,9 +306,9 @@
                         class="font-mono text-xs font-bold text-rika-purple/80 tracking-[0.2em] mb-2 block group-hover:animate-pulse">SYNTH_02
                         // ONLINE</span>
                     <h2
-                        class="node-title text-3xl md:text-4xl font-bold font-tech text-white tracking-[0.1em] mb-2 group-hover:text-rika-purple transition-colors uppercase">
+                        class="node-title text-3xl md:text-4xl font-bold font-mono text-white tracking-[0.1em] mb-2 group-hover:text-rika-purple transition-colors uppercase">
                         Intelligence Terminal</h2>
-                    <p class="font-sans font-bold text-sm text-rika-purple/80 tracking-wide uppercase">Forensic
+                    <p class="font-mono font-bold text-sm text-rika-purple/80 tracking-wide uppercase">Forensic
                         Synthesizer [ RIKA ]</p>
                 </div>
                 <div class="z-10 relative mt-4 md:mt-0">

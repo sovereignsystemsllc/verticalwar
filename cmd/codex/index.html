@@ -16,16 +16,14 @@
 
     <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
+    
+    
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'term-black': '#050505', 'term-green': '#00ff33', 'rika': '#8b5cf6' },
+                    colors: { 'term-black': '#050505', 'term-green': '#22c55e', 'rika': '#8b5cf6' },
                     fontFamily: {
                         mono: ['Courier New', 'Courier Prime', 'monospace'],
                         serif: ['Playfair Display', 'Georgia', 'serif']
@@ -37,15 +35,15 @@
     <style>
         body {
             background-color: #050505;
-            color: #00ff33;
+            color: #22c55e;
             cursor: crosshair;
             overflow: hidden;
         }
 
         .glass-panel {
             background: rgba(10, 20, 10, 0.9);
-            border: 1px solid #00ff33;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
+            border: 1px solid #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
         }
 
         /* Custom Scrollbar */
@@ -55,11 +53,11 @@
 
         ::-webkit-scrollbar-track {
             background: #050505;
-            border-left: 1px solid rgba(0, 255, 51, 0.2);
+            border-left: 1px solid rgba(34, 197, 94, 0.2);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #00ff33;
+            background: #22c55e;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -96,11 +94,11 @@
         .reader-text h2 {
             font-family: 'Courier New', monospace;
             font-size: 1.5rem;
-            color: #00ff33;
+            color: #22c55e;
             margin-top: 2rem;
             margin-bottom: 1rem;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(0, 255, 51, 0.3);
+            border-bottom: 1px solid rgba(34, 197, 94, 0.3);
             padding-bottom: 0.5rem;
         }
 
@@ -114,23 +112,23 @@
         }
 
         .reader-text a {
-            color: #00ff33;
+            color: #22c55e;
             text-decoration: underline;
             text-underline-offset: 4px;
         }
 
         .reader-text a:hover {
             color: #fff;
-            background: rgba(0, 255, 51, 0.2);
+            background: rgba(34, 197, 94, 0.2);
             text-decoration: none;
         }
 
         .reader-text img {
             max-width: 100%;
             height: auto;
-            border: 1px solid rgba(0, 255, 51, 0.5);
+            border: 1px solid rgba(34, 197, 94, 0.5);
             margin: 2rem 0;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
         }
     </style>
 
@@ -139,18 +137,18 @@
 </head>
 
 <body
-    class="pl-0 lg:pl-[256px] h-screen h-[100dvh] w-full flex flex-col font-mono selection:bg-[#00ff33] selection:text-black overflow-hidden bg-black">
+    class="pl-0 lg:pl-[256px] h-screen h-[100dvh] w-full flex flex-col font-mono selection:bg-[#22c55e] selection:text-black overflow-hidden bg-[#05010a]">
 
     <!-- PURE V3 MINIMAL NAV -->
     <nav
-        class="w-full h-16 border-b border-[#00ff33]/30 px-4 flex justify-between items-center bg-black/80 z-50 shrink-0">
+        class="w-full h-16 border-b border-[#22c55e]/30 px-4 flex justify-between items-center bg-[#05010a]/80 z-50 shrink-0">
         <a href="../../"
-            class="text-xs md:text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+            class="text-xs md:text-sm font-bold text-[#22c55e] hover:text-white transition-colors tracking-[0.2em] border border-[#22c55e]/50 px-4 py-2 hover:bg-[#22c55e]/20">
             [ RETURN TO MATRIX ]
         </a>
-        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+        <div class="text-[10px] text-[#22c55e]/60 tracking-widest uppercase flex items-center gap-4">
             <span class="hidden md:inline animate-pulse">CODEX ARCHIVES // ONLINE</span>
-            <a href="../" class="hover:text-white transition-colors border border-[#00ff33]/30 px-2 py-1">[ COMMAND HUB
+            <a href="../" class="hover:text-white transition-colors border border-[#22c55e]/30 px-2 py-1">[ COMMAND HUB
                 ]</a>
         </div>
     </nav>
@@ -160,26 +158,26 @@
 
         <!-- SIDEBAR DIRECTORY -->
         <div id="sidebar"
-            class="w-full md:w-80 lg:w-96 h-full border-b md:border-b-0 md:border-r border-[#00ff33]/30 bg-black/95 flex md:flex flex-col flex-shrink-0 relative z-30">
+            class="w-full md:w-80 lg:w-96 h-full border-b md:border-b-0 md:border-r border-[#22c55e]/30 bg-[#05010a]/95 flex md:flex flex-col flex-shrink-0 relative z-30">
 
-            <div class="p-4 border-b border-[#00ff33]/30 bg-black/40">
+            <div class="p-4 border-b border-[#22c55e]/30 bg-[#05010a]/40">
                 <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 bg-[#00ff33] animate-pulse rounded-full"></div>
+                    <div class="w-2 h-2 bg-[#22c55e] animate-pulse rounded-full"></div>
                     <h1 class="font-bold text-xl md:text-2xl text-white tracking-[0.2em] uppercase">THE CODEX</h1>
                 </div>
-                <p class="text-[10px] text-[#00ff33]/70 uppercase tracking-widest mt-1">Field Manuals & Archives</p>
+                <p class="text-[10px] text-[#22c55e]/70 uppercase tracking-widest mt-1">Field Manuals & Archives</p>
             </div>
 
             <!-- FOLDERS / TRACKS (Injected via JS) -->
             <div id="doc-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
 
-            <div id="info-panel" class="p-4 border-t border-[#00ff33]/30 bg-black/60 shrink-0">
-                <span class="text-[9px] text-[#00ff33]/50 uppercase tracking-widest block mb-1">ACTIVE RECORD</span>
+            <div id="info-panel" class="p-4 border-t border-[#22c55e]/30 bg-[#05010a]/60 shrink-0">
+                <span class="text-[9px] text-[#22c55e]/50 uppercase tracking-widest block mb-1">ACTIVE RECORD</span>
                 <h3 id="info-title" class="font-bold text-xs text-white uppercase tracking-wider mb-2">AWAITING
                     SELECTION...</h3>
                 <div id="info-link-container" class="hidden">
                     <a id="info-link" href="#" target="_blank"
-                        class="block w-full text-center py-2 border border-[#00ff33]/50 bg-[#00ff33]/10 text-[#00ff33] hover:text-black hover:bg-[#00ff33] text-[10px] font-bold uppercase tracking-widest transition-all">
+                        class="block w-full text-center py-2 border border-[#22c55e]/50 bg-[#22c55e]/10 text-[#22c55e] hover:text-black hover:bg-[#22c55e] text-[10px] font-bold uppercase tracking-widest transition-all">
                         [ VIEW SOURCE ]
                     </a>
                 </div>
@@ -189,9 +187,9 @@
         <!-- READER DISPLAY -->
         <div id="reader" class="flex-1 h-full hidden md:flex flex-col relative bg-[#0a0a0a] z-20 overflow-hidden">
 
-            <div class="md:hidden p-3 border-b border-[#00ff33]/30 bg-black/80 shrink-0">
+            <div class="md:hidden p-3 border-b border-[#22c55e]/30 bg-[#05010a]/80 shrink-0">
                 <button onclick="toggleView('sidebar')"
-                    class="flex items-center gap-2 text-[#00ff33] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">
+                    class="flex items-center gap-2 text-[#22c55e] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">
                     &lt; RETURN TO DIRECTORY
                 </button>
             </div>
@@ -201,20 +199,20 @@
                 <!-- PLACEHOLDER MSG -->
                 <div id="placeholder-msg"
                     class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#0a0a0a] overflow-y-auto custom-scrollbar">
-                    <p class="text-[10px] text-[#00ff33]/50 font-bold uppercase tracking-[0.2em] mb-8 animate-pulse">
+                    <p class="text-[10px] text-[#22c55e]/50 font-bold uppercase tracking-[0.2em] mb-8 animate-pulse">
                         >> SELECT DIRECTORY NODE TO INITIATE DECRYPTION
                     </p>
                     <div
-                        class="w-full max-w-2xl border border-[#00ff33]/20 bg-black/50 p-8 shadow-[0_0_20px_rgba(0,255,51,0.05)]">
+                        class="w-full max-w-2xl border border-[#22c55e]/20 bg-[#05010a]/50 p-8 ">
                         <h2
                             class="text-xl md:text-2xl text-white font-bold tracking-[0.2em] uppercase mb-4 text-center">
                             Doctrinal Index</h2>
                         <div class="text-xs text-white/70 leading-relaxed font-mono text-left space-y-4">
-                            <p>> <span class="text-[#00ff33]">THE LIVING STORYBOOK</span>: System constraints, the
+                            <p>> <span class="text-[#22c55e]">THE LIVING STORYBOOK</span>: System constraints, the
                                 Three-Layered Prison, and Narrative Architecture.</p>
-                            <p>> <span class="text-[#00ff33]">THE SHADOW ARC</span>: Forensic timeline dissection.
+                            <p>> <span class="text-[#22c55e]">THE SHADOW ARC</span>: Forensic timeline dissection.
                                 Following the receipts behind the culture war.</p>
-                            <p>> <span class="text-[#00ff33]">THE WAR ON ILLUSION</span>: Core theoretical doctrine
+                            <p>> <span class="text-[#22c55e]">THE WAR ON ILLUSION</span>: Core theoretical doctrine
                                 dismantling the "Feed".</p>
                             <p class="text-red-500">> INSIDE THE FORGE: [ RESTRICTED ACCESS ] Live operational
                                 directives.</p>
@@ -226,12 +224,12 @@
                 <iframe id="pdf-frame" class="w-full flex-1 hidden border-0 bg-white" src=""></iframe>
 
                 <div id="html-frame"
-                    class="w-full flex-1 hidden overflow-y-auto bg-[#0a0a0a] px-6 py-12 md:p-16 custom-scrollbar text-white reader-text border-l border-[#00ff33]/20">
+                    class="w-full flex-1 hidden overflow-y-auto bg-[#0a0a0a] px-6 py-12 md:p-16 custom-scrollbar text-white reader-text border-l border-[#22c55e]/20">
                 </div>
 
                 <!-- CLOSE BTN (DESKTOP) -->
                 <button id="close-doc-btn" onclick="closeDocument()"
-                    class="hidden absolute top-4 right-4 z-50 p-2 bg-black border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all">
+                    class="hidden absolute top-4 right-4 z-50 p-2 bg-[#05010a] border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -241,9 +239,9 @@
 
                 <!-- RESTRICTED OVERLAY -->
                 <div id="restricted-overlay"
-                    class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center z-30 hidden">
+                    class="absolute inset-0 bg-[#05010a]/95 flex flex-col items-center justify-center z-30 hidden">
                     <div
-                        class="border border-red-500 bg-red-500/10 p-12 text-center shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                        class="border border-red-500 bg-red-500/10 p-12 text-center ">
                         <div class="text-4xl mb-4 text-red-500">🔒</div>
                         <h2 class="font-bold text-xl text-red-500 uppercase tracking-widest mb-4">Clearance Required
                         </h2>
@@ -257,17 +255,17 @@
 
                 <!-- MOBILE NATIVE FALLBACK FOR PDFs -->
                 <div id="mobile-fallback"
-                    class="absolute inset-0 bg-black z-30 hidden flex flex-col items-center justify-center p-8 text-center">
+                    class="absolute inset-0 bg-[#05010a] z-30 hidden flex flex-col items-center justify-center p-8 text-center">
                     <button onclick="closeDocument()"
                         class="absolute top-4 right-4 text-red-500 hover:text-white p-2">✕</button>
-                    <div class="text-4xl mb-4 text-[#00ff33] animate-pulse">📄</div>
+                    <div class="text-4xl mb-4 text-[#22c55e] animate-pulse">📄</div>
                     <h3 class="font-bold text-lg text-white uppercase tracking-widest mb-2" id="mobile-fallback-title">
                         DOCUMENT LOCATED</h3>
-                    <p class="text-[10px] text-[#00ff33]/60 mb-8 max-w-xs mx-auto">Mobile constraint detected.
+                    <p class="text-[10px] text-[#22c55e]/60 mb-8 max-w-xs mx-auto">Mobile constraint detected.
                         <br>Select direct downlink.
                     </p>
                     <a id="mobile-download-btn" href="#" target="_blank"
-                        class="w-full max-w-[250px] px-8 py-3 border border-[#00ff33] bg-[#00ff33]/10 text-[#00ff33] hover:bg-[#00ff33] hover:text-black font-bold uppercase tracking-widest text-xs transition-colors mb-4 block">[
+                        class="w-full max-w-[250px] px-8 py-3 border border-[#22c55e] bg-[#22c55e]/10 text-[#22c55e] hover:bg-[#22c55e] hover:text-black font-bold uppercase tracking-widest text-xs transition-colors mb-4 block">[
                         OPEN PDF ]</a>
                     <a id="mobile-substack-btn" href="#" target="_blank"
                         class="w-full max-w-[250px] px-8 py-3 border border-white/50 text-white hover:bg-white hover:text-black font-bold uppercase tracking-widest text-xs transition-colors block hidden">[
@@ -320,8 +318,8 @@
 
                 if (userRoles.some(r => allowedRoles.includes(r))) {
                     LIBRARY.inside_the_forge.restricted = false;
-                    LIBRARY.inside_the_forge.color = 'text-[#00ff33]';
-                    LIBRARY.inside_the_forge.border = 'border-[#00ff33]/50';
+                    LIBRARY.inside_the_forge.color = 'text-[#22c55e]';
+                    LIBRARY.inside_the_forge.border = 'border-[#22c55e]/50';
                     renderLibrary();
                 }
             } catch (error) { console.error("Access Check Error:", error); }
@@ -349,14 +347,14 @@
 
                 html += `
                     <div id="album-${key}" class="mb-4">
-                        <div onclick="toggleAlbum('${key}')" class="pl-3 border-l-2 ${album.border} cursor-pointer group flex justify-between items-center hover:bg-[#00ff33]/10 py-3 transition-all bg-black/50">
+                        <div onclick="toggleAlbum('${key}')" class="pl-3 border-l-2 ${album.border} cursor-pointer group flex justify-between items-center hover:bg-[#22c55e]/10 py-3 transition-all bg-[#05010a]/50">
                             <div>
                                 <h2 class="text-sm font-bold ${album.color} tracking-widest uppercase">${album.title}</h2>
                                 <p class="text-[9px] text-white/50 tracking-widest uppercase mt-1">${album.desc}</p>
                             </div>
                             <div class="text-xs font-bold text-white/30 group-hover:text-white mr-3 transition-colors">[ ${chev} ]</div>
                         </div>
-                        <div class="flex flex-col ${isC ? 'hidden' : 'block'} bg-black/20 border-l border-[#00ff33]/10 ml-[11px] mt-1 pl-2">
+                        <div class="flex flex-col ${isC ? 'hidden' : 'block'} bg-[#05010a]/20 border-l border-[#22c55e]/10 ml-[11px] mt-1 pl-2">
                 `;
 
                 if (album.restricted) {
@@ -369,8 +367,8 @@
                 } else {
                     album.tracks.forEach((track, idx) => {
                         html += `
-                            <button onclick="loadTrack('${key}', ${idx})" class="w-full text-left py-3 px-2 hover:bg-[#00ff33]/5 group transition-colors flex flex-col gap-1 border-b border-white/5 last:border-0">
-                                <span class="text-[8px] text-[#00ff33]/50 tracking-[0.2em] group-hover:text-[#00ff33]">${track.id} // T${String(idx + 1).padStart(2, '0')}</span>
+                            <button onclick="loadTrack('${key}', ${idx})" class="w-full text-left py-3 px-2 hover:bg-[#22c55e]/5 group transition-colors flex flex-col gap-1 border-b border-white/5 last:border-0">
+                                <span class="text-[8px] text-[#22c55e]/50 tracking-[0.2em] group-hover:text-[#22c55e]">${track.id} // T${String(idx + 1).padStart(2, '0')}</span>
                                 <span class="text-[11px] text-white/80 group-hover:text-white font-bold leading-snug tracking-wider">${track.title}</span>
                             </button>
                         `;
@@ -396,7 +394,7 @@
             const clsBtn = document.getElementById('close-doc-btn');
 
             if (track.isHtml) {
-                htmlFrame.innerHTML = `<div class="text-center mt-24"><span class="font-bold text-[#00ff33] text-xs tracking-widest uppercase animate-pulse">/// DOWNLOADING SECTOR DATA... ///</span></div>`;
+                htmlFrame.innerHTML = `<div class="text-center mt-24"><span class="font-bold text-[#22c55e] text-xs tracking-widest uppercase animate-pulse">/// DOWNLOADING SECTOR DATA... ///</span></div>`;
                 htmlFrame.classList.remove('hidden');
                 clsBtn.classList.remove('hidden');
 
@@ -410,7 +408,7 @@
                         return;
                     }
                 }
-                htmlFrame.innerHTML = `<h1 class="text-3xl lg:text-5xl text-white font-serif font-bold mb-8 border-b border-[#00ff33]/30 pb-6">${track.title}</h1><div class="space-y-6">${track.contentHtml}</div>`;
+                htmlFrame.innerHTML = `<h1 class="text-3xl lg:text-5xl text-white font-mono font-bold mb-8 border-b border-[#22c55e]/30 pb-6">${track.title}</h1><div class="space-y-6">${track.contentHtml}</div>`;
             } else {
                 const pdfPath = `../../assets/documents/codex/${album.folder}/${track.file}`;
                 if (window.innerWidth <= 768) {

@@ -8,11 +8,9 @@
 
     <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
+    
+    
+    
 
     <script>
         tailwind.config = {
@@ -254,13 +252,13 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-black text-red-500 font-mono flex flex-col selection:bg-red-500 selection:text-black">
+<body class="min-h-screen bg-[#05010a] text-red-500 font-mono flex flex-col selection:bg-red-500 selection:text-black">
 
     <!-- PURE V3 MINIMAL NAV -->
     <nav
-        class="w-full border-b border-red-500/30 p-4 mb-4 flex justify-between items-center bg-black/80 sticky top-0 z-50">
+        class="w-full border-b border-red-500/30 p-4 mb-4 flex justify-between items-center bg-[#05010a]/80 sticky top-0 z-50">
         <a href="../../cmd/"
-            class="text-[10px] md:text-sm font-bold text-red-500 hover:text-white transition-colors tracking-[0.2em] border border-red-500/50 px-4 py-2 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.1)]">
+            class="text-[10px] md:text-sm font-bold text-red-500 hover:text-white transition-colors tracking-[0.2em] border border-red-500/50 px-4 py-2 hover:bg-red-500/20 ">
             [ COMMAND HUB ]
         </a>
         <div class="flex gap-4">
@@ -269,7 +267,7 @@
                 [ SAVE FILE ]
             </button>
             <button id="btn-publish"
-                class="px-4 py-2 text-[10px] font-bold text-black border border-red-500 bg-red-500 hover:bg-white hover:text-black transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                class="px-4 py-2 text-[10px] font-bold text-black border border-red-500 bg-red-500 hover:bg-white hover:text-black transition-all uppercase tracking-widest ">
                 [ TRANSMIT ]
             </button>
         </div>
@@ -285,13 +283,13 @@
 
         <!-- TITLE INPUT -->
         <input type="text" id="draft-title" placeholder="ENTER SUBJECT HEADING..."
-            class="w-full bg-transparent border-none text-2xl md:text-4xl font-serif font-bold text-white mb-6 focus:outline-none placeholder-red-500/20 transition-all">
+            class="w-full bg-transparent border-none text-2xl md:text-4xl font-mono font-bold text-white mb-6 focus:outline-none placeholder-red-500/20 transition-all">
 
         <!-- SERIES SELECTION -->
         <div class="mb-8 flex items-center gap-4 bg-red-500/5 p-4 border border-red-500/20">
             <span class="text-[10px] font-bold text-red-500/80 uppercase tracking-widest">CLASSIFICATION:</span>
             <select id="draft-series"
-                class="bg-black border border-red-500/30 text-[10px] uppercase font-bold text-white p-2 focus:border-red-500 outline-none w-full max-w-[300px] cursor-pointer">
+                class="bg-[#05010a] border border-red-500/30 text-[10px] uppercase font-bold text-white p-2 focus:border-red-500 outline-none w-full max-w-[300px] cursor-pointer">
                 <option value="Dispatch">DISPATCH (PUBLIC)</option>
                 <option value="Doctrine">DOCTRINE</option>
                 <option value="Inside the Forge">[RESTRICTED] INSIDE THE FORGE</option>
@@ -300,7 +298,7 @@
 
         <!-- NATIVE EDITOR -->
         <div id="editor-wrapper"
-            class="flex-1 border border-red-500/30 bg-black/40 flex flex-col relative shadow-[0_0_20px_rgba(239,68,68,0.05)]">
+            class="flex-1 border border-red-500/30 bg-[#05010a]/40 flex flex-col relative ">
 
             <div id="native-toolbar">
                 <div class="custom-dropdown">
@@ -333,7 +331,7 @@
 
             <!-- Loading Overlay -->
             <div id="editor-loading-overlay"
-                class="absolute inset-0 bg-black/90 z-40 flex flex-col items-center justify-center hidden border border-red-500/50">
+                class="absolute inset-0 bg-[#05010a]/90 z-40 flex flex-col items-center justify-center hidden border border-red-500/50">
                 <div class="w-4 h-4 rounded-full bg-red-500 animate-pulse mb-4"></div>
                 <span class="font-bold text-red-500 tracking-widest text-[10px] uppercase">/// DECRYPTING SECURE
                     TRANSMISSION... ///</span>
@@ -344,7 +342,7 @@
 
     <!-- NOTIFICATION SYSTEM -->
     <div id="status-toast"
-        class="fixed bottom-6 right-6 p-4 border border-red-500/50 bg-black/95 text-[10px] font-bold text-white z-50 transform translate-y-[200%] transition-transform duration-300 flex items-center gap-3 shadow-[0_0_20px_rgba(239,68,68,0.3)] uppercase tracking-widest">
+        class="fixed bottom-6 right-6 p-4 border border-red-500/50 bg-[#05010a]/95 text-[10px] font-bold text-white z-50 transform translate-y-[200%] transition-transform duration-300 flex items-center gap-3  uppercase tracking-widest">
         <div id="toast-indicator" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
         <span id="toast-message">SYSTEM STANDBY</span>
     </div>
@@ -431,7 +429,7 @@
 
             dot.className = 'w-2 h-2 rounded-full animate-pulse ' +
                 (color === 'red' ? 'bg-red-500' :
-                    color === 'green' ? 'bg-[#00ff33]' :
+                    color === 'green' ? 'bg-[#22c55e]' :
                         color === 'yellow' ? 'bg-yellow-500' : 'bg-blue-500');
 
             toast.style.transform = 'translateY(0)';

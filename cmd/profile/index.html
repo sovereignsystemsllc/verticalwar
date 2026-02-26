@@ -11,7 +11,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'term-black': '#050505', 'term-green': '#00ff33' },
+                    colors: { 'term-black': '#050505', 'term-green': '#22c55e' },
                     fontFamily: { mono: ['Courier New', 'monospace'] }
                 }
             }
@@ -20,20 +20,20 @@
     <style>
         body {
             background-color: #050505;
-            color: #00ff33;
+            color: #22c55e;
             cursor: crosshair;
             display: none; /* Anti-flicker */
         }
         
         .glass-panel {
             background: rgba(10, 20, 10, 0.9);
-            border: 1px solid #00ff33;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
+            border: 1px solid #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
         }
 
         .input-heavy {
             background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(0, 255, 51, 0.5);
+            border: 1px solid rgba(34, 197, 94, 0.5);
             color: white;
             padding: 1rem;
             width: 100%;
@@ -44,8 +44,8 @@
         }
 
         .input-heavy:focus {
-            border-color: #00ff33;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.4);
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
         }
 
         /* Dossier Read-Only Mode */
@@ -57,14 +57,14 @@
     </style>
 </head>
 
-<body class="min-h-screen w-full font-mono pb-24 selection:bg-[#00ff33] selection:text-black">
+<body class="min-h-screen w-full font-mono pb-24 selection:bg-[#22c55e] selection:text-black">
 
     <!-- PURE V3 MINIMAL NAV -->
-    <nav class="w-full border-b border-[#00ff33]/30 p-4 mb-8 flex justify-between items-center bg-black/80">
-        <a href="../../" class="text-sm font-bold text-[#00ff33] hover:text-white transition-colors tracking-[0.2em] border border-[#00ff33]/50 px-4 py-2 hover:bg-[#00ff33]/20">
+    <nav class="w-full border-b border-[#22c55e]/30 p-4 mb-8 flex justify-between items-center bg-[#05010a]/80">
+        <a href="../../" class="text-sm font-bold text-[#22c55e] hover:text-white transition-colors tracking-[0.2em] border border-[#22c55e]/50 px-4 py-2 hover:bg-[#22c55e]/20">
             [ RETURN TO MATRIX ]
         </a>
-        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+        <div class="text-[10px] text-[#22c55e]/60 tracking-widest uppercase flex items-center gap-4">
             <span id="nav-status-indicator" class="animate-pulse">LOCAL SYNC ACTIVE</span>
             <button id="nav-logout-btn" class="hidden hover:text-red-500 transition-colors">[ DE-LINK ]</button>
         </div>
@@ -73,9 +73,9 @@
     <div id="main-container" class="max-w-4xl mx-auto px-4 flex flex-col gap-8 opacity-0 transition-opacity duration-500">
         
         <!-- HEADER -->
-        <div class="border-b border-[#00ff33]/40 pb-4">
-            <h1 class="text-3xl md:text-5xl font-bold tracking-[0.1em] text-[#00ff33] uppercase drop-shadow-[0_0_8px_rgba(0,255,51,0.5)]">SOVEREIGN DOSSIER</h1>
-            <div class="text-xs text-[#00ff33]/60 tracking-widest mt-3 uppercase font-bold" id="mode-indicator">
+        <div class="border-b border-[#22c55e]/40 pb-4">
+            <h1 class="text-3xl md:text-5xl font-bold tracking-[0.1em] text-[#22c55e] uppercase ">SOVEREIGN DOSSIER</h1>
+            <div class="text-xs text-[#22c55e]/60 tracking-widest mt-3 uppercase font-bold" id="mode-indicator">
                 >> OPERATOR UPLINK ESTABLISHED. EDIT MODE ACTIVE.
             </div>
         </div>
@@ -85,40 +85,40 @@
             
             <!-- AVATAR UPLOAD -->
             <div class="flex flex-col items-center gap-4 shrink-0">
-                <div id="avatar-container" class="w-48 h-48 border border-[#00ff33]/50 bg-black relative group cursor-pointer hover:border-[#00ff33] transition-all overflow-hidden rounded-sm shadow-[0_0_20px_rgba(0,255,51,0.1)]">
+                <div id="avatar-container" class="w-48 h-48 border border-[#22c55e]/50 bg-[#05010a] relative group cursor-pointer hover:border-[#22c55e] transition-all overflow-hidden rounded-sm ">
                     <img id="avatar-img" src="" alt="Avatar" class="w-full h-full object-cover p-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                    <div id="upload-overlay" class="absolute inset-0 bg-black/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span class="text-xs font-bold tracking-widest text-[#00ff33] border border-[#00ff33] px-3 py-1">[ UPLOAD BIO-SCAN ]</span>
+                    <div id="upload-overlay" class="absolute inset-0 bg-[#05010a]/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="text-xs font-bold tracking-widest text-[#22c55e] border border-[#22c55e] px-3 py-1">[ UPLOAD BIO-SCAN ]</span>
                     </div>
                     <input type="file" id="avatar-upload" class="hidden" accept="image/*">
                 </div>
-                <div class="text-[10px] font-bold text-[#00ff33]/70 tracking-widest text-center uppercase" id="join-date">> CHRONOLOGY: UNKNOWN</div>
+                <div class="text-[10px] font-bold text-[#22c55e]/70 tracking-widest text-center uppercase" id="join-date">> CHRONOLOGY: UNKNOWN</div>
             </div>
 
             <!-- CORE DATA -->
             <div class="flex-1 flex flex-col gap-8 w-full">
                 
                 <div class="space-y-3">
-                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase block">I. CALLSIGN (IDENTITY)</label>
+                    <label class="text-xs font-bold text-[#22c55e] tracking-[0.2em] uppercase block">I. CALLSIGN (IDENTITY)</label>
                     <input type="text" id="username-input" class="input-heavy font-bold" placeholder="ENTER CALLSIGN...">
                 </div>
 
                 <div class="space-y-3">
-                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase block">II. CLEARANCE LEVEL</label>
-                    <div id="rank-display" class="w-full bg-[#00ff33]/10 border border-[#00ff33]/30 p-4 text-[#00ff33] text-lg font-bold tracking-widest cursor-not-allowed">
+                    <label class="text-xs font-bold text-[#22c55e] tracking-[0.2em] uppercase block">II. CLEARANCE LEVEL</label>
+                    <div id="rank-display" class="w-full bg-[#22c55e]/10 border border-[#22c55e]/30 p-4 text-[#22c55e] text-lg font-bold tracking-widest cursor-not-allowed">
                         AWAITING SYNC...
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <label class="text-xs font-bold text-[#00ff33] tracking-[0.2em] uppercase block">III. HARDWARE (SKILL / TRADE)</label>
-                    <input type="text" id="hardware-input" class="input-heavy placeholder-[#00ff33]/30" placeholder="E.G. WELDER, FARMER, EMT...">
-                    <div class="text-[10px] text-[#00ff33]/60 tracking-widest mt-2 uppercase">Physical real-world utility required for Syndicate deployment.</div>
+                    <label class="text-xs font-bold text-[#22c55e] tracking-[0.2em] uppercase block">III. HARDWARE (SKILL / TRADE)</label>
+                    <input type="text" id="hardware-input" class="input-heavy placeholder-[#22c55e]/30" placeholder="E.G. WELDER, FARMER, EMT...">
+                    <div class="text-[10px] text-[#22c55e]/60 tracking-widest mt-2 uppercase">Physical real-world utility required for Syndicate deployment.</div>
                 </div>
 
                 <!-- SAVE / TX -->
-                <div class="pt-6 border-t border-[#00ff33]/20 flex justify-end" id="action-bar">
-                    <button id="save-btn" class="bg-[#00ff33]/20 border border-[#00ff33] text-[#00ff33] hover:bg-[#00ff33] hover:text-black font-bold px-10 py-4 transition-all tracking-[0.2em] flex items-center gap-3 w-full sm:w-auto justify-center text-sm">
+                <div class="pt-6 border-t border-[#22c55e]/20 flex justify-end" id="action-bar">
+                    <button id="save-btn" class="bg-[#22c55e]/20 border border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e] hover:text-black font-bold px-10 py-4 transition-all tracking-[0.2em] flex items-center gap-3 w-full sm:w-auto justify-center text-sm">
                         [ COMMIT TO LEDGER ]
                     </button>
                 </div>
@@ -127,7 +127,7 @@
         </div>
 
         <!-- PUBLIC READ-ONLY WARNING -->
-        <div id="public-warning" class="hidden text-center text-[10px] text-zinc-500 font-bold tracking-[0.2em] mt-8 border border-zinc-800 p-4 bg-black/80">
+        <div id="public-warning" class="hidden text-center text-[10px] text-zinc-500 font-bold tracking-[0.2em] mt-8 border border-zinc-800 p-4 bg-[#05010a]/80">
             THIS DOSSIER IS CLASSIFIED. YOU ARE VIEWING CACHED PUBLIC METADATA.
         </div>
 
@@ -210,7 +210,7 @@
                 .single();
 
             if (error || !data) {
-                UI.container.innerHTML = `<div class="text-center text-red-500 font-bold text-2xl mt-40 tracking-[0.2em] border border-red-500 p-8 bg-black/90">>> 404: TARGET NOT FOUND <<</div>`;
+                UI.container.innerHTML = `<div class="text-center text-red-500 font-bold text-2xl mt-40 tracking-[0.2em] border border-red-500 p-8 bg-[#05010a]/90">>> 404: TARGET NOT FOUND <<</div>`;
                 return showInterface();
             }
 
@@ -220,7 +220,7 @@
             // UI Locks
             UI.usernameInput.disabled = true;
             UI.hardwareInput.disabled = true;
-            UI.avatarContainer.classList.remove('cursor-pointer', 'hover:border-[#00ff33]');
+            UI.avatarContainer.classList.remove('cursor-pointer', 'hover:border-[#22c55e]');
             document.getElementById('upload-overlay').remove();
             UI.actionBar.style.display = 'none';
             UI.publicWarning.classList.remove('hidden');
@@ -250,8 +250,8 @@
             }
 
             if(data.role === 'Operator') {
-                UI.rankDisplay.classList.replace('text-[#00ff33]', 'text-yellow-400');
-                UI.rankDisplay.classList.replace('bg-[#00ff33]/10', 'bg-yellow-400/10');
+                UI.rankDisplay.classList.replace('text-[#22c55e]', 'text-yellow-400');
+                UI.rankDisplay.classList.replace('bg-[#22c55e]/10', 'bg-yellow-400/10');
             }
         }
 
@@ -299,14 +299,14 @@
                     alert("ERROR SAVING DOSSIER.");
                 } else {
                     UI.saveBtn.innerText = "[ DATABANK SYNCED ]";
-                    UI.saveBtn.classList.replace('border-[#00ff33]', 'border-white');
-                    UI.saveBtn.classList.replace('text-[#00ff33]', 'text-white');
+                    UI.saveBtn.classList.replace('border-[#22c55e]', 'border-white');
+                    UI.saveBtn.classList.replace('text-[#22c55e]', 'text-white');
                 }
                 
                 setTimeout(() => {
                     UI.saveBtn.innerHTML = originalHTML;
-                    UI.saveBtn.classList.replace('border-white', 'border-[#00ff33]');
-                    UI.saveBtn.classList.replace('text-white', 'text-[#00ff33]');
+                    UI.saveBtn.classList.replace('border-white', 'border-[#22c55e]');
+                    UI.saveBtn.classList.replace('text-white', 'text-[#22c55e]');
                 }, 2000);
             };
         }

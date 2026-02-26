@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="${rootPath}cmd/network/" class="block w-full text-left py-2 px-6 text-software-blue/80 hover:bg-software-blue/10 hover:text-software-blue transition-colors border-l-2 border-transparent hover:border-software-blue">
                     + syndicate
                 </a>
-                <a href="${rootPath}read/" class="block w-full text-left py-1.5 px-6 pl-10 text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors border-l-2 border-transparent">
+                <a href="${rootPath}#dispatch-feed-container" class="block w-full text-left py-1.5 px-6 pl-10 text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors border-l-2 border-transparent">
                     $ sub_feed
                 </a>
             </div>

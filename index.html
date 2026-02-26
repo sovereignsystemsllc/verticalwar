@@ -13,11 +13,9 @@
 
     <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
+
+
+
 
     <script>
         tailwind.config = {
@@ -25,7 +23,7 @@
                 extend: {
                     colors: {
                         'term-black': '#050505',
-                        'term-green': '#00ff33',
+                        'term-green': '#22c55e',
                         'nika': '#8b5cf6', // Intelligence Synth
                         'yoko': '#ef4444', // Red 
                     },
@@ -40,20 +38,20 @@
     <style>
         body {
             background-color: #050505;
-            color: #00ff33;
+            color: #22c55e;
             cursor: crosshair;
             overflow-x: hidden;
         }
 
         .glass-panel {
             background: rgba(10, 20, 10, 0.9);
-            border: 1px solid #00ff33;
-            box-shadow: 0 0 15px rgba(0, 255, 51, 0.1);
+            border: 1px solid #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
             transition: all 0.3s ease;
         }
 
         .glass-panel:hover {
-            box-shadow: 0 0 25px rgba(0, 255, 51, 0.3);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.3);
             border-color: #fff;
             color: #fff;
         }
@@ -64,15 +62,78 @@
 
         ::-webkit-scrollbar-track {
             background: #050505;
-            border-left: 1px solid rgba(0, 255, 51, 0.2);
+            border-left: 1px solid rgba(34, 197, 94, 0.2);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #00ff33;
+            background: #22c55e;
         }
 
         ::-webkit-scrollbar-thumb:hover {
             background: #fff;
+        }
+
+        /* V3 CORPO-TERMINAL BUTTONS */
+        .btn-corpo {
+            position: relative;
+            background-color: #d4d4d8;
+            /* zinc-300 */
+            color: #18181b;
+            /* zinc-900 */
+            font-weight: 800;
+            border: 2px solid #000;
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.7),
+                inset -2px -2px 0px rgba(0, 0, 0, 0.4),
+                2px 2px 0px rgba(0, 0, 0, 1);
+            transition: all 0.05s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-corpo:active {
+            transform: translateY(2px) translateX(2px);
+            box-shadow:
+                inset 2px 2px 0px rgba(0, 0, 0, 0.6),
+                inset -2px -2px 0px rgba(255, 255, 255, 0.2),
+                0px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .btn-corpo-primary {
+            background-color: #166534;
+            /* green-800 */
+            color: #fff;
+            box-shadow:
+                inset 2px 2px 0px rgba(74, 222, 128, 0.5),
+                inset -2px -2px 0px rgba(0, 0, 0, 0.6),
+                2px 2px 0px rgba(0, 0, 0, 1);
+        }
+
+        .btn-corpo-primary:active {
+            box-shadow:
+                inset 2px 2px 0px rgba(0, 0, 0, 0.8),
+                inset -2px -2px 0px rgba(74, 222, 128, 0.2),
+                0px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .btn-corpo-danger {
+            background-color: #991b1b;
+            /* red-800 */
+            color: #fff;
+            box-shadow:
+                inset 2px 2px 0px rgba(248, 113, 113, 0.5),
+                inset -2px -2px 0px rgba(0, 0, 0, 0.6),
+                2px 2px 0px rgba(0, 0, 0, 1);
+        }
+
+        .btn-corpo-danger:active {
+            box-shadow:
+                inset 2px 2px 0px rgba(0, 0, 0, 0.8),
+                inset -2px -2px 0px rgba(248, 113, 113, 0.2),
+                0px 0px 0px rgba(0, 0, 0, 1);
         }
     </style>
 
@@ -81,26 +142,25 @@
 </head>
 
 <body
-    class="pl-0 lg:pl-[256px] min-h-screen bg-black text-[#00ff33] font-mono flex flex-col items-center selection:bg-[#00ff33] selection:text-black relative">
+    class="pl-0 lg:pl-[256px] min-h-screen bg-[#05010a] text-[#22c55e] font-mono flex flex-col items-center selection:bg-[#22c55e] selection:text-black relative">
 
     <!-- PURE V3 MINIMAL NAV -->
     <nav
-        class="w-full border-b border-[#00ff33]/30 p-4 flex justify-between items-center bg-black/80 sticky top-0 z-50">
+        class="w-full border-b border-[#22c55e]/30 p-4 flex justify-between items-center bg-[#05010a]/80 sticky top-0 z-50">
         <div class="flex items-center gap-3">
-            <div class="w-2 h-2 bg-[#00ff33] animate-pulse"></div>
-            <span class="text-xs md:text-sm font-bold text-[#00ff33] tracking-[0.2em] uppercase">SYSTEM.ONLINE</span>
+            <div class="w-2 h-2 bg-[#22c55e] animate-pulse"></div>
+            <span class="text-xs md:text-sm font-bold text-[#22c55e] tracking-[0.2em] uppercase">SYSTEM.ONLINE</span>
         </div>
-        <div class="text-[10px] text-[#00ff33]/60 tracking-widest uppercase flex items-center gap-4">
+        <div class="text-[10px] text-[#22c55e]/60 tracking-widest uppercase flex items-center gap-4">
             <a href="gate/"
-                class="border border-[#00ff33]/50 text-[#00ff33] hover:text-black hover:bg-[#00ff33] px-4 py-2 font-bold transition-all shadow-[0_0_10px_rgba(0,255,51,0.2)]">
+                class="border border-[#22c55e]/50 text-[#22c55e] hover:text-black hover:bg-[#22c55e] px-4 py-2 font-bold transition-all ">
                 [ ACCESS SECURE RELAY ]
             </a>
         </div>
     </nav>
 
     <!-- THE REBRANDED HERO -->
-    <div
-        class="relative w-full border-b-2 border-[#00ff33]/30 pb-16 overflow-hidden shadow-[0_0_40px_rgba(0,255,51,0.1)] mb-12">
+    <div class="relative w-full border-b-2 border-[#22c55e]/30 pb-16 overflow-hidden  mb-12">
         <div class="absolute inset-0 z-0 pointer-events-none">
             <video autoplay loop muted playsinline
                 class="w-full h-full object-cover opacity-20 mix-blend-screen select-none">
@@ -111,12 +171,11 @@
         </div>
 
         <div class="relative z-10 flex flex-col items-center text-center pt-24 pb-8 px-4 max-w-5xl mx-auto">
-            <h1
-                class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] mb-4">
+            <h1 class="font-mono text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight  mb-4">
                 COMMON SENSE REBEL
             </h1>
             <p
-                class="font-mono text-xs md:text-lg text-[#00ff33] uppercase tracking-[0.3em] font-bold border-t border-[#00ff33]/50 pt-4 mb-8 inline-block drop-shadow-[0_0_8px_rgba(0,255,51,0.5)]">
+                class="font-mono text-xs md:text-lg text-[#22c55e] uppercase tracking-[0.3em] font-bold border-t border-[#22c55e]/50 pt-4 mb-8 inline-block ">
                 // THE ARCHITECTS OF THE VERTICAL WAR
             </p>
             <p class="font-mono text-sm md:text-base text-gray-400 max-w-2xl leading-relaxed mx-auto">
@@ -131,7 +190,7 @@
 
         <!-- LEFT COLUMN: LIVE FEED -->
         <section class="lg:col-span-8 flex flex-col gap-6">
-            <div class="flex items-center gap-4 mb-2 border-b border-[#00ff33]/30 pb-4">
+            <div class="flex items-center gap-4 mb-2 border-b border-[#22c55e]/30 pb-4">
                 <h2 class="font-bold text-xl md:text-2xl text-white uppercase tracking-[0.2em] flex items-center gap-3">
                     <span class="text-red-500 animate-pulse">●</span> TARGETED DISPATCHES
                 </h2>
@@ -140,7 +199,7 @@
             <div id="dispatch-feed-container" class="space-y-8">
                 <!-- Data populated by JS, fallback loader below -->
                 <div class="text-center p-12 glass-panel">
-                    <span class="font-bold text-[#00ff33] tracking-widest uppercase text-xs animate-pulse">
+                    <span class="font-bold text-[#22c55e] tracking-widest uppercase text-xs animate-pulse">
                         >> SYNCHRONIZING WITH SUB-LEVEL DATABASES...
                     </span>
                 </div>
@@ -155,7 +214,7 @@
                 </div>
 
                 <a href="cmd/"
-                    class="glass-panel flex flex-col p-6 group cursor-pointer block !border-red-500 hover:!border-white hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]">
+                    class="glass-panel flex flex-col p-6 group cursor-pointer block !border-red-500 hover:!border-white hover:">
                     <div
                         class="text-[10px] text-red-500 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">
                         DIR_00 // ROOT</div>
@@ -166,28 +225,28 @@
 
                 <a href="cmd/codex/" class="glass-panel flex flex-col p-6 group cursor-pointer block">
                     <div
-                        class="text-[10px] text-[#00ff33]/50 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">
+                        class="text-[10px] text-[#22c55e]/50 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">
                         DIR_01 // ARCHIVE</div>
                     <div
-                        class="font-bold text-xl md:text-2xl text-white uppercase tracking-wider group-hover:text-[#00ff33] transition-colors">
+                        class="font-bold text-xl md:text-2xl text-white uppercase tracking-wider group-hover:text-[#22c55e] transition-colors">
                         THE CODEX</div>
                 </a>
 
                 <a href="cmd/lexicon/" class="glass-panel flex flex-col p-6 group cursor-pointer block">
                     <div
-                        class="text-[10px] text-[#00ff33]/50 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">
+                        class="text-[10px] text-[#22c55e]/50 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">
                         DIR_02 // DATABASE</div>
                     <div
-                        class="font-bold text-xl md:text-2xl text-white uppercase tracking-wider group-hover:text-[#00ff33] transition-colors">
+                        class="font-bold text-xl md:text-2xl text-white uppercase tracking-wider group-hover:text-[#22c55e] transition-colors">
                         SOVEREIGN LEDGER</div>
                 </a>
 
                 <a href="synth/"
-                    class="glass-panel flex flex-col p-6 group cursor-pointer block !border-gray-900 bg-black hover:!border-white hover:bg-white transition-all duration-75 relative overflow-hidden h-full">
+                    class="glass-panel flex flex-col p-6 group cursor-pointer block !border-gray-900 bg-[#05010a] hover:!border-white hover:bg-white transition-all duration-75 relative overflow-hidden h-full">
 
                     <!-- The Camouflage Layer (Fades instantly on hover) -->
                     <div
-                        class="absolute inset-0 bg-black group-hover:opacity-0 transition-opacity duration-75 z-10 flex items-center justify-center">
+                        class="absolute inset-0 bg-[#05010a] group-hover:opacity-0 transition-opacity duration-75 z-10 flex items-center justify-center">
                         <span class="text-gray-900/30 text-xs font-mono tracking-widest animate-pulse">0xNULL</span>
                     </div>
 
@@ -205,7 +264,7 @@
                                 class="absolute top-0 left-[2px] opacity-0 group-hover:opacity-100 text-red-500 mix-blend-screen pointer-events-none z-[-1]">[
                                 ACCESS THE GHOST ]</span>
                             <span
-                                class="absolute top-0 -left-[2px] opacity-0 group-hover:opacity-100 text-[#00ff33] mix-blend-screen pointer-events-none z-[-2]">[
+                                class="absolute top-0 -left-[2px] opacity-0 group-hover:opacity-100 text-[#22c55e] mix-blend-screen pointer-events-none z-[-2]">[
                                 ACCESS THE GHOST ]</span>
                         </div>
                     </div>
@@ -217,13 +276,13 @@
 
     <!-- FOOTER / SUPPLY DEPOT -->
     <footer class="w-full max-w-7xl px-4 mb-16">
-        <div class="mb-6 border-b border-[#00ff33]/30 pb-4 text-center">
+        <div class="mb-6 border-b border-[#22c55e]/30 pb-4 text-center">
             <h2 class="font-bold text-lg md:text-xl text-gray-500 uppercase tracking-[0.2em] shrink-0">SUPPLY DEPOT //
                 SUPPORT THE PHALANX</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-panel p-8 text-center flex flex-col h-full bg-black">
+            <div class="glass-panel p-8 text-center flex flex-col h-full bg-[#05010a]">
                 <h3 class="font-bold text-2xl text-white mb-2 tracking-widest uppercase">THE SIGNAL</h3>
                 <div class="text-sm font-bold text-gray-500 mb-6 tracking-widest">$7.76 // EBOOK</div>
                 <ul
@@ -232,13 +291,12 @@
                     <li>> INSTANT DOWNLOAD</li>
                 </ul>
                 <a href="https://buy.stripe.com/dRm9AT3gbe5u1SC1XR7Zu00" target="_blank"
-                    class="mt-auto block w-full border border-gray-600 text-gray-400 hover:text-black hover:border-white hover:bg-white py-3 font-bold uppercase tracking-widest text-sm transition-colors">
+                    class="btn-corpo mt-auto w-full py-3">
                     [ ACQUIRE ]
                 </a>
             </div>
 
-            <div
-                class="glass-panel p-8 text-center flex flex-col h-full !border-red-500 bg-red-950/10 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+            <div class="glass-panel p-8 text-center flex flex-col h-full !border-red-500 bg-red-950/10 ">
                 <h3 class="font-bold text-2xl text-red-500 mb-2 tracking-widest uppercase">THE OPERATOR</h3>
                 <div class="text-sm font-bold text-white mb-6 tracking-widest">$45.00 // FULL KIT</div>
                 <ul
@@ -248,7 +306,7 @@
                     <li>+ THE LIVING ARCHIVE</li>
                 </ul>
                 <a href="https://buy.stripe.com/dRm14n8AvbXm54O45Z7Zu01" target="_blank"
-                    class="mt-auto block w-full bg-red-600 text-black hover:bg-white hover:border-white py-3 font-bold uppercase tracking-widest text-sm transition-colors shadow-[0_0_15px_rgba(220,38,38,0.4)]">
+                    class="btn-corpo-danger mt-auto w-full py-3">
                     [ INITIALIZE ]
                 </a>
             </div>
@@ -282,15 +340,15 @@
 
             return `
                 <div class="glass-panel p-8 flex flex-col group block">
-                    <div class="mb-6 flex justify-between items-end border-b border-[#00ff33]/30 pb-4">
-                        <span class="text-[10px] font-bold text-[#00ff33] uppercase tracking-[0.2em] group-hover:text-white transition-colors">${dateStr} // DISPATCH</span>
+                    <div class="mb-6 flex justify-between items-end border-b border-[#22c55e]/30 pb-4">
+                        <span class="text-[10px] font-bold text-[#22c55e] uppercase tracking-[0.2em] group-hover:text-white transition-colors">${dateStr} // DISPATCH</span>
                         <span class="text-[9px] text-gray-500 uppercase tracking-widest">OP: ${article.author_name || "UNKNOWN"}</span>
                     </div>
-                    <h3 class="font-serif text-3xl md:text-5xl text-white font-bold leading-tight mb-6">${article.title}</h3>
-                    <p class="text-xs text-[#00ff33]/80 font-mono tracking-widest leading-loose mb-8 border-l border-[#00ff33]/50 pl-4 italic">
+                    <h3 class="font-mono text-3xl md:text-5xl text-white font-bold leading-tight mb-6">${article.title}</h3>
+                    <p class="text-xs text-[#22c55e]/80 font-mono tracking-widest leading-loose mb-8 border-l border-[#22c55e]/50 pl-4 italic">
                         ${snippet}
                     </p>
-                    <a href="read/?id=${article.id}" class="inline-block self-start border border-[#00ff33]/50 text-[#00ff33] hover:text-black hover:bg-[#00ff33] px-6 py-3 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs transition-colors shadow-[0_0_10px_rgba(0,255,51,0.1)]">
+                    <a href="read/?id=${article.id}" class="inline-block self-start border border-[#22c55e]/50 text-[#22c55e] hover:text-black hover:bg-[#22c55e] px-6 py-3 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs transition-colors ">
                         [ DECRYPT TRANSMISSION ]
                     </a>
                 </div>
