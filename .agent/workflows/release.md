@@ -16,7 +16,10 @@ git add .
 2. Commit the changes with the updated version number
 
 ```powershell
-git commit -m "V3 System Update: Version 0.3.1.0"
+$count = (git rev-list --count HEAD)
+$next = [int]$count + 1
+$version = "0.3.1.${next}a"
+git commit -m "V3 Architecture Update | [Version: $version]"
 ```
 
 // turbo

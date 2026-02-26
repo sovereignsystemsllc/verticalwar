@@ -30,3 +30,6 @@ private/
 
 # Database/SQL
 *.sql
+
+
+deploy_v3.py
