@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE CODEX // DECRYPTING ARTICLE</title>
+
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'term-black': '#050505', 'term-green': '#22c55e', 'rika': '#8b5cf6' },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body
+    class="w-full min-h-screen bg-[#05010a] flex flex-col font-mono selection:bg-[#22c55e] selection:text-black overflow-x-hidden">
+
+    <!-- PURE V3 MINIMAL NAV -->
+    <nav
+        class="w-full h-16 border-b border-[#22c55e]/30 px-4 flex justify-between items-center bg-[#05010a]/80 z-50 sticky top-0 backdrop-blur-md">
+        <a href="/"
+            class="text-[10px] md:text-sm font-bold text-[#22c55e] hover:text-white transition-colors tracking-widest border border-[#22c55e]/50 px-3 md:px-4 py-2 hover:bg-[#22c55e]/20">
+            [ RETURN TO CODEX ]
+        </a>
+        <div class="text-[10px] text-[#22c55e]/60 tracking-widest uppercase flex items-center gap-4">
+            <span class="animate-pulse hidden sm:inline">PUBLIC DECRYPTION LINK // ACTIVE</span>
+            <span class="animate-pulse sm:hidden">PUBLIC // ACTIVE</span>
+        </div>
+    </nav>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="flex-1 w-full max-w-4xl mx-auto flex flex-col relative z-20 py-8 px-4 sm:px-8">
+
+        <!-- INITIAL LOADING MSG -->
+        <div id="loading-msg" class="flex-1 flex flex-col items-center justify-center text-center py-20">
+            <div class="w-4 h-4 rounded-full bg-[#22c55e] animate-ping mb-6"></div>
+            <p class="text-xs text-[#22c55e] font-bold uppercase tracking-[0.2em] animate-pulse">
+                /// ESTABLISHING SECURE CONNECTION ///<br>
+                /// DECRYPTING PAYLOAD ///
+            </p>
+        </div>
+
+        <!-- ERROR MSG -->
+        <div id="error-msg" class="hidden flex-1 flex flex-col items-center justify-center text-center py-20">
+            <div class="text-4xl text-red-500 mb-6">⚠️</div>
+            <h2 class="text-red-500 font-bold uppercase tracking-widest text-lg mb-2">404: ARCHIVE NOT FOUND</h2>
+            <p class="text-[10px] text-white/50 uppercase tracking-widest">
+                The requested record sequence has been purged, corrupted, or does not exist.<br>
+                Return to the main directory.
+            </p>
+        </div>
+
+        <!-- ARTICLE READER CONTAINER -->
+        <article id="article-container"
+            class="hidden w-full bg-[#0a0a0a] border border-[#22c55e]/20 p-6 sm:p-12 md:p-16 custom-scrollbar text-white reader-text shadow-[0_0_30px_rgba(34,197,94,0.05)] relative overflow-hidden">
+
+            <!-- DECORATIVE HACKER FRAME -->
+            <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#22c55e]"></div>
+            <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#22c55e]"></div>
+            <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#22c55e]"></div>
+            <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#22c55e]"></div>
+
+            <header id="article-header" class="mb-10 border-b border-[#22c55e]/30 pb-8">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-4">
+                    <span id="article-series"
+                        class="text-[10px] text-[#22c55e] tracking-[0.2em] uppercase font-bold px-2 py-1 bg-[#22c55e]/10 border border-[#22c55e]/50 inline-block w-max"></span>
+                    <span id="article-date" class="text-[10px] text-white/40 tracking-widest font-mono"></span>
+                </div>
+                <h1 id="article-display-title"
+                    class="text-3xl sm:text-4xl lg:text-5xl text-white font-mono font-bold leading-tight mt-4"></h1>
+                <h2 id="article-display-subtitle"
+                    class="text-lg sm:text-xl text-[#22c55e]/80 font-mono mt-4 leading-relaxed hidden"></h2>
+            </header>
+
+            <div id="article-content" class="space-y-6"></div>
+
+            <footer class="mt-16 pt-8 border-t border-[#22c55e]/20 text-center">
+                <p class="text-[10px] text-[#22c55e]/40 tracking-widest uppercase mb-4">/// END OF RECORD ///</p>
+                <a href="/"
+                    class="inline-block border border-[#22c55e]/50 text-[#22c55e] hover:bg-[#22c55e] hover:text-black px-6 py-2 text-xs uppercase tracking-widest font-bold transition-colors">
+                    [ BACK TO ARCHIVES ]
+                </a>
+            </footer>
+
+        </article>
+    </main>
+
+    <script type="module" src="/post/post.js"></script>
+</body>
+
+</html>

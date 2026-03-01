@@ -1,0 +1,124 @@
+Fetching articles from database...
+
+Starting Matching Process...
+========================================
+
+Scanning: Transparency Arc (2nd Epstein Series) -> Output Series: [Transparency Arc]
+  [MATCH] 'EP1THETRANSPARENCYACTTRAP.pdf'
+       -> ID: 51ee156c-5d1b-4fc9-8b30-a3ca7e5acdcd | TITLE: The “Transparency Act” Is a Trap
+  [MATCH] 'EP2The Redaction Engine_ How the System Hides the Truth.pdf'
+       -> ID: 539e1710-16ab-4adb-a12a-e297e6ff1083 | TITLE: The Redaction Engine: How the System Hides the Truth
+  [MATCH] 'EP3The Financial Skeleton_ Epstein’s Protected Network.pdf'
+       -> ID: bafead83-07e4-42e0-b9de-92fc13d64ffd | TITLE: The Financial Skeleton: Epstein’s Protected Network
+  [MATCH] 'EP4QUEENMAXWELL.pdf'
+       -> ID: 0c71699b-ce7e-4556-90cd-591eff3ca5a0 | TITLE: Queen Maxwell: Unprosecutable By the System
+  [MATCH] 'EP5Epstein didn’t build the network. - by Ethan Faulkner.pdf'
+       -> ID: db368235-839f-4ad3-b9d4-0cc0e07253b9 | TITLE: Epstein didn’t build the network.
+  [MATCH] 'EP6The Moment The Story Stopped Working - by Ethan Faulkner.pdf'
+       -> ID: a78b560b-59d1-4f67-8d6d-2a422400094e | TITLE: The Moment The Story Stopped Working
+  [MATCH] 'EP7THE GHOST AND THE GATEKEEPER.pdf'
+       -> ID: 4ed6d896-5a52-42da-a980-10b0202222fe | TITLE: The Ghost and the Gatekeeper
+  [MATCH] 'EP8The Final Autopsy of the Epstein System - by Ethan Faulkner.pdf'
+       -> ID: 238a8b64-2f8a-4865-bcb3-b91162012c00 | TITLE: The Final Autopsy of the Epstein System
+
+Scanning: Shadow Arc -> Output Series: [The Shadow Arc]
+  [MATCH] 'EP1-The Financial Coup We Mistook for a Terror Attack.pdf'
+       -> ID: d4ae5535-5db7-4202-b08a-714c009f012c | TITLE: The Financial Coup We Mistook for a Terror Attack
+  [MATCH] 'EP2-9_11 Solved A Trillion-Dollar Problem - by Ethan Faulkner.pdf'
+       -> ID: 2be1e840-53f1-402c-90b6-4ab530f7ed2b | TITLE: 9/11 Solved A Trillion-Dollar Problem
+  [MATCH] 'EP3-THE SYSTEM SWITCH - by Ethan Faulkner - Common Sense Rebel.pdf'
+       -> ID: b36455ef-d82a-46ec-bb27-b66d559b1c06 | TITLE: THE SYSTEM SWITCH
+  [MATCH] 'EP4,5-The Empire’s Captured Wheel_ Breaking Out of the Imperial Time-Loop.pdf'
+       -> ID: e819858a-1fd9-43ec-b66b-75e3686e0745 | TITLE: The Empire’s Captured Wheel: Breaking Out of the Imperial Time-Loop
+  [MATCH] 'EP4-THE GLITCH DEFENSE - by Ethan Faulkner - Common Sense Rebel.pdf'
+       -> ID: 0874ec28-7af3-4063-b9a6-5982a7d381e3 | TITLE: THE GLITCH DEFENSE
+  [MATCH] 'EP5-THE INSTITUTION THAT OUTLIVED THE CRIME - by Ethan Faulkner.pdf'
+       -> ID: da5ca66d-b400-4e43-8f1f-db68acb58b22 | TITLE: THE INSTITUTION THAT OUTLIVED THE CRIME
+  [MATCH] 'EP6,5-FUCK THE CULTURE WAR - by Ethan Faulkner.pdf'
+       -> ID: 85bae6ac-2d43-472c-b233-107be5b6a56e | TITLE: FUCK THE CULTURE WAR
+  [MATCH] 'EP6-SUICIDESYSTEMEXPOSURE.pdf'
+       -> ID: b36455ef-d82a-46ec-bb27-b66d559b1c06 | TITLE: THE SYSTEM SWITCH
+  [MATCH] 'Ep7THEY WILL LEAVE US TO DIE — AND WE HELPED THEM PACK.pdf'
+       -> ID: c5364b1d-b94c-4130-8191-779b8e52569d | TITLE: THEY WILL LEAVE US TO DIE — AND WE HELPED THEM PACK
+
+Scanning: Living Storybook (LSB) -> Output Series: [The Living Storybook]
+  [MATCH] '(LSB part 1.6) THE FLINT INDICTMENT_ A BLUEPRINT FOR SYSTEMIC COLLAPSE.pdf'
+       -> ID: 8a402ec5-3074-4c96-92b4-daf985195435 | TITLE: THE FLINT INDICTMENT: A BLUEPRINT FOR SYSTEMIC COLLAPSE
+  [MATCH] 'Part 4 Educating the Imagination_ Notes on Our Constructed Miracle.pdf'
+       -> ID: 14f65290-b43c-40e7-bac4-38eeb9cf7310 | TITLE: Re-Educating the Imagination: Notes on Our Constructed Miracle
+  [MATCH] 'preTheir Inevitable Future vs. Our Constructed Miracle.pdf'
+       -> ID: 7ee1eb24-be09-4d4e-a97e-9f9764e0f31f | TITLE: Their Inevitable Future vs. Our Constructed Miracle
+  [MATCH] 'The Living Storybook, Part 1.5_ My Constructed Miracle (The End of the Loop).pdf'
+       -> ID: ff123026-af29-4ecd-8ebe-5e803404e11e | TITLE: The Living Storybook, Part 1: A Hundred Years of Rust
+  [MATCH] 'The Living Storybook, Part 1_ A Hundred Years of Rust.pdf'
+       -> ID: ff123026-af29-4ecd-8ebe-5e803404e11e | TITLE: The Living Storybook, Part 1: A Hundred Years of Rust
+  [MATCH] 'The Living Storybook, Part 2_ The Gears of the Chronicler.pdf'
+       -> ID: ff123026-af29-4ecd-8ebe-5e803404e11e | TITLE: The Living Storybook, Part 1: A Hundred Years of Rust
+  [MATCH] 'The Living Storybook, Part 3_ The Three-Layered Prison.pdf'
+       -> ID: 02ab7e8d-d673-43bf-bd02-1a04ce8bcf07 | TITLE: The Living Storybook, Part 3: The Three-Layered Prison
+
+Scanning: ITF -> Output Series: [Inside the Forge]
+  [MATCH] '11[MEMBERS ONLY] Inside the Forge #11_ White Noise, The System Switch & the Vertical War.pdf'
+       -> ID: 9fdbef46-4222-45a6-bfd2-da13a9a21de3 | TITLE: [MEMBERS ONLY] Inside the Forge #11: White Noise, The System Switch & the Vertical War
+  [MATCH] '12[🟢UNLOCKED] The 2025 War Log & The 2026 Blueprint (INSIDE THE FORGE #12).pdf'
+       -> ID: 17d95a2d-3f1f-4c76-aaaf-09f0eda2484c | TITLE: [🟢UNLOCKED] The 2025 War Log & The 2026 Blueprint (INSIDE THE FORGE #12)
+  [MATCH] '13INSIDE THE FORGE #13_ THE LEASH IS CUT - by Ethan Faulkner.pdf'
+       -> ID: e4ef2162-7f04-428e-9955-2ab83bb30a64 | TITLE: INSIDE THE FORGE #13: THE LEASH IS CUT
+  [MATCH] '14[MEMBERS ONLY] Inside the Forge #14_ 14 Days Into the Gamble.pdf'
+       -> ID: 888b1fc1-8ecc-423a-82ae-70f1a46e692c | TITLE: [MEMBERS ONLY] Inside the Forge #14: 14 Days Into the Gamble
+  [MATCH] '1[MEMBERS ONLY] INSIDE THE FORGE_ A Lesson in Narrative Warfare.pdf'
+       -> ID: 7b60bb06-6d14-41ab-a5a4-db3c79b3d301 | TITLE: [MEMBERS ONLY] INSIDE THE FORGE: A Lesson in Narrative Warfare
+  [MATCH] '2[MEMBERS ONLY] INSIDE THE FORGE #2_ The Poisoned Victory.pdf'
+       -> ID: b651de27-84ea-4761-9ea5-d89e9fc617c3 | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #2: The Poisoned Victory
+  [MATCH] '3[MEMBERS ONLY] INSIDE THE FORGE #3_ The Witch, The Stargazer, and the Architecture of Miracles (vs. Prisons).pdf'
+       -> ID: ea79e41e-3b0a-4c8c-8127-154710964bcb | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #3: The Witch, The Stargazer, and the Architecture of Miracles (vs. Prisons)
+  [MATCH] '4[MEMBERS ONLY] INSIDE THE FORGE #4_ Planting Seeds vs. Throwing Punches.pdf'
+       -> ID: e0297681-c37c-406b-b5e9-e0d2ab0a9270 | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #4: Planting Seeds vs. Throwing Punches
+  [MATCH] '5[MEMBERS ONLY] INSIDE THE FORGE #5_ The Soul of the Weapon (Why We Tell Stories).pdf'
+       -> ID: 10ca203f-120f-4b5a-aa9f-d426caa9306a | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #5: The Soul of the Weapon (Why We Tell Stories)
+  [MATCH] '6[MEMBERS ONLY] INSIDE THE FORGE #6_ From Hospital Bed to Narrative Weapon.pdf'
+       -> ID: ea92f7cc-d1c0-44f0-8791-6d1d04dd2779 | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #6: From Hospital Bed to Narrative Weapon
+  [MATCH] '7[MEMBERS ONLY] INSIDE THE FORGE #7_ The Operator’s Autopsy.pdf'
+       -> ID: 68842566-d255-44c1-a271-d1c4de15ba9f | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #7: The Operator’s Autopsy
+  [MATCH] '8[MEMBERS ONLY] INSIDE THE FORGE #8 — THE BIOPSY.pdf'
+       -> ID: 0fefccad-bd07-4df7-aebc-3edf6294753a | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #8 — THE BIOPSY
+  [MATCH] '9[MEMBERS ONLY] INSIDE THE FORGE #9_ STATE OF THE REBELLION.pdf'
+       -> ID: 6e6a9b12-678a-4b39-93c5-ab7f5c9e01ef | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #9: STATE OF THE REBELLION
+  [MATCH] 'Strategic Announcement_ Why We Win (And Why They’re Scared) (1).pdf'
+       -> ID: 82bb9369-9c34-4494-aaaf-c06f84336d4f | TITLE: Strategic Announcement: Why We Win (And Why They’re Scared)
+  [MATCH] 'Strategic Announcement_ Why We Win (And Why They’re Scared) v2.pdf'
+       -> ID: 82bb9369-9c34-4494-aaaf-c06f84336d4f | TITLE: Strategic Announcement: Why We Win (And Why They’re Scared)
+  [MATCH] 'Strategic Announcement_ Why We Win (And Why They’re Scared).pdf'
+       -> ID: 82bb9369-9c34-4494-aaaf-c06f84336d4f | TITLE: Strategic Announcement: Why We Win (And Why They’re Scared)
+  [MATCH] 'Strategic Announcement_ Why We Win (And Why They’re Scared)v3 (1).pdf'
+       -> ID: 82bb9369-9c34-4494-aaaf-c06f84336d4f | TITLE: Strategic Announcement: Why We Win (And Why They’re Scared)
+  [MATCH] 'Strategic Announcement_ Why We Win (And Why They’re Scared)v3.pdf'
+       -> ID: 82bb9369-9c34-4494-aaaf-c06f84336d4f | TITLE: Strategic Announcement: Why We Win (And Why They’re Scared)
+  [MATCH] '[MEMBERS ONLY] INSIDE THE FORGE #10_ THE SIGNAL.pdf'
+       -> ID: 4dc47df5-5725-48f3-9c63-2344bd10fd01 | TITLE: [MEMBERS ONLY] INSIDE THE FORGE #10: THE SIGNAL
+  [MATCH] '[MEMBERS ONLY] Inside the Forge #11_ White Noise, The System Switch & the Vertical War.pdf'
+       -> ID: 9fdbef46-4222-45a6-bfd2-da13a9a21de3 | TITLE: [MEMBERS ONLY] Inside the Forge #11: White Noise, The System Switch & the Vertical War
+
+Scanning: War on Illusion -> Output Series: [The War on Illusion]
+  [MATCH] 'EP.3.5_THE LIQUID SIEGE_ THE FINANCIALIZATION OF THIRST.pdf'
+       -> ID: 93f7ac16-30cc-4ebc-b82b-c365f86a8e0a | TITLE: THE LIQUID SIEGE: THE FINANCIALIZATION OF THIRST
+  [MATCH] 'EP1.waronillusion.index.preface.pdf'
+       -> ID: 22e82c0e-ae46-4707-809a-9b3a3eedad30 | TITLE: WoI EP1: THE ILLUSION INDEX
+  [MATCH] 'EP2.waronillusionHow They Turned Your Home into a Subscription Service_.pdf'
+       -> ID: 098f3e7e-f0bc-4d99-a294-86f58b7c6251 | TITLE: WoI EP2: How They Turned Your Home into a Subscription Service.
+  [MATCH] 'EP4.waronillusion.Why Your Electric Bill is a Bank Bailout.pdf'
+       -> ID: 9ee8de45-2833-4d1c-b8d3-fe58bea0cf43 | TITLE: WoI EP4: Why Your Electric Bill is a Bank Bailout
+  [MATCH] 'EP5nocureforprofit.pdf'
+       -> ID: a9441f70-9e74-4201-81dd-1eba453af1d8 | TITLE: WoI EP5: No Cure For Profit
+  [MATCH] 'Ep6.The Financial Siege - The War on Illusion_ Episode 6.pdf'
+       -> ID: cf1fe787-8bec-47e4-a02d-658e30ac6c37 | TITLE: The Financial Siege - The War on Illusion: Episode 6
+  [MATCH] 'EP7.[📼WATCH] THE WAR ON ILLUSION_ I WANT YOU TO UNSUBSCRIBE.pdf'
+       -> ID: cff807a9-ce32-49a3-8d8f-49e60e4e2097 | TITLE: [📼WATCH] THE WAR ON ILLUSION: I WANT YOU TO UNSUBSCRIBE
+  [MATCH] 'THE WAR ON ILLUSION EPISODE 7_ I WANT YOU TO UNSUBSCRIBE.pdf'
+       -> ID: cff807a9-ce32-49a3-8d8f-49e60e4e2097 | TITLE: [📼WATCH] THE WAR ON ILLUSION: I WANT YOU TO UNSUBSCRIBE
+
+Scanning: Fragment Methodology -> Output Series: [Fragment Methodology]
+  [MATCH] 'Fragment Methodology 01_ The Sound of Silence.pdf'
+       -> ID: 00f53016-e175-4c38-b4ca-13811b9b15bf | TITLE: Fragment Methodology 01: The Sound of Silence
+
+Successfully updated 53 articles in Supabase.

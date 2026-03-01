@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign OS // THE FORGE</title>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Quill.js Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <style>
+        /* Industrial Noir Quill Styles */
+        .ql-toolbar.ql-snow {
+            border: 1px solid #1f2937 !important;
+            background-color: #111827 !important;
+        }
+
+        .ql-container.ql-snow {
+            border: 1px solid #1f2937 !important;
+            background-color: black !important;
+            min-height: 50vh;
+        }
+
+        .ql-editor {
+            color: #d1d5db !important;
+            font-family: inherit;
+            font-size: 1.125rem;
+            line-height: 1.75;
+        }
+
+        .ql-editor p,
+        .ql-editor h1,
+        .ql-editor h2,
+        .ql-editor h3 {
+            margin-bottom: 1em;
+        }
+
+        .ql-editor a {
+            color: #00ff41 !important;
+        }
+
+        /* Override toolbar icons to be readable against dark bg */
+        .ql-snow .ql-stroke {
+            stroke: #9ca3af !important;
+        }
+
+        .ql-snow .ql-fill {
+            fill: #9ca3af !important;
+        }
+
+        .ql-snow .ql-picker {
+            color: #9ca3af !important;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-gray-300 font-sans min-h-screen">
+
+    <div class="fixed top-0 w-full bg-gray-900 border-b border-gray-800 p-4 z-50 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <a href="/admin/curate.html"
+                class="text-xs text-gray-500 hover:text-[#00ff41] transition tracking-widest uppercase">&lt; Back to
+                Curation</a>
+            <h1 class="text-[#00ff41] font-mono tracking-widest text-sm uppercase">The Forge</h1>
+            <span id="saveStatus" class="text-xs text-gray-500 ml-4 font-mono hidden">SAVED</span>
+        </div>
+        <div class="flex gap-4">
+            <button id="btnDelete"
+                class="text-xs text-red-500 hover:text-white border border-red-900 px-4 py-2 hover:bg-red-900 transition tracking-widest uppercase">Delete
+                Record</button>
+            <button id="btnSave"
+                class="text-xs text-black border border-[#00ff41] bg-[#00ff41] px-6 py-2 hover:bg-white hover:border-white transition font-bold tracking-widest uppercase">Save
+                Changes</button>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto pt-24 pb-20 px-4">
+        <form id="editorForm" class="space-y-6">
+            <!-- Metadata Grid -->
+            <div class="grid grid-cols-2 gap-6 bg-gray-900 p-6 border border-gray-800">
+                <div class="col-span-2">
+                    <label class="block text-xs text-[#00ff41] tracking-widest uppercase mb-1">Title</label>
+                    <input type="text" id="iptTitle"
+                        class="w-full bg-black border border-gray-700 text-white p-2 font-serif text-2xl focus:outline-none focus:border-[#00ff41]"
+                        required>
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-xs text-[#00ff41] tracking-widest uppercase mb-1">Subtitle</label>
+                    <input type="text" id="iptSubtitle"
+                        class="w-full bg-black border border-gray-700 text-gray-400 p-2 focus:outline-none focus:border-[#00ff41]">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">URL Slug</label>
+                    <input type="text" id="iptSlug"
+                        class="w-full bg-black border border-gray-700 text-gray-300 p-2 focus:outline-none focus:border-[#00ff41]"
+                        placeholder="my-article-title">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Thumbnail URL</label>
+                    <input type="text" id="iptThumbnail"
+                        class="w-full bg-black border border-gray-700 text-gray-300 p-2 focus:outline-none focus:border-[#00ff41]"
+                        placeholder="https://...">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Post Date</label>
+                    <input type="datetime-local" id="iptDate"
+                        class="w-full bg-black border border-gray-700 text-gray-300 p-2 focus:outline-none focus:border-[##00ff41]">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Audience</label>
+                    <select id="selAudience"
+                        class="w-full bg-black border border-gray-700 text-gray-300 p-2 focus:outline-none focus:border-[#00ff41]">
+                        <option value="everyone">Everyone</option>
+                        <option value="only_paid">Only Paid</option>
+                    </select>
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Status</label>
+                    <select id="selStatus"
+                        class="w-full bg-black border border-gray-700 text-[#00ff41] p-2 focus:outline-none focus:border-[#00ff41]">
+                        <option value="draft">Draft (Hidden)</option>
+                        <option value="published">Published (Live)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quill Editor Container -->
+            <div>
+                <label class="block text-xs text-[#00ff41] tracking-widest uppercase mb-1">Body Content</label>
+                <div id="quill-editor"></div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Hidden file input for image uploads -->
+    <input type="file" id="imageUploadInput" accept="image/*" class="hidden">
+
+    <!-- Terminal Overlay for Logging -->
+    <div id="statusTerminal"
+        class="fixed bottom-0 right-0 w-1/3 h-48 bg-black border-l border-t border-gray-800 text-[#00ff41] font-mono text-xs p-2 overflow-y-auto hidden opacity-80 z-50 pointer-events-none transition-all">
+        <div class="uppercase tracking-widest border-b border-gray-800 pb-1 mb-2">FORGE UPLINK TERMINAL</div>
+        <div id="logContent"></div>
+    </div>
+
+    <script type="module" src="/admin/editor.js"></script>
+</body>
+
+</html>

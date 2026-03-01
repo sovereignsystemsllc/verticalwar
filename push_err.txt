@@ -1,0 +1,34 @@
+remote: error: GH013: Repository rule violations found for refs/heads/master.        
+remote: 
+remote: - GITHUB PUSH PROTECTION        
+remote:   —————————————————————————————————————————        
+remote:     Resolve the following violations before pushing again        
+remote: 
+remote:     - Push cannot contain secrets        
+remote: 
+remote:             
+remote:      (?) Learn how to resolve a blocked push        
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
+remote:             
+remote:             
+remote:       —— Supabase Secret Key ———————————————————————————————        
+remote:        locations:        
+remote:          - commit: b9f43fd3fc12953eb7465c3948a7a3d92e8d100e        
+remote:            path: check_anchor.py:6        
+remote:          - commit: b9f43fd3fc12953eb7465c3948a7a3d92e8d100e        
+remote:            path: check_html.py:6        
+remote:          - commit: b9f43fd3fc12953eb7465c3948a7a3d92e8d100e        
+remote:            path: check_imgs.py:6        
+remote:          - commit: b9f43fd3fc12953eb7465c3948a7a3d92e8d100e        
+remote:            path: fix_rls.py:5        
+remote:          - commit: b9f43fd3fc12953eb7465c3948a7a3d92e8d100e        
+remote:            path: rip_all.py:13        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/sovereignsystemsllc/verticalwar/security/secret-scanning/unblock-secret/3AL8Adck4ozhgk7CZLbQWt3BlUD        
+remote:             
+remote: 
+remote: 
+To https://github.com/sovereignsystemsllc/verticalwar.git
+ ! [remote rejected] master -> master (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/sovereignsystemsllc/verticalwar.git'

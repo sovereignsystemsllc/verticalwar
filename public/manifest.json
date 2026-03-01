@@ -1,0 +1,48 @@
+{
+    "module": "module-vi",
+    "version": "v1.0",
+    "last_updated": "Sun 02/22/2026",
+    "files": [
+        {
+            "title": "Funding's Influence on Research Outcomes",
+            "filename": "module-vi_fundings-influence-on-research-outcomes_v1.0.pdf",
+            "type": "PDF",
+            "size_kb": 668.48,
+            "sha256": "4eb304bc9216258a57be3fc488eaa0e379f68bdc5cf3a9098f859e1205614a1a"
+        },
+        {
+            "title": "Historical Scientific Consensus Manipulation",
+            "filename": "module-vi_historical-scientific-consensus-manipulation_v1.0.pdf",
+            "type": "PDF",
+            "size_kb": 637.62,
+            "sha256": "dcb3c54e12badceb069090fba401c7425d2aae832a76b7a39fafce8d887fb3c6"
+        },
+        {
+            "title": "OSINT for Academic Funding",
+            "filename": "module-vi_osint-for-academic-funding_v1.0.pdf",
+            "type": "PDF",
+            "size_kb": 742.08,
+            "sha256": "9bd80e711b1667d1b689649402f67cb9db1118f6ff06686f0393aff8b85fda6e"
+        },
+        {
+            "title": "Synthesizing Science Defense Protocols",
+            "filename": "module-vi_synthesizing-science-defense-protocols_v1.0.pdf",
+            "type": "PDF",
+            "size_kb": 928.04,
+            "sha256": "620ebf33dd2ae6af2e0effbd0b2a3b095f03b21bba2a7b5e59eb38a7e1764d93"
+        },
+        {
+            "title": "The Mechanics of Reality Decay",
+            "filename": "module-vi_the-mechanics-of-reality-decay_v1.0.pdf",
+            "type": "PDF",
+            "size_kb": 684.15,
+            "sha256": "69bd789192f3c0bc20e153541026ee057feb10615b0e6ced3196b42bfeec20c0"
+        }
+    ],
+    "master_archive": {
+        "filename": "module-vi_receipt-pack_v1.0.zip",
+        "type": "ZIP",
+        "size_kb": 3146.9,
+        "sha256": "171da4df8f7e9eaaf1f353a92e803f36e2a000c1890f612f2c781ff7aaebd5d4"
+    }
+}

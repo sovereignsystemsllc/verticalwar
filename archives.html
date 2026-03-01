@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Archives // Receipt Packs</title>
+    <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- V4 Vite Tailwind Injection -->
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body class="bg-[#05010a] text-white font-mono antialiased selection:bg-red-500 selection:text-white relative lg:pl-64">
+
+    <!-- V4 Sidebar Mount -->
+    <aside id="sovereign-sidebar-root"></aside>
+
+    <div
+        class="main-container flex flex-col md:flex-row max-w-7xl mx-auto mt-8 md:mt-24 min-h-[80vh] border border-[#22c55e]/20 shadow-[0_0_20px_rgba(0,0,0,0.8)] relative z-10">
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-10 bg-[#05010a]">
+            <!-- HEADER -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 pb-4 border-b border-[#22c55e]/30">
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-widest uppercase mb-2">The Paper Trail // Archives
+                    </h2>
+                    <p class="text-xs text-[#22c55e]">MODULE VI: THE AUTHORITY TRAP // RECEIPT PACK</p>
+                </div>
+                <div class="mt-4 md:mt-0 text-right">
+                    <span id="manifest-date"
+                        class="block text-[10px] text-gray-500 mb-1 tracking-widest uppercase">UPDATED:
+                        --/--/----</span>
+                    <span id="manifest-version"
+                        class="block text-[10px] text-red-500 border border-red-500/30 px-2 py-0.5 tracking-widest uppercase">VERSION:
+                        --</span>
+                </div>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="mb-10 text-sm text-gray-400 max-w-2xl leading-relaxed">
+                <p class="mb-4">
+                    ACCESS GRANTED. The following directory contains the unaltered research binders, financial ledgers,
+                    and institutional audits used to construct the logic tree for Episode 2.
+                </p>
+                <p>
+                    <span class="text-red-500 font-bold">WARNING:</span> Do not trust the summary. Verify the primary
+                    data. SHA-256 cryptographic hashes are provided for all files to ensure chain of custody. PDF and
+                    ZIP assets currently served via secure cloud storage (Supabase).
+                </p>
+            </div>
+
+            <!-- MASTER DOWNLOAD -->
+            <div class="mb-12" id="master-download-container">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- DIRECTORY LISTING -->
+            <div>
+                <h3 class="text-xs font-bold text-[#22c55e] mb-4 uppercase tracking-widest"><span
+                        class="text-gray-600">ls -la</span> ./binders/</h3>
+
+                <div id="file-list" class="space-y-6">
+                    <div class="animate-pulse text-red-500 text-xs tracking-widest">[ SYSTEM QUERYING DATABASE... ]
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT TO LOAD MANIFEST & SIDEBAR -->
+    <script type="module" src="/src/sidebar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                // Fetch from Vite's public folder
+                const response = await fetch('/manifest.json');
+                if (!response.ok) throw new Error("Manifest not found.");
+                const manifest = await response.json();
+
+                // Update Header
+                document.getElementById('manifest-date').innerText = `UPDATED: ${manifest.last_updated}`;
+                document.getElementById('manifest-version').innerText = `VERSION: ${manifest.version}`;
+
+                // Update Master Archive
+                const master = manifest.master_archive;
+                if (master) {
+                    const mContainer = document.getElementById('master-download-container');
+                    // Ensure the URL matches exactly where the file will sit in Supabase Storage
+                    const storageUrl = `https://u9pqdh8iqtcwqtxhe85an.supabase.co/storage/v1/object/public/article_assets/archives/${master.filename}`;
+
+                    mContainer.innerHTML = `
+                        <a href="${storageUrl}" target="_blank" class="flex items-center justify-between w-full md:w-auto md:inline-flex p-4 border border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e] hover:text-black transition-colors uppercase tracking-widest text-sm font-bold">
+                            <span class="mr-6">[ DOWNLOAD MASTER ARCHIVE .ZIP ]</span>
+                            <span>${master.size_kb} KB</span>
+                        </a>
+                        <div class="mt-2 text-[10px] text-gray-500 font-mono tracking-widest uppercase">
+                            <span class="text-gray-700">master_hash:</span> ${master.sha256}
+                        </div>
+                    `;
+                }
+
+                // Update File List
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = ''; // clear loading state
+
+                manifest.files.forEach(file => {
+                    const row = document.createElement('div');
+                    row.className = "flex flex-col";
+
+                    const storageUrl = `https://u9pqdh8iqtcwqtxhe85an.supabase.co/storage/v1/object/public/article_assets/archives/${file.filename}`;
+
+                    row.innerHTML = `
+                        <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-gray-800 border-dotted pb-2 mb-1">
+                            <div class="flex items-center mb-2 md:mb-0">
+                                <span class="text-xs text-gray-600 w-12 shrink-0">[ ${file.type} ]</span>
+                                <a href="${storageUrl}" target="_blank" class="text-sm font-bold text-white hover:text-[#22c55e] transition-colors truncate max-w-[200px] md:max-w-md">
+                                    ${file.title}
+                                </a>
+                            </div>
+                            <div class="text-[10px] text-gray-500 whitespace-nowrap tracking-widest uppercase">
+                                ${file.size_kb} KB
+                            </div>
+                        </div>
+                        <div class="text-[9px] text-gray-600 truncate pl-12 hover:text-gray-400 transition-colors uppercase tracking-wider">
+                            <span class="text-gray-800">sha256:</span> ${file.sha256}
+                        </div>
+                    `;
+                    fileList.appendChild(row);
+                });
+
+            } catch (error) {
+                document.getElementById('file-list').innerHTML = `
+                    <div class="text-red-500 border border-red-500/50 bg-red-900/10 p-4 text-xs font-bold tracking-widest uppercase">
+                        [ERROR] FAILED TO RETRIEVE REPOSITORY MANIFEST.<br>
+                        CONTACT SYSOPS OR VERIFY STORAGE PATH.
+                    </div>
+                `;
+                console.error("Archive Load Error:", error);
+            }
+        });
+    </script>
+</body>
+
+</html>

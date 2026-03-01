@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // INGESTION VAULT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'term-black': '#050505', 'term-green': '#22c55e' },
+                    fontFamily: { mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #22c55e;
+            cursor: crosshair;
+        }
+
+        .glass-panel {
+            background: rgba(5, 5, 5, 0.9);
+            border: 1px solid #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
+        }
+
+        .dragover {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px dashed #22c55e;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+            border-left: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-8 font-mono selection:bg-term-green selection:text-black flex flex-col items-center">
+
+    <!-- Header -->
+    <div class="w-full max-w-5xl mb-8 flex justify-between items-end border-b border-term-green/30 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">INGESTION VAULT</h1>
+            <p class="text-term-green/60 text-xs tracking-widest mt-2 uppercase">> SECURE BATCH UPLOAD: SUBSTACK .HTML
+                EXPORTS</p>
+        </div>
+        <div class="flex gap-4">
+            <a href="curate.html"
+                class="text-[10px] tracking-widest hover:text-white transition-colors border border-term-green/50 px-4 py-2 hover:bg-term-green/20 uppercase font-bold text-term-green">
+                [ SWITCH TO CURATION ]
+            </a>
+        </div>
+    </div>
+
+    <!-- The Drop Zone -->
+    <div id="drop-zone"
+        class="w-full max-w-5xl h-64 glass-panel flex flex-col items-center justify-center transition-all mb-8 relative">
+        <!-- Security Lock Overlay -->
+        <div id="auth-lock"
+            class="absolute inset-0 bg-[#05010a]/95 border border-red-500 z-20 flex flex-col items-center justify-center text-center p-8">
+            <span class="text-red-500 text-4xl mb-4">🔒</span>
+            <p class="text-red-500 font-bold tracking-[0.2em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
+                CLEARANCE...</p>
+            <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase
+                Session</p>
+        </div>
+
+        <span class="text-4xl mb-4 text-term-green">📥</span>
+        <p class="text-lg tracking-[0.2em] font-bold uppercase text-white pointer-events-none">DROP SUBSTACK HTML FILES
+            HERE</p>
+        <p class="text-xs text-term-green/60 mt-2 pointer-events-none tracking-wider mb-6">Files will be parsed
+            automatically
+            and inserted into V4 Database as DRAFTS.</p>
+
+        <input type="file" id="file-input" multiple accept=".html" class="hidden">
+        <button id="browse-btn"
+            class="border border-term-green/50 px-6 py-2 text-xs font-bold tracking-widest uppercase text-term-green hover:bg-term-green/20 hover:text-white transition-colors relative z-10">
+            [ OR BROWSE FILES ]
+        </button>
+    </div>
+
+    <!-- The Log Terminal -->
+    <div class="w-full max-w-5xl glass-panel p-4 h-96 flex flex-col">
+        <div class="flex justify-between items-center border-b border-term-green/30 pb-3 mb-4 shrink-0">
+            <h2 class="text-xs font-bold tracking-[0.2em] uppercase text-white">SYSTEM LOG / UPLOAD QUEUE</h2>
+            <span id="queue-count" class="text-[10px] text-term-green/50 tracking-widest uppercase">0 FILES
+                DETECTED</span>
+        </div>
+        <ul id="log-list" class="flex-1 overflow-y-auto w-full text-xs space-y-2 opacity-90 pb-4">
+            <li class="text-term-green/30 italic uppercase tracking-widest">> AWAITING BATCH DROP...</li>
+        </ul>
+    </div>
+
+    <!-- Ingestion Logic Script -->
+    <script type="module" src="./admin_upload.js"></script>
+</body>
+
+</html>

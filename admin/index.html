@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GATEWAY // PUBLISHER SUITE</title>
+
+    <!-- PURE V4 STACK -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'matrix-bg': '#05010a',
+                        'matrix-panel': '#0a0a0a',
+                        'matrix-green': '#22c55e',
+                        'matrix-border': 'rgba(34, 197, 94, 0.2)',
+                        'matrix-text': '#e0e0e0',
+                        'matrix-muted': '#6b7280'
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body
+    class="bg-matrix-bg text-matrix-text font-mono min-h-screen flex flex-col selection:bg-matrix-green selection:text-black">
+
+    <!-- GATEWAY HEADER -->
+    <nav
+        class="w-full h-16 border-b border-matrix-border px-6 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse"></span>
+            <span class="text-sm font-bold text-matrix-green tracking-widest uppercase">THE PUBLISHER SUITE //
+                GATEWAY</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/"
+                class="text-[10px] md:text-sm font-bold text-matrix-muted hover:text-white transition-colors tracking-widest border border-matrix-border px-3 md:px-4 py-2 hover:bg-white/5">
+                [ RETURN TO CODEX ]
+            </a>
+        </div>
+    </nav>
+
+    <!-- DASHBOARD -->
+    <main class="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full">
+        <header class="mb-12 border-b border-matrix-border pb-6">
+            <h1 class="text-4xl text-white font-bold tracking-widest uppercase mb-2">Central Command</h1>
+            <p class="text-matrix-muted text-sm tracking-widest uppercase">Sovereign Data Sovereignty and Asset
+                Management</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- MODULE: CURATION MATRIX -->
+            <a href="/admin/curate.html"
+                class="group block border border-matrix-border bg-matrix-panel/50 hover:bg-matrix-panel hover:border-matrix-green transition-all p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-l border-b border-matrix-border group-hover:border-matrix-green transition-colors">
+                </div>
+                <h2
+                    class="text-xl text-white font-bold tracking-widest uppercase mb-2 group-hover:text-matrix-green transition-colors">
+                    Curation Matrix</h2>
+                <p class="text-xs text-matrix-muted uppercase tracking-widest leading-relaxed mb-6">Drag-and-drop
+                    structural organization. Assign articles to Master Folders and dictate rendering chronology.</p>
+                <div
+                    class="text-[10px] text-matrix-green font-bold tracking-widest uppercase border border-matrix-green/30 inline-block px-3 py-1 bg-matrix-green/5">
+                    ACCESS MODULE -></div>
+            </a>
+
+            <!-- MODULE: THE FORGE (EDITOR) -->
+            <a href="/admin/editor.html"
+                class="group block border border-matrix-border bg-matrix-panel/50 hover:bg-matrix-panel hover:border-[#00ff41] transition-all p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-l border-b border-matrix-border group-hover:border-[#00ff41] transition-colors">
+                </div>
+                <h2
+                    class="text-xl text-white font-bold tracking-widest uppercase mb-2 group-hover:text-[#00ff41] transition-colors">
+                    The Forge</h2>
+                <p class="text-xs text-matrix-muted uppercase tracking-widest leading-relaxed mb-6">Create new articles
+                    from scratch or surgically edit existing ones in a frictionless typographic environment.</p>
+                <div
+                    class="text-[10px] text-[#00ff41] font-bold tracking-widest uppercase border border-[#00ff41]/30 inline-block px-3 py-1 bg-[#00ff41]/5">
+                    ACCESS MODULE -></div>
+            </a>
+
+            <!-- MODULE: INGESTION ENGINE -->
+            <a href="/admin/ingest.html"
+                class="group block border border-yellow-500/30 bg-matrix-panel/50 hover:bg-matrix-panel hover:border-yellow-500 transition-all p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-l border-b border-yellow-500/30 group-hover:border-yellow-500 transition-colors">
+                </div>
+                <h2
+                    class="text-xl text-white font-bold tracking-widest uppercase mb-2 group-hover:text-yellow-500 transition-colors">
+                    Ingestion Engine</h2>
+                <p class="text-xs text-matrix-muted uppercase tracking-widest leading-relaxed mb-6">Bulk upload HTML or
+                    Markdown. Automatically scrapes, brokers, and re-links assets into the Supabase bucket.</p>
+                <div
+                    class="text-[10px] text-yellow-500 font-bold tracking-widest uppercase border border-yellow-500/30 inline-block px-3 py-1 bg-yellow-500/5">
+                    ACCESS MODULE -></div>
+            </a>
+
+            <!-- MODULE: ASSET LIBRARY -->
+            <a href="/admin/assets.html"
+                class="group block border border-matrix-border bg-matrix-panel/50 hover:bg-matrix-panel hover:border-blue-500 transition-all p-6 relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-l border-b border-matrix-border group-hover:border-blue-500 transition-colors">
+                </div>
+                <h2
+                    class="text-xl text-white font-bold tracking-widest uppercase mb-2 group-hover:text-blue-500 transition-colors">
+                    Asset Library</h2>
+                <p class="text-xs text-matrix-muted uppercase tracking-widest leading-relaxed mb-6">Visual grid of all
+                    artifacts hosted in the `article_assets` bucket. Upload, delete, and copy direct links.</p>
+                <div
+                    class="text-[10px] text-blue-500 font-bold tracking-widest uppercase border border-blue-500/30 inline-block px-3 py-1 bg-blue-500/5">
+                    UNDER CONSTRUCTION</div>
+            </a>
+
+        </div>
+
+        <!-- TELEMETRY -->
+        <div class="mt-12 border border-matrix-border bg-matrix-panel/30 p-6">
+            <h3
+                class="text-xs font-bold text-matrix-green tracking-widest uppercase mb-4 border-b border-matrix-border pb-2">
+                Network Telemetry</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                    <p class="text-[10px] text-matrix-muted uppercase tracking-widest">Total Active Records</p>
+                    <p id="stat-articles" class="text-2xl text-white font-bold">...</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-matrix-muted uppercase tracking-widest">Master Folders</p>
+                    <p id="stat-folders" class="text-2xl text-white font-bold">...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/admin/admin_gateway.js"></script>
+</body>
+
+</html>
