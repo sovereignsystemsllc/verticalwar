@@ -331,6 +331,41 @@ if (btnSaveFolderOrder) {
         btnSaveFolderOrder.classList.add('hidden');
     });
 }
+// Sync Timeline Logic
+const btnSyncTimeline = document.getElementById('btn-sync-timeline');
+if (btnSyncTimeline) {
+    btnSyncTimeline.addEventListener('click', () => {
+        if (!allArticles || allArticles.length === 0) return;
+
+        // Create subset in active folder
+        let subset = allArticles.filter(a => activeFolderId === null ? !a.series_id : a.series_id === activeFolderId);
+        if (subset.length === 0) return;
+
+        // Sort subset by post_date ascending (oldest to newest)
+        subset.sort((a, b) => {
+            const dateA = new Date(a.post_date || 0);
+            const dateB = new Date(b.post_date || 0);
+            return dateA - dateB;
+        });
+
+        // Reassign strictly sequential order_index to subset in memory
+        subset.forEach((a, idx) => {
+            a.order_index = idx;
+        });
+
+        // Re-sort global memory based on new order_index and render
+        allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+        renderArticles(activeFolderId);
+
+        // Flash UI feedback and enable Save button
+        btnSyncTimeline.innerText = "[ SYNCED ]";
+        setTimeout(() => { btnSyncTimeline.innerText = "SYNC TIMELINE"; }, 2000);
+
+        btnSaveOrder.classList.remove('hidden');
+        btnSaveOrder.classList.add('animate-pulse');
+    });
+}
+
 // Search Logic
 const matrixSearchInput = document.getElementById('matrix-search');
 if (matrixSearchInput) {
