@@ -270,9 +270,8 @@ window.openArticle = function (id, skipState = false) {
 window.closeArticle = function (skipState = false) {
   activeArticleId = null;
 
-  // SPA Routing: Clear the URL parameter
   if (!skipState) {
-    history.pushState({}, '', window.location.pathname);
+    history.pushState({ page: 'directory' }, '', window.location.pathname);
   }
 
   placeholderMsg.classList.remove('hidden');
@@ -291,6 +290,7 @@ window.closeArticle = function (skipState = false) {
 
   if (window.innerWidth <= 768) {
     sidebar.classList.remove('hidden');
+    sidebar.classList.add('flex');
     reader.classList.add('hidden');
     reader.classList.remove('flex');
   }
@@ -329,8 +329,9 @@ function setupEventListeners() {
     });
   }
 
-  btnCloseDoc.addEventListener('click', window.closeArticle);
-  btnMobileReturn.addEventListener('click', window.closeArticle);
+  // Mobile Return Button uses history.back() to pop the stack
+  btnCloseDoc.addEventListener('click', () => { history.back(); });
+  btnMobileReturn.addEventListener('click', () => { history.back(); });
 
   btnEditActive.addEventListener('click', openEditor);
   document.getElementById('btn-new-article').addEventListener('click', createNewArticle);
@@ -341,9 +342,28 @@ function setupEventListeners() {
   // Handle Browser Back/Forward buttons (SPA)
   window.addEventListener('popstate', (e) => {
     if (e.state && e.state.articleId) {
-      window.openArticle(e.state.articleId, true); // true = skip pushing state again
-    } else {
+      // User backed into an article
+      window.openArticle(e.state.articleId, true);
+    } else if (e.state && e.state.page === 'directory') {
+      // User backed into the directory
       window.closeArticle(true);
+    } else {
+      // User backed into the initial splash page state (null state)
+      activeArticleId = null;
+      if (window.innerWidth <= 768) {
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('flex');
+        reader.classList.remove('hidden');
+        reader.classList.add('flex');
+      }
+      placeholderMsg.classList.remove('hidden');
+      htmlFrame.classList.add('hidden');
+      btnCloseDoc.classList.add('hidden');
+      infoPanelTitle.innerText = "AWAITING SELECTION...";
+      infoLinkContainer.classList.add('hidden');
+      btnEditActive.classList.add('hidden');
+      const mobileLinkBtn = document.getElementById('mobile-info-link');
+      if (mobileLinkBtn) mobileLinkBtn.classList.add('hidden');
     }
   });
 }
