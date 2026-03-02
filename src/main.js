@@ -133,7 +133,7 @@ function renderSidebar() {
   const query = currentSearchQuery.toLowerCase();
 
   // Helper function to build folder HTML
-  const buildFolder = (title, tracks, sKey) => {
+  const buildFolder = (title, tracks, sKey, categoryLabel = null) => {
     // SECURITY GATE: Only OPERATOR or SOVEREIGN can see Inside the Forge
     if (title === 'Inside the Forge' && !['OPERATOR', 'SOVEREIGN'].includes(currentRole)) {
       return '';
@@ -145,10 +145,13 @@ function renderSidebar() {
 
     if (filteredTracks.length === 0) return ''; // Hide empty folders
 
+    const catHtml = categoryLabel ? `<span class="block text-[8px] text-[#22c55e]/60 tracking-[0.2em] mb-1 uppercase drop-shadow-[0_0_2px_rgba(34,197,94,0.3)]">[ ${categoryLabel} ]</span>` : '';
+
     let fHtml = `
             <div id="album-${sKey}" class="mb-4">
                 <div onclick="window.toggleFolder('${sKey}')" class="pl-3 border-l-2 border-[#22c55e]/50 cursor-pointer group flex justify-between items-center hover:bg-[#22c55e]/10 py-3 transition-all bg-[#05010a]/50">
                     <div>
+                        ${catHtml}
                         <h2 class="text-sm font-bold text-white tracking-widest uppercase">${title}</h2>
                         <p class="text-[9px] text-[#22c55e]/80 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
                     </div>
@@ -177,13 +180,26 @@ function renderSidebar() {
   };
 
   // 1. Render Official Master Series in Exact DB Order
+  let currentCategory = undefined;
+
   globalSeries.forEach((seriesDef, sIdx) => {
+    const cat = seriesDef.category_label || 'UNCATEGORIZED';
+    if (cat !== currentCategory) {
+      html += `<div class="mt-6 mb-2 px-3 border-b border-[#22c55e]/20 pb-1">
+                 <h3 class="text-[10px] text-[#22c55e]/50 font-bold tracking-[0.2em] uppercase">${cat}</h3>
+               </div>`;
+      currentCategory = cat;
+    }
+
+    // Skip building a physical block if this is strictly a structural heading "ghost" folder
+    if (seriesDef.title === '[HEADING ONLY]') return;
+
     // Find articles assigned to this exact series ID and sort them by order_index
     const tracks = globalArticles
       .filter(a => a.series_id === seriesDef.id)
       .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
-    html += buildFolder(seriesDef.title, tracks, 'series_' + sIdx);
+    html += buildFolder(seriesDef.title, tracks, 'series_' + sIdx, seriesDef.category_label);
   });
 
   // 2. Render Unassigned Singles at the bottom, also sorted

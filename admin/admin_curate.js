@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../src/supabaseClient.js';
 import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
-
-// Initialization
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 // State
 let masterSeries = [];
@@ -20,11 +15,67 @@ const articleCount = document.getElementById('article-count');
 const seriesCount = document.getElementById('series-count');
 const btnSaveOrder = document.getElementById('btn-save-order');
 const btnNewFolder = document.getElementById('btn-new-folder');
+const btnNewHeading = document.getElementById('btn-new-heading');
 const btnSaveFolderOrder = document.getElementById('btn-save-folder-order');
 
 // Sortable Instances
 let articlesSortable = null;
 let foldersSortable = null;
+
+window.editFolder = async function (folderId) {
+    const s = masterSeries.find(x => x.id === folderId);
+    if (!s) return;
+
+    const newTitle = prompt("EDIT FOLDER DESIGNATION:", s.title);
+    if (newTitle === null) return;
+
+    const newCategory = prompt("EDIT CATEGORY LABEL (e.g. 'CORE DOCTRINE'):", s.category_label || '');
+    if (newCategory === null) return;
+
+    const { error } = await supabase.from('series')
+        .update({
+            title: newTitle.trim(),
+            category_label: newCategory.trim() || null
+        })
+        .eq('id', folderId);
+
+    if (error) {
+        alert("ERROR: " + error.message);
+    } else {
+        await loadData();
+    }
+}
+
+window.deleteFolder = async function (folderId, isHeading = false) {
+    const s = masterSeries.find(x => x.id === folderId);
+    if (!s) return;
+
+    // Safety check: Does this folder have articles?
+    const articleCount = allArticles.filter(a => a.series_id === folderId).length;
+
+    if (articleCount > 0) {
+        alert(`ACCESS DENIED: Cannot delete directory. It contains ${articleCount} records. Move or delete the records first.`);
+        return;
+    }
+
+    const confirmMsg = isHeading ?
+        `WARNING: Delete structural heading '${s.category_label}'?` :
+        `WARNING: Delete empty master directory '${s.title}'?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    const { error } = await supabase.from('series').delete().eq('id', folderId);
+
+    if (error) {
+        alert("ERROR: Failed to delete. " + error.message);
+    } else {
+        // If we deleted the active folder, reset to unassigned
+        if (activeFolderId === folderId) {
+            activeFolderId = null;
+        }
+        await loadData();
+    }
+}
 
 async function bootstrap() {
     setAuthChangeCallback(onAuthChange);
@@ -68,14 +119,51 @@ function renderFolders() {
     foldersContainer.appendChild(unEl);
 
     // Dynamic Master Folders
+    let currentCategory = undefined;
+
     masterSeries.forEach(s => {
+        const cat = s.category_label || 'UNCATEGORIZED';
+        if (cat !== currentCategory) {
+            const head = document.createElement('div');
+            head.className = "cat-heading mt-6 mb-2 border-b border-matrix-border pb-1 pointer-events-none group relative";
+
+            // If this heading is powered by a ghost folder, give it edit/delete controls
+            let headingControls = '';
+            if (s.title === '[HEADING ONLY]') {
+                headingControls = `
+                    <div class="absolute right-0 top-0 flex gap-2 pointer-events-auto">
+                        <button class="text-[8px] text-matrix-muted hover:text-matrix-green hover:underline transition-colors" onclick="event.stopPropagation(); window.editFolder('${s.id}')">[ EDIT ]</button>
+                        <button class="text-[8px] text-matrix-muted hover:text-red-500 hover:underline transition-colors" onclick="event.stopPropagation(); window.deleteFolder('${s.id}', true)">[ DEL ]</button>
+                    </div>
+                `;
+            }
+
+            head.innerHTML = `
+                ${headingControls}
+                <h3 class="text-[10px] text-matrix-green/50 font-bold tracking-[0.2em] uppercase px-3 pointer-events-auto">${cat}</h3>
+            `;
+            foldersContainer.appendChild(head);
+            currentCategory = cat;
+        }
+
+        // If this series entry is JUST a heading placeholder, do not render a folder for it
+        if (s.title === '[HEADING ONLY]') return;
+
         const el = document.createElement('div');
-        el.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors ${activeFolderId === s.id ? 'bg-matrix-green text-black border-matrix-green' : 'bg-transparent text-matrix-text border-matrix-border hover:border-matrix-green'}`;
+        el.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors relative group ${activeFolderId === s.id ? 'bg-matrix-green text-black border-matrix-green' : 'bg-transparent text-matrix-text border-matrix-border hover:border-matrix-green'}`;
 
         let count = allArticles.filter(a => a.series_id === s.id).length;
 
+        const catHtml = s.category_label ? `<span class="text-[8px] ${activeFolderId === s.id ? 'text-black/70' : 'text-matrix-green/70'} tracking-[0.2em] uppercase mb-1 drop-shadow-[0_0_2px_rgba(34,197,94,0.5)]">[ ${s.category_label} ]</span>` : '';
+
+        // Added permanently visible edit/delete controls instead of hover-only
         el.innerHTML = `
-            <span class="uppercase font-bold tracking-widest text-xs mb-1">${s.title}</span>
+            <div class="absolute top-2 right-2 flex flex-col items-end gap-1">
+                <button class="text-[8px] ${activeFolderId === s.id ? 'text-black/70 hover:text-black' : 'text-matrix-muted hover:text-matrix-green hover:underline'} transition-colors" onclick="event.stopPropagation(); window.editFolder('${s.id}')">[ EDIT ]</button>
+                <button class="text-[8px] ${activeFolderId === s.id ? 'text-black/70 hover:text-red-900' : 'text-matrix-muted hover:text-red-500 hover:underline'} transition-colors" onclick="event.stopPropagation(); window.deleteFolder('${s.id}')">[ DEL ]</button>
+            </div>
+            ${catHtml}
+            <span class="uppercase font-bold tracking-widest text-xs mb-1 pr-12">${s.title}</span>
             <span class="text-[9px] uppercase tracking-widest ${activeFolderId === s.id ? 'text-black/70' : 'text-matrix-muted'}">${count} Records</span>
         `;
         el.onclick = () => renderArticles(s.id);
@@ -114,7 +202,7 @@ function renderFolders() {
         fallbackTolerance: 3, // Allow a 3px movement before dragging starts (allows taps/scrolling)
         ghostClass: 'drag-ghost',
         chosenClass: 'drag-chosen',
-        filter: '[data-folder-id="unassigned"]', // Don't let the unassigned folder be dragged
+        filter: '[data-folder-id="unassigned"], .cat-heading', // Don't let the unassigned folder or headings be dragged
         onEnd: function (evt) {
             if (btnSaveFolderOrder) {
                 btnSaveFolderOrder.classList.remove('hidden');
@@ -152,6 +240,9 @@ function renderArticles(folderId) {
 
     // Re-highlight left panel
     Array.from(foldersContainer.children).forEach(child => {
+        // Skip heading blocks entirely to prevent them from taking active styling or passing bad IDs
+        if (child.classList.contains('cat-heading')) return;
+
         let isMatch = child.dataset.folderId === String(folderId);
         if (child.dataset.folderId === "unassigned" && folderId === null) isMatch = true;
 
@@ -173,9 +264,12 @@ function renderArticles(folderId) {
         const dateStr = a.post_date ? new Date(a.post_date).toLocaleDateString() : 'UNKNOWN_DATE';
         const el = document.createElement('div');
         el.dataset.articleId = a.id;
-        el.className = 'bg-matrix-panel border border-matrix-border p-4 flex flex-col gap-2 cursor-grab active:cursor-grabbing hover:bg-matrix-green/5 transition-colors group';
+        el.className = 'bg-matrix-panel border border-matrix-border p-4 flex flex-col gap-2 hover:bg-matrix-green/5 transition-colors group relative pl-10'; // Added pl-10 for handle space
 
         el.innerHTML = `
+            <div class="drag-handle absolute left-0 top-0 bottom-0 w-8 border-r border-matrix-border bg-black/20 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:bg-matrix-green/20 hover:text-matrix-green transition-colors text-matrix-muted text-xs">
+                ⋮⋮
+            </div>
             <div class="flex justify-between items-start">
                 <span class="text-[10px] text-matrix-green/50 tracking-[0.2em] group-hover:text-matrix-green transition-colors">SYS_RECORD // IDX_${a.order_index ?? idx}</span>
                 <span class="text-[10px] text-matrix-muted font-bold">${dateStr}</span>
@@ -193,6 +287,7 @@ function renderArticles(folderId) {
     // Initialize Sortable for articles
     articlesSortable = new Sortable(articlesContainer, {
         group: 'articles-group',
+        handle: '.drag-handle', // <--- THIS is what fixes the finicky touches
         animation: 150,
         multiDrag: true, // Enable MultiDrag
         selectedClass: 'sortable-selected', // Class applied to selected items
@@ -264,9 +359,42 @@ btnSaveOrder.addEventListener('click', async () => {
     allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
     renderArticles(activeFolderId);
 
-    btnSaveOrder.innerText = "[ SAVE NEW SORT ORDER ]";
-    btnSaveOrder.classList.add('hidden');
+    // Provide clear success feedback
+    btnSaveOrder.innerText = "[ SORT ORDER SAVED ]";
+    btnSaveOrder.classList.add('bg-white', 'text-black');
+    setTimeout(() => {
+        btnSaveOrder.innerText = "[ SAVE NEW SORT ORDER ]";
+        btnSaveOrder.classList.remove('bg-white', 'text-black');
+        btnSaveOrder.classList.add('hidden');
+    }, 2000);
 });
+
+// Create New Heading Protocol
+if (btnNewHeading) {
+    btnNewHeading.addEventListener('click', async () => {
+        const catLabel = prompt("ENTER NEW CATEGORY HEADING (e.g. 'CORE DOCTRINE'):");
+        if (!catLabel || catLabel.trim() === '') return;
+
+        const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
+
+        // We insert a "ghost" folder where the title is just a placeholder, but the category_label drives the UI heading
+        const { data, error } = await supabase
+            .from('series')
+            .insert([{
+                title: '[HEADING ONLY]',
+                category_label: catLabel.trim(),
+                order_index: maxOrder + 1
+            }])
+            .select();
+
+        if (error) {
+            alert("SYSTEM ERROR: Failed to forge heading. " + error.message);
+        } else {
+            await loadData();
+            setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
+        }
+    });
+}
 
 // Create New Folder Protocol
 if (btnNewFolder) {
@@ -274,11 +402,22 @@ if (btnNewFolder) {
         const newFolderName = prompt("ENTER SYSTEM DESIGNATION FOR NEW MASTER FOLDER:");
         if (!newFolderName || newFolderName.trim() === '') return;
 
+        // Auto-inherit the category of the last item in the list, or default to UNCATEGORIZED
+        let defaultCat = 'UNCATEGORIZED';
+        if (masterSeries.length > 0) {
+            const lastSeries = masterSeries[masterSeries.length - 1];
+            defaultCat = lastSeries.category_label || 'UNCATEGORIZED';
+        }
+
         const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
 
         const { data, error } = await supabase
             .from('series')
-            .insert([{ title: newFolderName.trim(), order_index: maxOrder + 1 }])
+            .insert([{
+                title: newFolderName.trim(),
+                category_label: defaultCat, // Inherits the current section's category
+                order_index: maxOrder + 1
+            }])
             .select();
 
         if (error) {
@@ -288,6 +427,11 @@ if (btnNewFolder) {
             await loadData();
             if (data && data.length > 0) {
                 renderArticles(data[0].id); // Auto-jump into the new empty folder
+
+                // Ensure the user sees it at the bottom of the list
+                setTimeout(() => {
+                    foldersContainer.scrollTop = foldersContainer.scrollHeight;
+                }, 100);
             }
         }
     });
@@ -304,31 +448,59 @@ if (btnSaveFolderOrder) {
         // The first item is Unassigned Singles (index 0 visually), we ignore it for DB updates
         // So we start index mapping at 0 for the actual database series
         let dbIndex = 0;
+        let currentCategory = 'UNCATEGORIZED'; // Track the latest heading seen in the list
 
         items.forEach((item) => {
+            // Is it a heading?
+            if (item.classList.contains('cat-heading')) {
+                const headingText = item.querySelector('h3').innerText;
+                currentCategory = headingText;
+                return; // Headings aren't folders, we don't save their order here (they are bound to ghost folders currently)
+            }
+
             const id = item.dataset.folderId;
             if (id && id !== "unassigned") {
-                updates.push({ id, order_index: dbIndex });
+                // If this is a ghost folder driving a heading, its category IS its purpose.
+                // We overwrite its order index. 
+                const s = masterSeries.find(series => series.id === id);
+                if (s && s.title === '[HEADING ONLY]') {
+                    updates.push({ id, order_index: dbIndex, category_label: s.category_label });
+                } else {
+                    // This is a real folder. Bind it to whatever heading we most recently passed.
+                    updates.push({ id, order_index: dbIndex, category_label: currentCategory });
+                }
                 dbIndex++;
             }
         });
 
         let successCount = 0;
         for (const u of updates) {
-            const { error } = await supabase.from('series').update({ order_index: u.order_index }).eq('id', u.id);
+            const { error } = await supabase.from('series').update({
+                order_index: u.order_index,
+                category_label: u.category_label // Apply the new inherited categorical binding
+            }).eq('id', u.id);
             if (!error) successCount++;
         }
 
         for (const u of updates) {
             const s = masterSeries.find(series => series.id === u.id);
-            if (s) s.order_index = u.order_index;
+            if (s) {
+                s.order_index = u.order_index;
+                s.category_label = u.category_label; // Update local memory
+            }
         }
 
         masterSeries.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
         renderFolders();
 
-        btnSaveFolderOrder.innerText = "SAVE ORDER";
-        btnSaveFolderOrder.classList.add('hidden');
+        // Provide clear success feedback
+        btnSaveFolderOrder.innerText = "[ SAVED ]";
+        btnSaveFolderOrder.classList.add('bg-white', 'text-black');
+        setTimeout(() => {
+            btnSaveFolderOrder.innerText = "SAVE ORDER";
+            btnSaveFolderOrder.classList.remove('bg-white', 'text-black');
+            btnSaveFolderOrder.classList.add('hidden');
+        }, 2000);
     });
 }
 // Sync Timeline Logic

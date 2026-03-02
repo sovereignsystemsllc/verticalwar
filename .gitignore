@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Handover & Secrets
+verticalwar_v4_HANDOVER.md

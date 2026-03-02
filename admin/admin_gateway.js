@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../src/supabaseClient.js';
 import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
-
-// Initialization
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 // DOM Elements
 const statArticles = document.getElementById('stat-articles');

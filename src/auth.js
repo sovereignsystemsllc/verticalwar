@@ -26,6 +26,7 @@ export async function initAuth() {
         await handleSessionData(session.user);
     } else {
         updateAuthUI();
+        if (onAuthChangeCallback) onAuthChangeCallback();
     }
 
     // 2. Listen to changes
