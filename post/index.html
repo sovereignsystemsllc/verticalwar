@@ -13,7 +13,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'term-black': '#050505', 'term-green': '#22c55e', 'rika': '#8b5cf6' },
+                    colors: { 'term-black': '#050505', 'term-purple': '#a78bfa', 'rika': '#8b5cf6' },
                     fontFamily: {
                         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
                         sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
@@ -26,16 +26,18 @@
 </head>
 
 <body
-    class="w-full min-h-screen bg-[#05010a] flex flex-col font-mono selection:bg-[#22c55e] selection:text-black overflow-x-hidden">
+    class="w-full min-h-screen bg-[#05010a] flex flex-col font-mono selection:bg-[#a78bfa] selection:text-black overflow-x-hidden">
+  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+  <div class="scanline-overlay"></div>
 
     <!-- PURE V3 MINIMAL NAV -->
     <nav
-        class="w-full h-16 border-b border-[#22c55e]/30 px-4 flex justify-between items-center bg-[#05010a]/80 z-50 sticky top-0 backdrop-blur-md">
+        class="w-full h-16 border-b border-[#a78bfa]/30 px-4 flex justify-between items-center bg-[#05010a]/80 z-50 sticky top-0 backdrop-blur-md">
         <a href="/"
-            class="text-[10px] md:text-sm font-bold text-[#22c55e] hover:text-white transition-colors tracking-widest border border-[#22c55e]/50 px-3 md:px-4 py-2 hover:bg-[#22c55e]/20">
+            class="text-[10px] md:text-sm font-bold text-[#a78bfa] hover:text-white transition-colors tracking-widest border border-[#a78bfa]/50 px-3 md:px-4 py-2 hover:bg-[#a78bfa]/20">
             [ RETURN TO CODEX ]
         </a>
-        <div class="text-[10px] text-[#22c55e]/60 tracking-widest uppercase flex items-center gap-4">
+        <div class="text-[10px] text-[#a78bfa]/60 tracking-widest uppercase flex items-center gap-4">
             <span class="animate-pulse hidden sm:inline">PUBLIC DECRYPTION LINK // ACTIVE</span>
             <span class="animate-pulse sm:hidden">PUBLIC // ACTIVE</span>
         </div>
@@ -46,8 +48,8 @@
 
         <!-- INITIAL LOADING MSG -->
         <div id="loading-msg" class="flex-1 flex flex-col items-center justify-center text-center py-20">
-            <div class="w-4 h-4 rounded-full bg-[#22c55e] animate-ping mb-6"></div>
-            <p class="text-xs text-[#22c55e] font-bold uppercase tracking-[0.2em] animate-pulse">
+            <div class="w-4 h-4 rounded-full bg-[#a78bfa] animate-ping mb-6"></div>
+            <p class="text-xs text-[#a78bfa] font-bold uppercase tracking-[0.2em] animate-pulse">
                 /// ESTABLISHING SECURE CONNECTION ///<br>
                 /// DECRYPTING PAYLOAD ///
             </p>
@@ -65,32 +67,32 @@
 
         <!-- ARTICLE READER CONTAINER -->
         <article id="article-container"
-            class="hidden w-full bg-[#0a0a0a] border border-[#22c55e]/20 p-6 sm:p-12 md:p-16 custom-scrollbar text-white reader-text shadow-[0_0_30px_rgba(34,197,94,0.05)] relative overflow-hidden">
+            class="hidden w-full bg-[#0a0a0a] border border-[#a78bfa]/20 p-6 sm:p-12 md:p-16 custom-scrollbar text-white reader-text shadow-[0_0_30px_rgba(34,197,94,0.05)] relative overflow-hidden">
 
             <!-- DECORATIVE HACKER FRAME -->
-            <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#22c55e]"></div>
-            <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#22c55e]"></div>
-            <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#22c55e]"></div>
-            <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#22c55e]"></div>
+            <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#a78bfa]"></div>
+            <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#a78bfa]"></div>
+            <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#a78bfa]"></div>
+            <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#a78bfa]"></div>
 
-            <header id="article-header" class="mb-10 border-b border-[#22c55e]/30 pb-8">
+            <header id="article-header" class="mb-10 border-b border-[#a78bfa]/30 pb-8">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-4">
                     <span id="article-series"
-                        class="text-[10px] text-[#22c55e] tracking-[0.2em] uppercase font-bold px-2 py-1 bg-[#22c55e]/10 border border-[#22c55e]/50 inline-block w-max"></span>
+                        class="text-[10px] text-[#a78bfa] tracking-[0.2em] uppercase font-bold px-2 py-1 bg-[#a78bfa]/10 border border-[#a78bfa]/50 inline-block w-max"></span>
                     <span id="article-date" class="text-[10px] text-white/40 tracking-widest font-mono"></span>
                 </div>
                 <h1 id="article-display-title"
                     class="text-3xl sm:text-4xl lg:text-5xl text-white font-mono font-bold leading-tight mt-4"></h1>
                 <h2 id="article-display-subtitle"
-                    class="text-lg sm:text-xl text-[#22c55e]/80 font-mono mt-4 leading-relaxed hidden"></h2>
+                    class="text-lg sm:text-xl text-[#a78bfa]/80 font-mono mt-4 leading-relaxed hidden"></h2>
             </header>
 
             <div id="article-content" class="space-y-6"></div>
 
-            <footer class="mt-16 pt-8 border-t border-[#22c55e]/20 text-center">
-                <p class="text-[10px] text-[#22c55e]/40 tracking-widest uppercase mb-4">/// END OF RECORD ///</p>
+            <footer class="mt-16 pt-8 border-t border-[#a78bfa]/20 text-center">
+                <p class="text-[10px] text-[#a78bfa]/40 tracking-widest uppercase mb-4">/// END OF RECORD ///</p>
                 <a href="/"
-                    class="inline-block border border-[#22c55e]/50 text-[#22c55e] hover:bg-[#22c55e] hover:text-black px-6 py-2 text-xs uppercase tracking-widest font-bold transition-colors">
+                    class="inline-block border border-[#a78bfa]/50 text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black px-6 py-2 text-xs uppercase tracking-widest font-bold transition-colors">
                     [ BACK TO ARCHIVES ]
                 </a>
             </footer>
@@ -99,8 +101,8 @@
     </main>
 
     <!-- GLOBAL FOOTER -->
-    <footer class="w-full border-t border-[#22c55e]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
-        <p class="text-[9px] text-[#22c55e]/40 tracking-[0.3em] uppercase font-mono">
+    <footer class="w-full border-t border-[#a78bfa]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
+        <p class="text-[9px] text-[#a78bfa]/40 tracking-[0.3em] uppercase font-mono">
             SOVEREIGN SYSTEM V4.0 // END OF TRANSMISSION
         </p>
     </footer>

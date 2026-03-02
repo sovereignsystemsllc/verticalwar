@@ -17,8 +17,8 @@
                     colors: {
                         'matrix-bg': '#05010a',
                         'matrix-panel': '#0a0a0a',
-                        'matrix-green': '#22c55e',
-                        'matrix-border': 'rgba(34, 197, 94, 0.2)',
+                        'matrix-green': '#a78bfa',
+                        'matrix-border': 'rgba(167, 139, 250, 0.2)',
                         'matrix-text': '#e0e0e0',
                         'matrix-muted': '#6b7280'
                     },
@@ -34,18 +34,18 @@
     <style>
         .drag-ghost {
             opacity: 0.4;
-            background-color: rgba(34, 197, 94, 0.1);
-            border: 1px dashed #22c55e;
+            background-color: rgba(167, 139, 250, 0.1);
+            border: 1px dashed #a78bfa;
         }
 
         .drag-chosen {
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
-            border: 1px solid #22c55e;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.2);
+            border: 1px solid #a78bfa;
         }
 
         .sortable-selected {
-            background-color: rgba(34, 197, 94, 0.15) !important;
-            border-color: #22c55e !important;
+            background-color: rgba(167, 139, 250, 0.15) !important;
+            border-color: #a78bfa !important;
         }
 
         .custom-scrollbar::-webkit-scrollbar {
@@ -57,7 +57,7 @@
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #22c55e;
+            background: #a78bfa;
             border-radius: 2px;
         }
     </style>
@@ -65,6 +65,8 @@
 
 <body
     class="pl-0 lg:pl-64 bg-matrix-bg text-matrix-text font-mono h-screen flex flex-col overflow-hidden selection:bg-matrix-green selection:text-black transition-all duration-300 ease-in-out">
+  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+  <div class="scanline-overlay"></div>
 
     <!-- CODEX HEADER -->
     <nav
@@ -173,8 +175,8 @@
     </div>
 
     <!-- GLOBAL FOOTER -->
-    <footer class="w-full border-t border-[#22c55e]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
-        <p class="text-[9px] text-[#22c55e]/40 tracking-[0.3em] uppercase font-mono">
+    <footer class="w-full border-t border-[#a78bfa]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
+        <p class="text-[9px] text-[#a78bfa]/40 tracking-[0.3em] uppercase font-mono">
             SOVEREIGN SYSTEM V4.0 // END OF TRANSMISSION
         </p>
     </footer>

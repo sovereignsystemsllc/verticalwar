@@ -149,15 +149,15 @@ function renderSidebar() {
 
     let fHtml = `
             <div id="album-${sKey}" class="mb-4">
-                <div onclick="window.toggleFolder('${sKey}')" class="pl-3 border-l-2 border-[#22c55e]/50 cursor-pointer group flex justify-between items-center hover:bg-[#22c55e]/10 py-4 transition-all bg-[#05010a]/50">
+                <div onclick="window.toggleFolder('${sKey}')" class="pl-3 border-l-2 border-[#a78bfa]/50 cursor-pointer group flex justify-between items-center hover:bg-[#a78bfa]/10 py-4 transition-all bg-[#05010a]/50">
                     <div>
                         ${catHtml}
                         <h2 class="text-base font-bold text-white tracking-widest uppercase">${title}</h2>
-                        <p class="text-[10px] text-[#22c55e]/90 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
+                        <p class="text-[10px] text-[#a78bfa]/90 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
                     </div>
-                    <div class="text-xs font-bold text-white/30 group-hover:text-[#22c55e] mr-3 transition-colors" id="folder-icon-${sKey}">[ + ]</div>
+                    <div class="text-xs font-bold text-white/30 group-hover:text-[#a78bfa] mr-3 transition-colors" id="folder-icon-${sKey}">[ + ]</div>
                 </div>
-                <div id="folder-content-${sKey}" class="flex flex-col hidden bg-[#05010a]/20 border-l border-[#22c55e]/10 ml-[11px] mt-1 pl-2">
+                <div id="folder-content-${sKey}" class="flex flex-col hidden bg-[#05010a]/20 border-l border-[#a78bfa]/10 ml-[11px] mt-1 pl-2">
     `;
 
     filteredTracks.forEach((t, idx) => {
@@ -166,8 +166,8 @@ function renderSidebar() {
       const dateStr = t.post_date ? new Date(t.post_date).toLocaleDateString() : 'UNKNOWN_DATE';
 
       fHtml += `
-                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-4 px-3 hover:bg-[#22c55e]/10 group transition-colors flex flex-col gap-1 border border-transparent border-b-white/5 hover:border-[#22c55e] pl-4">
-                    <span class="text-[9px] text-[#22c55e]/50 tracking-[0.2em] group-hover:text-[#22c55e] flex justify-between">
+                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-4 px-3 hover:bg-[#a78bfa]/10 group transition-colors flex flex-col gap-1 border border-transparent border-b-white/5 hover:border-[#a78bfa] pl-4">
+                    <span class="text-[9px] text-[#a78bfa]/50 tracking-[0.2em] group-hover:text-[#a78bfa] flex justify-between">
                         <span>SYS_RECORD // ${displayIdx}</span>
                         <span>[${dateStr}]</span>
                     </span>
@@ -186,8 +186,8 @@ function renderSidebar() {
   globalSeries.forEach((seriesDef, sIdx) => {
     const cat = seriesDef.category_label || 'UNCATEGORIZED';
     if (cat !== currentCategory) {
-      html += `<div class="mt-10 mb-2 px-3 border-b-2 border-[#22c55e]/50 pb-2">
-                 <h3 class="text-sm md:text-base text-[#22c55e] font-bold tracking-[0.3em] uppercase drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">${cat}</h3>
+      html += `<div class="mt-10 mb-2 px-3 border-b-2 border-[#a78bfa]/50 pb-2">
+                 <h3 class="text-sm md:text-base text-[#a78bfa] font-bold tracking-[0.3em] uppercase drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">${cat}</h3>
                </div>`;
       currentCategory = cat;
     }
@@ -262,7 +262,7 @@ window.openArticle = function (id, skipState = false) {
   // VISUAL ACTIVE STATE (Monk Fix)
   // First, strip the active styling from all buttons
   document.querySelectorAll('#doc-list button').forEach(btn => {
-    btn.classList.remove('bg-[#22c55e]/10', 'border-[#22c55e]');
+    btn.classList.remove('bg-[#a78bfa]/10', 'border-[#a78bfa]');
     btn.classList.add('border-transparent');
   });
 
@@ -270,7 +270,7 @@ window.openArticle = function (id, skipState = false) {
   const activeBtn = document.querySelector(`button[onclick="window.openArticle('${id}')"]`);
   if (activeBtn) {
     activeBtn.classList.remove('border-transparent');
-    activeBtn.classList.add('bg-[#22c55e]/10', 'border-[#22c55e]');
+    activeBtn.classList.add('bg-[#a78bfa]/10', 'border-[#a78bfa]');
   }
 
   // Update Sidebar Info Panel

@@ -12,22 +12,24 @@
 </head>
 
 <body class="bg-[#05010a] text-white font-mono antialiased selection:bg-red-500 selection:text-white relative lg:pl-64">
+  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+  <div class="scanline-overlay"></div>
 
     <!-- V4 Sidebar Mount -->
     <aside id="sovereign-sidebar-root"></aside>
 
     <div
-        class="main-container flex flex-col md:flex-row max-w-7xl mx-auto mt-8 md:mt-24 min-h-[80vh] border border-[#22c55e]/20 shadow-[0_0_20px_rgba(0,0,0,0.8)] relative z-10">
+        class="main-container flex flex-col md:flex-row max-w-7xl mx-auto mt-8 md:mt-24 min-h-[80vh] border border-[#a78bfa]/20 shadow-[0_0_20px_rgba(0,0,0,0.8)] relative z-10">
 
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-6 md:p-10 bg-[#05010a]">
             <!-- HEADER -->
             <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 pb-4 border-b border-[#22c55e]/30">
+                class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 pb-4 border-b border-[#a78bfa]/30">
                 <div>
                     <h2 class="text-2xl font-bold text-white tracking-widest uppercase mb-2">The Paper Trail // Archives
                     </h2>
-                    <p class="text-xs text-[#22c55e]">MODULE VI: THE AUTHORITY TRAP // RECEIPT PACK</p>
+                    <p class="text-xs text-[#a78bfa]">MODULE VI: THE AUTHORITY TRAP // RECEIPT PACK</p>
                 </div>
                 <div class="mt-4 md:mt-0 text-right">
                     <span id="manifest-date"
@@ -59,7 +61,7 @@
 
             <!-- DIRECTORY LISTING -->
             <div>
-                <h3 class="text-xs font-bold text-[#22c55e] mb-4 uppercase tracking-widest"><span
+                <h3 class="text-xs font-bold text-[#a78bfa] mb-4 uppercase tracking-widest"><span
                         class="text-gray-600">ls -la</span> ./binders/</h3>
 
                 <div id="file-list" class="space-y-6">
@@ -93,7 +95,7 @@
                     const storageUrl = `https://u9pqdh8iqtcwqtxhe85an.supabase.co/storage/v1/object/public/article_assets/archives/${master.filename}`;
 
                     mContainer.innerHTML = `
-                        <a href="${storageUrl}" target="_blank" class="flex items-center justify-between w-full md:w-auto md:inline-flex p-4 border border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e] hover:text-black transition-colors uppercase tracking-widest text-sm font-bold">
+                        <a href="${storageUrl}" target="_blank" class="flex items-center justify-between w-full md:w-auto md:inline-flex p-4 border border-[#a78bfa] text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black transition-colors uppercase tracking-widest text-sm font-bold">
                             <span class="mr-6">[ DOWNLOAD MASTER ARCHIVE .ZIP ]</span>
                             <span>${master.size_kb} KB</span>
                         </a>
@@ -117,7 +119,7 @@
                         <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-gray-800 border-dotted pb-2 mb-1">
                             <div class="flex items-center mb-2 md:mb-0">
                                 <span class="text-xs text-gray-600 w-12 shrink-0">[ ${file.type} ]</span>
-                                <a href="${storageUrl}" target="_blank" class="text-sm font-bold text-white hover:text-[#22c55e] transition-colors truncate max-w-[200px] md:max-w-md">
+                                <a href="${storageUrl}" target="_blank" class="text-sm font-bold text-white hover:text-[#a78bfa] transition-colors truncate max-w-[200px] md:max-w-md">
                                     ${file.title}
                                 </a>
                             </div>

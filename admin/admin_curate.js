@@ -180,8 +180,8 @@ function renderFolders() {
                         <span class="uppercase font-bold tracking-widest text-lg break-words" style="${activeFolderId === s.id ? 'color: #000;' : ''}">${s.title}</span>
                     </div>
                     <div class="flex gap-4 opacity-100 z-20 relative shrink-0">
-                        <button class="btn-edit-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(0,0,0,0.3);' : 'color: rgba(34, 197, 94, 0.7);'}">[EDIT]</button>
-                        <button class="btn-del-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(153,27,27,0.3);' : 'color: rgba(34, 197, 94, 0.7);'}">[DEL]</button>
+                        <button class="btn-edit-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(0,0,0,0.3);' : 'color: rgba(167, 139, 250, 0.7);'}">[EDIT]</button>
+                        <button class="btn-del-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(153,27,27,0.3);' : 'color: rgba(167, 139, 250, 0.7);'}">[DEL]</button>
                     </div>
                 </div>
                 <span class="text-xs uppercase tracking-widest pl-2 pointer-events-none w-full block relative z-10" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.7); font-weight: 700;' : 'color: #6b7280;'}">${count} Records</span>

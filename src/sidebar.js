@@ -2,18 +2,18 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const aside = document.createElement('aside');
-    aside.className = 'fixed left-0 top-0 h-full w-64 bg-[#05010a] border-r border-[#22c55e]/30 font-mono text-xs z-[60] overflow-y-auto flex flex-col shadow-[4px_0_20px_rgba(0,0,0,0.8)] transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 custom-scrollbar';
+    aside.className = 'fixed left-0 top-0 h-full w-64 bg-[#05010a] border-r border-[#a78bfa]/30 font-mono text-xs z-[60] overflow-y-auto flex flex-col shadow-[4px_0_20px_rgba(0,0,0,0.8)] transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 custom-scrollbar';
 
     aside.innerHTML = `
         <!-- HEADER / LOGO REGION -->
-        <div class="px-6 py-8 border-b border-[#22c55e]/20 mb-4 bg-[#05010a]/50 relative">
-            <button id="btn-desktop-collapse" class="hidden lg:block absolute top-2 right-2 text-[#22c55e]/50 hover:text-[#22c55e] transition-colors p-2 text-[10px] font-bold tracking-widest cursor-pointer" title="Collapse Navigator">
+        <div class="px-6 py-8 border-b border-[#a78bfa]/20 mb-4 bg-[#05010a]/50 relative">
+            <button id="btn-desktop-collapse" class="hidden lg:block absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] transition-colors p-2 text-[10px] font-bold tracking-widest cursor-pointer" title="Collapse Navigator">
                 [ < ]
             </button>
             <h1 class="text-white font-mono font-bold text-lg tracking-[0.2em] uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
                 COMMON SENSE <br> REBEL
             </h1>
-            <p class="text-[#22c55e]/50 text-[9px] tracking-widest mt-2 uppercase">>> SOVEREIGN_V4</p>
+            <p class="text-[#a78bfa]/50 text-[9px] tracking-widest mt-2 uppercase">>> SOVEREIGN_V4</p>
         </div>
 
         <!-- NAVIGATION TREE -->
@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             <!-- THE CODEX (ROOT ARCHITECTURE) -->
             <div class="mb-6">
-                <span class="block px-6 text-[10px] text-[#22c55e]/40 tracking-widest mb-1 italic">roster:</span>
-                <a href="/" class="block w-full text-left py-2 px-6 text-[#22c55e]/80 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors border-l-2 border-transparent hover:border-[#22c55e]">
+                <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-1 italic">roster:</span>
+                <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
                     / codex_root
                 </a>
                 <a id="link-matrix-admin" href="/admin/index.html" class="hidden block w-full text-left py-1.5 px-6 pl-10 text-white/40 hover:bg-white/5 hover:text-white transition-colors border-l-2 border-transparent hover:border-white/30">
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </nav>
 
         <!-- FOOTER / LOGOUT -->
-        <div class="p-4 border-t border-[#22c55e]/20 mt-auto bg-[#05010a]/50 shrink-0">
+        <div class="p-4 border-t border-[#a78bfa]/20 mt-auto bg-[#05010a]/50 shrink-0">
            <button id="btn-toggle-login" class="block w-full text-left py-2 px-4 text-white/40 hover:bg-red-500/10 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/30 tracking-widest uppercase">
                [ LOGIN ]
            </button>
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile/Desktop Edge Toggle (MENU Button)
     const edgeTab = document.createElement('button');
     // Removed lg:hidden here so it appears on desktop when sidebar is closed
-    edgeTab.className = 'fixed left-0 top-1/2 -translate-y-1/2 z-[55] bg-[#05010a] border border-l-0 border-[#22c55e] text-[#22c55e] px-1 py-4 rounded-r-md flex items-center justify-center opacity-70 hover:opacity-100 transition-all shadow-[2px_0_10px_rgba(34,197,94,0.2)] cursor-pointer';
+    edgeTab.className = 'fixed left-0 top-1/2 -translate-y-1/2 z-[55] bg-[#05010a] border border-l-0 border-[#a78bfa] text-[#a78bfa] px-1 py-4 rounded-r-md flex items-center justify-center opacity-70 hover:opacity-100 transition-all shadow-[2px_0_10px_rgba(34,197,94,0.2)] cursor-pointer';
     edgeTab.innerHTML = '<span class="text-[10px] transform -rotate-90 origin-center block tracking-widest font-bold">MENU</span>';
 
     const backdrop = document.createElement('div');

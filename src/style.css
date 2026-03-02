@@ -1,13 +1,13 @@
 body {
     background-color: #050505;
-    color: #22c55e;
+    color: #a78bfa;
     cursor: crosshair;
 }
 
 .glass-panel {
     background: rgba(10, 20, 10, 0.9);
-    border: 1px solid #22c55e;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
+    border: 1px solid #a78bfa;
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.1);
 }
 
 /* Custom Scrollbar */
@@ -17,11 +17,11 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-track {
     background: #050505;
-    border-left: 1px solid rgba(34, 197, 94, 0.2);
+    border-left: 1px solid rgba(167, 139, 250, 0.2);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #22c55e;
+    background: #a78bfa;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -74,13 +74,13 @@ body {
 
 .reader-text h2 {
     font-size: 1.75rem;
-    border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+    border-bottom: 1px solid rgba(167, 139, 250, 0.2);
     padding-bottom: 0.5rem;
 }
 
 .reader-text h3 {
     font-size: 1.5rem;
-    color: #22c55e;
+    color: #a78bfa;
 }
 
 .reader-text h4 {
@@ -107,14 +107,14 @@ body {
 
 /* Blockquotes */
 .reader-text blockquote {
-    border-left: 4px solid #22c55e;
+    border-left: 4px solid #a78bfa;
     margin-left: 0;
     margin-right: 0;
     margin-bottom: 1.5rem;
     padding: 1rem 1.5rem;
     font-style: italic;
     color: rgba(255, 255, 255, 0.6);
-    background: rgba(34, 197, 94, 0.05);
+    background: rgba(167, 139, 250, 0.05);
 }
 
 .reader-text blockquote p:last-child {
@@ -123,16 +123,16 @@ body {
 
 /* In-text Links */
 .reader-text a {
-    color: #22c55e;
+    color: #a78bfa;
     text-decoration: underline;
-    text-decoration-color: rgba(34, 197, 94, 0.3);
+    text-decoration-color: rgba(167, 139, 250, 0.3);
     text-underline-offset: 4px;
     transition: all 0.2s ease;
 }
 
 .reader-text a:hover {
     color: #fff;
-    text-decoration-color: #22c55e;
+    text-decoration-color: #a78bfa;
 }
 
 /* Ensure images don't break V3 container constraints */
@@ -158,3 +158,5 @@ body {
     border-bottom: 1px solid rgba(255, 0, 0, 0.2);
     background: #f8f8f8;
 }
+@keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+.scanline-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 50; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(167,139,250,0.04) 50%, rgba(0,0,0,0) 100%); animation: scanline 10s linear infinite; }

@@ -16,14 +16,14 @@ function logMessage(filename, message, statusStr) {
         logList.innerHTML = '';
     }
 
-    let colorClass = 'text-term-green/80';
+    let colorClass = 'text-term-purple/80';
     if (statusStr === 'ERROR' || statusStr === 'DENIED') colorClass = 'text-red-500';
     if (statusStr === 'PROCESSING') colorClass = 'text-yellow-500';
 
     const li = document.createElement('li');
-    li.className = `flex flex-col py-1 border-b border-term-green/10 last:border-0 ${colorClass}`;
+    li.className = `flex flex-col py-1 border-b border-term-purple/10 last:border-0 ${colorClass}`;
 
-    let htmlContent = `<div class="flex justify-between w-full"><span><span class="text-term-green mr-2">></span>${filename}</span> <span class="tracking-[0.2em]">[${statusStr}]</span></div>`;
+    let htmlContent = `<div class="flex justify-between w-full"><span><span class="text-term-purple mr-2">></span>${filename}</span> <span class="tracking-[0.2em]">[${statusStr}]</span></div>`;
 
     if (message && message !== 'POSTED TO VAULT') {
         htmlContent += `<span class="text-[10px] opacity-70 ml-4 mt-1">> ${message}</span>`;
