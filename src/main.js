@@ -149,13 +149,13 @@ function renderSidebar() {
 
     let fHtml = `
             <div id="album-${sKey}" class="mb-4">
-                <div onclick="window.toggleFolder('${sKey}')" class="pl-3 border-l-2 border-[#22c55e]/50 cursor-pointer group flex justify-between items-center hover:bg-[#22c55e]/10 py-3 transition-all bg-[#05010a]/50">
+                <div onclick="window.toggleFolder('${sKey}')" class="pl-3 border-l-2 border-[#22c55e]/50 cursor-pointer group flex justify-between items-center hover:bg-[#22c55e]/10 py-4 transition-all bg-[#05010a]/50">
                     <div>
                         ${catHtml}
-                        <h2 class="text-sm font-bold text-white tracking-widest uppercase">${title}</h2>
-                        <p class="text-[9px] text-[#22c55e]/80 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
+                        <h2 class="text-base font-bold text-white tracking-widest uppercase">${title}</h2>
+                        <p class="text-[10px] text-[#22c55e]/90 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
                     </div>
-                    <div class="text-xs font-bold text-white/30 group-hover:text-[#22c55e] mr-3 transition-colors">[ &equiv; ]</div>
+                    <div class="text-xs font-bold text-white/30 group-hover:text-[#22c55e] mr-3 transition-colors" id="folder-icon-${sKey}">[ + ]</div>
                 </div>
                 <div id="folder-content-${sKey}" class="flex flex-col hidden bg-[#05010a]/20 border-l border-[#22c55e]/10 ml-[11px] mt-1 pl-2">
     `;
@@ -165,12 +165,12 @@ function renderSidebar() {
       const dateStr = t.post_date ? new Date(t.post_date).toLocaleDateString() : 'UNKNOWN_DATE';
 
       fHtml += `
-                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-3 px-2 hover:bg-[#22c55e]/5 group transition-colors flex flex-col gap-1 border-b border-white/5 last:border-0">
-                    <span class="text-[8px] text-[#22c55e]/50 tracking-[0.2em] group-hover:text-[#22c55e] flex justify-between">
+                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-4 px-3 hover:bg-[#22c55e]/10 group transition-colors flex flex-col gap-1 border-b border-white/5 last:border-0 pl-4 border-l-2 border-transparent hover:border-l-[#22c55e]">
+                    <span class="text-[9px] text-[#22c55e]/50 tracking-[0.2em] group-hover:text-[#22c55e] flex justify-between">
                         <span>SYS_${shortId} // T_NATIVE</span>
                         <span>[${dateStr}]</span>
                     </span>
-                    <span class="text-[11px] text-white/80 group-hover:text-white font-bold leading-snug tracking-wider">${t.title}</span>
+                    <span class="text-xs text-white/80 group-hover:text-white font-bold leading-snug tracking-wider">${t.title}</span>
                 </button>
       `;
     });
@@ -185,8 +185,8 @@ function renderSidebar() {
   globalSeries.forEach((seriesDef, sIdx) => {
     const cat = seriesDef.category_label || 'UNCATEGORIZED';
     if (cat !== currentCategory) {
-      html += `<div class="mt-6 mb-2 px-3 border-b border-[#22c55e]/20 pb-1">
-                 <h3 class="text-[10px] text-[#22c55e]/50 font-bold tracking-[0.2em] uppercase">${cat}</h3>
+      html += `<div class="mt-10 mb-2 px-3 border-b-2 border-[#22c55e]/50 pb-2">
+                 <h3 class="text-sm md:text-base text-[#22c55e] font-bold tracking-[0.3em] uppercase drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">${cat}</h3>
                </div>`;
       currentCategory = cat;
     }
@@ -214,13 +214,16 @@ function renderSidebar() {
 
 window.toggleFolder = function (sKey) {
   const el = document.getElementById(`folder-content-${sKey}`);
+  const icon = document.getElementById(`folder-icon-${sKey}`);
   if (el) {
     if (el.classList.contains('hidden')) {
       el.classList.remove('hidden');
       el.classList.add('flex');
+      if (icon) icon.innerText = '[ - ]';
     } else {
       el.classList.add('hidden');
       el.classList.remove('flex');
+      if (icon) icon.innerText = '[ + ]';
     }
   }
 };

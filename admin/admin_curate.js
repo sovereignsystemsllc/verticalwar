@@ -22,59 +22,70 @@ const btnSaveFolderOrder = document.getElementById('btn-save-folder-order');
 let articlesSortable = null;
 let foldersSortable = null;
 
-window.editFolder = async function (folderId) {
-    const s = masterSeries.find(x => x.id === folderId);
-    if (!s) return;
+// ============================================
+// CUSTOM PROMPT MODALS
+// ============================================
 
-    const newTitle = prompt("EDIT FOLDER DESIGNATION:", s.title);
-    if (newTitle === null) return;
+function sovereignPrompt(message, defaultValue = '') {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('sovereign-modal');
+        const title = document.getElementById('modal-title');
+        const input = document.getElementById('modal-input');
+        const btnCancel = document.getElementById('modal-btn-cancel');
+        const btnConfirm = document.getElementById('modal-btn-confirm');
 
-    const newCategory = prompt("EDIT CATEGORY LABEL (e.g. 'CORE DOCTRINE'):", s.category_label || '');
-    if (newCategory === null) return;
+        title.innerText = message;
+        input.classList.remove('hidden');
+        input.value = defaultValue;
+        modal.classList.remove('hidden');
+        input.focus();
 
-    const { error } = await supabase.from('series')
-        .update({
-            title: newTitle.trim(),
-            category_label: newCategory.trim() || null
-        })
-        .eq('id', folderId);
+        const cleanup = () => {
+            modal.classList.add('hidden');
+            btnCancel.removeEventListener('click', onCancel);
+            btnConfirm.removeEventListener('click', onConfirm);
+            input.removeEventListener('keydown', onKeydown);
+        };
 
-    if (error) {
-        alert("ERROR: " + error.message);
-    } else {
-        await loadData();
-    }
+        const onCancel = () => { cleanup(); resolve(null); };
+        const onConfirm = () => { cleanup(); resolve(input.value); };
+        const onKeydown = (e) => {
+            if (e.key === 'Enter') onConfirm();
+            if (e.key === 'Escape') onCancel();
+        };
+
+        btnCancel.addEventListener('click', onCancel);
+        btnConfirm.addEventListener('click', onConfirm);
+        input.addEventListener('keydown', onKeydown);
+    });
 }
 
-window.deleteFolder = async function (folderId, isHeading = false) {
-    const s = masterSeries.find(x => x.id === folderId);
-    if (!s) return;
+function sovereignConfirm(message) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('sovereign-modal');
+        const title = document.getElementById('modal-title');
+        const input = document.getElementById('modal-input');
+        const btnCancel = document.getElementById('modal-btn-cancel');
+        const btnConfirm = document.getElementById('modal-btn-confirm');
 
-    // Safety check: Does this folder have articles?
-    const articleCount = allArticles.filter(a => a.series_id === folderId).length;
+        title.innerText = message;
+        input.classList.add('hidden'); // Hide input for yes/no confirms
+        input.value = '';
+        modal.classList.remove('hidden');
 
-    if (articleCount > 0) {
-        alert(`ACCESS DENIED: Cannot delete directory. It contains ${articleCount} records. Move or delete the records first.`);
-        return;
-    }
+        const cleanup = () => {
+            modal.classList.add('hidden');
+            input.classList.remove('hidden'); // reset for future prompts
+            btnCancel.removeEventListener('click', onCancel);
+            btnConfirm.removeEventListener('click', onConfirm);
+        };
 
-    const confirmMsg = isHeading ?
-        `WARNING: Delete structural heading '${s.category_label}'?` :
-        `WARNING: Delete empty master directory '${s.title}'?`;
+        const onCancel = () => { cleanup(); resolve(false); };
+        const onConfirm = () => { cleanup(); resolve(true); };
 
-    if (!confirm(confirmMsg)) return;
-
-    const { error } = await supabase.from('series').delete().eq('id', folderId);
-
-    if (error) {
-        alert("ERROR: Failed to delete. " + error.message);
-    } else {
-        // If we deleted the active folder, reset to unassigned
-        if (activeFolderId === folderId) {
-            activeFolderId = null;
-        }
-        await loadData();
-    }
+        btnCancel.addEventListener('click', onCancel);
+        btnConfirm.addEventListener('click', onConfirm);
+    });
 }
 
 async function bootstrap() {
@@ -118,78 +129,97 @@ function renderFolders() {
     unEl.dataset.folderId = "unassigned";
     foldersContainer.appendChild(unEl);
 
-    // Dynamic Master Folders
-    let currentCategory = undefined;
-
     masterSeries.forEach(s => {
-        const cat = s.category_label || 'UNCATEGORIZED';
-        if (cat !== currentCategory) {
+        if (s.title === '[HEADING ONLY]') {
+            const cat = s.category_label || 'UNCATEGORIZED';
             const head = document.createElement('div');
-            head.className = "cat-heading mt-6 mb-2 border-b border-matrix-border pb-1 pointer-events-none group relative";
-
-            // If this heading is powered by a ghost folder, give it edit/delete controls
-            let headingControls = '';
-            if (s.title === '[HEADING ONLY]') {
-                headingControls = `
-                    <div class="absolute right-0 top-0 flex gap-2 pointer-events-auto">
-                        <button class="text-[8px] text-matrix-muted hover:text-matrix-green hover:underline transition-colors" onclick="event.stopPropagation(); window.editFolder('${s.id}')">[ EDIT ]</button>
-                        <button class="text-[8px] text-matrix-muted hover:text-red-500 hover:underline transition-colors" onclick="event.stopPropagation(); window.deleteFolder('${s.id}', true)">[ DEL ]</button>
-                    </div>
-                `;
-            }
+            head.className = "cat-heading pt-10 pb-6 border-b border-matrix-border group relative cursor-grab bg-transparent transition-colors";
+            head.dataset.folderId = s.id;
 
             head.innerHTML = `
-                ${headingControls}
-                <h3 class="text-[10px] text-matrix-green/50 font-bold tracking-[0.2em] uppercase px-3 pointer-events-auto">${cat}</h3>
+                <div class="flex items-start justify-between mb-1 w-full">
+                    <div class="flex items-start px-4 min-w-0 flex-1">
+                        <h3 class="text-base text-matrix-green font-bold tracking-[0.2em] uppercase break-words">${cat}</h3>
+                    </div>
+                    <div class="flex gap-4 pr-2 opacity-100 z-10 relative">
+                        <button class="btn-edit-folder text-sm font-bold text-matrix-green/70 hover:text-matrix-green hover:underline transition-colors">[EDIT]</button>
+                        <button class="btn-del-folder text-sm font-bold text-matrix-green/70 hover:text-red-500 hover:underline transition-colors">[DEL]</button>
+                    </div>
+                </div>
             `;
+
+            // Explicit Event Listeners
+            head.querySelector('.btn-edit-folder').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.editFolder(s.id);
+            });
+
+            head.querySelector('.btn-del-folder').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.deleteFolder(s.id, true);
+            });
+
             foldersContainer.appendChild(head);
-            currentCategory = cat;
-        }
+        } else {
+            const el = document.createElement('div');
+            el.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors relative group ${activeFolderId === s.id ? 'bg-matrix-green text-black border-matrix-green' : 'bg-transparent text-matrix-text border-matrix-border hover:border-matrix-green'}`;
+            el.dataset.folderId = s.id;
 
-        // If this series entry is JUST a heading placeholder, do not render a folder for it
-        if (s.title === '[HEADING ONLY]') return;
+            // Explicit Event Listener for the main folder body
+            el.addEventListener('click', () => {
+                renderArticles(s.id);
+            });
 
-        const el = document.createElement('div');
-        el.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors relative group ${activeFolderId === s.id ? 'bg-matrix-green text-black border-matrix-green' : 'bg-transparent text-matrix-text border-matrix-border hover:border-matrix-green'}`;
+            let count = allArticles.filter(a => a.series_id === s.id).length;
 
-        let count = allArticles.filter(a => a.series_id === s.id).length;
+            el.innerHTML = `
+                <div class="flex justify-between items-start mb-2 z-10 relative w-full">
+                    <div class="flex items-start px-2 min-w-0 flex-1 pr-2">
+                        <span class="uppercase font-bold tracking-widest text-lg break-words" style="${activeFolderId === s.id ? 'color: #000;' : ''}">${s.title}</span>
+                    </div>
+                    <div class="flex gap-4 opacity-100 z-20 relative shrink-0">
+                        <button class="btn-edit-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(0,0,0,0.3);' : 'color: rgba(34, 197, 94, 0.7);'}">[EDIT]</button>
+                        <button class="btn-del-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(153,27,27,0.3);' : 'color: rgba(34, 197, 94, 0.7);'}">[DEL]</button>
+                    </div>
+                </div>
+                <span class="text-xs uppercase tracking-widest pl-2 pointer-events-none w-full block relative z-10" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.7); font-weight: 700;' : 'color: #6b7280;'}">${count} Records</span>
+                
+                <div class="w-full mt-2 pt-1 border-t border-matrix-border/20 flex flex-col items-center justify-center opacity-30 pointer-events-none relative z-10">
+                    <span class="text-[8px] tracking-[0.5em] font-bold">||||</span>
+                </div>
 
-        const catHtml = s.category_label ? `<span class="text-[8px] ${activeFolderId === s.id ? 'text-black/70' : 'text-matrix-green/70'} tracking-[0.2em] uppercase mb-1 drop-shadow-[0_0_2px_rgba(34,197,94,0.5)]">[ ${s.category_label} ]</span>` : '';
+                <div class="drag-blocker absolute top-0 left-0 w-full h-[80%] z-0 cursor-pointer" title="Grab folder from the bottom grip zone to drag"></div>
+            `;
 
-        // Added permanently visible edit/delete controls instead of hover-only
-        el.innerHTML = `
-            <div class="absolute top-2 right-2 flex flex-col items-end gap-1">
-                <button class="text-[8px] ${activeFolderId === s.id ? 'text-black/70 hover:text-black' : 'text-matrix-muted hover:text-matrix-green hover:underline'} transition-colors" onclick="event.stopPropagation(); window.editFolder('${s.id}')">[ EDIT ]</button>
-                <button class="text-[8px] ${activeFolderId === s.id ? 'text-black/70 hover:text-red-900' : 'text-matrix-muted hover:text-red-500 hover:underline'} transition-colors" onclick="event.stopPropagation(); window.deleteFolder('${s.id}')">[ DEL ]</button>
-            </div>
-            ${catHtml}
-            <span class="uppercase font-bold tracking-widest text-xs mb-1 pr-12">${s.title}</span>
-            <span class="text-[9px] uppercase tracking-widest ${activeFolderId === s.id ? 'text-black/70' : 'text-matrix-muted'}">${count} Records</span>
-        `;
-        el.onclick = () => renderArticles(s.id);
-        el.dataset.folderId = s.id;
+            // Explicit Event Listeners
+            el.querySelector('.btn-edit-folder').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.editFolder(s.id);
+            });
 
-        // Initialize dropzone for each folder to swallow articles
-        new Sortable(el, {
-            group: 'articles-group',
-            onAdd: async function (evt) {
-                // evt.items exists if MultiDrag is enabled and multiple items are dragged
-                const draggedItems = (evt.items && evt.items.length > 0) ? evt.items : [evt.item];
+            el.querySelector('.btn-del-folder').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.deleteFolder(s.id);
+            });
 
-                for (let item of draggedItems) {
-                    const articleId = item.dataset.articleId;
-                    if (articleId) {
-                        await moveToFolder(articleId, s.id, s.title, true); // true = skipRender
+            new Sortable(el, {
+                group: 'articles-group',
+                onAdd: async function (evt) {
+                    const draggedItems = (evt.items && evt.items.length > 0) ? evt.items : [evt.item];
+                    for (let item of draggedItems) {
+                        const articleId = item.dataset.articleId;
+                        if (articleId) await moveToFolder(articleId, s.id, s.title, true);
                     }
+                    renderFolders();
+                    renderArticles(activeFolderId);
                 }
-
-                // Once all are moved, re-render
-                renderFolders();
-                renderArticles(activeFolderId);
-            }
-        });
-
-        foldersContainer.appendChild(el);
+            });
+            foldersContainer.appendChild(el);
+        }
     });
 
     if (foldersSortable) {
@@ -199,10 +229,20 @@ function renderFolders() {
     foldersSortable = new Sortable(foldersContainer, {
         group: 'folders-group',
         animation: 150,
-        fallbackTolerance: 3, // Allow a 3px movement before dragging starts (allows taps/scrolling)
+        filter: '.drag-blocker',
+        preventOnFilter: false, // Let clicks pass through the blocker to activate the folder
+        direction: 'vertical',
+        invertSwap: true,
+        swapThreshold: 0.65,
+        emptyInsertThreshold: 20,
         ghostClass: 'drag-ghost',
         chosenClass: 'drag-chosen',
-        filter: '[data-folder-id="unassigned"], .cat-heading', // Don't let the unassigned folder or headings be dragged
+        onMove: function (evt) {
+            // Manually lock 'Unassigned' instead of using the buggy filter property
+            if (evt.dragged.dataset.folderId === "unassigned" || evt.related.dataset.folderId === "unassigned") {
+                return false;
+            }
+        },
         onEnd: function (evt) {
             if (btnSaveFolderOrder) {
                 btnSaveFolderOrder.classList.remove('hidden');
@@ -238,20 +278,8 @@ function renderArticles(folderId) {
 
     articleCount.innerText = `${filtered.length} RECORDS`;
 
-    // Re-highlight left panel
-    Array.from(foldersContainer.children).forEach(child => {
-        // Skip heading blocks entirely to prevent them from taking active styling or passing bad IDs
-        if (child.classList.contains('cat-heading')) return;
-
-        let isMatch = child.dataset.folderId === String(folderId);
-        if (child.dataset.folderId === "unassigned" && folderId === null) isMatch = true;
-
-        if (isMatch) {
-            child.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors bg-matrix-green text-black border-matrix-green`;
-        } else {
-            child.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors bg-transparent text-matrix-muted border-matrix-border hover:border-matrix-green hover:text-white`;
-        }
-    });
+    // Re-highlight left panel by fully reconstructing the DOM state
+    renderFolders();
 
     articlesContainer.innerHTML = '';
 
@@ -369,10 +397,63 @@ btnSaveOrder.addEventListener('click', async () => {
     }, 2000);
 });
 
+// ============================================
+// SYSTEM COMMANDS: EDIT & DELETE FOLDERS/HEADINGS
+// ============================================
+
+window.editFolder = async (id) => {
+    const s = masterSeries.find(series => series.id === id);
+    if (!s) return;
+
+    let newVal;
+    if (s.title === '[HEADING ONLY]') {
+        newVal = await sovereignPrompt("EDIT CATEGORY HEADING DESIGNATION:", s.category_label || '');
+        if (!newVal || newVal.trim() === '' || newVal === s.category_label) return;
+
+        const { error } = await supabase.from('series').update({ category_label: newVal.trim() }).eq('id', id);
+        if (error) alert("SYSTEM ERROR: Failed to modify heading. " + error.message);
+        else loadData(); // Reload UI
+    } else {
+        newVal = await sovereignPrompt("EDIT MASTER FOLDER DESIGNATION:", s.title);
+        if (!newVal || newVal.trim() === '' || newVal === s.title) return;
+
+        const { error } = await supabase.from('series').update({ title: newVal.trim() }).eq('id', id);
+        if (error) alert("SYSTEM ERROR: Failed to modify directory. " + error.message);
+        else loadData(); // Reload UI
+    }
+};
+
+window.deleteFolder = async (id, isHeading = false) => {
+    const s = masterSeries.find(series => series.id === id);
+    if (!s) return;
+
+    // Check if folder contains articles (safety lock)
+    let count = allArticles.filter(a => a.series_id === id).length;
+    if (count > 0 && !isHeading) {
+        alert(`SYSTEM LOCK: Directory contains ${count} records. Empty the directory before deletion.`);
+        return;
+    }
+
+    const typeStr = isHeading ? "CATEGORY HEADING" : "MASTER FOLDER";
+    const nameStr = isHeading ? s.category_label : s.title;
+
+    const isConfirmed = await sovereignConfirm(`CRITICAL WARNING: Are you sure you wish to delete ${typeStr}: [ ${nameStr} ] ?`);
+    if (!isConfirmed) return;
+
+    const { error } = await supabase.from('series').delete().eq('id', id);
+
+    if (error) {
+        alert("SYSTEM ERROR: Failed to delete structure. " + error.message);
+    } else {
+        if (activeFolderId === id) activeFolderId = null; // Reset focus if they deleted what they were looking at
+        loadData(); // Sync UI
+    }
+};
+
 // Create New Heading Protocol
 if (btnNewHeading) {
     btnNewHeading.addEventListener('click', async () => {
-        const catLabel = prompt("ENTER NEW CATEGORY HEADING (e.g. 'CORE DOCTRINE'):");
+        const catLabel = await sovereignPrompt("ENTER NEW CATEGORY HEADING (e.g. 'CORE DOCTRINE'):");
         if (!catLabel || catLabel.trim() === '') return;
 
         const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
@@ -399,7 +480,7 @@ if (btnNewHeading) {
 // Create New Folder Protocol
 if (btnNewFolder) {
     btnNewFolder.addEventListener('click', async () => {
-        const newFolderName = prompt("ENTER SYSTEM DESIGNATION FOR NEW MASTER FOLDER:");
+        const newFolderName = await sovereignPrompt("ENTER SYSTEM DESIGNATION FOR NEW MASTER FOLDER:");
         if (!newFolderName || newFolderName.trim() === '') return;
 
         // Auto-inherit the category of the last item in the list, or default to UNCATEGORIZED
@@ -451,26 +532,21 @@ if (btnSaveFolderOrder) {
         let currentCategory = 'UNCATEGORIZED'; // Track the latest heading seen in the list
 
         items.forEach((item) => {
-            // Is it a heading?
-            if (item.classList.contains('cat-heading')) {
-                const headingText = item.querySelector('h3').innerText;
-                currentCategory = headingText;
-                return; // Headings aren't folders, we don't save their order here (they are bound to ghost folders currently)
-            }
-
             const id = item.dataset.folderId;
-            if (id && id !== "unassigned") {
-                // If this is a ghost folder driving a heading, its category IS its purpose.
-                // We overwrite its order index. 
-                const s = masterSeries.find(series => series.id === id);
-                if (s && s.title === '[HEADING ONLY]') {
-                    updates.push({ id, order_index: dbIndex, category_label: s.category_label });
-                } else {
-                    // This is a real folder. Bind it to whatever heading we most recently passed.
-                    updates.push({ id, order_index: dbIndex, category_label: currentCategory });
-                }
-                dbIndex++;
+            if (!id || id === "unassigned") return;
+
+            const s = masterSeries.find(series => series.id === id);
+            if (!s) return;
+
+            if (s.title === '[HEADING ONLY]') {
+                // If we pass a Ghost Folder, we update currentCategory
+                currentCategory = s.category_label || 'UNCATEGORIZED';
+                updates.push({ id, order_index: dbIndex, category_label: currentCategory });
+            } else {
+                // Regular folder gets the Category of the Ghost Folder above it
+                updates.push({ id, order_index: dbIndex, category_label: currentCategory });
             }
+            dbIndex++;
         });
 
         let successCount = 0;

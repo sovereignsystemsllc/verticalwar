@@ -151,6 +151,27 @@
 
     </main>
 
+    <!-- SOVEREIGN MODAL INJECTION -->
+    <div id="sovereign-modal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div
+            class="bg-matrix-panel border border-matrix-green p-6 w-full max-w-md shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+            <h3 id="modal-title" class="text-xs font-bold text-matrix-green tracking-widest uppercase mb-4">SYSTEM
+                PROMPT</h3>
+            <input type="text" id="modal-input"
+                class="w-full bg-matrix-bg border border-matrix-border text-white px-3 py-2 text-sm font-mono focus:outline-none focus:border-matrix-green transition-colors mb-6"
+                autocomplete="off" spellcheck="false">
+            <div class="flex justify-end gap-3">
+                <button id="modal-btn-cancel"
+                    class="text-[10px] font-bold text-matrix-muted hover:text-white transition-colors px-3 py-1 border border-transparent hover:border-matrix-border">[
+                    CANCEL ]</button>
+                <button id="modal-btn-confirm"
+                    class="text-[10px] font-bold text-black bg-matrix-green hover:bg-white transition-colors px-4 py-1 tracking-widest">[
+                    ACCEPT ]</button>
+            </div>
+        </div>
+    </div>
+
     <!-- GLOBAL FOOTER -->
     <footer class="w-full border-t border-[#22c55e]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
         <p class="text-[9px] text-[#22c55e]/40 tracking-[0.3em] uppercase font-mono">
