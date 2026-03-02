@@ -145,7 +145,7 @@ function renderSidebar() {
 
     if (filteredTracks.length === 0) return ''; // Hide empty folders
 
-    const catHtml = categoryLabel ? `<span class="block text-[8px] text-[#22c55e]/60 tracking-[0.2em] mb-1 uppercase drop-shadow-[0_0_2px_rgba(34,197,94,0.3)]">[ ${categoryLabel} ]</span>` : '';
+    const catHtml = ''; // Monk: Category label already rendered recursively in the section header, removing redundant in-folder label
 
     let fHtml = `
             <div id="album-${sKey}" class="mb-4">
@@ -160,14 +160,15 @@ function renderSidebar() {
                 <div id="folder-content-${sKey}" class="flex flex-col hidden bg-[#05010a]/20 border-l border-[#22c55e]/10 ml-[11px] mt-1 pl-2">
     `;
 
-    filteredTracks.forEach(t => {
-      const shortId = t.id.substring(0, 4).toUpperCase();
+    filteredTracks.forEach((t, idx) => {
+      // Monk: Display sequential index based on drag/drop sorting, padded to 2 digits for aesthetic consistency
+      const displayIdx = String(idx + 1).padStart(2, '0');
       const dateStr = t.post_date ? new Date(t.post_date).toLocaleDateString() : 'UNKNOWN_DATE';
 
       fHtml += `
-                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-4 px-3 hover:bg-[#22c55e]/10 group transition-colors flex flex-col gap-1 border-b border-white/5 last:border-0 pl-4 border-l-2 border-transparent hover:border-l-[#22c55e]">
+                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-4 px-3 hover:bg-[#22c55e]/10 group transition-colors flex flex-col gap-1 border border-transparent border-b-white/5 hover:border-[#22c55e] pl-4">
                     <span class="text-[9px] text-[#22c55e]/50 tracking-[0.2em] group-hover:text-[#22c55e] flex justify-between">
-                        <span>SYS_${shortId} // T_NATIVE</span>
+                        <span>SYS_RECORD // ${displayIdx}</span>
                         <span>[${dateStr}]</span>
                     </span>
                     <span class="text-xs text-white/80 group-hover:text-white font-bold leading-snug tracking-wider">${t.title}</span>
@@ -257,6 +258,20 @@ window.openArticle = function (id, skipState = false) {
 
   // RESET SCROLL TO TOP (Monk Fix)
   htmlFrame.scrollTop = 0;
+
+  // VISUAL ACTIVE STATE (Monk Fix)
+  // First, strip the active styling from all buttons
+  document.querySelectorAll('#doc-list button').forEach(btn => {
+    btn.classList.remove('bg-[#22c55e]/10', 'border-[#22c55e]');
+    btn.classList.add('border-transparent');
+  });
+
+  // Then, apply the active styling to the explicitly clicked item
+  const activeBtn = document.querySelector(`button[onclick="window.openArticle('${id}')"]`);
+  if (activeBtn) {
+    activeBtn.classList.remove('border-transparent');
+    activeBtn.classList.add('bg-[#22c55e]/10', 'border-[#22c55e]');
+  }
 
   // Update Sidebar Info Panel
   infoPanelTitle.innerText = article.title;
