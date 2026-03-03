@@ -16,6 +16,7 @@ export default defineConfig({
                 admin_splash: resolve(__dirname, 'admin/splash.html'),
                 admin_about: resolve(__dirname, 'admin/about.html'),
                 order: resolve(__dirname, 'order.html'),
+                receipts_ep2: resolve(__dirname, 'receipts/pack/RealityEP2Receipts/index.html'),
             }
         }
     }
