@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // ASSET LIBRARY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'term-black': '#050505',
+                        'term-blue': '#3b82f6',
+                        'matrix-bg': '#05010a',
+                        'matrix-border': 'rgba(167, 139, 250, 0.2)',
+                        'matrix-muted': '#6b7280'
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #e0e0e0;
+            cursor: crosshair;
+        }
+
+        .glass-panel {
+            background: rgba(5, 5, 10, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
+        }
+
+        .asset-card {
+            background: rgba(5, 5, 10, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-card:hover {
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+        }
+
+        .asset-card .actions {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .asset-card:hover .actions {
+            opacity: 1;
+        }
+
+        .dragover {
+            background: rgba(59, 130, 246, 0.08);
+            border: 2px dashed #3b82f6 !important;
+        }
+
+        /* Scanline overlay — CRT Rika Aesthetic */
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.03) 2px,
+                    rgba(0, 0, 0, 0.03) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+            border-left: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fff;
+        }
+
+        .btn-ghost {
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #3b82f6;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            font-weight: 700;
+            font-family: monospace;
+            background: transparent;
+            cursor: crosshair;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(59, 130, 246, 0.15);
+            color: #fff;
+        }
+
+        .btn-red {
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            font-weight: 700;
+            font-family: monospace;
+            background: transparent;
+            cursor: crosshair;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-red:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fff;
+        }
+
+        #toast {
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen font-mono flex flex-col">
+    <!-- CRT SCANLINE -->
+    <div class="scanline-overlay"></div>
+
+    <!-- HEADER NAV -->
+    <nav
+        class="w-full h-16 border-b border-blue-500/20 px-6 flex justify-between items-center bg-[#05010a]/90 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            <span class="text-sm font-bold text-blue-500 tracking-widest uppercase">ASSET LIBRARY // SOVEREIGN
+                VAULT</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="/admin/index.html"
+                class="text-[10px] font-bold text-matrix-muted hover:text-white tracking-widest border border-matrix-border px-3 py-2 hover:bg-white/5 transition-colors uppercase">
+                [ GATEWAY ]
+            </a>
+            <a href="/admin/upload.html"
+                class="text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 tracking-widest border border-yellow-500/20 px-3 py-2 hover:bg-yellow-500/5 transition-colors uppercase">
+                [ INGESTION ENGINE ]
+            </a>
+        </div>
+    </nav>
+
+    <!-- AUTH LOCK OVERLAY -->
+    <div id="auth-lock"
+        class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
+        <span class="text-red-500 text-5xl mb-6">🔒</span>
+        <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
+            CLEARANCE...</p>
+        <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
+        </p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full flex flex-col gap-8">
+
+        <!-- PAGE HEADER -->
+        <header class="border-b border-blue-500/20 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">Asset Library</h1>
+                <p class="text-matrix-muted text-xs tracking-widest uppercase mt-2">> Visual Grid of All Artifacts in
+                    the <span class="text-blue-400">article_assets</span> Bucket</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="asset-count" class="text-[10px] text-blue-500/60 tracking-widest uppercase">LOADING...</span>
+                <button id="refresh-btn" class="btn-ghost">[ REFRESH ]</button>
+            </div>
+        </header>
+
+        <!-- UPLOAD DROP ZONE -->
+        <div id="drop-zone"
+            class="glass-panel w-full h-44 flex flex-col items-center justify-center transition-all relative">
+            <span class="text-3xl mb-3 text-blue-400">📤</span>
+            <p class="text-sm tracking-[0.2em] font-bold uppercase text-white pointer-events-none">DROP FILES TO UPLOAD
+            </p>
+            <p class="text-xs text-blue-400/60 mt-1 mb-4 pointer-events-none tracking-wider">PNG, JPG, WEBP, GIF — Max
+                10MB each</p>
+            <input type="file" id="file-input" multiple accept="image/*" class="hidden">
+            <button id="browse-btn" class="btn-ghost relative z-10">[ OR BROWSE FILES ]</button>
+            <div id="upload-progress" class="absolute bottom-0 left-0 h-1 bg-blue-500 transition-all duration-300"
+                style="width: 0%;"></div>
+        </div>
+
+        <!-- UPLOAD LOG (mini) -->
+        <div id="upload-log-wrap" class="hidden glass-panel p-4 text-xs space-y-1 max-h-32 overflow-y-auto">
+            <p class="text-[10px] text-blue-500/50 tracking-widest uppercase border-b border-blue-500/20 pb-2 mb-2">
+                UPLOAD LOG</p>
+            <ul id="upload-log"></ul>
+        </div>
+
+        <!-- ASSET GRID -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h2
+                    class="text-xs font-bold text-blue-400 tracking-widest uppercase border-b border-blue-500/20 pb-2 w-full">
+                    Stored Artifacts</h2>
+            </div>
+            <!-- Empty state -->
+            <div id="empty-state" class="hidden text-center py-20 text-matrix-muted text-xs tracking-widest uppercase">
+                <p class="text-4xl mb-4 opacity-30">📁</p>
+                <p>> No artifacts found in the bucket.</p>
+                <p class="opacity-50 mt-1">Upload your first asset above to deploy it.</p>
+            </div>
+            <!-- Grid -->
+            <div id="asset-grid"
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <!-- Cards injected by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- GLOBAL FOOTER -->
+    <footer class="w-full border-t border-blue-500/10 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
+        <p class="text-[9px] text-blue-500/30 tracking-[0.3em] uppercase font-mono">
+            SOVEREIGN SYSTEM V4.0 // ASSET LIBRARY // END OF TRANSMISSION
+        </p>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 z-50 hidden bg-blue-600 text-white text-xs font-bold tracking-widest uppercase px-5 py-3 border border-blue-400 opacity-0">
+        <span id="toast-msg"></span>
+    </div>
+
+    <script type="module" src="./admin_assets.js"></script>
+</body>
+
+</html>

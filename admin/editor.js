@@ -3,15 +3,25 @@ import { supabase } from '../src/supabaseClient.js';
 // Terminal Logging utility
 const terminal = document.getElementById('statusTerminal');
 const logContent = document.getElementById('logContent');
+let hideTerminalTimer;
 
 function logTerminal(message, type = 'INFO') {
-    terminal.classList.remove('hidden');
+    terminal.classList.remove('hidden', 'opacity-0');
+    terminal.classList.add('opacity-80');
+
     const entry = document.createElement('div');
     entry.className = `mb-1 ${type === 'ERROR' ? 'text-red-500' : 'text-[#00ff41]'}`;
     entry.textContent = `[${type}] ${message}`;
     logContent.appendChild(entry);
     terminal.scrollTop = terminal.scrollHeight;
     console.log(`[${type}] ${message}`);
+
+    clearTimeout(hideTerminalTimer);
+    hideTerminalTimer = setTimeout(() => {
+        terminal.classList.remove('opacity-80');
+        terminal.classList.add('opacity-0');
+        setTimeout(() => terminal.classList.add('hidden'), 500);
+    }, 4000);
 }
 
 let quill;

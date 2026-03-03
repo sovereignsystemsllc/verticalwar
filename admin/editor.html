@@ -150,9 +150,12 @@
 
     <!-- Terminal Overlay for Logging -->
     <div id="statusTerminal"
-        class="fixed bottom-0 right-0 w-1/3 h-48 bg-black border-l border-t border-gray-800 text-[#00ff41] font-mono text-xs p-2 overflow-y-auto hidden opacity-80 z-50 pointer-events-none transition-all">
-        <div class="uppercase tracking-widest border-b border-gray-800 pb-1 mb-2">FORGE UPLINK TERMINAL</div>
-        <div id="logContent"></div>
+        class="fixed bottom-6 right-6 w-96 max-w-[calc(100vw-3rem)] max-h-48 bg-black/90 border border-gray-800 rounded text-[#00ff41] font-mono text-xs p-3 overflow-y-auto hidden opacity-80 z-50 pointer-events-none transition-opacity duration-500 shadow-lg shadow-[#00ff41]/5">
+        <div class="uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 flex justify-between">
+            <span>FORGE UPLINK</span>
+            <span class="animate-pulse">●</span>
+        </div>
+        <div id="logContent" class="space-y-1"></div>
     </div>
 
     <!-- GLOBAL FOOTER -->
