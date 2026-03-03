@@ -14,6 +14,7 @@ export default defineConfig({
                 admin_upload: resolve(__dirname, 'admin/upload.html'),
                 admin_assets: resolve(__dirname, 'admin/assets.html'),
                 admin_splash: resolve(__dirname, 'admin/splash.html'),
+                admin_about: resolve(__dirname, 'admin/about.html'),
             }
         }
     }

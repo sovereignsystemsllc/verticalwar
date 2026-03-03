@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
                     / codex_root
                 </a>
+                <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                    / about
+                </a>
                 <a id="link-matrix-admin" href="/admin/index.html" class="hidden block w-full text-left py-1.5 px-6 pl-10 text-white/40 hover:bg-white/5 hover:text-white transition-colors border-l-2 border-transparent hover:border-white/30">
                     $ matrix_admin
                 </a>
@@ -46,11 +49,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     $ shadow_work
                 </a>
             </div>
+
+            <!-- SOCIAL CHANNELS -->
+            <div class="mb-4 border-t border-[#a78bfa]/10 pt-4">
+                <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-2 italic">channels:</span>
+                <a href="https://www.youtube.com/@commonsenserebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
+                    <span class="text-red-500/70">▶</span> YouTube
+                </a>
+                <a href="https://rumble.com/user/CommonRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
+                    <span class="text-green-500/70">◉</span> Rumble
+                </a>
+                <a href="https://www.instagram.com/faulkinner/" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
+                    <span class="text-pink-500/70">◈</span> Instagram
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61584796418902" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
+                    <span class="text-blue-400/70">◆</span> Facebook
+                </a>
+                <a href="https://www.threads.com/?hl=en" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
+                    <span class="text-white/50">@</span> Threads
+                </a>
+                <a href="https://x.com/CSRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
+                    <span class="text-white/50">✕</span> X
+                </a>
+            </div>
             
         </nav>
 
         <!-- FOOTER / LOGOUT -->
-        <div class="p-4 border-t border-[#a78bfa]/20 mt-auto bg-[#05010a]/50 shrink-0">
+        <div class="p-4 border-t border-[#a78bfa]/20 mt-auto bg-[#05010a]/50 shrink-0 space-y-2">
+           <a href="https://constructamiracle.com" target="_blank" rel="noopener" class="block w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold">
+               COMMON SENSE REBEL // SUBSTACK
+           </a>
            <button id="btn-toggle-login" class="block w-full text-left py-2 px-4 text-white/40 hover:bg-red-500/10 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/30 tracking-widest uppercase">
                [ LOGIN ]
            </button>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // ABOUT PAGE EDITOR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'matrix-bg': '#05010a',
+                        'matrix-panel': '#0a0a0a',
+                        'matrix-green': '#a78bfa',
+                        'matrix-border': 'rgba(167, 139, 250, 0.2)',
+                        'matrix-muted': '#6b7280'
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body
+    class="bg-matrix-bg text-white font-mono min-h-screen flex flex-col selection:bg-matrix-green selection:text-black">
+    <div class="scanline-overlay"></div>
+
+    <!-- HEADER -->
+    <nav
+        class="w-full h-16 border-b border-matrix-border px-6 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse"></span>
+            <span class="text-sm font-bold text-matrix-green tracking-widest uppercase">ABOUT PAGE // EDITOR</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="/about.html" target="_blank"
+                class="text-[10px] font-bold text-matrix-muted hover:text-white tracking-widest border border-matrix-border px-3 py-2 hover:bg-white/5 transition-colors uppercase">
+                [ VIEW LIVE PAGE ]
+            </a>
+            <a href="/admin/index.html"
+                class="text-[10px] font-bold text-matrix-muted hover:text-white tracking-widest border border-matrix-border px-3 py-2 hover:bg-white/5 transition-colors uppercase">
+                [ GATEWAY ]
+            </a>
+        </div>
+    </nav>
+
+    <!-- AUTH LOCK -->
+    <div id="auth-lock"
+        class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
+        <span class="text-red-500 text-5xl mb-6">🔒</span>
+        <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
+            CLEARANCE...</p>
+        <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
+        </p>
+    </div>
+
+    <main class="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col gap-10">
+
+        <!-- PAGE HEADER -->
+        <header class="border-b border-matrix-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">About Page Editor</h1>
+                <p class="text-matrix-muted text-xs tracking-widest uppercase mt-2">> Edit all copy, stats, and Phalanx
+                    card content</p>
+            </div>
+            <button id="btn-save-all"
+                class="border border-matrix-green/50 text-matrix-green hover:bg-matrix-green hover:text-black text-[10px] font-bold tracking-widest uppercase px-5 py-2 transition-colors">
+                SAVE ALL CHANGES
+            </button>
+        </header>
+
+        <!-- STATUS BAR -->
+        <div id="status-bar"
+            class="hidden border border-matrix-green/40 bg-matrix-green/5 px-4 py-2 text-[10px] text-matrix-green font-bold uppercase tracking-widest">
+        </div>
+
+        <!-- SECTION: HERO -->
+        <section class="border border-matrix-border p-6 space-y-4">
+            <h2
+                class="text-xs font-bold text-matrix-green tracking-widest uppercase border-b border-matrix-border pb-2 mb-4">
+                // SECTION 01 — HERO</h2>
+            <div>
+                <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Hero Subhead (italic
+                    lead paragraph)</label>
+                <textarea id="field-hero-subhead" rows="2"
+                    class="w-full bg-transparent border border-matrix-border text-white text-xs px-3 py-2 focus:outline-none focus:border-matrix-green font-mono resize-y"></textarea>
+            </div>
+            <div>
+                <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Pocket Razor (the
+                    blockquote pivot)</label>
+                <textarea id="field-hero-razor" rows="2"
+                    class="w-full bg-transparent border border-matrix-border text-white text-xs px-3 py-2 focus:outline-none focus:border-matrix-green font-mono resize-y"></textarea>
+            </div>
+        </section>
+
+        <!-- SECTION: STATS -->
+        <section class="border border-matrix-border p-6 space-y-4">
+            <h2
+                class="text-xs font-bold text-matrix-green tracking-widest uppercase border-b border-matrix-border pb-2 mb-4">
+                // FOOTER STATS</h2>
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Published
+                        Articles</label>
+                    <input type="text" id="field-stat-articles"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Months in The
+                        Forge</label>
+                    <input type="text" id="field-stat-months"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Tactical Assets
+                        Built</label>
+                    <input type="text" id="field-stat-assets"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PHALANX CARDS -->
+        <section class="border border-matrix-border p-6 space-y-4">
+            <h2
+                class="text-xs font-bold text-matrix-green tracking-widest uppercase border-b border-matrix-border pb-2 mb-4">
+                // SECTION 04 — PHALANX CARDS</h2>
+            <p class="text-[10px] text-matrix-muted tracking-widest">Edit each operator / council member card. Image URL
+                field accepts any hosted image or pick from asset library.</p>
+            <div id="phalanx-cards-editor" class="space-y-6">
+                <!-- Injected by JS -->
+                <p class="text-matrix-muted text-xs animate-pulse">Loading from Supabase...</p>
+            </div>
+            <button id="btn-add-card"
+                class="border border-matrix-green/30 text-matrix-green/60 hover:border-matrix-green hover:text-matrix-green text-[10px] font-bold tracking-widest uppercase px-4 py-2 transition-colors mt-4">
+                + ADD CARD
+            </button>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full border-t border-matrix-border bg-matrix-bg/90 text-center py-4 shrink-0 z-40 relative">
+        <p class="text-[9px] text-matrix-green/30 tracking-[0.3em] uppercase font-mono">
+            SOVEREIGN SYSTEM V4.0 // ABOUT PAGE EDITOR
+        </p>
+    </footer>
+
+    <script type="module" src="./admin_about.js"></script>
+</body>
+
+</html>
