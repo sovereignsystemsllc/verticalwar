@@ -160,3 +160,25 @@ body {
 }
 @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
 .scanline-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 50; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(167,139,250,0.04) 50%, rgba(0,0,0,0) 100%); animation: scanline 10s linear infinite; }
+
+@keyframes sigil-flicker {
+  0%,  48%, 52%, 100% { opacity: 0.07; }
+  49%, 51%            { opacity: 0.04; }
+  50%                 { opacity: 0.02; }
+  74%, 76%            { opacity: 0.05; }
+  75%                 { opacity: 0.03; }
+}
+
+.sigil-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url('/sigil_bg.png');
+  background-size: 65%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  animation: sigil-flicker 8s ease-in-out infinite;
+  filter: brightness(0.6);
+}
+
