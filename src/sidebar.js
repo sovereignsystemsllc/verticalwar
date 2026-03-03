@@ -21,21 +21,23 @@ document.addEventListener('DOMContentLoaded', () => {
             
             <!-- THE CODEX (ROOT ARCHITECTURE) -->
             <div class="mb-6">
-                <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-1.5 text-[10px] text-[#a78bfa]/40 tracking-widest italic hover:text-[#a78bfa]/70 transition-colors" data-target="nav-roster" data-open="true">
-                    <span>roster:</span>
-                    <span class="toggle-arrow transition-transform duration-200">▼</span>
-                </button>
-                <div id="nav-roster">
-                    <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
-                        / codex_root
-                    </a>
-                    <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
-                        / about
-                    </a>
-                    <div id="link-matrix-admin" class="hidden">
-                        <span class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 tracking-widest select-none">
+                <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-1 italic">roster:</span>
+                <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                    / codex_root
+                </a>
+                <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                    / about
+                </a>
+                <div id="link-matrix-admin" class="hidden">
+                    <div class="flex items-center justify-between px-6 pl-10 py-1.5 border-l-2 border-transparent hover:border-[#a78bfa]/30 group">
+                        <a href="/admin/index.html" class="flex-1 text-white/40 hover:text-white transition-colors tracking-widest text-[10px]">
                             $ matrix_admin/
-                        </span>
+                        </a>
+                        <button class="sidebar-toggle text-white/30 hover:text-[#a78bfa] transition-colors px-1 text-[10px]" data-target="nav-matrix" data-open="false">
+                            <span class="toggle-arrow block transition-transform duration-200 -rotate-90">▼</span>
+                        </button>
+                    </div>
+                    <div id="nav-matrix" class="hidden">
                         <a href="/admin/index.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; suite
                         </a>
@@ -76,9 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- SOCIAL CHANNELS -->
-            <div class="mb-4 border-t border-[#a78bfa]/10 pt-4">
-                <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-1.5 text-[10px] text-[#a78bfa]/40 tracking-widest italic hover:text-[#a78bfa]/70 transition-colors" data-target="nav-channels" data-open="false">
-                    <span>channels:</span>
+            <div class="mb-4 border-t border-[#a78bfa]/30 pt-4">
+                <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-2 text-[11px] font-bold text-[#a78bfa] tracking-[0.2em] uppercase hover:text-white hover:bg-[#a78bfa]/10 transition-colors" data-target="nav-channels" data-open="false">
+                    <span>// CHANNELS</span>
                     <span class="toggle-arrow transition-transform duration-200 -rotate-90">▼</span>
                 </button>
                 <div id="nav-channels" class="hidden">
