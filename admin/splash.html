@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // SPLASH CAROUSEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'matrix-bg': '#05010a',
+                        'matrix-panel': '#0a0a0a',
+                        'matrix-green': '#a78bfa',
+                        'matrix-border': 'rgba(167, 139, 250, 0.2)',
+                        'matrix-muted': '#6b7280'
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body
+    class="bg-matrix-bg text-white font-mono min-h-screen flex flex-col selection:bg-matrix-green selection:text-black">
+    <div class="scanline-overlay"></div>
+
+    <!-- HEADER -->
+    <nav
+        class="w-full h-16 border-b border-matrix-border px-6 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse"></span>
+            <span class="text-sm font-bold text-matrix-green tracking-widest uppercase">SPLASH CAROUSEL // EDITOR</span>
+        </div>
+        <a href="/admin/index.html"
+            class="text-[10px] font-bold text-matrix-muted hover:text-white tracking-widest border border-matrix-border px-3 py-2 hover:bg-white/5 transition-colors uppercase">
+            [ GATEWAY ]
+        </a>
+    </nav>
+
+    <!-- AUTH LOCK -->
+    <div id="auth-lock"
+        class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
+        <span class="text-red-500 text-5xl mb-6">🔒</span>
+        <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
+            CLEARANCE...</p>
+        <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
+        </p>
+    </div>
+
+    <main class="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col gap-8">
+
+        <!-- PAGE HEADER -->
+        <header class="border-b border-matrix-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">Splash Carousel</h1>
+                <p class="text-matrix-muted text-xs tracking-widest uppercase mt-2">> Manage the Codex Root Splash
+                    Slides</p>
+            </div>
+            <button id="btn-add-slide"
+                class="border border-matrix-green/50 text-matrix-green hover:bg-matrix-green hover:text-black text-[10px] font-bold tracking-widest uppercase px-5 py-2 transition-colors">
+                + ADD SLIDE
+            </button>
+        </header>
+
+        <!-- LIVE PREVIEW -->
+        <section>
+            <p class="text-[10px] text-matrix-muted uppercase tracking-widest mb-3">Live Preview</p>
+            <div class="border border-matrix-border bg-matrix-panel/50 overflow-hidden relative">
+                <div id="preview-track" class="flex transition-transform duration-500 ease-in-out">
+                    <div class="min-w-full p-8 flex items-center justify-center min-h-[200px]">
+                        <p class="text-matrix-muted text-xs uppercase tracking-widest animate-pulse">LOADING...</p>
+                    </div>
+                </div>
+                <div id="preview-dots" class="flex justify-center gap-2 py-3 border-t border-matrix-border"></div>
+            </div>
+        </section>
+
+        <!-- SLIDE LIST -->
+        <section>
+            <div class="flex items-center justify-between mb-4 border-b border-matrix-border pb-2">
+                <h2 class="text-xs font-bold text-matrix-green tracking-widest uppercase">All Slides</h2>
+                <span id="slide-count" class="text-[10px] text-matrix-muted tracking-widest">...</span>
+            </div>
+            <div id="empty-state" class="hidden text-center py-16 text-matrix-muted text-xs tracking-widest uppercase">
+                <p class="text-4xl mb-4 opacity-30">📡</p>
+                <p>No slides configured. Add one above.</p>
+            </div>
+            <div id="slides-list" class="space-y-3"></div>
+        </section>
+    </main>
+
+    <!-- EDIT MODAL -->
+    <div id="edit-modal"
+        class="hidden fixed inset-0 z-50 bg-[#05010a]/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="w-full max-w-2xl border border-matrix-green/40 bg-matrix-panel p-6 relative max-h-[90vh] overflow-y-auto">
+            <button id="modal-close"
+                class="absolute top-3 right-4 text-matrix-muted hover:text-white font-bold text-sm">✕</button>
+            <h2 id="modal-title"
+                class="text-sm font-bold tracking-widest uppercase text-matrix-green mb-6 border-b border-matrix-border pb-3">
+                ADD SLIDE</h2>
+
+            <input type="hidden" id="modal-slide-id">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Order
+                        Index</label>
+                    <input type="number" id="modal-order" value="0"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Title *</label>
+                    <input type="text" id="modal-title-input" placeholder="THE CODEX IS ACTIVE"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono uppercase tracking-widest">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Body Text (newline
+                        = paragraph)</label>
+                    <textarea id="modal-body" rows="4" placeholder="Your transmission..."
+                        class="w-full bg-transparent border border-matrix-border text-white text-xs px-3 py-2 focus:outline-none focus:border-matrix-green font-mono resize-y"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Image URL
+                        (optional)</label>
+                    <input type="text" id="modal-image" placeholder="https://... or pick from Asset Library"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+                <!-- Asset Picker -->
+                <div>
+                    <button id="btn-pick-asset"
+                        class="text-[9px] font-bold tracking-widest uppercase border border-matrix-border text-matrix-muted hover:text-matrix-green hover:border-matrix-green px-3 py-1 transition-colors">
+                        [ PICK FROM ASSET LIBRARY ]
+                    </button>
+                    <div id="asset-picker"
+                        class="hidden mt-2 border border-matrix-border bg-matrix-bg/80 max-h-40 overflow-y-auto p-2 grid grid-cols-4 gap-2">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Link URL
+                        (optional)</label>
+                    <input type="text" id="modal-link-url" placeholder="https://github.com/..."
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Link Label
+                        (optional)</label>
+                    <input type="text" id="modal-link-label" placeholder="[ OPEN LINK ]"
+                        class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6 pt-4 border-t border-matrix-border">
+                <button id="modal-save"
+                    class="flex-1 border border-matrix-green bg-matrix-green/10 text-matrix-green hover:bg-matrix-green hover:text-black font-bold uppercase tracking-widest py-2 text-[10px] transition-all">
+                    SAVE SLIDE
+                </button>
+                <button id="modal-cancel"
+                    class="border border-matrix-border text-matrix-muted hover:text-white px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors">
+                    CANCEL
+                </button>
+            </div>
+            <div id="modal-error"
+                class="hidden mt-3 text-red-500 text-[10px] font-bold uppercase tracking-widest text-center"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="w-full border-t border-matrix-border bg-matrix-bg/90 text-center py-4 shrink-0 z-40 relative">
+        <p class="text-[9px] text-matrix-green/30 tracking-[0.3em] uppercase font-mono">
+            SOVEREIGN SYSTEM V4.0 // SPLASH CAROUSEL EDITOR
+        </p>
+    </footer>
+
+    <script type="module" src="./admin_splash.js"></script>
+</body>
+
+</html>

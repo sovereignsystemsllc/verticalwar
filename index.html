@@ -51,6 +51,10 @@
         class="text-[10px] md:text-xs font-bold text-[#a78bfa]/30 tracking-[0.2em] border border-[#a78bfa]/20 px-3 py-1 cursor-not-allowed uppercase hover:bg-[#a78bfa]/5 transition-colors">
         [ BURN_PROTOCOL ]
       </button>
+      <a href="/about.html"
+        class="text-[10px] md:text-xs font-bold text-[#a78bfa]/60 hover:text-[#a78bfa] tracking-[0.2em] border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-3 py-1 uppercase transition-colors">
+        [ ABOUT ]
+      </a>
     </div>
     <div class="text-[10px] text-[#a78bfa]/60 tracking-widest uppercase flex items-center gap-4">
       <span class="hidden md:inline animate-pulse">CODEX ARCHIVES // ONLINE</span>
@@ -127,42 +131,54 @@
       </div>
 
       <div class="flex-1 relative w-full h-full min-h-0 overflow-hidden flex flex-col">
-        <!-- PLACEHOLDER MSG -->
+        <!-- SPLASH CAROUSEL -->
         <div id="placeholder-msg"
-          class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#0a0a0a] overflow-y-auto custom-scrollbar">
-          <p class="text-[10px] text-[#a78bfa]/50 font-bold uppercase tracking-[0.2em] mb-8 animate-pulse">
+          class="flex-1 flex flex-col items-center justify-center text-center p-4 md:p-8 bg-[#0a0a0a] overflow-y-auto custom-scrollbar">
+          <p class="text-[10px] text-[#a78bfa]/50 font-bold uppercase tracking-[0.2em] mb-6 animate-pulse">
             >> SELECT DIRECTORY NODE TO INITIATE DECRYPTION
           </p>
-          <div class="w-full max-w-2xl border border-[#a78bfa]/20 bg-[#05010a]/50 p-8 glass-panel relative">
-            <h2 class="text-xl md:text-2xl text-white font-bold tracking-[0.2em] uppercase mb-4 text-center">
-              The V4 Architecture Is Active
-            </h2>
-            <div class="text-[10px] md:text-xs text-white/70 leading-relaxed font-mono text-center space-y-4">
-              <p>You have successfully crossed the threshold into Sovereign OS V4.</p>
-              <p>This architecture is a localized, server-less sanctuary built to escape the systemic decay of the wider
-                web (The Rust). The perimeter is secured and the database is fortified.</p>
-              <p>Please note: Archival records are currently undergoing manual ingestion and structural sorting by the
-                Operator. The Codex roster and Master Folders will remain actively shifting until the overhaul is
-                complete.</p>
-              <p class="hidden md:block text-[#a78bfa]">Select a node from the roster to execute a payload.</p>
+
+          <!-- CAROUSEL CONTAINER -->
+          <div class="w-full max-w-2xl relative">
+
+            <!-- SOVEREIGN EDIT BUTTON -->
+            <a id="btn-edit-carousel" href="/admin/splash.html"
+              class="hidden absolute -top-8 right-0 text-[9px] font-bold tracking-widest uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-3 py-1 transition-colors z-10">
+              [ EDIT CAROUSEL ]
+            </a>
+
+            <!-- SLIDE TRACK WRAPPER -->
+            <div class="overflow-hidden border border-[#a78bfa]/20 bg-[#05010a]/50 glass-panel relative">
+              <div id="carousel-track" class="flex transition-transform duration-500 ease-in-out">
+                <!-- Slides injected by main.js -->
+                <div class="min-w-full p-8 flex flex-col items-center justify-center min-h-[320px]">
+                  <p class="text-[#a78bfa]/30 text-xs uppercase tracking-widest animate-pulse">LOADING TRANSMISSION...
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div
-              class="mt-8 pt-6 border-t border-[#a78bfa]/20 flex flex-col md:flex-row gap-4 justify-center items-center">
-              <a href="https://github.com/sovereignsystemsllc/verticalwar" target="_blank" rel="noopener noreferrer"
-                class="text-[10px] text-white/50 hover:text-white transition-colors tracking-widest uppercase border border-transparent hover:border-white/30 px-4 py-2">
-                [ GITHUB REPOSITORY ]
-              </a>
-              <a href="https://constructamiracle.com" target="_blank" rel="noopener noreferrer"
-                class="text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] transition-colors tracking-widest uppercase border border-transparent hover:border-[#a78bfa]/30 px-4 py-2">
-                [ CONSTRUCT_A_MIRACLE ]
-              </a>
+            <!-- CAROUSEL CONTROLS -->
+            <div class="flex items-center justify-between mt-4 px-1">
+              <button id="carousel-prev"
+                class="text-[10px] font-bold text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase border border-[#a78bfa]/20 hover:border-[#a78bfa]/60 px-4 py-2 transition-colors">
+                &lt; PREV
+              </button>
+              <div id="carousel-dots" class="flex gap-2 items-center">
+                <!-- Dots injected by JS -->
+              </div>
+              <button id="carousel-next"
+                class="text-[10px] font-bold text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase border border-[#a78bfa]/20 hover:border-[#a78bfa]/60 px-4 py-2 transition-colors">
+                NEXT &gt;
+              </button>
             </div>
-            <button id="btn-open-directory"
-              class="md:hidden mt-8 border border-[#a78bfa] bg-[#a78bfa]/10 text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-4 px-8 transition-all text-[10px] w-full shadow-[0_0_15px_rgba(34,197,94,0.2)]">
-              [ ACCESS CODEX DIRECTORY ]
-            </button>
           </div>
+
+          <!-- MOBILE DIRECTORY BRIDGE -->
+          <button id="btn-open-directory"
+            class="md:hidden mt-8 border border-[#a78bfa] bg-[#a78bfa]/10 text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-4 px-8 transition-all text-[10px] w-full shadow-[0_0_15px_rgba(167,139,250,0.2)]">
+            [ ACCESS CODEX DIRECTORY ]
+          </button>
         </div>
 
         <!-- HTML READER FRAME -->
