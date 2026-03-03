@@ -28,9 +28,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
                     / about
                 </a>
-                <a id="link-matrix-admin" href="/admin/index.html" class="hidden block w-full text-left py-1.5 px-6 pl-10 text-white/40 hover:bg-white/5 hover:text-white transition-colors border-l-2 border-transparent hover:border-white/30">
-                    $ matrix_admin
-                </a>
+                <div id="link-matrix-admin" class="hidden">
+                    <span class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 tracking-widest select-none">
+                        $ matrix_admin/
+                    </span>
+                    <a href="/admin/index.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        &gt; suite
+                    </a>
+                    <a href="/admin/curate.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        &gt; curate
+                    </a>
+                    <a href="/admin/editor.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        &gt; editor
+                    </a>
+                    <a href="/admin/upload.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        &gt; ingest
+                    </a>
+                    <a href="/admin/assets.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        &gt; assets
+                    </a>
+                    <a href="/admin/splash.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        &gt; splash
+                    </a>
+                </div>
             </div>
 
             <!-- PUBLIC CORRIDOR (TO BE REBUILT) -->
