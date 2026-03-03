@@ -256,8 +256,7 @@ window.openArticle = function (id, skipState = false) {
 
   articleContent.innerHTML = article.content_html || "<i>[EMPTY PAYLOAD]</i>";
 
-  // RESET SCROLL TO TOP (Monk Fix)
-  htmlFrame.scrollTop = 0;
+  // (Scroll reset moved to bottom of function to ensure it fires after mobile unhides the reader)
 
   // VISUAL ACTIVE STATE (Monk Fix)
   // First, strip the active styling from all buttons
@@ -299,6 +298,12 @@ window.openArticle = function (id, skipState = false) {
     reader.classList.remove('hidden');
     reader.classList.add('flex');
   }
+
+  // RESET SCROLL TO TOP (Monk Fix)
+  // Deferring slightly ensures the DOM has updated the 'display' property before calculating scroll position.
+  setTimeout(() => {
+    htmlFrame.scrollTop = 0;
+  }, 10);
 };
 
 window.closeArticle = function (skipState = false) {
