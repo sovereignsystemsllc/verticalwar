@@ -21,35 +21,40 @@ document.addEventListener('DOMContentLoaded', () => {
             
             <!-- THE CODEX (ROOT ARCHITECTURE) -->
             <div class="mb-6">
-                <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-1 italic">roster:</span>
-                <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
-                    / codex_root
-                </a>
-                <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
-                    / about
-                </a>
-                <div id="link-matrix-admin" class="hidden">
-                    <span class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 tracking-widest select-none">
-                        $ matrix_admin/
-                    </span>
-                    <a href="/admin/index.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
-                        &gt; suite
+                <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-1.5 text-[10px] text-[#a78bfa]/40 tracking-widest italic hover:text-[#a78bfa]/70 transition-colors" data-target="nav-roster" data-open="true">
+                    <span>roster:</span>
+                    <span class="toggle-arrow transition-transform duration-200">▼</span>
+                </button>
+                <div id="nav-roster">
+                    <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                        / codex_root
                     </a>
-                    <a href="/admin/curate.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
-                        &gt; curate
+                    <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                        / about
                     </a>
-                    <a href="/admin/editor.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
-                        &gt; editor
-                    </a>
-                    <a href="/admin/upload.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
-                        &gt; ingest
-                    </a>
-                    <a href="/admin/assets.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
-                        &gt; assets
-                    </a>
-                    <a href="/admin/splash.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
-                        &gt; splash
-                    </a>
+                    <div id="link-matrix-admin" class="hidden">
+                        <span class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 tracking-widest select-none">
+                            $ matrix_admin/
+                        </span>
+                        <a href="/admin/index.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; suite
+                        </a>
+                        <a href="/admin/curate.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; curate
+                        </a>
+                        <a href="/admin/editor.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; editor
+                        </a>
+                        <a href="/admin/upload.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; ingest
+                        </a>
+                        <a href="/admin/assets.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; assets
+                        </a>
+                        <a href="/admin/splash.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; splash
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -72,7 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- SOCIAL CHANNELS -->
             <div class="mb-4 border-t border-[#a78bfa]/10 pt-4">
-                <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-2 italic">channels:</span>
+                <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-1.5 text-[10px] text-[#a78bfa]/40 tracking-widest italic hover:text-[#a78bfa]/70 transition-colors" data-target="nav-channels" data-open="false">
+                    <span>channels:</span>
+                    <span class="toggle-arrow transition-transform duration-200 -rotate-90">▼</span>
+                </button>
+                <div id="nav-channels" class="hidden">
                 <a href="https://www.youtube.com/@commonsenserebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
                     <span class="text-red-500/70">▶</span> YouTube
                 </a>
@@ -91,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="https://x.com/CSRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
                     <span class="text-white/50">✕</span> X
                 </a>
+                </div>
             </div>
             
         </nav>
@@ -108,6 +118,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Prepend to body
     document.body.insertBefore(aside, document.body.firstChild);
+
+    // Collapsible sidebar section toggles
+    document.querySelectorAll('.sidebar-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const isOpen = btn.dataset.open === 'true';
+            const target = document.getElementById(targetId);
+            const arrow = btn.querySelector('.toggle-arrow');
+            if (isOpen) {
+                target.classList.add('hidden');
+                arrow.style.transform = 'rotate(-90deg)';
+                btn.dataset.open = 'false';
+            } else {
+                target.classList.remove('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+                btn.dataset.open = 'true';
+            }
+        });
+    });
 
     // Mobile/Desktop Edge Toggle (MENU Button)
     const edgeTab = document.createElement('button');
