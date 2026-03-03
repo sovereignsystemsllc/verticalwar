@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRE-ORDER // THE MANUAL FOR THE RESISTANCE // VERTICAL WAR</title>
+    <meta name="description"
+        content="Pre-order The Manual for the Resistance. Three tiers. One mission. Break the Three-Layered Prison.">
+    <meta property="og:title" content="Pre-Order | The Manual for the Resistance">
+    <meta property="og:url" content="https://verticalwar.com/order">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'noir': '#05010a',
+                        'rika': '#a78bfa',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'scanline': 'scanline 10s linear infinite',
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { transform: 'translateY(-100vh)' },
+                            '100%': { transform: 'translateY(100vh)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+
+    <style>
+        body {
+            background: #05010a;
+            cursor: crosshair;
+        }
+
+        .tier-card {
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            background: rgba(10, 4, 20, 0.7);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .tier-card:hover {
+            border-color: rgba(167, 139, 250, 0.4);
+            background: rgba(15, 6, 30, 0.85);
+            transform: translateY(-3px);
+        }
+
+        .tier-card.featured {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(20, 5, 5, 0.85);
+            transform: translateY(-6px);
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.08);
+        }
+
+        .tier-card.featured:hover {
+            border-color: rgba(239, 68, 68, 0.7);
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.15);
+        }
+
+        .tier-card.phalanx {
+            border-color: rgba(161, 98, 7, 0.35);
+            background: rgba(15, 10, 0, 0.85);
+        }
+
+        .tier-card.phalanx:hover {
+            border-color: rgba(234, 179, 8, 0.5);
+            box-shadow: 0 0 40px rgba(234, 179, 8, 0.06);
+        }
+
+        .scanline-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(167, 139, 250, 0.03) 50%, rgba(0, 0, 0, 0) 100%);
+            animation: scanline 10s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .glitch:hover {
+            animation: glitch 0.15s steps(2) infinite;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+
+            25% {
+                transform: translate(-2px, 1px);
+            }
+
+            50% {
+                transform: translate(2px, -1px);
+            }
+
+            75% {
+                transform: translate(-1px, 2px);
+            }
+
+            100% {
+                transform: translate(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-white antialiased overflow-x-hidden">
+    <div class="scanline-overlay"></div>
+
+    <!-- NAV -->
+    <nav
+        class="fixed top-0 left-0 right-0 z-50 h-14 border-b border-[#a78bfa]/20 bg-[#05010a]/90 backdrop-blur-sm px-6 flex items-center justify-between">
+        <a href="/"
+            class="font-mono text-xs text-[#a78bfa]/60 hover:text-[#a78bfa] tracking-[0.2em] uppercase transition-colors">
+            ← THE CODEX
+        </a>
+        <span class="font-mono text-[10px] text-[#a78bfa]/30 tracking-widest uppercase hidden md:block animate-pulse">
+            SUPPLY DEPOT // PRE-ORDER ACTIVE
+        </span>
+        <a href="/about.html"
+            class="font-mono text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-3 py-1">
+            [ ABOUT ]
+        </a>
+    </nav>
+
+    <main class="pt-14">
+
+        <!-- HERO -->
+        <section class="relative px-6 py-24 md:py-32 max-w-5xl mx-auto text-center">
+            <!-- Background grid -->
+            <div class="absolute inset-0 opacity-[0.015] pointer-events-none"
+                style="background-image: repeating-linear-gradient(0deg, #a78bfa 0px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #a78bfa 0px, transparent 1px, transparent 60px);">
+            </div>
+
+            <div class="relative">
+                <p class="font-mono text-[10px] text-[#a78bfa]/40 tracking-[0.35em] uppercase mb-6 animate-pulse">
+                    // SUPPLY DEPOT // ACCESS: OPEN //
+                </p>
+
+                <h1
+                    class="font-mono font-bold text-4xl md:text-6xl lg:text-7xl text-white tracking-tight leading-[1.05] mb-6">
+                    THE MANUAL<br>
+                    <span class="text-[#a78bfa]">FOR THE</span><br>
+                    RESISTANCE
+                </h1>
+
+                <div class="w-24 h-px bg-[#a78bfa]/30 mx-auto mb-8"></div>
+
+                <p class="font-serif text-lg md:text-xl text-white/60 italic max-w-2xl mx-auto mb-4 leading-relaxed">
+                    "They built the prison in three layers. This is how you see through all three."
+                </p>
+
+                <p class="font-mono text-xs text-white/30 tracking-widest uppercase">
+                    By Ethan Faulkner // Vertical War // Dispatch: Summer 2026
+                </p>
+
+                <!-- Live ticker -->
+                <div class="mt-8 inline-flex items-center gap-3 border border-red-500/30 bg-red-500/5 px-4 py-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span id="stock-ticker"
+                        class="font-mono text-[10px] text-red-400 tracking-widest uppercase font-bold">STOCK:
+                        CRITICAL</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING TIERS -->
+        <section class="px-4 pb-24 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+
+                <!-- TIER 1: THE SIGNAL -->
+                <div class="tier-card flex flex-col">
+                    <div class="p-8 flex flex-col flex-grow">
+                        <!-- Label -->
+                        <p class="font-mono text-[9px] text-[#a78bfa]/40 tracking-[0.3em] uppercase mb-4">Tier 01 //
+                            Entry Point</p>
+
+                        <h2 class="font-mono font-bold text-3xl text-[#a78bfa]/80 mb-2 tracking-wide">THE SIGNAL</h2>
+                        <div class="font-mono text-4xl text-white font-bold mb-1 glitch">$7.76</div>
+                        <p class="font-mono text-[9px] text-[#a78bfa]/40 tracking-widest uppercase mb-8">Digital Codex
+                            // Immediate Deployment</p>
+
+                        <ul class="space-y-4 font-mono text-xs text-white/50 mb-10 flex-grow">
+                            <li class="flex items-start gap-3">
+                                <span class="text-[#a78bfa]/40 shrink-0">[:]</span>
+                                PDF &amp; ePub — Full Manual
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-[#a78bfa]/40 shrink-0">[:]</span>
+                                Gas Station Logs (Raw Field Notes)
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-[#a78bfa]/40 shrink-0">[:]</span>
+                                Immediate download on release
+                            </li>
+                        </ul>
+
+                        <a href="https://buy.stripe.com/dRm9AT3gbe5u1SC1XR7Zu00" target="_blank"
+                            rel="noopener noreferrer"
+                            class="mt-auto w-full py-4 font-mono text-sm font-bold tracking-widest uppercase text-center border border-[#a78bfa]/40 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:border-[#a78bfa] hover:bg-[#a78bfa]/5 transition-all">
+                            [ ACQUIRE ]
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TIER 2: THE OPERATOR (FEATURED) -->
+                <div class="tier-card featured flex flex-col">
+                    <!-- Featured badge -->
+                    <div class="border-b border-red-500/30 px-8 py-3 flex items-center justify-between">
+                        <span
+                            class="font-mono text-[8px] text-red-400 tracking-[0.35em] uppercase font-bold">RECOMMENDED</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    </div>
+
+                    <div class="p-8 flex flex-col flex-grow">
+                        <p class="font-mono text-[9px] text-red-500/50 tracking-[0.3em] uppercase mb-4">Tier 02 // Full
+                            Deployment</p>
+
+                        <h2 class="font-mono font-bold text-4xl text-white mb-2 tracking-wide">THE OPERATOR</h2>
+                        <div class="font-mono text-4xl text-red-400 font-bold mb-1 glitch">$45.00</div>
+                        <p class="font-mono text-[9px] text-red-500/40 tracking-widest uppercase mb-8">Physical +
+                            Digital Bundle</p>
+
+                        <ul class="space-y-4 font-mono text-xs text-white/60 mb-10 flex-grow">
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-400/70 shrink-0">[+]</span>
+                                Signed Paperback — Physical Copy
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-400/70 shrink-0">[+]</span>
+                                Full Digital Codex (PDF + ePub)
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-400/70 shrink-0">[+]</span>
+                                Living Archive Access
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-400/70 shrink-0">[+]</span>
+                                Private Comms Channel
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-400/70 shrink-0">[+]</span>
+                                Dispatch: Summer 2026
+                            </li>
+                        </ul>
+
+                        <a href="https://buy.stripe.com/dRm14n8AvbXm54O45Z7Zu01" target="_blank"
+                            rel="noopener noreferrer"
+                            class="mt-auto w-full py-5 font-mono text-base font-bold tracking-widest uppercase text-center bg-red-700 hover:bg-red-500 text-white transition-all shadow-[0_0_25px_rgba(220,38,38,0.2)] hover:shadow-[0_0_40px_rgba(220,38,38,0.35)]">
+                            [ INITIALIZE ]
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TIER 3: THE PHALANX -->
+                <div class="tier-card phalanx flex flex-col">
+                    <div class="p-8 flex flex-col flex-grow">
+                        <p class="font-mono text-[9px] text-yellow-600/60 tracking-[0.3em] uppercase mb-4">Tier 03 //
+                            Patron Status</p>
+
+                        <h2 class="font-mono font-bold text-3xl text-yellow-200/80 mb-2 tracking-wide">THE PHALANX</h2>
+                        <div class="font-mono text-4xl text-yellow-500 font-bold mb-1 glitch">$150.00</div>
+                        <p class="font-mono text-[9px] text-yellow-600/50 tracking-widest uppercase mb-8">Inner Circle
+                            // War Council Seat</p>
+
+                        <ul class="space-y-4 font-mono text-xs text-white/50 mb-6 flex-grow">
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-600 shrink-0">[!]</span>
+                                Everything in The Operator
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-600 shrink-0">[!]</span>
+                                1-on-1 Prison Audit Session
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-600 shrink-0">[!]</span>
+                                Alpha Strategy Tools Access
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-yellow-600 shrink-0">[!]</span>
+                                Permanent Inner Circle Status
+                            </li>
+                        </ul>
+
+                        <!-- Scarcity signal -->
+                        <div class="border border-yellow-600/20 bg-yellow-500/5 px-4 py-2 mb-8 text-center">
+                            <p class="font-mono text-[9px] text-yellow-500/70 tracking-widest uppercase font-bold">⚠
+                                LIMIT: 5 SEATS REMAINING</p>
+                        </div>
+
+                        <a href="https://buy.stripe.com/8x228r6sn3qQ0Oy1XR7Zu02" target="_blank"
+                            rel="noopener noreferrer"
+                            class="mt-auto w-full py-4 font-mono text-sm font-bold tracking-widest uppercase text-center border border-yellow-600/50 text-yellow-500/80 hover:text-yellow-300 hover:border-yellow-400 hover:bg-yellow-500/5 transition-all">
+                            [ JOIN CORE ]
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECURITY STRIP -->
+        <section class="border-t border-[#a78bfa]/10 py-6 px-6">
+            <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="font-mono text-[9px] text-white/20 tracking-widest uppercase">
+                    SECURE // STRIPE_VERIFIED // ENCRYPTED // 256-BIT SSL
+                </p>
+                <div class="flex gap-6">
+                    <a href="/"
+                        class="font-mono text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">
+                        ← Codex
+                    </a>
+                    <a href="/about.html"
+                        class="font-mono text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">
+                        About
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Rotating stock ticker
+        const ticker = document.getElementById('stock-ticker');
+        if (ticker) {
+            const states = ['STOCK: CRITICAL', 'STOCK: LOW', 'STOCK: RESERVED', 'STOCK: ALLOCATING...'];
+            let i = 0;
+            setInterval(() => {
+                i = (i + 1) % states.length;
+                ticker.textContent = states[i];
+            }, 4000);
+        }
+    </script>
+</body>
+
+</html>
