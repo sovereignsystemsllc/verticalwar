@@ -136,4 +136,10 @@ function updateAuthUI() {
             btn.innerHTML = `[ LOGIN ]`;
         }
     });
+
+    // Show profile link when logged in
+    document.querySelectorAll('#sidebar-profile-link').forEach(el => {
+        el.classList.toggle('hidden', !currentUser);
+    });
 }
+

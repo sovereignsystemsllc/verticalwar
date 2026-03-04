@@ -125,6 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
            <a href="https://constructamiracle.com" target="_blank" rel="noopener" class="block w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold">
               COMMON SENSE REBEL // SUBSTACK
            </a>
+           <a id="sidebar-profile-link" href="/profile/index.html"
+               class="hidden w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold block">
+               ◈ MY PROFILE
+           </a>
            <button id="btn-toggle-login" class="block w-full text-left py-2 px-4 text-white/40 hover:bg-red-500/10 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/30 tracking-widest uppercase">
                [ LOGIN ]
            </button>
