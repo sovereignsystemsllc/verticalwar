@@ -1,20 +1,12 @@
 // admin_about.js — About Page Editor Logic
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from '../src/supabaseClient.js';
+import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
 const TABLE = 'about_config';
 
-// ── Auth lock ─────────────────────────────────────────────
-async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return lockout('Not logged in.');
-    const { data: profile } = await supabase
-        .from('profiles').select('role').eq('id', session.user.id).single();
-    if (profile?.role !== 'SOVEREIGN') return lockout('Insufficient clearance.');
+// ── Auth via auth.js ──────────────────────────────────────
+function onAuthChange() {
+    if (currentRole !== 'SOVEREIGN') return lockout('Insufficient clearance.');
     document.getElementById('auth-lock').style.display = 'none';
     init();
 }
@@ -42,8 +34,8 @@ function setStatus(msg, isError = false) {
     const bar = document.getElementById('status-bar');
     bar.textContent = msg;
     bar.className = `border px-4 py-2 text-[10px] font-bold uppercase tracking-widest ${isError
-            ? 'border-red-500/40 bg-red-500/5 text-red-400'
-            : 'border-matrix-green/40 bg-matrix-green/5 text-matrix-green'
+        ? 'border-red-500/40 bg-red-500/5 text-red-400'
+        : 'border-matrix-green/40 bg-matrix-green/5 text-matrix-green'
         }`;
     bar.classList.remove('hidden');
     setTimeout(() => bar.classList.add('hidden'), 4000);
@@ -158,4 +150,10 @@ function defaultCards() {
     ];
 }
 
-checkAuth();
+// ── Boot ──────────────────────────────────────────────────
+async function bootstrap() {
+    setAuthChangeCallback(onAuthChange);
+    await initAuth();
+}
+
+bootstrap();

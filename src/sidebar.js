@@ -1,8 +1,26 @@
 // sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
 
+// ============================================================
+// NAV CONFIG — Add new public pages here, not buried in HTML
+// ============================================================
+const NAV_ITEMS = [
+    { href: '/', label: '/ codex_root' },
+    { href: '/about.html', label: '/ about' },
+    { href: '/archives.html', label: '/ archives' },
+    { href: '/order.html', label: '/ pre-order', cls: 'text-red-500/70 hover:text-red-400' },
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     const aside = document.createElement('aside');
     aside.className = 'fixed left-0 top-0 h-full w-64 bg-[#05010a] border-r border-[#a78bfa]/30 font-mono text-xs z-[60] overflow-y-auto flex flex-col shadow-[4px_0_20px_rgba(0,0,0,0.8)] transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 custom-scrollbar';
+
+    // Build nav items from config
+    const navItemsHtml = NAV_ITEMS.map(item => {
+        const cls = item.cls || 'text-[#a78bfa]/80 hover:text-[#a78bfa]';
+        return `<a href="${item.href}" class="block w-full text-left py-2 px-6 ${cls} hover:bg-[#a78bfa]/10 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                    ${item.label}
+                </a>`;
+    }).join('');
 
     aside.innerHTML = `
         <!-- HEADER / LOGO REGION -->
@@ -22,12 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <!-- THE CODEX (ROOT ARCHITECTURE) -->
             <div class="mb-6">
                 <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-1 italic">roster:</span>
-                <a href="/" class="block w-full text-left py-2 px-6 text-[#a78bfa]/80 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
-                    / codex_root
-                </a>
-                <a href="/about.html" class="block w-full text-left py-2 px-6 text-[#a78bfa]/60 hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
-                    / about
-                </a>
+                ${navItemsHtml}
                 <div id="link-matrix-admin" class="hidden">
                     <div class="flex items-center justify-between px-6 pl-10 py-1.5 border-l-2 border-transparent hover:border-[#a78bfa]/30 group">
                         <a href="/admin/index.html" class="flex-1 text-white/40 hover:text-white transition-colors tracking-widest text-[10px]">
@@ -110,13 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- FOOTER / LOGOUT -->
         <div class="p-4 border-t border-[#a78bfa]/20 mt-auto bg-[#05010a]/50 shrink-0 space-y-2">
            <a href="https://constructamiracle.com" target="_blank" rel="noopener" class="block w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold">
-               COMMON SENSE REBEL // SUBSTACK
+              COMMON SENSE REBEL // SUBSTACK
            </a>
            <button id="btn-toggle-login" class="block w-full text-left py-2 px-4 text-white/40 hover:bg-red-500/10 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/30 tracking-widest uppercase">
                [ LOGIN ]
            </button>
         </div>
     `;
+
 
     // Prepend to body
     document.body.insertBefore(aside, document.body.firstChild);

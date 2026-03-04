@@ -1,4 +1,5 @@
 import { supabase } from '../src/supabaseClient.js';
+import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
 // ─── DOM REFS ─────────────────────────────────────────────────────────────────
 const authLock = document.getElementById('auth-lock');
@@ -27,36 +28,27 @@ const btnPickAsset = document.getElementById('btn-pick-asset');
 const assetPicker = document.getElementById('asset-picker');
 
 const BUCKET = 'article_assets';
-let currentUser = null;
+// currentUser imported from auth.js
 let slides = [];
 let previewIndex = 0;
 let previewTimer = null;
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
-async function verifyAccess() {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error || !session) {
-        authStatusTitle.innerText = 'ACCESS DENIED';
-        authStatusDetail.innerText = 'No active session detected.';
-        return;
-    }
-    currentUser = session.user;
-    authStatusDetail.innerText = 'Verifying Role...';
-
-    const { data: profile, error: pErr } = await supabase
-        .from('profiles').select('role').eq('id', currentUser.id).single();
-
-    if (pErr || !profile || profile.role !== 'Sovereign') {
+function onAuthChange() {
+    if (currentRole !== 'SOVEREIGN') {
         authStatusTitle.innerText = 'CLEARANCE REJECTED';
-        authStatusDetail.innerText = `Role '${profile?.role || 'Unknown'}' is not Sovereign.`;
+        authStatusDetail.innerText = `Role '${currentRole}' is not SOVEREIGN.`;
         return;
     }
-
     authLock.style.opacity = '0';
     authLock.style.transition = 'opacity 0.4s';
     setTimeout(() => { authLock.style.display = 'none'; }, 450);
+    loadSlides();
+}
 
-    await loadSlides();
+async function bootstrap() {
+    setAuthChangeCallback(onAuthChange);
+    await initAuth();
 }
 
 // ─── LOAD & RENDER ────────────────────────────────────────────────────────────
@@ -251,4 +243,4 @@ btnPickAsset.addEventListener('click', () => {
 });
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', verifyAccess);
+document.addEventListener('DOMContentLoaded', bootstrap);

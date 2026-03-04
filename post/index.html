@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE CODEX // DECRYPTING ARTICLE</title>
+    <meta name="description" content="Field manuals, forensic archives, and doctrine from the Vertical War.">
+    <meta property="og:title" content="The Codex // Sovereign Doctrine">
+    <meta property="og:description" content="Field manuals, forensic archives, and doctrine from the Vertical War.">
+    <meta property="og:image" content="https://verticalwar.com/og-image.png">
+    <meta property="og:url" content="https://verticalwar.com/post/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/og-image.png">
 
     <!-- PURE V3 STACK: TAILWIND CDN ONLY -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,8 +34,8 @@
 
 <body
     class="w-full min-h-screen bg-[#05010a] flex flex-col font-mono selection:bg-[#a78bfa] selection:text-black overflow-x-hidden">
-  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
-  <div class="scanline-overlay"></div>
+    <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+    <div class="scanline-overlay"></div>
 
     <!-- PURE V3 MINIMAL NAV -->
     <nav
@@ -87,17 +94,74 @@
                     class="text-lg sm:text-xl text-[#a78bfa]/80 font-mono mt-4 leading-relaxed hidden"></h2>
             </header>
 
+            <!-- VIDEO HERO EMBED — shown only when article has a video_url -->
+            <div id="video-embed-container" class="hidden mb-10">
+                <div class="relative w-full" style="padding-bottom: 56.25%;"><!-- 16:9 -->
+                    <iframe id="video-iframe" class="absolute inset-0 w-full h-full border border-[#a78bfa]/20" src=""
+                        title="Article video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <p class="text-[9px] text-[#a78bfa]/30 tracking-widest uppercase mt-2 text-right font-mono">
+                    // VIDEO TRANSMISSION
+                </p>
+            </div>
+
             <div id="article-content" class="space-y-6"></div>
 
-            <footer class="mt-16 pt-8 border-t border-[#a78bfa]/20 text-center">
-                <p class="text-[10px] text-[#a78bfa]/40 tracking-widest uppercase mb-4">/// END OF RECORD ///</p>
+            <!-- BOOKMARK BUTTON -->
+            <div class="flex items-center justify-between mt-12 mb-4 pt-8 border-t border-[#a78bfa]/10">
+                <button id="btn-bookmark"
+                    class="text-[9px] font-bold tracking-[0.25em] uppercase border px-4 py-2 transition-all
+                           border-[#a78bfa]/30 text-[#a78bfa]/60 hover:bg-[#a78bfa] hover:text-black hover:border-[#a78bfa]">
+                    + READING LIST
+                </button>
                 <a href="/"
-                    class="inline-block border border-[#a78bfa]/50 text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black px-6 py-2 text-xs uppercase tracking-widest font-bold transition-colors">
-                    [ BACK TO ARCHIVES ]
-                </a>
+                    class="text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">←
+                    BACK TO CODEX</a>
+            </div>
+
+            <footer class="mt-4 text-center">
+                <p class="text-[10px] text-[#a78bfa]/40 tracking-widest uppercase mb-4">/// END OF RECORD ///</p>
             </footer>
 
         </article>
+
+        <!-- COMMENT SECTION — sits outside article card -->
+        <section id="comment-section" class="hidden w-full max-w-4xl mt-8 mb-12">
+            <h2
+                class="text-[10px] font-bold text-[#a78bfa]/60 tracking-[0.4em] uppercase mb-4 border-b border-[#a78bfa]/20 pb-3">
+                // DISPATCH COMMENTS <span id="comment-count" class="text-white/30"></span>
+            </h2>
+
+            <!-- Comment list -->
+            <div id="comment-list" class="space-y-4 mb-8"></div>
+
+            <!-- Submit form (shown when logged in) -->
+            <div id="comment-form" class="hidden bg-[#0a0a0a] border border-[#a78bfa]/20 p-5">
+                <label class="block text-[9px] text-[#a78bfa]/40 tracking-widest uppercase mb-2">// POST REPLY</label>
+                <textarea id="comment-input" rows="3" maxlength="1000"
+                    class="w-full bg-transparent border border-[#a78bfa]/20 focus:border-[#a78bfa] text-white px-3 py-2 text-sm font-mono focus:outline-none transition-colors resize-none"
+                    placeholder="Write your transmission..."></textarea>
+                <div class="flex justify-end mt-3">
+                    <button id="btn-submit-comment"
+                        class="text-[9px] font-bold px-5 py-2 bg-[#a78bfa] text-black hover:bg-white transition-colors tracking-widest uppercase">
+                        TRANSMIT
+                    </button>
+                </div>
+            </div>
+
+            <!-- Login prompt (shown when logged out) -->
+            <div id="comment-login-prompt" class="hidden text-center py-6 border border-[#a78bfa]/10 bg-[#0a0a0a]">
+                <p class="text-[9px] text-white/30 tracking-widest uppercase mb-3">You must be logged in to comment.</p>
+                <button id="btn-comment-login"
+                    class="text-[9px] font-bold border border-[#a78bfa]/40 text-[#a78bfa] px-4 py-2 hover:bg-[#a78bfa] hover:text-black transition-colors tracking-widest uppercase">
+                    [ LOGIN ]
+                </button>
+            </div>
+        </section>
+
     </main>
 
     <!-- GLOBAL FOOTER -->

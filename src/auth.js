@@ -3,15 +3,6 @@ import { supabase } from './supabaseClient.js';
 export let currentUser = null;
 export let currentRole = 'GUEST';
 
-// DOM Elements
-const loginModal = document.getElementById('login-modal');
-const btnToggleLogin = document.getElementById('btn-toggle-login');
-const btnCloseLogin = document.getElementById('btn-close-login');
-const btnSubmitLogin = document.getElementById('btn-submit-login');
-const emailInput = document.getElementById('login-email');
-const passInput = document.getElementById('login-password');
-const errorMsg = document.getElementById('login-error');
-
 // Event defined in main.js, this just calls it
 let onAuthChangeCallback = null;
 
@@ -20,6 +11,15 @@ export function setAuthChangeCallback(cb) {
 }
 
 export async function initAuth() {
+    // DOM Elements — resolved here so importing auth.js on any page is safe
+    const loginModal = document.getElementById('login-modal');
+    const btnToggleLogin = document.getElementById('btn-toggle-login');
+    const btnCloseLogin = document.getElementById('btn-close-login');
+    const btnSubmitLogin = document.getElementById('btn-submit-login');
+    const emailInput = document.getElementById('login-email');
+    const passInput = document.getElementById('login-password');
+    const errorMsg = document.getElementById('login-error');
+
     // 1. Check existing session
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
@@ -53,34 +53,36 @@ export async function initAuth() {
         } else {
             if (loginModal) {
                 loginModal.classList.remove('hidden');
-                errorMsg.classList.add('hidden');
+                if (errorMsg) errorMsg.classList.add('hidden');
             }
         }
     });
 
     if (loginModal) {
-        btnCloseLogin.addEventListener('click', () => {
+        if (btnCloseLogin) btnCloseLogin.addEventListener('click', () => {
             loginModal.classList.add('hidden');
         });
 
-        btnSubmitLogin.addEventListener('click', async () => {
-            const email = emailInput.value.trim();
-            const password = passInput.value;
+        if (btnSubmitLogin) btnSubmitLogin.addEventListener('click', async () => {
+            const email = emailInput ? emailInput.value.trim() : '';
+            const password = passInput ? passInput.value : '';
             if (!email || !password) return;
 
             btnSubmitLogin.innerText = "AUTHENTICATING...";
-            errorMsg.classList.add('hidden');
+            if (errorMsg) errorMsg.classList.add('hidden');
 
             try {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
 
                 loginModal.classList.add('hidden');
-                emailInput.value = '';
-                passInput.value = '';
+                if (emailInput) emailInput.value = '';
+                if (passInput) passInput.value = '';
             } catch (e) {
-                errorMsg.innerText = "ERROR: " + e.message;
-                errorMsg.classList.remove('hidden');
+                if (errorMsg) {
+                    errorMsg.innerText = "ERROR: " + e.message;
+                    errorMsg.classList.remove('hidden');
+                }
             } finally {
                 btnSubmitLogin.innerText = "INITIATE OVERRIDE";
             }
@@ -115,12 +117,11 @@ async function handleSessionData(user) {
 }
 
 function updateAuthUI() {
-    const btnSidebarLogin = document.getElementById('btn-sidebar-login');
-    const toggleBtns = [];
-    if (btnToggleLogin) toggleBtns.push(btnToggleLogin);
-    if (btnSidebarLogin) toggleBtns.push(btnSidebarLogin);
-
-    if (toggleBtns.length === 0) return; // Silent return if not on main page
+    // querySelectorAll catches ALL elements with this ID (nav + sidebar both use btn-toggle-login)
+    const toggleBtns = [
+        ...document.querySelectorAll('#btn-toggle-login'),
+        ...document.querySelectorAll('#btn-sidebar-login'),
+    ].filter(Boolean);
 
     toggleBtns.forEach(btn => {
         if (currentUser) {

@@ -32,6 +32,7 @@
     </script>
     <link rel="stylesheet" href="/src/style.css">
     <style>
+        /* ── Sortable visual states ── */
         .drag-ghost {
             opacity: 0.4;
             background-color: rgba(167, 139, 250, 0.1);
@@ -48,6 +49,7 @@
             border-color: #a78bfa !important;
         }
 
+        /* ── Custom scrollbar ── */
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
@@ -60,49 +62,180 @@
             background: #a78bfa;
             border-radius: 2px;
         }
+
+        /* ── Action tray — absolute dropdown style ── */
+        .article-actions {
+            display: none !important;
+        }
+
+        .article-actions.open {
+            display: flex !important;
+        }
+
+        /* ── Article-row FTP style ── */
+        .file-row {
+            position: relative;
+        }
+
+        /* ── Hidden article dim ── */
+        .article-hidden-row {
+            opacity: 0.35;
+        }
+
+        /* ── Color dot ── */
+        .color-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.15s;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.4);
+        }
+
+        /* ── Audience pill ── */
+        .pill-everyone {
+            background: rgba(167, 139, 250, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .pill-members {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* ── Thumbnail ── */
+        .thumb-preview {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .thumb-placeholder {
+            width: 36px;
+            height: 36px;
+            border: 1px dashed rgba(167, 139, 250, 0.3);
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: rgba(167, 139, 250, 0.5);
+            font-family: monospace;
+        }
+
+        /* ── Mobile panel tab switching ──
+             On mobile, only one panel is visible at a time.
+             JS toggles  data-active="folders" | "articles"  on <main>.
+        ── */
+        @media (max-width: 1023px) {
+            #panel-folders {
+                display: none;
+            }
+
+            #panel-articles {
+                display: none;
+            }
+
+            main[data-active="folders"] #panel-folders {
+                display: flex;
+            }
+
+            main[data-active="articles"] #panel-articles {
+                display: flex;
+            }
+        }
+
+        /* ── Mobile tab bar ── */
+        #mobile-tabs {
+            display: none;
+        }
+
+        @media (max-width: 1023px) {
+            #mobile-tabs {
+                display: flex;
+            }
+        }
+
+        /* Touch-drag hint: tell user to long-press to drag */
+        @media (max-width: 1023px) {
+            .drag-handle::after {
+                content: '⋮⋮';
+                font-size: 10px;
+            }
+
+            .drag-handle {
+                touch-action: none;
+            }
+        }
     </style>
 </head>
 
 <body
     class="pl-0 lg:pl-64 bg-matrix-bg text-matrix-text font-mono h-screen flex flex-col overflow-hidden selection:bg-matrix-green selection:text-black transition-all duration-300 ease-in-out">
-  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
-  <div class="scanline-overlay"></div>
+    <!-- CRT SCANLINE -->
+    <div class="scanline-overlay"></div>
 
     <!-- CODEX HEADER -->
     <nav
-        class="w-full h-16 border-b border-matrix-border px-6 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
-        <div class="flex items-center gap-4">
-            <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse"></span>
-            <span class="text-sm font-bold text-matrix-green tracking-widest uppercase">THE CURATION MATRIX //</span>
+        class="w-full h-14 border-b border-matrix-border px-4 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
+        <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse shrink-0"></span>
+            <span class="text-xs font-bold text-matrix-green tracking-widest uppercase">THE MATRIX //</span>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
             <button id="btn-save-order"
-                class="hidden text-[10px] md:text-sm font-bold text-black bg-matrix-green transition-colors tracking-widest border border-matrix-green px-4 py-2 hover:bg-white hover:border-white">
-                [ SAVE NEW SORT ORDER ]
+                class="hidden text-[10px] font-bold text-black bg-matrix-green transition-colors tracking-widest border border-matrix-green px-3 py-1.5 hover:bg-white hover:border-white">
+                [ SAVE ORDER ]
             </button>
             <a href="/"
-                class="text-[10px] md:text-sm font-bold text-matrix-muted hover:text-white transition-colors tracking-widest border border-matrix-border px-3 md:px-4 py-2 hover:bg-white/5">
-                [ RETURN TO CODEX ]
+                class="text-[10px] font-bold text-matrix-muted hover:text-white transition-colors tracking-widest border border-matrix-border px-3 py-1.5 hover:bg-white/5">
+                [ CODEX ]
             </a>
         </div>
     </nav>
 
+    <!-- MOBILE TAB BAR (hidden on desktop) -->
+    <div id="mobile-tabs" class="shrink-0 border-b border-matrix-border bg-matrix-panel">
+        <button id="tab-folders"
+            class="flex-1 py-3 text-[11px] font-bold tracking-widest uppercase transition-colors text-matrix-green border-b-2 border-matrix-green">
+            FOLDERS
+        </button>
+        <button id="tab-articles"
+            class="flex-1 py-3 text-[11px] font-bold tracking-widest uppercase transition-colors text-matrix-muted border-b-2 border-transparent">
+            RECORDS <span id="article-count-tab" class="text-[9px]"></span>
+        </button>
+    </div>
+
     <!-- SPLIT WORKSPACE -->
-    <main class="flex-1 flex overflow-hidden w-full max-w-[1600px] mx-auto">
+    <main id="main-workspace" data-active="folders"
+        class="flex-1 flex flex-col lg:flex-row overflow-hidden w-full max-w-[1600px] mx-auto lg:mx-0 lg:max-w-none">
 
         <!-- LEFT PANEL: MASTER FOLDERS -->
-        <section class="w-1/3 flex flex-col border-r border-matrix-border bg-matrix-panel/30">
-            <header class="p-4 border-b border-matrix-border flex justify-between items-center bg-matrix-bg shrink-0">
+        <section id="panel-folders"
+            class="w-full lg:w-1/3 flex flex-col border-b lg:border-b-0 lg:border-r border-matrix-border bg-matrix-panel/30">
+            <header class="p-3 border-b border-matrix-border flex justify-between items-center bg-matrix-bg shrink-0">
                 <h2 class="text-xs font-bold text-matrix-green tracking-widest uppercase">Master Directories</h2>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                     <button id="btn-save-folder-order"
                         class="hidden text-[9px] font-bold text-black bg-matrix-green hover:bg-white hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-matrix-green">
                         SAVE ORDER
                     </button>
-                    <span id="series-count" class="text-[10px] text-matrix-muted tracking-widest">0 FOLDERS</span>
+                    <span id="series-count" class="text-[10px] text-matrix-muted tracking-widest hidden sm:inline">0
+                        FOLDERS</span>
                     <button id="btn-new-heading"
                         class="text-[9px] font-bold text-matrix-green hover:bg-matrix-green hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-matrix-green">
-                        + NEW HEADING
+                        + HEADING
                     </button>
                     <button id="btn-new-folder"
                         class="text-[9px] font-bold text-black bg-matrix-green hover:bg-white hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-matrix-green">
@@ -111,71 +244,103 @@
                 </div>
             </header>
 
-            <div id="series-container" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
-                <!-- Series Items Injected Here -->
+            <div id="series-container" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                <!-- Folders injected here -->
             </div>
         </section>
 
         <!-- RIGHT PANEL: ARTICLES IN FOLDER -->
-        <section class="w-2/3 flex flex-col bg-matrix-bg">
-            <header
-                class="p-4 border-b border-matrix-border flex justify-between items-center bg-matrix-bg shrink-0 relative">
-                <h2 id="active-folder-title" class="text-xs font-bold text-white tracking-[0.2em] uppercase">UNASSIGNED
-                    SINGLES</h2>
-                <div class="flex items-center gap-3">
-                    <button id="btn-sync-timeline" title="Organize current folder chronologically"
-                        class="text-[9px] font-bold text-matrix-green hover:bg-matrix-green hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-matrix-green">
-                        SYNC TIMELINE
-                    </button>
-                    <input type="search" id="matrix-search" placeholder="SEARCH RECORDS..." name="rand_matrix_search"
+        <section id="panel-articles" class="w-full lg:w-2/3 flex flex-col bg-matrix-bg">
+            <!-- Articles sub-header -->
+            <header class="p-3 border-b border-matrix-border flex flex-col gap-2 bg-matrix-bg shrink-0 relative">
+                <!-- Row 1: title + count -->
+                <div class="flex justify-between items-center">
+                    <h2 id="active-folder-title"
+                        class="text-xs font-bold text-white tracking-[0.2em] uppercase truncate pr-2">UNASSIGNED SINGLES
+                    </h2>
+                    <span id="article-count"
+                        class="text-[10px] text-matrix-muted tracking-widest shrink-0">LOADING...</span>
+                </div>
+                <!-- Row 2: search + controls -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <label class="flex items-center gap-1 cursor-pointer shrink-0"
+                        title="Search all records across all folders">
+                        <input type="checkbox" id="chk-global-search" class="accent-[#a78bfa] w-3 h-3">
+                        <span class="text-[9px] text-matrix-muted tracking-widest uppercase">GLOBAL</span>
+                    </label>
+                    <input type="search" id="matrix-search" placeholder="SEARCH..." name="rand_matrix_search"
                         autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
                         data-lpignore="true" data-form-type="other" role="presentation" readonly
                         onfocus="this.removeAttribute('readonly');"
-                        class="bg-transparent border-b border-matrix-green/50 text-xs text-white focus:outline-none focus:border-matrix-green px-2 py-1 placeholder-matrix-green/50 font-mono tracking-widest uppercase transition-colors w-32 md:w-48">
-                    <span id="article-count"
-                        class="text-[10px] text-matrix-muted tracking-widest shrink-0">LOADING...</span>
+                        class="flex-1 min-w-0 bg-transparent border-b border-matrix-green/50 text-xs text-white focus:outline-none focus:border-matrix-green px-2 py-1 placeholder-matrix-green/50 font-mono tracking-widest uppercase transition-colors">
+                    <button id="btn-sync-timeline" title="Organize current folder chronologically"
+                        class="text-[9px] font-bold text-matrix-green hover:bg-matrix-green hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-matrix-green shrink-0">
+                        SYNC
+                    </button>
                 </div>
                 <!-- DECORATIVE CORNER -->
                 <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-matrix-green"></div>
             </header>
 
-            <div class="flex-1 p-6 overflow-hidden flex flex-col">
-                <p class="text-[10px] text-matrix-green/60 uppercase tracking-widest mb-4 shrink-0">
-                    /// Drag records up or down to set chronological order. <br>
-                    /// Drag records from here into the left column to reassign them to a new Master Folder.
+            <div class="flex-1 overflow-hidden flex flex-col px-3 pt-2">
+                <p class="text-[9px] text-matrix-green/50 uppercase tracking-widest mb-2 shrink-0 hidden lg:block">
+                    /// Long-press drag handle to reorder. Drag into left panel to assign folder. Tap row to expand
+                    actions.
+                </p>
+                <p class="text-[9px] text-matrix-green/50 uppercase tracking-widest mb-2 shrink-0 lg:hidden">
+                    /// Tap row to expand actions. Long-press ⋮⋮ to drag.
                 </p>
 
-                <div id="articles-container" class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-3 pb-20">
-                    <!-- Article Items Injected Here -->
+                <!-- COLUMN HEADERS -->
+                <div
+                    class="hidden md:flex items-center gap-0 text-[7px] text-matrix-muted/50 tracking-[0.2em] uppercase border-b border-matrix-border/50 pb-1 mb-1 shrink-0 select-none">
+                    <div class="w-7 shrink-0"></div>
+                    <div class="w-7 shrink-0"></div>
+                    <div class="w-9 shrink-0"></div>
+                    <div class="flex-1 px-2">NAME</div>
+                    <div class="w-10 text-center shrink-0">AUD</div>
+                    <div class="w-16 text-center shrink-0">DATE</div>
+                    <div class="w-7 shrink-0"></div>
+                </div>
+
+                <div id="articles-container" class="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-24">
+                    <!-- Articles injected here -->
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- SOVEREIGN MODAL INJECTION -->
+    <!-- SOVEREIGN MODAL -->
     <div id="sovereign-modal"
-        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
         <div
-            class="bg-matrix-panel border border-matrix-green p-6 w-full max-w-md shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+            class="bg-matrix-panel border border-matrix-green p-5 w-full max-w-md shadow-[0_0_15px_rgba(167,139,250,0.2)]">
             <h3 id="modal-title" class="text-xs font-bold text-matrix-green tracking-widest uppercase mb-4">SYSTEM
                 PROMPT</h3>
             <input type="text" id="modal-input"
-                class="w-full bg-matrix-bg border border-matrix-border text-white px-3 py-2 text-sm font-mono focus:outline-none focus:border-matrix-green transition-colors mb-6"
+                class="w-full bg-matrix-bg border border-matrix-border text-white px-3 py-2 text-sm font-mono focus:outline-none focus:border-matrix-green transition-colors mb-4"
                 autocomplete="off" spellcheck="false">
+            <select id="modal-select" title="Select an option"
+                class="hidden w-full bg-matrix-bg border border-matrix-border text-white px-3 py-2 text-sm font-mono focus:outline-none focus:border-matrix-green transition-colors mb-4"></select>
+            <div id="modal-thumb-preview-wrap" class="hidden mb-4">
+                <img id="modal-thumb-preview" src="" alt="Thumbnail preview"
+                    class="w-full max-h-36 object-cover border border-matrix-border"
+                    onerror="this.classList.add('hidden')">
+            </div>
             <div class="flex justify-end gap-3">
                 <button id="modal-btn-cancel"
-                    class="text-[10px] font-bold text-matrix-muted hover:text-white transition-colors px-3 py-1 border border-transparent hover:border-matrix-border">[
-                    CANCEL ]</button>
+                    class="text-[10px] font-bold text-matrix-muted hover:text-white transition-colors px-3 py-1.5 border border-transparent hover:border-matrix-border">
+                    [ CANCEL ]</button>
                 <button id="modal-btn-confirm"
-                    class="text-[10px] font-bold text-black bg-matrix-green hover:bg-white transition-colors px-4 py-1 tracking-widest">[
-                    ACCEPT ]</button>
+                    class="text-[10px] font-bold text-black bg-matrix-green hover:bg-white transition-colors px-4 py-1.5 tracking-widest">
+                    [ ACCEPT ]</button>
             </div>
         </div>
     </div>
 
     <!-- GLOBAL FOOTER -->
-    <footer class="w-full border-t border-[#a78bfa]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
+    <footer class="w-full border-t border-[#a78bfa]/30 bg-[#05010a]/90 text-center py-3 shrink-0 z-40 relative mt-auto">
         <p class="text-[9px] text-[#a78bfa]/40 tracking-[0.3em] uppercase font-mono">
             SOVEREIGN SYSTEM V4.0 // END OF TRANSMISSION
         </p>
@@ -183,6 +348,11 @@
 
     <script type="module" src="/src/sidebar.js"></script>
     <script type="module" src="/admin/admin_curate.js"></script>
+
+    <!-- Toast notification -->
+    <div id="curate-toast"
+        class="fixed bottom-6 right-6 z-[200] px-4 py-2 text-xs font-bold tracking-widest uppercase border opacity-0 translate-y-2 transition-all duration-300 pointer-events-none"
+        style="background:#0a0a0a;border-color:#a78bfa;color:#a78bfa;"></div>
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 import { supabase } from '../src/supabaseClient.js';
+import { initAuth, currentUser, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -9,7 +10,7 @@ const authLock = document.getElementById('auth-lock');
 const authStatusTitle = document.getElementById('auth-status-title');
 const authStatusDetail = document.getElementById('auth-status-detail');
 
-let currentUser = null;
+// currentUser is imported from auth.js
 
 function logMessage(filename, message, statusStr) {
     if (logList.innerHTML.includes('AWAITING BATCH DROP')) {
@@ -33,45 +34,24 @@ function logMessage(filename, message, statusStr) {
     logList.prepend(li);
 }
 
-async function verifyAccess() {
-    try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-        if (sessionError || !session) {
-            authStatusTitle.innerText = "ACCESS DENIED";
-            authStatusDetail.innerText = "No active Supabase session detected.";
-            logMessage('SECURITY', 'No valid login found.', 'DENIED');
-            return;
-        }
-
-        currentUser = session.user;
-        authStatusDetail.innerText = "Verifying Role...";
-
-        const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', currentUser.id)
-            .single();
-
-        if (profileError || !profile || profile.role !== 'Sovereign') {
-            logMessage('SECURITY', `Role '${profile?.role || 'Unknown'}' authorized. Sovereign required.`, 'DENIED');
-            authStatusTitle.innerText = "CLEARANCE REJECTED";
-            authStatusDetail.innerText = "Account lacks Sovereign-level access.";
-            return;
-        }
-
-        // Silent unlock
-        authLock.style.opacity = '0';
-        setTimeout(() => { authLock.style.display = 'none'; }, 500);
-
-    } catch (err) {
-        logMessage('SYSTEM', err.message, 'ERROR');
-        authStatusTitle.innerText = "SYSTEM ERROR";
-        authStatusDetail.innerText = err.message;
+function onAuthChange() {
+    if (currentRole !== 'SOVEREIGN') {
+        authStatusTitle.innerText = "CLEARANCE REJECTED";
+        authStatusDetail.innerText = "Account lacks Sovereign-level access.";
+        logMessage('SECURITY', `Role '${currentRole}' denied. SOVEREIGN required.`, 'DENIED');
+        return;
     }
+    // Unlock the upload UI
+    authLock.style.opacity = '0';
+    setTimeout(() => { authLock.style.display = 'none'; }, 500);
 }
 
-document.addEventListener('DOMContentLoaded', verifyAccess);
+async function bootstrap() {
+    setAuthChangeCallback(onAuthChange);
+    await initAuth();
+}
+
+document.addEventListener('DOMContentLoaded', bootstrap);
 
 browseBtn.addEventListener('click', () => {
     if (!currentUser) return;
@@ -261,11 +241,6 @@ async function parseAndCommit(file) {
         });
 
         await Promise.all(proxyPromises);
-
-        console.log("=========== CRITICAL DEBUG PRE-DB DUMP ===========");
-        const finalImages = Array.from(bodyEl.querySelectorAll('img'));
-        finalImages.forEach((img, i) => console.log(`Image ${i} SRC in DOM:`, img.getAttribute('src')));
-        console.log("==================================================");
 
         // FORCE A HARD SERIALIZATION
         // innerHTML sometimes caches the initial load state on large detached DOM fragments.

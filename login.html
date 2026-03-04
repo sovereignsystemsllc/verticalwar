@@ -4,36 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovereign OS // SECURITY GATE</title>
+    <title>Sovereign Gate // Access Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/src/style.css">
 </head>
 
-<body class="bg-black text-[#00ff41] min-h-screen font-mono flex items-center justify-center p-8">
-  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
-  <div class="scanline-overlay"></div>
-    <div class="max-w-md w-full border border-gray-800 p-8 relative">
-        <h1 class="text-2xl font-bold mb-6 tracking-widest text-[#00ff41]">SOVEREIGN GATE</h1>
-        <div id="loginError" class="text-red-500 mb-4 hidden font-bold text-sm"></div>
+<body class="bg-[#05010a] text-[#a78bfa] min-h-screen font-mono flex items-center justify-center p-8">
+    <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+    <div class="scanline-overlay"></div>
+
+    <div class="max-w-md w-full border border-[#a78bfa]/40 p-8 glass-panel relative z-10">
+        <div class="flex items-center gap-3 mb-8 border-b border-[#a78bfa]/20 pb-6">
+            <div class="w-2 h-2 bg-[#a78bfa] animate-pulse rounded-full"></div>
+            <h1 class="text-xl font-bold tracking-[0.2em] uppercase text-white">SOVEREIGN GATE</h1>
+        </div>
+        <div id="loginError"
+            class="text-red-500 mb-4 hidden font-bold text-xs tracking-widest uppercase border border-red-500/30 p-2">
+        </div>
         <form id="loginForm" class="space-y-4">
             <div>
-                <label class="block text-xs text-gray-400 mb-1 tracking-widest">CREDENTIAL [EMAIL]</label>
+                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Operator Email</label>
                 <input type="email" id="email"
-                    class="w-full bg-black border border-gray-700 text-[#00ff41] p-2 focus:outline-none focus:border-[#00ff41]"
-                    required>
+                    class="w-full bg-transparent border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm"
+                    placeholder="identification@verticalwar.com" required>
             </div>
             <div>
-                <label class="block text-xs text-gray-400 mb-1 tracking-widest">CIPHER [PASSWORD]</label>
+                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Decryption Key</label>
                 <input type="password" id="password"
-                    class="w-full bg-black border border-gray-700 text-[#00ff41] p-2 focus:outline-none focus:border-[#00ff41]"
-                    required>
+                    class="w-full bg-transparent border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm"
+                    placeholder="••••••••••••••••" required>
             </div>
             <button type="submit"
-                class="w-full bg-[#00ff41] text-black font-bold py-2 px-4 hover:bg-white hover:text-black transition-colors duration-200 uppercase tracking-widest mt-4">
-                Initialize Decryption
+                class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-4 text-sm">
+                INITIATE OVERRIDE
             </button>
         </form>
+        <div class="mt-6 text-center">
+            <a href="/"
+                class="text-[10px] text-[#a78bfa]/40 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">←
+                RETURN TO CODEX</a>
+        </div>
     </div>
-    <script type="module" src="/login.js"></script>
+    <script type="module" src="/src/login.js"></script>
 </body>
 
 </html>

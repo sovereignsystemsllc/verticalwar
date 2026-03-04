@@ -1,4 +1,5 @@
 import { supabase } from '../src/supabaseClient.js';
+import { initAuth, currentUser, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
 // ─── DOM REFS ─────────────────────────────────────────────────────────────────
 const authLock = document.getElementById('auth-lock');
@@ -18,7 +19,7 @@ const toast = document.getElementById('toast');
 const toastMsg = document.getElementById('toast-msg');
 
 const BUCKET = 'article_assets';
-let currentUser = null;
+// currentUser imported from auth.js
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
 function showToast(msg, isError = false) {
@@ -43,44 +44,21 @@ function logUpload(filename, status, isError = false) {
     uploadLog.prepend(li);
 }
 
-// ─── SUPABASE AUTH CHECK ───────────────────────────────────────────────────────
-async function verifyAccess() {
-    try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-        if (sessionError || !session) {
-            authStatusTitle.innerText = 'ACCESS DENIED';
-            authStatusDetail.innerText = 'No active Supabase session detected.';
-            return;
-        }
-
-        currentUser = session.user;
-        authStatusDetail.innerText = 'Verifying Role...';
-
-        const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', currentUser.id)
-            .single();
-
-        if (profileError || !profile || profile.role !== 'Sovereign') {
-            authStatusTitle.innerText = 'CLEARANCE REJECTED';
-            authStatusDetail.innerText = `Role '${profile?.role || 'Unknown'}' lacks Sovereign access.`;
-            return;
-        }
-
-        // Silent unlock
-        authLock.style.opacity = '0';
-        authLock.style.transition = 'opacity 0.4s';
-        setTimeout(() => { authLock.style.display = 'none'; }, 450);
-
-        // Load the grid
-        await loadAssets();
-
-    } catch (err) {
-        authStatusTitle.innerText = 'SYSTEM ERROR';
-        authStatusDetail.innerText = err.message;
+function onAuthChange() {
+    if (currentRole !== 'SOVEREIGN') {
+        authStatusTitle.innerText = 'CLEARANCE REJECTED';
+        authStatusDetail.innerText = `Role '${currentRole}' lacks Sovereign access.`;
+        return;
     }
+    authLock.style.opacity = '0';
+    authLock.style.transition = 'opacity 0.4s';
+    setTimeout(() => { authLock.style.display = 'none'; }, 450);
+    loadAssets();
+}
+
+async function bootstrap() {
+    setAuthChangeCallback(onAuthChange);
+    await initAuth();
 }
 
 // ─── LOAD ASSETS FROM BUCKET ──────────────────────────────────────────────────
@@ -239,4 +217,4 @@ dropZone.addEventListener('drop', async (e) => {
 refreshBtn.addEventListener('click', loadAssets);
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', verifyAccess);
+document.addEventListener('DOMContentLoaded', bootstrap);

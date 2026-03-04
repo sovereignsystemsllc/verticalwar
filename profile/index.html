@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY PROFILE // SOVEREIGN OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { 'term-black': '#050505', 'term-purple': '#a78bfa' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body class="bg-[#05010a] text-white font-mono min-h-screen flex flex-col selection:bg-[#a78bfa] selection:text-black">
+    <div class="scanline-overlay"></div>
+
+    <!-- NAV -->
+    <nav
+        class="w-full h-14 border-b border-[#a78bfa]/30 px-6 flex justify-between items-center bg-[#05010a]/90 z-50 sticky top-0 backdrop-blur-md shrink-0">
+        <a href="/"
+            class="text-[10px] font-bold text-[#a78bfa]/70 hover:text-[#a78bfa] tracking-[0.2em] border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-3 py-1 uppercase transition-colors">[
+            CODEX ]</a>
+        <span class="text-[9px] text-[#a78bfa]/40 tracking-widest uppercase animate-pulse">OPERATOR PROFILE // SECURE
+            NODE</span>
+    </nav>
+
+    <main class="flex-1 max-w-2xl mx-auto w-full py-10 px-4">
+
+        <!-- Loading state -->
+        <div id="loading-state" class="flex items-center gap-3 py-20 justify-center">
+            <div class="w-3 h-3 bg-[#a78bfa] rounded-full animate-ping"></div>
+            <span class="text-xs text-[#a78bfa] tracking-widest animate-pulse uppercase">Authenticating...</span>
+        </div>
+
+        <!-- Profile card -->
+        <div id="profile-card" class="hidden">
+            <!-- Avatar + Name row -->
+            <div class="flex items-center gap-6 mb-8">
+                <div class="relative group shrink-0">
+                    <div id="avatar-display"
+                        class="w-20 h-20 rounded-full border-2 border-[#a78bfa]/50 flex items-center justify-center text-2xl font-bold text-[#a78bfa] bg-[#a78bfa]/10 overflow-hidden cursor-pointer"
+                        title="Click to change avatar">
+                        <!-- img or initials -->
+                    </div>
+                    <div class="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center cursor-pointer"
+                        onclick="document.getElementById('avatarInput').click()">
+                        <span class="text-[9px] text-white tracking-widest uppercase font-bold">CHANGE</span>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                </div>
+                <div class="min-w-0">
+                    <div id="display-name-display" class="text-xl font-bold text-white tracking-wide"></div>
+                    <div id="username-display" class="text-xs text-[#a78bfa]/60 tracking-widest mt-0.5"></div>
+                    <div id="role-badge"
+                        class="mt-2 inline-block text-[9px] font-bold px-2 py-0.5 border tracking-widest uppercase">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="bg-[#0a0a0a] border border-[#a78bfa]/20 p-6 space-y-5 mb-6">
+                <div class="flex items-center justify-between mb-1">
+                    <h2 class="text-[9px] text-[#a78bfa]/50 tracking-[0.3em] uppercase font-bold">// EDIT PROFILE</h2>
+                    <span id="save-status"
+                        class="hidden text-[9px] text-[#a78bfa] tracking-widest animate-pulse uppercase">✓ SAVED</span>
+                </div>
+
+                <div>
+                    <label class="block text-[9px] text-[#a78bfa]/50 tracking-widest uppercase mb-1">Display
+                        Name</label>
+                    <input id="iptDisplayName" type="text" maxlength="60"
+                        class="w-full bg-transparent border border-[#a78bfa]/20 focus:border-[#a78bfa] text-white px-3 py-2 text-sm font-mono focus:outline-none transition-colors"
+                        placeholder="How you appear to others">
+                </div>
+                <div>
+                    <label class="block text-[9px] text-[#a78bfa]/50 tracking-widest uppercase mb-1">Bio <span
+                            class="text-white/20">(max 200 chars)</span></label>
+                    <textarea id="iptBio" maxlength="200" rows="3"
+                        class="w-full bg-transparent border border-[#a78bfa]/20 focus:border-[#a78bfa] text-white px-3 py-2 text-sm font-mono focus:outline-none transition-colors resize-none"
+                        placeholder="A short transmission about yourself..."></textarea>
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                    <a id="public-profile-link" href="#" target="_blank"
+                        class="text-[9px] text-[#a78bfa]/40 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">
+                        → VIEW PUBLIC PROFILE
+                    </a>
+                    <button id="btnSaveProfile"
+                        class="text-[9px] font-bold px-4 py-2 bg-[#a78bfa] text-black hover:bg-white transition-colors tracking-widest uppercase">
+                        SAVE CHANGES
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reading List -->
+            <div class="bg-[#0a0a0a] border border-[#a78bfa]/20 p-6">
+                <h2 class="text-[9px] text-[#a78bfa]/50 tracking-[0.3em] uppercase font-bold mb-4">// READING LIST</h2>
+                <div id="bookmark-list" class="space-y-2">
+                    <p class="text-xs text-white/20 tracking-widest">Loading your saved articles...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not logged in state -->
+        <div id="auth-wall" class="hidden flex flex-col items-center justify-center py-20 gap-4 text-center">
+            <div class="text-4xl">🔒</div>
+            <p class="text-xs text-white/40 tracking-widest uppercase">You must be logged in to view your profile.</p>
+            <a href="/"
+                class="text-[9px] font-bold border border-[#a78bfa]/40 text-[#a78bfa] px-4 py-2 hover:bg-[#a78bfa] hover:text-black transition-colors tracking-widest uppercase">RETURN
+                TO CODEX</a>
+        </div>
+
+    </main>
+
+    <script type="module" src="/profile/profile.js"></script>
+</body>
+
+</html>

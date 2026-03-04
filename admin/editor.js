@@ -1,4 +1,5 @@
 import { supabase } from '../src/supabaseClient.js';
+import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
 // Terminal Logging utility
 const terminal = document.getElementById('statusTerminal');
@@ -27,32 +28,7 @@ function logTerminal(message, type = 'INFO') {
 let quill;
 let currentArticleId = null;
 
-// The Sovereign Lock
-async function verifyAccess() {
-    logTerminal('Verifying Sovereign clearance...');
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-    if (sessionError || !session) {
-        logTerminal('No session found. Archiving.', 'ERROR');
-        window.location.replace('/login.html');
-        return null;
-    }
-
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-
-    if (!profile || profile.role !== 'Sovereign') {
-        logTerminal('Insufficient clearance.', 'ERROR');
-        window.location.replace('/login.html');
-        return null;
-    }
-
-    logTerminal('Clearance granted. The Forge is Online.');
-    return session.user;
-}
+// Auth handled by auth.js — see bootstrap() below
 
 // Initialize Quill and custom image handler
 function initForge() {
@@ -109,6 +85,52 @@ function initForge() {
     });
 }
 
+// ============================================================
+// VIDEO EMBED UTILITIES
+// ============================================================
+
+/**
+ * Converts any supported watch-page URL into an embeddable URL.
+ * Supports: YouTube (watch, shorts, youtu.be), Rumble
+ * Returns null if the URL is unrecognized.
+ */
+function resolveEmbedUrl(url) {
+    if (!url) return null;
+    try {
+        const u = new URL(url);
+
+        // YouTube: youtube.com/watch?v=ID or youtube.com/shorts/ID
+        if (u.hostname.includes('youtube.com')) {
+            const id = u.searchParams.get('v') || u.pathname.split('/').pop();
+            if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+        }
+
+        // YouTube short-link: youtu.be/ID
+        if (u.hostname === 'youtu.be') {
+            const id = u.pathname.replace('/', '');
+            if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+        }
+
+        // Rumble: rumble.com/vXXXXX-title.html → embed/vXXXXX/
+        if (u.hostname.includes('rumble.com')) {
+            const match = u.pathname.match(/\/(v[a-z0-9]+)/i);
+            if (match) return `https://rumble.com/embed/${match[1]}/`;
+        }
+    } catch (_) { /* invalid URL — ignore */ }
+    return null;
+}
+
+/** Show green confirmation label in editor when URL resolves */
+function showVideoPreview(url) {
+    const label = document.getElementById('videoPreviewLabel');
+    if (!label) return;
+    if (resolveEmbedUrl(url)) {
+        label.classList.remove('hidden');
+    } else {
+        label.classList.add('hidden');
+    }
+}
+
 // Load Article Data
 async function loadArticle() {
     const params = new URLSearchParams(window.location.search);
@@ -137,6 +159,12 @@ async function loadArticle() {
     document.getElementById('iptSubtitle').value = data.subtitle || '';
     document.getElementById('iptSlug').value = data.slug || '';
     document.getElementById('iptThumbnail').value = data.thumbnail_url || '';
+
+    const videoEl = document.getElementById('iptVideoUrl');
+    if (videoEl) {
+        videoEl.value = data.video_url || '';
+        if (data.video_url) showVideoPreview(data.video_url);
+    }
 
     if (data.post_date) {
         // Format for datetime-local (YYYY-MM-DDThh:mm)
@@ -190,6 +218,8 @@ async function saveArticle() {
     // Extract root HTML from Quill
     const content_html = quill.root.innerHTML;
 
+    const video_url = (document.getElementById('iptVideoUrl')?.value || '').trim() || null;
+
     const payload = {
         title,
         subtitle,
@@ -198,7 +228,8 @@ async function saveArticle() {
         post_date,
         audience,
         status,
-        content_html
+        content_html,
+        video_url,
     };
 
     let dbResponse;
@@ -266,10 +297,15 @@ async function deleteArticle() {
     }
 }
 
-// Boot Sequence
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = await verifyAccess();
-    if (user) {
+// Boot Sequence — unified through auth.js
+async function bootstrap() {
+    setAuthChangeCallback(async () => {
+        if (currentRole !== 'SOVEREIGN') {
+            logTerminal('Insufficient clearance. Redirecting...', 'ERROR');
+            setTimeout(() => window.location.replace('/'), 1500);
+            return;
+        }
+        logTerminal('Clearance granted. The Forge is Online.');
         initForge();
         await loadArticle();
 
@@ -283,5 +319,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 slugInput.value = generateSlug(e.target.value);
             }
         });
-    }
-});
+
+        // Video URL live feedback
+        const videoEl = document.getElementById('iptVideoUrl');
+        if (videoEl) {
+            videoEl.addEventListener('input', () => showVideoPreview(videoEl.value.trim()));
+        }
+    });
+    await initAuth();
+}
+
+document.addEventListener('DOMContentLoaded', bootstrap);

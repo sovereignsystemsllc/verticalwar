@@ -1,13 +1,24 @@
 import { supabase } from '../src/supabaseClient.js';
 import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
-// State
+// ============================================================
+// STATE
+// ============================================================
 let masterSeries = [];
 let allArticles = [];
-let activeFolderId = null;
+let folderMap = new Map(); // article_id -> Set<series_id>
+let activeFolderId = null;      // null = UNASSIGNED view
 let matrixSearchQuery = '';
+let isGlobalSearch = false;
 
-// DOM Elements
+let articlesSortable = null;
+let foldersSortable = null;
+
+const COLOR_PALETTE = [null, '#a78bfa', '#f59e0b', '#ef4444', '#22d3ee', '#86efac', '#f472b6'];
+
+// ============================================================
+// DOM REFS
+// ============================================================
 const foldersContainer = document.getElementById('series-container');
 const articlesContainer = document.getElementById('articles-container');
 const activeFolderTitle = document.getElementById('active-folder-title');
@@ -17,38 +28,108 @@ const btnSaveOrder = document.getElementById('btn-save-order');
 const btnNewFolder = document.getElementById('btn-new-folder');
 const btnNewHeading = document.getElementById('btn-new-heading');
 const btnSaveFolderOrder = document.getElementById('btn-save-folder-order');
+const btnSyncTimeline = document.getElementById('btn-sync-timeline');
+const matrixSearchInput = document.getElementById('matrix-search');
+const chkGlobalSearch = document.getElementById('chk-global-search');
+const mainWorkspace = document.getElementById('main-workspace');
+const tabFolders = document.getElementById('tab-folders');
+const tabArticles = document.getElementById('tab-articles');
+const articleCountTab = document.getElementById('article-count-tab');
+const toastEl = document.getElementById('curate-toast');
 
-// Sortable Instances
-let articlesSortable = null;
-let foldersSortable = null;
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, isError = false) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.className = `fixed bottom-6 right-6 z-[200] px-4 py-2 text-xs font-bold tracking-widest uppercase border transition-all duration-300 ${isError
+        ? 'bg-red-900/80 border-red-500 text-red-300'
+        : 'bg-[#0a0a0a] border-matrix-green text-matrix-green'
+        }`;
+    toastEl.classList.remove('opacity-0', 'translate-y-2');
+    setTimeout(() => {
+        toastEl.classList.add('opacity-0', 'translate-y-2');
+    }, 2800);
+}
 
-// ============================================
-// CUSTOM PROMPT MODALS
-// ============================================
+// ============================================================
+// MOBILE TABS
+// ============================================================
+function isMobile() { return window.innerWidth < 1024; }
 
-function sovereignPrompt(message, defaultValue = '') {
+function setMobileTab(tab) {
+    if (!isMobile()) return;
+    mainWorkspace.dataset.active = tab;
+    if (!tabFolders || !tabArticles) return;
+    const onFolders = tab === 'folders';
+    tabFolders.classList.toggle('text-matrix-green', onFolders);
+    tabFolders.classList.toggle('border-matrix-green', onFolders);
+    tabFolders.classList.toggle('text-matrix-muted', !onFolders);
+    tabFolders.classList.toggle('border-transparent', !onFolders);
+    tabArticles.classList.toggle('text-matrix-green', !onFolders);
+    tabArticles.classList.toggle('border-matrix-green', !onFolders);
+    tabArticles.classList.toggle('text-matrix-muted', onFolders);
+    tabArticles.classList.toggle('border-transparent', onFolders);
+}
+
+if (tabFolders) tabFolders.addEventListener('click', () => setMobileTab('folders'));
+if (tabArticles) tabArticles.addEventListener('click', () => setMobileTab('articles'));
+
+// ============================================================
+// MODAL SYSTEM
+// ============================================================
+
+// Shared helpers used by all modal functions
+function _modalRefs() {
+    return {
+        modal: document.getElementById('sovereign-modal'),
+        title: document.getElementById('modal-title'),
+        inputEl: document.getElementById('modal-input'),
+        selectEl: document.getElementById('modal-select'),
+        thumbWrap: document.getElementById('modal-thumb-preview-wrap'),
+        thumbImg: document.getElementById('modal-thumb-preview'),
+        btnCancel: document.getElementById('modal-btn-cancel'),
+        btnConfirm: document.getElementById('modal-btn-confirm'),
+    };
+}
+
+// Text input modal — returns string or null (cancelled)
+function sovereignPrompt(message, defaultValue = '', showThumbPreview = false) {
     return new Promise((resolve) => {
-        const modal = document.getElementById('sovereign-modal');
-        const title = document.getElementById('modal-title');
-        const input = document.getElementById('modal-input');
-        const btnCancel = document.getElementById('modal-btn-cancel');
-        const btnConfirm = document.getElementById('modal-btn-confirm');
+        const { modal, title, inputEl, selectEl, thumbWrap, thumbImg, btnCancel, btnConfirm } = _modalRefs();
 
         title.innerText = message;
-        input.classList.remove('hidden');
-        input.value = defaultValue;
+        if (selectEl) selectEl.classList.add('hidden');
+        inputEl.classList.remove('hidden');
+        inputEl.value = defaultValue;
+
+        // Named reference prevents listener accumulation (fixes the leak bug)
+        const onThumbInput = () => { thumbImg.src = inputEl.value; };
+
+        if (showThumbPreview && defaultValue) {
+            thumbImg.src = defaultValue;
+            thumbWrap.classList.remove('hidden');
+            inputEl.addEventListener('input', onThumbInput);
+        } else {
+            thumbWrap.classList.add('hidden');
+            thumbImg.src = '';
+        }
+
         modal.classList.remove('hidden');
-        input.focus();
+        inputEl.focus();
 
         const cleanup = () => {
             modal.classList.add('hidden');
+            thumbWrap.classList.add('hidden');
+            inputEl.removeEventListener('input', onThumbInput); // properly removed
             btnCancel.removeEventListener('click', onCancel);
             btnConfirm.removeEventListener('click', onConfirm);
-            input.removeEventListener('keydown', onKeydown);
+            inputEl.removeEventListener('keydown', onKeydown);
         };
 
         const onCancel = () => { cleanup(); resolve(null); };
-        const onConfirm = () => { cleanup(); resolve(input.value); };
+        const onConfirm = () => { cleanup(); resolve(inputEl.value); };
         const onKeydown = (e) => {
             if (e.key === 'Enter') onConfirm();
             if (e.key === 'Escape') onCancel();
@@ -56,26 +137,24 @@ function sovereignPrompt(message, defaultValue = '') {
 
         btnCancel.addEventListener('click', onCancel);
         btnConfirm.addEventListener('click', onConfirm);
-        input.addEventListener('keydown', onKeydown);
+        inputEl.addEventListener('keydown', onKeydown);
     });
 }
 
+// Confirm modal — returns true/false
 function sovereignConfirm(message) {
     return new Promise((resolve) => {
-        const modal = document.getElementById('sovereign-modal');
-        const title = document.getElementById('modal-title');
-        const input = document.getElementById('modal-input');
-        const btnCancel = document.getElementById('modal-btn-cancel');
-        const btnConfirm = document.getElementById('modal-btn-confirm');
+        const { modal, title, inputEl, selectEl, thumbWrap, btnCancel, btnConfirm } = _modalRefs();
 
         title.innerText = message;
-        input.classList.add('hidden'); // Hide input for yes/no confirms
-        input.value = '';
+        inputEl.classList.add('hidden');
+        if (selectEl) selectEl.classList.add('hidden');
+        thumbWrap.classList.add('hidden');
         modal.classList.remove('hidden');
 
         const cleanup = () => {
             modal.classList.add('hidden');
-            input.classList.remove('hidden'); // reset for future prompts
+            inputEl.classList.remove('hidden');
             btnCancel.removeEventListener('click', onCancel);
             btnConfirm.removeEventListener('click', onConfirm);
         };
@@ -87,6 +166,43 @@ function sovereignConfirm(message) {
         btnConfirm.addEventListener('click', onConfirm);
     });
 }
+
+// Select dropdown modal — options: [{ value, label }] — returns chosen value or null
+function sovereignSelect(message, options) {
+    return new Promise((resolve) => {
+        const { modal, title, inputEl, selectEl, thumbWrap, btnCancel, btnConfirm } = _modalRefs();
+
+        if (!selectEl) { resolve(null); return; }
+
+        title.innerText = message;
+        inputEl.classList.add('hidden');
+        thumbWrap.classList.add('hidden');
+        selectEl.innerHTML = options.map(o =>
+            `<option value="${o.value}">${o.label}</option>`
+        ).join('');
+        selectEl.classList.remove('hidden');
+        modal.classList.remove('hidden');
+        selectEl.focus();
+
+        const cleanup = () => {
+            modal.classList.add('hidden');
+            inputEl.classList.remove('hidden');
+            selectEl.classList.add('hidden');
+            btnCancel.removeEventListener('click', onCancel);
+            btnConfirm.removeEventListener('click', onConfirm);
+        };
+
+        const onCancel = () => { cleanup(); resolve(null); };
+        const onConfirm = () => { cleanup(); resolve(selectEl.value || null); };
+
+        btnCancel.addEventListener('click', onCancel);
+        btnConfirm.addEventListener('click', onConfirm);
+    });
+}
+
+// ============================================================
+// AUTH
+// ============================================================
 
 async function bootstrap() {
     setAuthChangeCallback(onAuthChange);
@@ -101,149 +217,232 @@ function onAuthChange() {
     loadData();
 }
 
-async function loadData() {
-    // Load Series
-    const { data: sData, error: sErr } = await supabase.from('series').select('*').order('order_index', { ascending: true });
-    if (sErr) return console.error("Series Load Error", sErr);
-    masterSeries = sData || [];
+// ============================================================
+// DATA LAYER — parallel fetches
+// ============================================================
 
-    // Load Articles
-    const { data: aData, error: aErr } = await supabase.from('articles').select('id, title, series, series_id, order_index, post_date').order('order_index', { ascending: true });
-    if (aErr) return console.error("Articles Load Error", aErr);
-    allArticles = aData || [];
+async function loadData() {
+    const [sRes, aRes, fRes] = await Promise.all([
+        supabase.from('series').select('*').order('order_index', { ascending: true }),
+        supabase.from('articles')
+            .select('id, title, subtitle, series, series_id, order_index, post_date, audience, thumbnail_url, color_tag, hidden')
+            .order('order_index', { ascending: true }),
+        supabase.from('article_folders').select('article_id, series_id'),
+    ]);
+
+    if (sRes.error) { console.error('Series load failed:', sRes.error); return; }
+    if (aRes.error) { console.error('Articles load failed:', aRes.error); return; }
+
+    masterSeries = sRes.data || [];
+    allArticles = aRes.data || [];
+
+    folderMap = new Map();
+    if (!fRes.error && fRes.data) {
+        for (const row of fRes.data) {
+            if (!folderMap.has(row.article_id)) folderMap.set(row.article_id, new Set());
+            folderMap.get(row.article_id).add(row.series_id);
+        }
+    }
 
     seriesCount.innerText = `${masterSeries.length} FOLDERS`;
-
     renderFolders();
-    renderArticles(null); // Load Unassigned Singles by default
+    renderArticles(activeFolderId);
 }
+
+// ============================================================
+// SAVE ARTICLE ORDER — single upsert, not N requests
+// ============================================================
+
+async function saveAllArticleOrder() {
+    const items = Array.from(articlesContainer.children);
+    const updates = [];
+
+    items.forEach((item, index) => {
+        const id = item.dataset.articleId;
+        if (!id) return;
+        updates.push({ id, order_index: index });
+        const a = allArticles.find(art => art.id === id);
+        if (a) a.order_index = index;
+    });
+
+    if (updates.length === 0) return;
+
+    const { error } = await supabase.from('articles').upsert(updates, { onConflict: 'id' });
+    if (error) { console.error('Article order upsert failed:', error); showToast('Save failed.', true); return; }
+
+    allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+}
+
+// ============================================================
+// FOLDER HIGHLIGHT — lightweight, no DOM rebuild
+// ============================================================
+
+function syncFolderHighlight() {
+    foldersContainer.querySelectorAll('[data-folder-id]').forEach(el => {
+        const fid = el.dataset.folderId;
+        const isActive = (activeFolderId === null && fid === 'unassigned') ||
+            (activeFolderId !== null && fid === String(activeFolderId));
+
+        if (el.dataset.folderType === 'folder') {
+            el.classList.toggle('bg-matrix-green', isActive);
+            el.classList.toggle('text-black', isActive);
+            el.classList.toggle('border-matrix-green', isActive);
+            el.classList.toggle('bg-transparent', !isActive);
+            el.classList.toggle('text-matrix-text', !isActive);
+            el.classList.toggle('border-matrix-border', !isActive);
+        } else if (fid === 'unassigned') {
+            el.classList.toggle('bg-matrix-green', isActive);
+            el.classList.toggle('text-black', isActive);
+            el.classList.toggle('border-matrix-green', isActive);
+            el.classList.toggle('bg-transparent', !isActive);
+            el.classList.toggle('text-matrix-muted', !isActive);
+            el.classList.toggle('border-matrix-border', !isActive);
+        }
+    });
+}
+
+// ============================================================
+// RENDER: FOLDERS (LEFT PANEL)
+// ============================================================
 
 function renderFolders() {
     foldersContainer.innerHTML = '';
 
-    // Default Unassigned Folder
+    // ── UNASSIGNED SINGLES bucket ──────────────────────────
+    const unassignedCount = allArticles.filter(a => !a.series_id).length;
+    const unIsActive = activeFolderId === null && !isGlobalSearch;
+
     const unEl = document.createElement('div');
-    unEl.className = `p-3 mb-2 flex justify-between items-center cursor-pointer border transition-colors ${activeFolderId === null ? 'bg-matrix-green text-black border-matrix-green' : 'bg-transparent text-matrix-muted border-matrix-border hover:border-matrix-green hover:text-white'}`;
-    unEl.innerHTML = `<span class="uppercase font-bold tracking-widest text-xs">UNASSIGNED SINGLES</span>`;
-    unEl.onclick = () => renderArticles(null);
-    unEl.dataset.folderId = "unassigned";
+    unEl.dataset.folderId = 'unassigned';
+    unEl.className = `p-2.5 mb-1 flex justify-between items-center cursor-pointer border transition-colors ${unIsActive
+        ? 'bg-matrix-green text-black border-matrix-green'
+        : 'bg-transparent text-matrix-muted border-matrix-border hover:border-matrix-green hover:text-white'
+        }`;
+    unEl.innerHTML = `
+        <span class="uppercase font-bold tracking-widest text-xs flex items-center gap-2">
+            <span class="opacity-60 text-[10px]">📁</span> UNASSIGNED
+        </span>
+        <span class="text-[9px] font-bold tracking-widest">(${unassignedCount})</span>`;
+
+    unEl.onclick = () => {
+        isGlobalSearch = false;
+        if (chkGlobalSearch) chkGlobalSearch.checked = false;
+        renderArticles(null);
+        setMobileTab('articles');
+    };
+
+    // Accept article drops onto unassigned bucket
+    new Sortable(unEl, {
+        group: 'articles-group',
+        delay: 150,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 3,
+        onAdd: async (evt) => {
+            const items = (evt.items && evt.items.length > 0) ? evt.items : [evt.item];
+            for (const item of items) {
+                if (item.dataset.articleId) await moveToFolder(item.dataset.articleId, null, null, true);
+            }
+            renderFolders();
+            renderArticles(activeFolderId);
+        }
+    });
+
     foldersContainer.appendChild(unEl);
 
+    // ── SERIES / HEADINGS ──────────────────────────────────
     masterSeries.forEach(s => {
         if (s.title === '[HEADING ONLY]') {
-            const cat = s.category_label || 'UNCATEGORIZED';
+            // Category heading — draggable section divider
             const head = document.createElement('div');
-            head.className = "cat-heading pt-10 pb-6 border-b border-matrix-border group relative cursor-grab bg-transparent transition-colors";
             head.dataset.folderId = s.id;
-
+            head.className = 'pt-6 pb-2 border-b border-matrix-border/40 relative cursor-grab group';
             head.innerHTML = `
-                <div class="flex items-start justify-between mb-1 w-full">
-                    <div class="flex items-start px-4 min-w-0 flex-1">
-                        <h3 class="text-base text-matrix-green font-bold tracking-[0.2em] uppercase break-words">${cat}</h3>
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="text-[9px] text-matrix-green/70 font-bold tracking-[0.4em] uppercase">${s.category_label || 'UNCATEGORIZED'}</h3>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="btn-edit-folder text-[8px] text-matrix-green/50 hover:text-matrix-green font-bold">[E]</button>
+                        <button class="btn-del-folder  text-[8px] text-matrix-green/50 hover:text-red-500 font-bold">[D]</button>
                     </div>
-                    <div class="flex gap-4 pr-2 opacity-100 z-10 relative">
-                        <button class="btn-edit-folder text-sm font-bold text-matrix-green/70 hover:text-matrix-green hover:underline transition-colors">[EDIT]</button>
-                        <button class="btn-del-folder text-sm font-bold text-matrix-green/70 hover:text-red-500 hover:underline transition-colors">[DEL]</button>
-                    </div>
-                </div>
-            `;
-
-            // Explicit Event Listeners
-            head.querySelector('.btn-edit-folder').addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.editFolder(s.id);
-            });
-
-            head.querySelector('.btn-del-folder').addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.deleteFolder(s.id, true);
-            });
-
+                </div>`;
+            head.querySelector('.btn-edit-folder').addEventListener('click', e => { e.stopPropagation(); editFolder(s.id); });
+            head.querySelector('.btn-del-folder').addEventListener('click', e => { e.stopPropagation(); deleteFolder(s.id, true); });
             foldersContainer.appendChild(head);
+
         } else {
+            // Regular folder — count includes primary + secondary (multi-folder) assignments
+            const isActive = activeFolderId === s.id;
+            const count = allArticles.filter(a =>
+                a.series_id === s.id || folderMap.get(a.id)?.has(s.id)
+            ).length;
+
             const el = document.createElement('div');
-            el.className = `p-3 mb-2 flex flex-col cursor-pointer border transition-colors relative group ${activeFolderId === s.id ? 'bg-matrix-green text-black border-matrix-green' : 'bg-transparent text-matrix-text border-matrix-border hover:border-matrix-green'}`;
             el.dataset.folderId = s.id;
+            el.dataset.folderType = 'folder';
+            el.className = `p-2.5 mb-1 flex items-center gap-2 cursor-pointer border transition-colors relative group overflow-hidden ${isActive
+                ? 'bg-matrix-green text-black border-matrix-green'
+                : 'bg-transparent text-matrix-text border-matrix-border hover:border-matrix-green'
+                }`;
 
-            // Explicit Event Listener for the main folder body
             el.addEventListener('click', () => {
+                isGlobalSearch = false;
+                if (chkGlobalSearch) chkGlobalSearch.checked = false;
                 renderArticles(s.id);
+                setMobileTab('articles');
             });
-
-            let count = allArticles.filter(a => a.series_id === s.id).length;
 
             el.innerHTML = `
-                <div class="flex justify-between items-start mb-2 z-10 relative w-full">
-                    <div class="flex items-start px-2 min-w-0 flex-1 pr-2">
-                        <span class="uppercase font-bold tracking-widest text-lg break-words" style="${activeFolderId === s.id ? 'color: #000;' : ''}">${s.title}</span>
-                    </div>
-                    <div class="flex gap-4 opacity-100 z-20 relative shrink-0">
-                        <button class="btn-edit-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(0,0,0,0.3);' : 'color: rgba(167, 139, 250, 0.7);'}">[EDIT]</button>
-                        <button class="btn-del-folder text-sm font-bold transition-all" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.6); text-shadow: 0 0 2px rgba(153,27,27,0.3);' : 'color: rgba(167, 139, 250, 0.7);'}">[DEL]</button>
-                    </div>
-                </div>
-                <span class="text-xs uppercase tracking-widest pl-2 pointer-events-none w-full block relative z-10" style="${activeFolderId === s.id ? 'color: rgba(0,0,0,0.7); font-weight: 700;' : 'color: #6b7280;'}">${count} Records</span>
-                
-                <div class="w-full mt-2 pt-1 border-t border-matrix-border/20 flex flex-col items-center justify-center opacity-30 pointer-events-none relative z-10">
-                    <span class="text-[8px] tracking-[0.5em] font-bold">||||</span>
-                </div>
+                <span class="text-[10px] opacity-50 shrink-0">📁</span>
+                <span class="min-w-0 flex-1 uppercase font-bold tracking-wide text-xs truncate" style="${isActive ? 'color:#000' : ''}">${s.title}</span>
+                <span class="text-[9px] font-bold shrink-0 ml-auto" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:#6b7280'}">(${count})</span>
+                <div class="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button class="btn-edit-folder text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[E]</button>
+                    <button class="btn-del-folder  text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[D]</button>
+                </div>`;
 
-                <div class="drag-blocker absolute top-0 left-0 w-full h-[80%] z-0 cursor-pointer" title="Grab folder from the bottom grip zone to drag"></div>
-            `;
+            el.querySelector('.btn-edit-folder').addEventListener('click', e => { e.stopPropagation(); editFolder(s.id); });
+            el.querySelector('.btn-del-folder').addEventListener('click', e => { e.stopPropagation(); deleteFolder(s.id); });
 
-            // Explicit Event Listeners
-            el.querySelector('.btn-edit-folder').addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.editFolder(s.id);
-            });
-
-            el.querySelector('.btn-del-folder').addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.deleteFolder(s.id);
-            });
-
+            // Drop target: article dragged from right panel lands here
             new Sortable(el, {
                 group: 'articles-group',
-                onAdd: async function (evt) {
-                    const draggedItems = (evt.items && evt.items.length > 0) ? evt.items : [evt.item];
-                    for (let item of draggedItems) {
-                        const articleId = item.dataset.articleId;
-                        if (articleId) await moveToFolder(articleId, s.id, s.title, true);
+                delay: 150,
+                delayOnTouchOnly: true,
+                touchStartThreshold: 3,
+                onAdd: async (evt) => {
+                    const items = (evt.items && evt.items.length > 0) ? evt.items : [evt.item];
+                    for (const item of items) {
+                        if (item.dataset.articleId) await moveToFolder(item.dataset.articleId, s.id, s.title, true);
                     }
                     renderFolders();
                     renderArticles(activeFolderId);
                 }
             });
+
             foldersContainer.appendChild(el);
         }
     });
 
-    if (foldersSortable) {
-        foldersSortable.destroy();
-    }
-
+    // Folder drag-to-reorder
+    if (foldersSortable) foldersSortable.destroy();
     foldersSortable = new Sortable(foldersContainer, {
         group: 'folders-group',
         animation: 150,
+        delay: 150,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 3,
         filter: '.drag-blocker',
-        preventOnFilter: false, // Let clicks pass through the blocker to activate the folder
+        preventOnFilter: false,
         direction: 'vertical',
         invertSwap: true,
         swapThreshold: 0.65,
         emptyInsertThreshold: 20,
         ghostClass: 'drag-ghost',
         chosenClass: 'drag-chosen',
-        onMove: function (evt) {
-            // Manually lock 'Unassigned' instead of using the buggy filter property
-            if (evt.dragged.dataset.folderId === "unassigned" || evt.related.dataset.folderId === "unassigned") {
-                return false;
-            }
+        onMove: (evt) => {
+            if (evt.dragged.dataset.folderId === 'unassigned' ||
+                evt.related?.dataset.folderId === 'unassigned') return false;
         },
-        onEnd: function (evt) {
+        onEnd: () => {
             if (btnSaveFolderOrder) {
                 btnSaveFolderOrder.classList.remove('hidden');
                 btnSaveFolderOrder.classList.add('animate-pulse');
@@ -252,78 +451,170 @@ function renderFolders() {
     });
 }
 
+// ============================================================
+// RENDER: ARTICLES (RIGHT PANEL) — FTP file-list style
+// ============================================================
+
 function renderArticles(folderId) {
     activeFolderId = folderId;
 
-    // Update Title
-    if (folderId === null) {
-        activeFolderTitle.innerText = "UNASSIGNED SINGLES";
+    // Path / title bar
+    if (isGlobalSearch) {
+        activeFolderTitle.innerText = `GLOBAL // ${matrixSearchQuery || 'ALL RECORDS'}`;
+    } else if (folderId === null) {
+        activeFolderTitle.innerText = 'UNASSIGNED SINGLES';
     } else {
         const f = masterSeries.find(s => s.id === folderId);
-        activeFolderTitle.innerText = f ? f.title : "UNKNOWN";
+        activeFolderTitle.innerText = f ? f.title.toUpperCase() : 'UNKNOWN';
     }
 
     // Filter
-    let filtered = [];
-    if (folderId === null) {
-        filtered = allArticles.filter(a => !a.series_id);
-    } else {
-        filtered = allArticles.filter(a => a.series_id === folderId);
-    }
+    let filtered = isGlobalSearch
+        ? [...allArticles]
+        : (folderId === null
+            ? allArticles.filter(a => !a.series_id)
+            : allArticles.filter(a => a.series_id === folderId));
 
+    // Search
     if (matrixSearchQuery) {
         const q = matrixSearchQuery.toLowerCase();
         filtered = filtered.filter(a => a.title.toLowerCase().includes(q));
     }
 
     articleCount.innerText = `${filtered.length} RECORDS`;
+    if (articleCountTab) articleCountTab.innerText = `(${filtered.length})`;
 
-    // Re-highlight left panel by fully reconstructing the DOM state
-    renderFolders();
+    // Sync folder highlight without rebuilding DOM
+    syncFolderHighlight();
 
+    // Close any open trays before wiping
     articlesContainer.innerHTML = '';
 
     if (filtered.length === 0) {
-        articlesContainer.innerHTML = '<div class="text-[10px] text-matrix-green/50 animate-pulse uppercase tracking-[0.2em] p-4 text-center border border-matrix-border/50 bg-matrix-green/5">Zone Empty. No records located.</div>';
+        articlesContainer.innerHTML = `
+            <div class="text-[10px] text-matrix-green/40 animate-pulse uppercase tracking-[0.2em] p-6 text-center border border-matrix-border/30">
+                ZONE EMPTY — NO RECORDS
+            </div>`;
+        setupArticlesSortable();
         return;
     }
 
     filtered.forEach((a, idx) => {
-        const dateStr = a.post_date ? new Date(a.post_date).toLocaleDateString() : 'UNKNOWN_DATE';
+        const dateStr = a.post_date
+            ? new Date(a.post_date).toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' })
+            : '--/--/--';
+        const colorStyle = a.color_tag
+            ? `background:${a.color_tag};`
+            : 'background:rgba(167,139,250,0.15);border-color:rgba(167,139,250,0.3);';
+        const pillCls = a.audience === 'only_paid' ? 'pill-members' : 'pill-everyone';
+        const pillTxt = a.audience === 'only_paid' ? 'MBR' : 'ALL';
+        const thumbHtml = a.thumbnail_url
+            ? `<img src="${a.thumbnail_url}" alt="" class="thumb-preview" data-action="thumb">`
+            : `<div class="thumb-placeholder" data-action="thumb">IMG</div>`;
+
+        const extras = folderMap.get(a.id);
+        const multiBadge = (extras && extras.size > 0)
+            ? `<span class="text-[7px] text-matrix-green/60 border border-matrix-green/30 px-1">+${extras.size}F</span>`
+            : '';
+
         const el = document.createElement('div');
         el.dataset.articleId = a.id;
-        el.className = 'bg-matrix-panel border border-matrix-border p-4 flex flex-col gap-2 hover:bg-matrix-green/5 transition-colors group relative pl-10'; // Added pl-10 for handle space
+        el.className = `file-row border-b border-matrix-border/30 flex items-center hover:bg-matrix-green/5 transition-colors group relative${a.hidden ? ' article-hidden-row' : ''}`;
 
         el.innerHTML = `
-            <div class="drag-handle absolute left-0 top-0 bottom-0 w-8 border-r border-matrix-border bg-black/20 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:bg-matrix-green/20 hover:text-matrix-green transition-colors text-matrix-muted text-xs">
-                ⋮⋮
+            <!-- DRAG HANDLE -->
+            <div class="drag-handle w-7 self-stretch flex items-center justify-center cursor-grab active:cursor-grabbing text-matrix-muted/30 hover:text-matrix-green hover:bg-matrix-green/10 transition-colors text-xs border-r border-matrix-border/30 shrink-0">⋮</div>
+
+            <!-- COLOR DOT -->
+            <div class="w-7 flex items-center justify-center shrink-0 pl-1">
+                <div class="color-dot" style="${colorStyle}" data-action="color" title="Cycle color tag"></div>
             </div>
-            <div class="flex justify-between items-start">
-                <span class="text-[10px] text-matrix-green/50 tracking-[0.2em] group-hover:text-matrix-green transition-colors">SYS_RECORD // IDX_${a.order_index ?? idx}</span>
-                <span class="text-[10px] text-matrix-muted font-bold">${dateStr}</span>
+
+            <!-- THUMBNAIL -->
+            <div class="w-9 flex items-center justify-center shrink-0 py-1.5">${thumbHtml}</div>
+
+            <!-- TITLE + FLAGS -->
+            <div class="flex-1 min-w-0 px-2 py-2">
+                <p class="text-xs font-bold tracking-wide truncate${a.hidden ? ' line-through opacity-40' : ''}">${a.title}</p>
+                <div class="flex items-center gap-1 mt-0.5">
+                    ${multiBadge}
+                    ${a.hidden ? '<span class="text-[7px] text-red-500/70 border border-red-500/30 px-1 tracking-widest">HIDDEN</span>' : ''}
+                </div>
             </div>
-            <h3 class="text-sm font-bold tracking-wider">${a.title}</h3>
-        `;
+
+            <!-- AUDIENCE PILL -->
+            <div class="w-10 flex items-center justify-center shrink-0">
+                <button class="${pillCls} text-[7px] font-bold px-1.5 py-0.5 tracking-widest cursor-pointer hover:opacity-80 rounded-full" data-action="audience">${pillTxt}</button>
+            </div>
+
+            <!-- DATE -->
+            <div class="w-16 text-[9px] text-matrix-muted font-mono text-center shrink-0 hidden md:block">${dateStr}</div>
+
+            <!-- TRAY TOGGLE -->
+            <div class="w-7 self-stretch flex items-center justify-center shrink-0 cursor-pointer border-l border-matrix-border/30 text-matrix-muted/30 hover:text-matrix-green hover:bg-matrix-green/10 transition-colors text-xs" data-action="toggle-tray">▾</div>
+
+            <!-- ACTION TRAY (slides down on toggle) -->
+            <div class="article-actions absolute left-0 right-0 z-30 bg-[#0d0d0d] border-b border-matrix-green/30 items-center gap-3 px-8 py-1.5 shadow-[0_4px_10px_rgba(0,0,0,0.6)]" style="top:100%;">
+                <a href="/admin/editor.html?id=${a.id}" target="_blank"
+                   class="text-[8px] font-bold text-matrix-green hover:underline tracking-widest shrink-0">[EDIT →]</a>
+                <button data-action="${a.hidden ? 'show' : 'hide'}"
+                        class="text-[8px] font-bold tracking-widest shrink-0 ${a.hidden ? 'text-green-400 hover:text-green-300' : 'text-matrix-muted hover:text-yellow-400'}">
+                    [${a.hidden ? 'SHOW' : 'HIDE'}]
+                </button>
+                <button data-action="carousel"
+                        class="text-[8px] font-bold text-matrix-muted hover:text-[#f59e0b] tracking-widest shrink-0"
+                        title="Pin to homepage carousel">[📌 CAROUSEL]</button>
+                <button data-action="delete"
+                        class="text-[8px] font-bold text-matrix-muted hover:text-red-500 tracking-widest shrink-0">[DEL]</button>
+                <button data-action="multi-folder"
+                        class="text-[8px] font-bold text-matrix-muted hover:text-matrix-green tracking-widest ml-auto shrink-0">[+FOLDER]</button>
+            </div>`;
+
+        // ── Click delegation ──────────────────────────────
+        el.addEventListener('click', async (e) => {
+            if (e.target.closest('a')) return;
+            const action = e.target.closest('[data-action]')?.dataset?.action;
+            if (!action) return;
+            e.stopPropagation();
+
+            if (action === 'toggle-tray') {
+                const tray = el.querySelector('.article-actions');
+                const isOpen = tray.classList.contains('open');
+                // Close others first
+                articlesContainer.querySelectorAll('.article-actions.open').forEach(t => t.classList.remove('open'));
+                if (!isOpen) tray.classList.add('open');
+                return;
+            }
+            if (action === 'color') { await cycleColorTag(a); return; }
+            if (action === 'audience') { await toggleAudience(a); return; }
+            if (action === 'thumb') { await editThumbnail(a); return; }
+            if (action === 'hide' || action === 'show') { await toggleHidden(a); return; }
+            if (action === 'carousel') { await pinToCarousel(a); return; }
+            if (action === 'delete') { await deleteArticle(a.id); return; }
+            if (action === 'multi-folder') { await assignExtraFolder(a); return; }
+        });
+
         articlesContainer.appendChild(el);
     });
 
-    // Destroy old sortable instance if exists to prevent memory leaks
-    if (articlesSortable) {
-        articlesSortable.destroy();
-    }
+    setupArticlesSortable();
+}
 
-    // Initialize Sortable for articles
+function setupArticlesSortable() {
+    if (articlesSortable) articlesSortable.destroy();
     articlesSortable = new Sortable(articlesContainer, {
         group: 'articles-group',
-        handle: '.drag-handle', // <--- THIS is what fixes the finicky touches
+        handle: '.drag-handle',
         animation: 150,
-        multiDrag: true, // Enable MultiDrag
-        selectedClass: 'sortable-selected', // Class applied to selected items
+        delay: 150,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 3,
+        multiDrag: true,
+        selectedClass: 'sortable-selected',
         fallbackTolerance: 3,
         ghostClass: 'drag-ghost',
         chosenClass: 'drag-chosen',
-        onEnd: function (evt) {
-            // Only show save button if we reordered within the same folder
+        onEnd: (evt) => {
             if (evt.to === evt.from) {
                 btnSaveOrder.classList.remove('hidden');
                 btnSaveOrder.classList.add('animate-pulse');
@@ -332,296 +623,332 @@ function renderArticles(folderId) {
     });
 }
 
+// ============================================================
+// ARTICLE ACTIONS
+// ============================================================
+
+async function cycleColorTag(article) {
+    const currentIdx = COLOR_PALETTE.indexOf(article.color_tag);
+    const nextColor = COLOR_PALETTE[(currentIdx + 1) % COLOR_PALETTE.length];
+    article.color_tag = nextColor;
+    await supabase.from('articles').update({ color_tag: nextColor }).eq('id', article.id);
+    renderArticles(activeFolderId);
+}
+
+async function toggleAudience(article) {
+    const next = article.audience === 'only_paid' ? 'everyone' : 'only_paid';
+    article.audience = next;
+    await supabase.from('articles').update({ audience: next }).eq('id', article.id);
+    renderArticles(activeFolderId);
+}
+
+async function editThumbnail(article) {
+    const newUrl = await sovereignPrompt('ENTER THUMBNAIL URL:', article.thumbnail_url || '', true);
+    if (newUrl === null) return;
+    article.thumbnail_url = newUrl.trim() || null;
+    await supabase.from('articles').update({ thumbnail_url: article.thumbnail_url }).eq('id', article.id);
+    renderArticles(activeFolderId);
+}
+
+async function toggleHidden(article) {
+    const next = !article.hidden;
+    article.hidden = next;
+    await supabase.from('articles').update({ hidden: next }).eq('id', article.id);
+    renderArticles(activeFolderId);
+}
+
+async function deleteArticle(articleId) {
+    const confirmed = await sovereignConfirm('CRITICAL WARNING: PERMANENTLY DELETE THIS RECORD?');
+    if (!confirmed) return;
+    const { error } = await supabase.from('articles').delete().eq('id', articleId);
+    if (error) { console.error('Delete failed:', error.message); showToast('Delete failed.', true); return; }
+    allArticles = allArticles.filter(a => a.id !== articleId);
+    folderMap.delete(articleId);
+    renderArticles(activeFolderId);
+}
+
+async function assignExtraFolder(article) {
+    const choices = masterSeries.filter(s => s.title !== '[HEADING ONLY]' && s.id !== article.series_id);
+    if (choices.length === 0) {
+        await sovereignConfirm('No other folders available to assign.');
+        return;
+    }
+    // sovereignSelect shows a proper dropdown — no more "type a number"
+    const options = choices.map(s => ({ value: s.id, label: s.title }));
+    const targetId = await sovereignSelect('ASSIGN TO ADDITIONAL FOLDER:', options);
+    if (!targetId) return;
+
+    const target = choices.find(s => s.id === targetId);
+    if (!target) return;
+
+    const { error } = await supabase.from('article_folders').upsert({ article_id: article.id, series_id: target.id });
+    if (error) { console.error('Multi-folder assign failed:', error.message); showToast('Assign failed.', true); return; }
+
+    if (!folderMap.has(article.id)) folderMap.set(article.id, new Set());
+    folderMap.get(article.id).add(target.id);
+    showToast(`Assigned to "${target.title}"`);
+    renderArticles(activeFolderId);
+}
+
+// Quick-pin article to homepage carousel (splash_slides)
+async function pinToCarousel(article) {
+    const confirmed = await sovereignConfirm(
+        `PIN TO CAROUSEL: "${article.title.substring(0, 50)}${article.title.length > 50 ? '...' : ''}"?`
+    );
+    if (!confirmed) return;
+
+    // Get max order_index from existing slides
+    const { data: slides } = await supabase.from('splash_slides').select('order_index').order('order_index', { ascending: false }).limit(1);
+    const nextOrder = slides && slides.length > 0 ? (slides[0].order_index || 0) + 1 : 0;
+
+    const payload = {
+        title: article.title,
+        body: article.subtitle || null,
+        image_url: article.thumbnail_url || null,
+        link_url: `/post/?id=${article.id}`,
+        link_label: '[ READ → ]',
+        order_index: nextOrder,
+    };
+
+    const { error } = await supabase.from('splash_slides').insert([payload]);
+    if (error) {
+        console.error('Carousel pin failed:', error.message);
+        showToast('Carousel pin failed.', true);
+        return;
+    }
+    showToast('📌 Pinned to carousel!');
+}
+
 async function moveToFolder(articleId, targetFolderId, targetFolderTitle, skipRender = false) {
-    // Optimistic UI Update
     const article = allArticles.find(a => a.id === articleId);
     if (article) {
         article.series_id = targetFolderId;
         article.series = targetFolderTitle;
     }
-
-    // Save to DB
     const { error } = await supabase.from('articles')
         .update({ series_id: targetFolderId, series: targetFolderTitle })
         .eq('id', articleId);
 
     if (error) {
-        alert("Failed to move article: " + error.message);
-        if (!skipRender) await loadData(); // Reload from source on fail
+        console.error('Move to folder failed:', error.message);
+        if (!skipRender) await loadData();
     } else {
-        if (!skipRender) {
-            renderFolders(); // Update counts
-            renderArticles(activeFolderId); // Re-render current view to snap article back if dragged incorrectly
-        }
+        if (!skipRender) { renderFolders(); renderArticles(activeFolderId); }
     }
 }
 
+// ============================================================
+// SAVE ARTICLE ORDER BUTTON
+// ============================================================
+
 btnSaveOrder.addEventListener('click', async () => {
-    btnSaveOrder.innerText = "[ SAVING... ]";
+    btnSaveOrder.innerText = '[ SAVING... ]';
     btnSaveOrder.classList.remove('animate-pulse');
-
-    const items = Array.from(articlesContainer.children);
-    let updates = [];
-
-    items.forEach((item, index) => {
-        const id = item.dataset.articleId;
-        if (id) {
-            updates.push({ id, order_index: index });
-        }
-    });
-
-    let successCount = 0;
-    for (const u of updates) {
-        // Individual updates until batch RPC is available
-        const { error } = await supabase.from('articles').update({ order_index: u.order_index }).eq('id', u.id);
-        if (!error) successCount++;
-    }
-
-    // Update local memory
-    for (const u of updates) {
-        const a = allArticles.find(art => art.id === u.id);
-        if (a) a.order_index = u.order_index;
-    }
-
-    // Re-sort local memory and re-render
-    allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
-    renderArticles(activeFolderId);
-
-    // Provide clear success feedback
-    btnSaveOrder.innerText = "[ SORT ORDER SAVED ]";
+    await saveAllArticleOrder();
+    showToast('Sort order saved.');
+    btnSaveOrder.innerText = '[ SAVED ✓ ]';
     btnSaveOrder.classList.add('bg-white', 'text-black');
     setTimeout(() => {
-        btnSaveOrder.innerText = "[ SAVE NEW SORT ORDER ]";
+        btnSaveOrder.innerText = '[ SAVE ORDER ]';
         btnSaveOrder.classList.remove('bg-white', 'text-black');
         btnSaveOrder.classList.add('hidden');
     }, 2000);
 });
 
-// ============================================
-// SYSTEM COMMANDS: EDIT & DELETE FOLDERS/HEADINGS
-// ============================================
+// ============================================================
+// FOLDER CRUD
+// ============================================================
 
-window.editFolder = async (id) => {
+async function editFolder(id) {
     const s = masterSeries.find(series => series.id === id);
     if (!s) return;
 
-    let newVal;
     if (s.title === '[HEADING ONLY]') {
-        newVal = await sovereignPrompt("EDIT CATEGORY HEADING DESIGNATION:", s.category_label || '');
+        const newVal = await sovereignPrompt('EDIT CATEGORY HEADING:', s.category_label || '');
         if (!newVal || newVal.trim() === '' || newVal === s.category_label) return;
-
         const { error } = await supabase.from('series').update({ category_label: newVal.trim() }).eq('id', id);
-        if (error) alert("SYSTEM ERROR: Failed to modify heading. " + error.message);
-        else loadData(); // Reload UI
+        if (error) { console.error('Edit heading failed:', error.message); return; }
+        loadData();
     } else {
-        newVal = await sovereignPrompt("EDIT MASTER FOLDER DESIGNATION:", s.title);
+        const newVal = await sovereignPrompt('EDIT FOLDER DESIGNATION:', s.title);
         if (!newVal || newVal.trim() === '' || newVal === s.title) return;
-
         const { error } = await supabase.from('series').update({ title: newVal.trim() }).eq('id', id);
-        if (error) alert("SYSTEM ERROR: Failed to modify directory. " + error.message);
-        else loadData(); // Reload UI
+        if (error) { console.error('Edit folder failed:', error.message); return; }
+        loadData();
     }
-};
+}
 
-window.deleteFolder = async (id, isHeading = false) => {
+async function deleteFolder(id, isHeading = false) {
     const s = masterSeries.find(series => series.id === id);
     if (!s) return;
 
-    // Check if folder contains articles (safety lock)
-    let count = allArticles.filter(a => a.series_id === id).length;
+    const count = allArticles.filter(a => a.series_id === id).length;
     if (count > 0 && !isHeading) {
-        alert(`SYSTEM LOCK: Directory contains ${count} records. Empty the directory before deletion.`);
+        await sovereignConfirm(`SYSTEM LOCK: Folder contains ${count} records. Empty it first.`);
         return;
     }
 
-    const typeStr = isHeading ? "CATEGORY HEADING" : "MASTER FOLDER";
     const nameStr = isHeading ? s.category_label : s.title;
-
-    const isConfirmed = await sovereignConfirm(`CRITICAL WARNING: Are you sure you wish to delete ${typeStr}: [ ${nameStr} ] ?`);
-    if (!isConfirmed) return;
+    const confirmed = await sovereignConfirm(`DELETE: [ ${nameStr} ]?`);
+    if (!confirmed) return;
 
     const { error } = await supabase.from('series').delete().eq('id', id);
+    if (error) { console.error('Delete folder failed:', error.message); return; }
+    if (activeFolderId === id) activeFolderId = null;
+    loadData();
+}
 
-    if (error) {
-        alert("SYSTEM ERROR: Failed to delete structure. " + error.message);
-    } else {
-        if (activeFolderId === id) activeFolderId = null; // Reset focus if they deleted what they were looking at
-        loadData(); // Sync UI
-    }
-};
+// ============================================================
+// NEW HEADING
+// ============================================================
 
-// Create New Heading Protocol
 if (btnNewHeading) {
     btnNewHeading.addEventListener('click', async () => {
-        const catLabel = await sovereignPrompt("ENTER NEW CATEGORY HEADING (e.g. 'CORE DOCTRINE'):");
+        const catLabel = await sovereignPrompt("NEW CATEGORY HEADING:");
         if (!catLabel || catLabel.trim() === '') return;
+        const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
+        const { error } = await supabase.from('series').insert([{
+            title: '[HEADING ONLY]',
+            category_label: catLabel.trim(),
+            order_index: maxOrder + 1
+        }]);
+        if (error) { console.error('New heading failed:', error.message); return; }
+        await loadData();
+        setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
+    });
+}
 
+// ============================================================
+// NEW FOLDER
+// ============================================================
+
+if (btnNewFolder) {
+    btnNewFolder.addEventListener('click', async () => {
+        const name = await sovereignPrompt('NEW FOLDER NAME:');
+        if (!name || name.trim() === '') return;
+
+        let defaultCat = 'UNCATEGORIZED';
+        if (masterSeries.length > 0) {
+            const last = masterSeries[masterSeries.length - 1];
+            defaultCat = last.category_label || 'UNCATEGORIZED';
+        }
         const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
 
-        // We insert a "ghost" folder where the title is just a placeholder, but the category_label drives the UI heading
-        const { data, error } = await supabase
-            .from('series')
-            .insert([{
-                title: '[HEADING ONLY]',
-                category_label: catLabel.trim(),
-                order_index: maxOrder + 1
-            }])
+        const { data, error } = await supabase.from('series')
+            .insert([{ title: name.trim(), category_label: defaultCat, order_index: maxOrder + 1 }])
             .select();
 
-        if (error) {
-            alert("SYSTEM ERROR: Failed to forge heading. " + error.message);
-        } else {
-            await loadData();
+        if (error) { console.error('New folder failed:', error.message); return; }
+        await loadData();
+        if (data && data.length > 0) {
+            renderArticles(data[0].id);
             setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
         }
     });
 }
 
-// Create New Folder Protocol
-if (btnNewFolder) {
-    btnNewFolder.addEventListener('click', async () => {
-        const newFolderName = await sovereignPrompt("ENTER SYSTEM DESIGNATION FOR NEW MASTER FOLDER:");
-        if (!newFolderName || newFolderName.trim() === '') return;
-
-        // Auto-inherit the category of the last item in the list, or default to UNCATEGORIZED
-        let defaultCat = 'UNCATEGORIZED';
-        if (masterSeries.length > 0) {
-            const lastSeries = masterSeries[masterSeries.length - 1];
-            defaultCat = lastSeries.category_label || 'UNCATEGORIZED';
-        }
-
-        const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
-
-        const { data, error } = await supabase
-            .from('series')
-            .insert([{
-                title: newFolderName.trim(),
-                category_label: defaultCat, // Inherits the current section's category
-                order_index: maxOrder + 1
-            }])
-            .select();
-
-        if (error) {
-            alert("SYSTEM ERROR: Failed to forge directory. " + error.message);
-        } else {
-            // Reload EVERYTHING to ensure state sync
-            await loadData();
-            if (data && data.length > 0) {
-                renderArticles(data[0].id); // Auto-jump into the new empty folder
-
-                // Ensure the user sees it at the bottom of the list
-                setTimeout(() => {
-                    foldersContainer.scrollTop = foldersContainer.scrollHeight;
-                }, 100);
-            }
-        }
-    });
-}
+// ============================================================
+// SAVE FOLDER ORDER — single upsert
+// ============================================================
 
 if (btnSaveFolderOrder) {
     btnSaveFolderOrder.addEventListener('click', async () => {
-        btnSaveFolderOrder.innerText = "[ SAVING... ]";
+        btnSaveFolderOrder.innerText = '[ SAVING... ]';
         btnSaveFolderOrder.classList.remove('animate-pulse');
 
         const items = Array.from(foldersContainer.children);
-        let updates = [];
-
-        // The first item is Unassigned Singles (index 0 visually), we ignore it for DB updates
-        // So we start index mapping at 0 for the actual database series
+        const updates = [];
         let dbIndex = 0;
-        let currentCategory = 'UNCATEGORIZED'; // Track the latest heading seen in the list
+        let currentCategory = 'UNCATEGORIZED';
 
-        items.forEach((item) => {
+        items.forEach(item => {
             const id = item.dataset.folderId;
-            if (!id || id === "unassigned") return;
-
+            if (!id || id === 'unassigned') return;
             const s = masterSeries.find(series => series.id === id);
             if (!s) return;
-
             if (s.title === '[HEADING ONLY]') {
-                // If we pass a Ghost Folder, we update currentCategory
                 currentCategory = s.category_label || 'UNCATEGORIZED';
-                updates.push({ id, order_index: dbIndex, category_label: currentCategory });
-            } else {
-                // Regular folder gets the Category of the Ghost Folder above it
-                updates.push({ id, order_index: dbIndex, category_label: currentCategory });
             }
+            updates.push({ id, order_index: dbIndex, category_label: currentCategory });
             dbIndex++;
         });
 
-        let successCount = 0;
-        for (const u of updates) {
-            const { error } = await supabase.from('series').update({
-                order_index: u.order_index,
-                category_label: u.category_label // Apply the new inherited categorical binding
-            }).eq('id', u.id);
-            if (!error) successCount++;
-        }
-
-        for (const u of updates) {
-            const s = masterSeries.find(series => series.id === u.id);
-            if (s) {
-                s.order_index = u.order_index;
-                s.category_label = u.category_label; // Update local memory
+        if (updates.length > 0) {
+            const { error } = await supabase.from('series').upsert(updates, { onConflict: 'id' });
+            if (error) { console.error('Folder order upsert failed:', error); showToast('Save failed.', true); }
+            else {
+                updates.forEach(u => {
+                    const s = masterSeries.find(series => series.id === u.id);
+                    if (s) { s.order_index = u.order_index; s.category_label = u.category_label; }
+                });
+                masterSeries.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+                showToast('Folder order saved.');
             }
         }
 
-        masterSeries.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
         renderFolders();
-
-        // Provide clear success feedback
-        btnSaveFolderOrder.innerText = "[ SAVED ]";
+        btnSaveFolderOrder.innerText = '[ SAVED ✓ ]';
         btnSaveFolderOrder.classList.add('bg-white', 'text-black');
         setTimeout(() => {
-            btnSaveFolderOrder.innerText = "SAVE ORDER";
+            btnSaveFolderOrder.innerText = 'SAVE ORDER';
             btnSaveFolderOrder.classList.remove('bg-white', 'text-black');
             btnSaveFolderOrder.classList.add('hidden');
         }, 2000);
     });
 }
-// Sync Timeline Logic
-const btnSyncTimeline = document.getElementById('btn-sync-timeline');
+
+// ============================================================
+// SYNC TIMELINE — upsert, not loop
+// ============================================================
+
 if (btnSyncTimeline) {
-    btnSyncTimeline.addEventListener('click', () => {
+    btnSyncTimeline.addEventListener('click', async () => {
         if (!allArticles || allArticles.length === 0) return;
 
-        // Create subset in active folder
-        let subset = allArticles.filter(a => activeFolderId === null ? !a.series_id : a.series_id === activeFolderId);
+        const subset = allArticles.filter(a =>
+            activeFolderId === null ? !a.series_id : a.series_id === activeFolderId
+        );
         if (subset.length === 0) return;
 
-        // Sort subset by post_date ascending (oldest to newest)
-        subset.sort((a, b) => {
-            const dateA = new Date(a.post_date || 0);
-            const dateB = new Date(b.post_date || 0);
-            return dateA - dateB;
-        });
+        subset.sort((a, b) => new Date(a.post_date || 0) - new Date(b.post_date || 0));
 
-        // Reassign strictly sequential order_index to subset in memory
-        subset.forEach((a, idx) => {
+        const updates = subset.map((a, idx) => {
             a.order_index = idx;
+            return { id: a.id, order_index: idx };
         });
 
-        // Re-sort global memory based on new order_index and render
         allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+        btnSyncTimeline.innerText = '[ SYNCING... ]';
+
+        const { error } = await supabase.from('articles').upsert(updates, { onConflict: 'id' });
+        if (error) { console.error('Sync timeline failed:', error); showToast('Sync failed.', true); }
+        else { showToast('Timeline synced.'); }
+
         renderArticles(activeFolderId);
-
-        // Flash UI feedback and enable Save button
-        btnSyncTimeline.innerText = "[ SYNCED ]";
-        setTimeout(() => { btnSyncTimeline.innerText = "SYNC TIMELINE"; }, 2000);
-
-        btnSaveOrder.classList.remove('hidden');
-        btnSaveOrder.classList.add('animate-pulse');
+        btnSyncTimeline.innerText = '[ SYNC ]';
+        setTimeout(() => { btnSyncTimeline.innerText = 'SYNC'; }, 2000);
     });
 }
 
-// Search Logic
-const matrixSearchInput = document.getElementById('matrix-search');
+// ============================================================
+// SEARCH
+// ============================================================
+
 if (matrixSearchInput) {
     matrixSearchInput.addEventListener('input', (e) => {
         matrixSearchQuery = e.target.value;
+        renderArticles(activeFolderId); // single call, no dead branch
+    });
+}
+
+if (chkGlobalSearch) {
+    chkGlobalSearch.addEventListener('change', (e) => {
+        isGlobalSearch = e.target.checked;
         renderArticles(activeFolderId);
     });
 }
 
-// Boot
+// ============================================================
+// BOOT
+// ============================================================
 window.onload = bootstrap;

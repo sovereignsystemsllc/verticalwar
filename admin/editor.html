@@ -59,8 +59,8 @@
 </head>
 
 <body class="bg-black text-gray-300 font-sans min-h-screen">
-  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
-  <div class="scanline-overlay"></div>
+    <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+    <div class="scanline-overlay"></div>
 
     <div class="fixed top-0 w-full bg-gray-900 border-b border-gray-800 p-4 z-50 flex justify-between items-center">
         <div class="flex items-center gap-4">
@@ -133,6 +133,23 @@
                         <option value="draft">Draft (Hidden)</option>
                         <option value="published">Published (Live)</option>
                     </select>
+                </div>
+
+                <!-- VIDEO EMBED — Full-width. Paste any YouTube or Rumble URL. -->
+                <div class="col-span-2 border-t border-gray-800 pt-5 mt-1">
+                    <label class="block text-xs text-[#00ff41] tracking-widest uppercase mb-1">
+                        📺 Video Embed URL
+                        <span class="text-gray-600 normal-case tracking-normal ml-2 text-[10px]">
+                            — YouTube or Rumble watch URL. Leave empty to hide the embed.
+                        </span>
+                    </label>
+                    <input type="url" id="iptVideoUrl"
+                        class="w-full bg-black border border-gray-700 text-gray-300 p-2 focus:outline-none focus:border-[#00ff41] font-mono text-sm"
+                        placeholder="https://www.youtube.com/watch?v=... or https://rumble.com/v...">
+                    <p id="videoPreviewLabel"
+                        class="hidden text-[10px] text-[#00ff41]/60 mt-1 font-mono tracking-widest">
+                        ✓ EMBED RESOLVED — will render as hero video above article body
+                    </p>
                 </div>
             </div>
 

@@ -7,6 +7,9 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, 'index.html'),
                 about: resolve(__dirname, 'about.html'),
+                archives: resolve(__dirname, 'archives.html'),
+                login: resolve(__dirname, 'login.html'),
+                order: resolve(__dirname, 'order.html'),
                 post: resolve(__dirname, 'post/index.html'),
                 admin_index: resolve(__dirname, 'admin/index.html'),
                 admin_curate: resolve(__dirname, 'admin/curate.html'),
@@ -15,8 +18,8 @@ export default defineConfig({
                 admin_assets: resolve(__dirname, 'admin/assets.html'),
                 admin_splash: resolve(__dirname, 'admin/splash.html'),
                 admin_about: resolve(__dirname, 'admin/about.html'),
-                order: resolve(__dirname, 'order.html'),
                 receipts_ep2: resolve(__dirname, 'receipts/pack/RealityEP2Receipts/index.html'),
+                // ADD NEW PUBLIC PAGES HERE
             }
         }
     }

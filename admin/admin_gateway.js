@@ -1,9 +1,6 @@
 import { supabase } from '../src/supabaseClient.js';
 import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
-// DOM Elements
-const statArticles = document.getElementById('stat-articles');
-const statFolders = document.getElementById('stat-folders');
 
 async function bootstrap() {
     setAuthChangeCallback(onAuthChange);
@@ -19,6 +16,8 @@ function onAuthChange() {
 }
 
 async function loadTelemetry() {
+    const statArticles = document.getElementById('stat-articles');
+    const statFolders = document.getElementById('stat-folders');
     try {
         // Fetch article count
         const { count: articleCount, error: aErr } = await supabase

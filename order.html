@@ -9,6 +9,9 @@
         content="Pre-order The Manual for the Resistance. Three tiers. One mission. Break the Three-Layered Prison.">
     <meta property="og:title" content="Pre-Order | The Manual for the Resistance">
     <meta property="og:url" content="https://verticalwar.com/order">
+    <meta property="og:image" content="https://verticalwar.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/og-image.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,24 +88,6 @@
             box-shadow: 0 0 40px rgba(234, 179, 8, 0.06);
         }
 
-        .scanline-overlay {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9999;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(167, 139, 250, 0.03) 50%, rgba(0, 0, 0, 0) 100%);
-            animation: scanline 10s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% {
-                transform: translateY(-100%);
-            }
-
-            100% {
-                transform: translateY(100vh);
-            }
-        }
 
         .glitch:hover {
             animation: glitch 0.15s steps(2) infinite;
