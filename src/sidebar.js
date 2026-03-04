@@ -7,6 +7,7 @@ const NAV_ITEMS = [
     { href: '/', label: '/ codex_root' },
     { href: '/about.html', label: '/ about' },
     { href: '/archives.html', label: '/ archives' },
+    { href: '/terminal/', label: '/ cmd_link', cls: 'text-[#00ff41]/70 hover:text-[#00ff41] hover:border-[#00ff41]' },
     { href: '/order.html', label: '/ pre-order', cls: 'text-red-500/70 hover:text-red-400' },
 ];
 

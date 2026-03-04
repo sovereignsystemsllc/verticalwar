@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMMAND LINK // SOVEREIGN TERMINAL v4</title>
+    <meta name="description" content="Sovereign Command Interface. Type HELP to access the command index.">
+    <meta property="og:title" content="COMMAND LINK // SOVEREIGN TERMINAL">
+    <meta property="og:image" content="https://verticalwar.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'rika': '#a78bfa',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+
+    <style>
+        /* Terminal-specific overrides */
+        body {
+            background: #05010a;
+            cursor: crosshair;
+        }
+
+        /* Particle canvas behind everything */
+        #particle-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        /* Glass terminal panel */
+        #terminal-panel {
+            background: rgba(5, 1, 10, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            box-shadow:
+                0 0 60px rgba(167, 139, 250, 0.08),
+                0 0 120px rgba(0, 255, 65, 0.04),
+                inset 0 1px 0 rgba(167, 139, 250, 0.1);
+        }
+
+        /* Output lines */
+        .t-sys {
+            color: rgba(167, 139, 250, 0.5);
+        }
+
+        .t-ok {
+            color: #00ff41;
+            text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+        }
+
+        .t-warn {
+            color: #f59e0b;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .t-err {
+            color: #FF007F;
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+        }
+
+        .t-rika {
+            color: #a78bfa;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.6);
+        }
+
+        .t-echo {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .t-white {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .t-yellow {
+            color: #f59e0b;
+        }
+
+        /* Input line */
+        #cmd-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: ui-monospace, monospace;
+            font-size: 1rem;
+            caret-color: #00ff41;
+            width: 100%;
+        }
+
+        /* Scrollbar */
+        #terminal-output::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #terminal-output::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #terminal-output::-webkit-scrollbar-thumb {
+            background: rgba(167, 139, 250, 0.3);
+        }
+
+        #terminal-output::-webkit-scrollbar-thumb:hover {
+            background: #a78bfa;
+        }
+
+        /* Prompt glow cycles */
+        .prompt-visitor {
+            color: #00ff41;
+            text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+        }
+
+        .prompt-user {
+            color: #a78bfa;
+            text-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
+        }
+
+        .prompt-sovereign {
+            color: #f59e0b;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+        }
+
+        /* Corner brackets on panel */
+        .corner {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+        }
+
+        .corner-tl {
+            top: -1px;
+            left: -1px;
+            border-top: 2px solid var(--c-green);
+            border-left: 2px solid var(--c-green);
+        }
+
+        .corner-tr {
+            top: -1px;
+            right: -1px;
+            border-top: 2px solid var(--c-purple);
+            border-right: 2px solid var(--c-purple);
+        }
+
+        .corner-bl {
+            bottom: -1px;
+            left: -1px;
+            border-bottom: 2px solid var(--c-yellow);
+            border-left: 2px solid var(--c-yellow);
+        }
+
+        .corner-br {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 2px solid var(--c-pink);
+            border-right: 2px solid var(--c-pink);
+        }
+
+        /* Bootup flash */
+        @keyframes t-boot {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .t-boot-line {
+            animation: t-boot 0.15s ease forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body class="h-screen w-full overflow-hidden flex flex-col items-center justify-center relative p-4 md:p-6">
+
+    <!-- PARTICLE LAYER -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- CRT VIGNETTE -->
+    <div
+        class="fixed inset-0 pointer-events-none z-10 bg-[radial-gradient(ellipse_at_center,_transparent_50%,_rgba(5,1,10,0.7)_100%)]">
+    </div>
+    <div class="scanline-overlay" style="z-index:11;"></div>
+
+    <!-- TERMINAL PANEL -->
+    <div id="terminal-panel" class="w-full max-w-5xl flex flex-col relative z-20 overflow-hidden rounded-sm"
+        style="height: min(90vh, 680px);">
+
+        <!-- Corner brackets -->
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+
+        <!-- HEADER -->
+        <div class="p-4 md:p-5 border-b border-[#a78bfa]/20 flex items-center justify-between bg-black/50 shrink-0">
+            <div class="flex items-center gap-4">
+                <a href="/" class="block hover:opacity-80 transition-opacity">
+                    <img src="/csr_logo.png" alt="Common Sense Rebel"
+                        class="h-10 w-auto opacity-90 drop-shadow-[0_0_12px_rgba(167,139,250,0.4)]">
+                </a>
+                <div>
+                    <h1
+                        class="font-mono text-xl font-bold text-white tracking-[0.25em] uppercase leading-none sv-glitch">
+                        COMMAND LINK
+                    </h1>
+                    <a href="/"
+                        class="font-mono text-[9px] text-[#00ff41] tracking-[0.2em] uppercase hover:text-white transition-colors mt-0.5 block">
+                        [ RETURN TO CODEX ]
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status indicators -->
+            <div class="hidden md:flex flex-col items-end gap-1 text-right">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse"></span>
+                    <span class="font-mono text-[9px] text-[#00ff41]/60 tracking-widest">UPLINK ACTIVE</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa] animate-pulse"
+                        style="animation-delay:0.5s"></span>
+                    <span class="font-mono text-[9px] text-[#a78bfa]/60 tracking-widest">SYS.VER 4.0.0</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" id="auth-dot"></span>
+                    <span class="font-mono text-[9px] text-[#f59e0b]/60 tracking-widest" id="auth-status-label">CHECKING
+                        AUTH...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- OUTPUT -->
+        <div id="terminal-output"
+            class="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 font-mono text-sm leading-relaxed space-y-0.5">
+        </div>
+
+        <!-- INPUT LINE -->
+        <div class="p-3 md:p-4 border-t border-[#a78bfa]/20 bg-black/60 flex items-center gap-3 shrink-0">
+            <span id="prompt" class="font-mono text-sm font-bold whitespace-nowrap prompt-visitor">
+                VISITOR@SOVEREIGN:~$
+            </span>
+            <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" placeholder="type a command..."
+                class="text-sm placeholder-white/10">
+            <span class="text-[#00ff41] animate-pulse text-lg leading-none">█</span>
+        </div>
+    </div>
+
+    <!-- HELP HINT -->
+    <p class="absolute bottom-3 font-mono text-[9px] text-white/15 tracking-widest uppercase z-20">
+        type <span class="text-[#00ff41]/40">HELP</span> for command index // <span class="text-[#a78bfa]/40">↑↓</span>
+        history
+    </p>
+
+    <script type="module" src="/terminal/terminal.js"></script>
+    <script type="module" src="/src/fx.js"></script>
+</body>
+
+</html>
