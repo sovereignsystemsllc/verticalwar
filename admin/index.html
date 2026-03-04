@@ -161,6 +161,18 @@
                 </div>
             </div>
         </div>
+
+        <!-- ACTIVITY LOG -->
+        <div class="mt-8 border border-matrix-border bg-matrix-panel/30 p-6">
+            <div class="flex items-center justify-between mb-4 border-b border-matrix-border pb-2">
+                <h3 class="text-xs font-bold text-matrix-green tracking-widest uppercase">// OPERATOR ACTIVITY LOG</h3>
+                <button id="btn-refresh-log"
+                    class="text-[9px] font-bold text-matrix-muted hover:text-matrix-green tracking-widest uppercase transition-colors">[REFRESH]</button>
+            </div>
+            <div id="activity-log-table" class="overflow-x-auto">
+                <p class="text-[10px] text-matrix-muted tracking-widest animate-pulse">Loading feed...</p>
+            </div>
+        </div>
     </main>
 
     <!-- GLOBAL FOOTER -->
