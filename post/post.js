@@ -244,8 +244,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         articleContainer.classList.remove('hidden');
         articleContainer.classList.add('flex', 'flex-col');
 
-        // Load comments (independent of auth)
-        await loadComments();
+        
+
+        // Progress bar + Realtime
+        initReadingProgress();
+        initRealtimeComments(articleId);
 
     } catch (err) {
         console.error('Unexpected error:', err);
@@ -260,3 +263,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
+
+// -- READING PROGRESS BAR -----------------------------------------------------
+function initReadingProgress() {
+    const bar = document.getElementById('reading-progress');
+    const content = document.getElementById('article-content');
+    if (!bar || !content) return;
+
+    window.addEventListener('scroll', () => {
+        const rect = content.getBoundingClientRect();
+        const total = content.offsetHeight;
+        const scrolled = -rect.top;
+        const pct = Math.min(100, Math.max(0, (scrolled / total) * 100));
+        bar.style.width = pct + '%';
+    }, { passive: true });
+}
+
+// -- SUPABASE REALTIME: LIVE COMMENTS -----------------------------------------
+function initRealtimeComments(artId) {
+    if (!artId) return;
+    supabase
+        .channel(`comments:${artId}`)
+        .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'comments',
+            filter: `article_id=eq.${artId}`,
+        }, () => {
+            // Reload comment list and flash the new one green
+            loadComments().then(() => {
+                const list = document.getElementById('comment-list');
+                if (!list) return;
+                const first = list.firstElementChild;
+                if (first) {
+                    first.classList.add('sv-new-comment');
+                    setTimeout(() => first.classList.remove('sv-new-comment'), 2000);
+                }
+            });
+        })
+        .subscribe();
+}

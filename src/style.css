@@ -248,3 +248,35 @@ a[href].group:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(
     text-decoration: none !important;
 }
 .reader-text a:hover { background-size: 100% 1px; color: #fff; }
+
+/* -- READING PROGRESS BAR ---------------------------- */
+#reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    z-index: 9999;
+    background: linear-gradient(90deg, var(--c-green) 0%, var(--c-purple) 50%, var(--c-yellow) 100%);
+    transition: width 0.1s ease;
+    box-shadow: 0 0 8px var(--c-green);
+}
+
+/* -- TYPEWRITER CURSOR ------------------------------- */
+@keyframes sv-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.sv-typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--c-green);
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: sv-blink 0.8s steps(1) infinite;
+}
+
+/* -- LIVE COMMENT PING ------------------------------- */
+@keyframes sv-new-comment {
+    0%   { background: rgba(0,255,65,0.15); }
+    100% { background: transparent; }
+}
+.sv-new-comment { animation: sv-new-comment 1.5s ease forwards; }

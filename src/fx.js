@@ -169,3 +169,34 @@ document.addEventListener('DOMContentLoaded', () => {
     initStagger();
     initRipple();
 });
+
+// -- TYPEWRITER — auto-targets [data-typewriter] elements ---------------------
+function initTypewriter() {
+    document.querySelectorAll('[data-typewriter]').forEach(el => {
+        const full = el.dataset.typewriter || el.textContent.trim();
+        el.textContent = '';
+
+        // Add blinking cursor
+        const cursor = document.createElement('span');
+        cursor.className = 'sv-typewriter-cursor';
+        el.appendChild(cursor);
+
+        let i = 0;
+        const speed = parseInt(el.dataset.twSpeed) || 60;
+
+        function type() {
+            if (i < full.length) {
+                el.insertBefore(document.createTextNode(full[i]), cursor);
+                i++;
+                setTimeout(type, speed + Math.random() * 30);
+            } else {
+                // Done typing — keep cursor blinking for 3s then fade it
+                setTimeout(() => { cursor.style.opacity = '0'; cursor.style.transition = 'opacity 1s'; }, 3000);
+            }
+        }
+        setTimeout(type, 600);
+    });
+}
+
+// Re-export hook so pages can call it manually if needed
+document.addEventListener('DOMContentLoaded', () => { initTypewriter(); });
