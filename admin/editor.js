@@ -28,6 +28,16 @@ function logTerminal(message, type = 'INFO') {
 let quill;
 let currentArticleId = null;
 
+// Show thumbnail preview in the editor UI
+function setThumbnailPreview(url) {
+    const preview = document.getElementById('thumbnail-preview');
+    const wrap = document.getElementById('thumbnail-preview-wrap');
+    if (preview && wrap && url) {
+        preview.src = url;
+        wrap.classList.remove('hidden');
+    }
+}
+
 // Auth handled by auth.js — see bootstrap() below
 
 // Initialize Quill and custom image handler
@@ -81,6 +91,43 @@ function initForge() {
         logTerminal(`Image securely forged: ${url}`);
 
         // Clear input
+        e.target.value = '';
+    });
+
+    // Thumbnail Upload Handler
+    document.getElementById('btn-upload-thumbnail').addEventListener('click', () => {
+        document.getElementById('thumbnailUploadInput').click();
+    });
+
+    document.getElementById('thumbnailUploadInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        logTerminal(`Uploading thumbnail: ${file.name}...`);
+        document.getElementById('thumbnail-filename').textContent = 'Uploading...';
+
+        const ext = file.name.split('.').pop() || 'jpg';
+        const fileName = `thumbnails/${crypto.randomUUID()}.${ext}`;
+
+        const { error } = await supabase.storage
+            .from('article_assets')
+            .upload(fileName, file, { upsert: true });
+
+        if (error) {
+            logTerminal(`Thumbnail upload failed: ${error.message}`, 'ERROR');
+            document.getElementById('thumbnail-filename').textContent = 'Upload failed.';
+            return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+            .from('article_assets')
+            .getPublicUrl(fileName);
+
+        const url = publicUrlData.publicUrl;
+        document.getElementById('iptThumbnail').value = url;
+        setThumbnailPreview(url);
+        document.getElementById('thumbnail-filename').textContent = file.name;
+        logTerminal(`Thumbnail forged: ${url}`);
         e.target.value = '';
     });
 }
@@ -159,6 +206,7 @@ async function loadArticle() {
     document.getElementById('iptSubtitle').value = data.subtitle || '';
     document.getElementById('iptSlug').value = data.slug || '';
     document.getElementById('iptThumbnail').value = data.thumbnail_url || '';
+    if (data.thumbnail_url) setThumbnailPreview(data.thumbnail_url);
 
     const videoEl = document.getElementById('iptVideoUrl');
     if (videoEl) {

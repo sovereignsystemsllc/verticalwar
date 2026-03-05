@@ -178,9 +178,7 @@ function setupCommentUI() {
     } else {
         form?.classList.add('hidden');
         prompt?.classList.remove('hidden');
-        document.getElementById('btn-comment-login')?.addEventListener('click', () => {
-            document.getElementById('login-modal')?.classList.remove('hidden');
-        });
+        // Login/Register links in the prompt are plain anchors — no JS needed
     }
 }
 
@@ -241,10 +239,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.title = `${data.title} // THE CODEX`;
 
         loadingMsg.classList.add('hidden');
-        articleContainer.classList.remove('hidden');
+        // FIX: fx.js adds sv-hidden (opacity:0) to all elements on load via IntersectionObserver.
+        // article-container starts display:none so the observer never fires for it.
+        // Must remove sv-hidden explicitly here so the article is actually visible.
+        articleContainer.classList.remove('hidden', 'sv-hidden');
         articleContainer.classList.add('flex', 'flex-col');
-
-        
 
         // Progress bar + Realtime
         initReadingProgress();
@@ -261,8 +260,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         errorMsg.classList.add('flex');
     }
 });
-
-
 
 // -- READING PROGRESS BAR -----------------------------------------------------
 function initReadingProgress() {

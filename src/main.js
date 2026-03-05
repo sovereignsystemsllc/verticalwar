@@ -252,9 +252,14 @@ function renderSidebar() {
       return '';
     }
 
+    // SECURITY GATE: Hidden articles are restricted to OPERATOR/SOVEREIGN, same as Inside the Forge
+    const accessibleTracks = ['OPERATOR', 'SOVEREIGN'].includes(currentRole)
+      ? tracks
+      : tracks.filter(t => !t.hidden);
+
     const filteredTracks = query
-      ? tracks.filter(t => t.title.toLowerCase().includes(query))
-      : tracks;
+      ? accessibleTracks.filter(t => t.title.toLowerCase().includes(query))
+      : accessibleTracks;
 
     if (filteredTracks.length === 0) return ''; // Hide empty folders
 
@@ -298,8 +303,10 @@ function renderSidebar() {
 
   // 1. Render Official Master Series in Exact DB Order
   let currentCategory = undefined;
+  const isElevated = ['OPERATOR', 'SOVEREIGN'].includes(currentRole);
+  const visibleSeries = isElevated ? globalSeries : globalSeries.filter(s => !s.hidden);
 
-  globalSeries.forEach((seriesDef, sIdx) => {
+  visibleSeries.forEach((seriesDef, sIdx) => {
     const cat = seriesDef.category_label || 'UNCATEGORIZED';
     if (cat !== currentCategory) {
       html += `<div class="mt-10 mb-2 px-3 border-b-2 border-[#a78bfa]/50 pb-2">
@@ -310,6 +317,22 @@ function renderSidebar() {
 
     // Skip building a physical block if this is strictly a structural heading "ghost" folder
     if (seriesDef.title === '[HEADING ONLY]') return;
+
+    // Render pinned standalone article directly in the sidebar
+    if (seriesDef.title === '[PINNED ARTICLE]') {
+      const pinned = globalArticles.find(a => a.id === seriesDef.pinned_article_id);
+      if (!pinned) return;
+      if (pinned.hidden && !isElevated) return; // respect visibility rules
+      html += `
+        <div class="mb-1 pl-3 border-l-2 border-[#a78bfa]/30 hover:border-[#a78bfa] transition-all bg-[#05010a]/50 hover:bg-[#a78bfa]/10 cursor-pointer"
+             onclick="window.openArticle('${pinned.id}')">
+          <div class="py-3 flex items-center gap-2">
+            <span class="text-[10px] text-[#a78bfa]/50">📄</span>
+            <span class="text-xs font-bold text-white/80 hover:text-white tracking-wide truncate italic">${pinned.title}</span>
+          </div>
+        </div>`;
+      return;
+    }
 
     // Find articles assigned to this exact series ID and sort them by order_index
     const tracks = globalArticles
@@ -345,6 +368,37 @@ window.toggleFolder = function (sKey) {
   }
 };
 
+// ==========================================
+// FOLDER REVEAL + GLOW (shared deep-link helper)
+// ==========================================
+function revealFolder(sKey) {
+  const contentEl = document.getElementById(`folder-content-${sKey}`);
+  const albumEl = document.getElementById(`album-${sKey}`);
+  if (!contentEl || !albumEl) return;
+
+  // Open if closed
+  if (contentEl.classList.contains('hidden')) {
+    window.toggleFolder(sKey);
+  }
+
+  // Scroll into view
+  setTimeout(() => albumEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+  // Purple glow flash on the folder header
+  const headerEl = albumEl.querySelector('div');
+  if (!headerEl) return;
+  const glowSteps = [
+    [0, '0 0 0px rgba(167,139,250,0)'],
+    [150, '0 0 18px rgba(167,139,250,0.7)'],
+    [350, '0 0 28px rgba(167,139,250,0.9)'],
+    [650, '0 0 10px rgba(167,139,250,0.4)'],
+    [1100, '0 0 0px rgba(167,139,250,0)'],
+  ];
+  headerEl.style.transition = 'box-shadow 0.15s ease';
+  glowSteps.forEach(([delay, shadow]) => setTimeout(() => { headerEl.style.boxShadow = shadow; }, delay));
+  setTimeout(() => { headerEl.style.transition = ''; headerEl.style.boxShadow = ''; }, 1300);
+}
+
 // Series deep link helpers
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -354,7 +408,6 @@ window.copySeriesLink = function (seriesTitle) {
   const slug = slugify(seriesTitle);
   const url = `${location.origin}/?series=${slug}`;
   navigator.clipboard.writeText(url).then(() => {
-    // Brief toast
     const toast = document.createElement('div');
     toast.textContent = 'LINK COPIED';
     toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#a78bfa;color:#000;font-family:monospace;font-size:10px;font-weight:bold;letter-spacing:.15em;padding:6px 16px;z-index:9999;pointer-events:none';
@@ -366,18 +419,8 @@ window.copySeriesLink = function (seriesTitle) {
 function activateSeriesDeepLink() {
   const param = new URLSearchParams(location.search).get('series');
   if (!param) return;
-  // Find matching series folder by slugified title
   globalSeries.forEach((s, i) => {
-    if (slugify(s.title) === param) {
-      const sKey = 'series_' + i;
-      const el = document.getElementById(`folder-content-${sKey}`);
-      if (el && el.classList.contains('hidden')) {
-        window.toggleFolder(sKey);
-        // Scroll sidebar to the folder
-        const folder = document.getElementById(`album-${sKey}`);
-        if (folder) setTimeout(() => folder.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      }
-    }
+    if (slugify(s.title) === param) revealFolder('series_' + i);
   });
 }
 
@@ -408,20 +451,30 @@ window.openArticle = function (id, skipState = false) {
 
   articleContent.innerHTML = article.content_html || "<i>[EMPTY PAYLOAD]</i>";
 
-  // (Scroll reset moved to bottom of function to ensure it fires after mobile unhides the reader)
-
   // VISUAL ACTIVE STATE (Monk Fix)
-  // First, strip the active styling from all buttons
   document.querySelectorAll('#doc-list button').forEach(btn => {
     btn.classList.remove('bg-[#a78bfa]/10', 'border-[#a78bfa]');
     btn.classList.add('border-transparent');
   });
 
-  // Then, apply the active styling to the explicitly clicked item
   const activeBtn = document.querySelector(`button[onclick="window.openArticle('${id}')"]`);
   if (activeBtn) {
     activeBtn.classList.remove('border-transparent');
     activeBtn.classList.add('bg-[#a78bfa]/10', 'border-[#a78bfa]');
+  }
+
+  // REVEAL PARENT FOLDER — open + glow the folder this article belongs to
+  // (Handles ?id= deep links so desktop users notice the sidebar opened)
+  if (article.series_id) {
+    const seriesIdx = globalSeries.findIndex(s => s.id === article.series_id);
+    if (seriesIdx !== -1) {
+      const sKey = 'series_' + seriesIdx;
+      const contentEl = document.getElementById(`folder-content-${sKey}`);
+      // Only reveal if folder is currently closed (don't collapse an open folder)
+      if (contentEl && contentEl.classList.contains('hidden')) {
+        revealFolder(sKey);
+      }
+    }
   }
 
   // Update Sidebar Info Panel
@@ -451,11 +504,8 @@ window.openArticle = function (id, skipState = false) {
     reader.classList.add('flex');
   }
 
-  // RESET SCROLL TO TOP (Monk Fix)
-  // Deferring slightly ensures the DOM has updated the 'display' property before calculating scroll position.
-  setTimeout(() => {
-    htmlFrame.scrollTop = 0;
-  }, 10);
+  // RESET SCROLL TO TOP
+  setTimeout(() => { htmlFrame.scrollTop = 0; }, 10);
 };
 
 window.closeArticle = function (skipState = false) {

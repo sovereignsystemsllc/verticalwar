@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE BLACK BOX // LEXICON &mdash; Vertical War</title>
+    <meta name="description"
+        content="The Sovereign Lexicon. Decrypt the language of the Vertical War. Every term the enemy uses to hide the theft, translated into plain Hardware reality.">
+
+    <!-- OG -->
+    <meta property="og:title" content="THE BLACK BOX // LEXICON">
+    <meta property="og:description"
+        content="Decrypt the language of power. Every term the enemy uses to hide the theft, translated.">
+    <meta property="og:url" content="https://verticalwar.com/lexicon/">
+    <meta property="og:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/assets/images/og_codex_preview.png">
+
+    <!-- Speed Lock: RBAC -->
+    <script>
+        const _r = localStorage.getItem('user_role');
+        // Lexicon is public-facing — no gate needed.
+    </script>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- V4 Sidebar + Auth -->
+    <script type="module" src="../src/sidebar.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&display=swap');
+
+        :root {
+            --violet: #a78bfa;
+            --green: #00ff41;
+            --bg: #05010a;
+            --surface: #0d0916;
+            --border: rgba(167, 139, 250, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            background-color: var(--bg);
+            color: #d4d4d8;
+            font-family: 'JetBrains Mono', monospace;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        /* CRT SCANLINES OVERLAY */
+        .scan-lines {
+            background:
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+                linear-gradient(90deg, rgba(167, 139, 250, 0.03), rgba(0, 255, 65, 0.01), rgba(167, 139, 250, 0.03));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+        }
+
+        /* CURSOR BLINK */
+        .typing-cursor::after {
+            content: '\25AE';
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            color: var(--green);
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* GLASS TERMINAL */
+        .glass-terminal {
+            background: rgba(5, 1, 10, 0.92);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            box-shadow:
+                0 0 60px rgba(0, 0, 0, 0.95),
+                inset 0 0 30px rgba(167, 139, 250, 0.03);
+        }
+
+        /* SIDEBAR INDEX */
+        #sidebar-index {
+            background: rgba(5, 1, 10, 0.7);
+            border-right: 1px solid var(--border);
+        }
+
+        /* SCROLLBAR */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(167, 139, 250, 0.3);
+            border-radius: 2px;
+        }
+
+        /* ACTIVE TERM BUTTON */
+        .term-btn.active {
+            color: white;
+            background: rgba(167, 139, 250, 0.1);
+            border-left-color: var(--violet);
+        }
+
+        /* TYPE BADGES */
+        .badge-entity {
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .badge-doctrine {
+            border-color: rgba(167, 139, 250, 0.5);
+            color: #c4b5fd;
+            background: rgba(167, 139, 250, 0.08);
+        }
+
+        .badge-weapon {
+            border-color: rgba(251, 191, 36, 0.5);
+            color: #fde68a;
+            background: rgba(251, 191, 36, 0.08);
+        }
+
+        .badge-tactic {
+            border-color: rgba(52, 211, 153, 0.5);
+            color: #6ee7b7;
+            background: rgba(52, 211, 153, 0.08);
+        }
+
+        .badge-skill {
+            border-color: rgba(0, 255, 65, 0.5);
+            color: #86efac;
+            background: rgba(0, 255, 65, 0.06);
+        }
+
+        .badge-system {
+            border-color: rgba(96, 165, 250, 0.5);
+            color: #93c5fd;
+            background: rgba(96, 165, 250, 0.08);
+        }
+
+        .badge-translation {
+            border-color: rgba(251, 146, 60, 0.5);
+            color: #fdba74;
+            background: rgba(251, 146, 60, 0.08);
+        }
+
+        .badge-metric {
+            border-color: rgba(251, 146, 60, 0.5);
+            color: #fdba74;
+            background: rgba(251, 146, 60, 0.08);
+        }
+
+        .badge-forensic {
+            border-color: rgba(199, 21, 133, 0.5);
+            color: #f9a8d4;
+            background: rgba(199, 21, 133, 0.08);
+        }
+
+        .badge-event {
+            border-color: rgba(232, 121, 249, 0.5);
+            color: #f0abfc;
+            background: rgba(232, 121, 249, 0.08);
+        }
+
+        .badge-default {
+            border-color: rgba(167, 139, 250, 0.3);
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.05);
+        }
+
+        /* DEFINITION BODY */
+        .def-body {
+            border-left: 2px solid var(--violet);
+            padding-left: 1.5rem;
+            color: #c4b5fd;
+            font-size: 0.95rem;
+            line-height: 1.85;
+        }
+
+        /* LINKED TERM CHIP */
+        .term-chip {
+            color: var(--green);
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(0, 255, 65, 0.4);
+            transition: all 0.15s ease;
+        }
+
+        .term-chip:hover {
+            color: #86efac;
+            border-bottom-color: rgba(134, 239, 172, 0.7);
+        }
+
+        /* UNAUTHORIZED ENTRY BOXES */
+        .unauthorized {
+            border: 1px solid;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            border-radius: 2px;
+            font-size: 0.78rem;
+            line-height: 1.6;
+        }
+
+        .unauthorized.ryuko {
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .unauthorized.rika {
+            border-color: rgba(232, 121, 249, 0.4);
+            color: #f0abfc;
+            background: rgba(232, 121, 249, 0.05);
+        }
+
+        .unauthorized.stocking {
+            border-color: rgba(167, 139, 250, 0.4);
+            color: #c4b5fd;
+            background: rgba(167, 139, 250, 0.05);
+        }
+
+        .unauthorized.zoe {
+            border-color: rgba(96, 165, 250, 0.4);
+            color: #93c5fd;
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        /* DEFINITION IMAGE */
+        .def-img {
+            max-width: 100%;
+            max-height: 45vh;
+            object-fit: contain;
+            opacity: 0.88;
+            transition: opacity 0.4s ease;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .def-img:hover {
+            opacity: 1;
+        }
+
+        /* SECTION CATEGORY DIVIDERS IN SIDEBAR */
+        .cat-label {
+            font-size: 0.6rem;
+            color: rgba(167, 139, 250, 0.35);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.85rem 0.75rem 0.2rem;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+            }
+
+            #main-terminal {
+                display: none;
+            }
+
+            #main-terminal.mobile-shown {
+                display: flex;
+            }
+
+            #sidebar-index.mobile-hidden {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="lg:pl-64">
+
+    <!-- CRT OVERLAY -->
+    <div class="scan-lines" aria-hidden="true"></div>
+
+    <main class="flex items-start justify-center p-3 md:p-6 h-screen overflow-hidden">
+
+        <div id="terminal-container"
+            class="glass-terminal w-full max-w-6xl flex flex-col md:flex-row rounded-sm overflow-hidden relative z-10 h-[calc(100vh-1.5rem)] md:h-[calc(100vh-3rem)]">
+
+            <!-- ─── SIDEBAR: TERM INDEX ──────────────────────────────── -->
+            <aside id="sidebar-index" class="flex-1 md:flex-none w-full md:w-72 flex flex-col relative">
+
+                <!-- Header -->
+                <div class="px-4 py-5 border-b border-[var(--border)]">
+                    <h2 class="text-[10px] font-bold text-[var(--violet)]/60 tracking-widest uppercase mb-1">
+                        DATABASE_INDEX
+                    </h2>
+                    <div id="status-badge" class="text-[10px] text-[var(--green)]">
+                        Online // Secure &mdash; <span id="term-count">0</span> Terms
+                    </div>
+
+                    <!-- WAR COUNCIL TOGGLE -->
+                    <div class="mt-4">
+                        <button onclick="toggleGuide()" id="guide-btn"
+                            class="flex items-center gap-2 text-[9px] text-yellow-400 hover:text-yellow-300 transition-colors uppercase tracking-widest font-bold w-full text-left border border-yellow-500/20 bg-yellow-900/10 p-2 rounded-sm hover:bg-yellow-900/25">
+                            <span id="guide-icon">[ + ]</span> WAR COUNCIL // ACTIVE
+                        </button>
+                        <div id="guide-panel"
+                            class="hidden mt-2 p-3 bg-black/50 border border-[var(--green)]/15 text-[9px] leading-relaxed rounded-sm">
+                            <p class="mb-2 text-gray-400">
+                                <strong class="text-[var(--green)]">MISSION:</strong>
+                                Equip the Gears with a shared language that the Rust cannot spin.
+                            </p>
+                            <p class="text-gray-400 mb-3">
+                                <strong class="text-[var(--green)]">USAGE:</strong>
+                                Select a term to decrypt its true meaning. Cross-referenced terms are clickable.
+                            </p>
+                            <div class="text-center border-t border-gray-800 pt-3">
+                                <p class="text-yellow-200/50 mb-2 italic">The Forge is funded by its Gears.</p>
+                                <a href="https://constructamiracle.com/subscribe" target="_blank" rel="noopener"
+                                    class="block w-full text-center py-2 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-[9px] font-bold tracking-wider hover:text-yellow-300 transition-all">
+                                    JOIN THE PHALANX
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Term Navigation -->
+                <nav id="term-nav" class="flex-1 overflow-y-auto custom-scroll pb-24">
+                    <!-- Dynamically populated by lexicon.js -->
+                    <div class="text-[9px] text-gray-600 p-4">LOADING INDEX...</div>
+                </nav>
+
+                <!-- Footer -->
+                <div class="px-4 py-3 border-t border-[var(--border)] text-[9px] text-gray-700 shrink-0">
+                    V4.0 // BLACK BOX // ARCHIVE
+                </div>
+            </aside>
+
+            <!-- ─── MAIN TERMINAL ────────────────────────────────────── -->
+            <section id="main-terminal" class="flex-1 flex flex-col w-full min-h-0 p-5 md:p-8 relative">
+
+                <!-- Mobile back button -->
+                <button onclick="mobileShowIndex()"
+                    class="md:hidden mb-4 flex items-center gap-2 text-[var(--violet)] hover:text-[var(--violet)]/70 font-mono text-xs border border-[var(--violet)]/30 px-3 py-2 rounded bg-[var(--violet)]/5 transition-colors">
+                    &larr; RETURN TO INDEX
+                </button>
+
+                <!-- SEARCH INPUT -->
+                <div class="flex items-center gap-3 mb-6 border-b border-[var(--green)]/20 pb-4">
+                    <span class="text-[var(--green)] font-bold text-lg select-none">&gt;&gt;</span>
+                    <input type="text" id="term-input"
+                        class="bg-transparent border-none outline-none text-[var(--green)] font-mono w-full uppercase placeholder-[var(--green)]/20 text-sm"
+                        placeholder="ENTER SEARCH QUERY..." autocomplete="off" aria-label="Search lexicon terms"
+                        onkeypress="handleEnter(event)">
+                    <span class="text-[10px] text-gray-700 tracking-widest hidden md:block">[ ENTER ]</span>
+                </div>
+
+                <!-- DEFINITION DISPLAY AREA -->
+                <div id="display-area" class="flex-1 overflow-y-auto custom-scroll pr-2 min-h-0">
+                    <div class="text-gray-600 text-sm typing-cursor mt-8 ml-1">AWAITING QUERY...</div>
+                    <div class="mt-6 text-[10px] text-gray-700 space-y-1">
+                        <p>&gt; SELECT A TERM FROM THE INDEX TO BEGIN</p>
+                        <p>&gt; OR TYPE ABOVE AND PRESS ENTER TO SEARCH</p>
+                        <p>&gt; CROSS-REFERENCED TERMS ARE CLICKABLE IN DEFINITIONS</p>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- LEXICON LOGIC -->
+    <script type="module" src="./lexicon_ui.js"></script>
+
+</body>
+
+</html>

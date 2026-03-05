@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SOVEREIGN FX ENGINE — src/fx.js
  * Drop this import into any page: import './fx.js'
  * Handles: cursor glow, scroll-reveal, glitch pulse, stagger entry, button ripple
@@ -22,8 +22,8 @@ function initCursorGlow() {
     glow.id = 'cursor-glow';
     glow.style.cssText = `
         position: fixed;
-        width: 100px;
-        height: 100px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
         var t = e.touches[0];
         window._snapGlow = { x: t.clientX, y: t.clientY };
         clearTimeout(idleTimer);
-        g.style.width  = '55px';
-        g.style.height = '55px';
+        g.style.width  = '16px';
+        g.style.height = '16px';
         g.style.transition = 'opacity 0.1s ease';
         g.style.opacity = '1';
     }, { passive: true });
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRipple();
 });
 
-// -- TYPEWRITER � auto-targets [data-typewriter] elements ---------------------
+// -- TYPEWRITER � auto-targets [data-typewriter] elements ---------------------
 function initTypewriter() {
     document.querySelectorAll('[data-typewriter]').forEach(el => {
         const full = el.dataset.typewriter || el.textContent.trim();
@@ -230,7 +230,7 @@ function initTypewriter() {
                 i++;
                 setTimeout(type, speed + Math.random() * 30);
             } else {
-                // Done typing � keep cursor blinking for 3s then fade it
+                // Done typing � keep cursor blinking for 3s then fade it
                 setTimeout(() => { cursor.style.opacity = '0'; cursor.style.transition = 'opacity 1s'; }, 3000);
             }
         }
@@ -240,3 +240,34 @@ function initTypewriter() {
 
 // Re-export hook so pages can call it manually if needed
 document.addEventListener('DOMContentLoaded', () => { initTypewriter(); });
+
+// ── CURSOR TRAIL — tiny fading dots that follow the cursor ────────────────────
+(function initCursorTrail() {
+    if (window.matchMedia('(hover: none)').matches) return; // skip on touch-only
+    let lastTrail = 0;
+    document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastTrail < 40) return; // throttle: max ~25 dots/sec
+        lastTrail = now;
+        const dot = document.createElement('div');
+        dot.style.cssText = [
+            'position:fixed',
+            'left:' + e.clientX + 'px',
+            'top:' + e.clientY + 'px',
+            'width:6px',
+            'height:6px',
+            'background:rgba(167,139,250,0.55)',
+            'border-radius:50%',
+            'pointer-events:none',
+            'transform:translate(-50%,-50%)',
+            'transition:opacity 0.35s ease,transform 0.35s ease',
+            'z-index:99997'
+        ].join(';');
+        document.body.appendChild(dot);
+        requestAnimationFrame(() => {
+            dot.style.opacity = '0';
+            dot.style.transform = 'translate(-50%,-50%) scale(0.1)';
+        });
+        setTimeout(() => dot.remove(), 380);
+    }, { passive: true });
+})();

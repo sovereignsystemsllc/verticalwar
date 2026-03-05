@@ -308,7 +308,7 @@ function syncFolderHighlight() {
 function renderFolders() {
     foldersContainer.innerHTML = '';
 
-    // ── UNASSIGNED SINGLES bucket ──────────────────────────
+    // ── UNASSIGNED SINGLES bucket (pinned, not part of section groups) ──
     const unassignedCount = allArticles.filter(a => !a.series_id).length;
     const unIsActive = activeFolderId === null && !isGlobalSearch;
 
@@ -331,7 +331,6 @@ function renderFolders() {
         setMobileTab('articles');
     };
 
-    // Accept article drops onto unassigned bucket
     new Sortable(unEl, {
         group: 'articles-group',
         delay: 150,
@@ -349,27 +348,83 @@ function renderFolders() {
 
     foldersContainer.appendChild(unEl);
 
-    // ── SERIES / HEADINGS ──────────────────────────────────
+    // ── GROUP masterSeries into sections: [ { heading, folders[] } ] ──
+    // Each heading starts a new section. Folders before any heading go into
+    // a headingless section so they're still draggable as a unit.
+    const sections = [];
+    let current = { heading: null, folders: [] };
+
     masterSeries.forEach(s => {
         if (s.title === '[HEADING ONLY]') {
-            // Category heading — draggable section divider
+            sections.push(current);
+            current = { heading: s, folders: [] };
+        } else {
+            current.folders.push(s);
+        }
+    });
+    sections.push(current);
+
+    // ── RENDER each section as a draggable wrapper ──
+    sections.forEach(section => {
+        // Skip empty headingless sections (no folders, no heading)
+        if (!section.heading && section.folders.length === 0) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.dataset.sectionGroup = '1';
+        wrapper.className = 'section-group';
+
+        // ── Heading row ──
+        if (section.heading) {
+            const s = section.heading;
             const head = document.createElement('div');
             head.dataset.folderId = s.id;
-            head.className = 'pt-6 pb-2 border-b border-matrix-border/40 relative cursor-grab group';
+            head.className = 'pt-6 pb-2 border-b border-matrix-border/40 relative cursor-grab group select-none';
             head.innerHTML = `
                 <div class="flex items-center justify-between px-1">
-                    <h3 class="text-[9px] text-matrix-green/70 font-bold tracking-[0.4em] uppercase">${s.category_label || 'UNCATEGORIZED'}</h3>
+                    <h3 class="text-[9px] ${s.hidden ? 'text-matrix-muted line-through' : 'text-matrix-green/70'} font-bold tracking-[0.4em] uppercase">${s.category_label || 'UNCATEGORIZED'}${s.hidden ? ' [HIDDEN]' : ''}</h3>
                     <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="btn-hide-folder text-[8px] font-bold ${s.hidden ? 'text-yellow-400 hover:text-yellow-300' : 'text-matrix-green/50 hover:text-yellow-400'}">[${s.hidden ? 'SHOW' : 'H'}]</button>
                         <button class="btn-edit-folder text-[8px] text-matrix-green/50 hover:text-matrix-green font-bold">[E]</button>
                         <button class="btn-del-folder  text-[8px] text-matrix-green/50 hover:text-red-500 font-bold">[D]</button>
                     </div>
                 </div>`;
+            head.querySelector('.btn-hide-folder').addEventListener('click', e => { e.stopPropagation(); toggleHiddenFolder(s.id, s.hidden); });
             head.querySelector('.btn-edit-folder').addEventListener('click', e => { e.stopPropagation(); editFolder(s.id); });
             head.querySelector('.btn-del-folder').addEventListener('click', e => { e.stopPropagation(); deleteFolder(s.id, true); });
-            foldersContainer.appendChild(head);
+            wrapper.appendChild(head);
+        }
 
-        } else {
-            // Regular folder — count includes primary + secondary (multi-folder) assignments
+        // ── Folder / Pinned Article rows ──
+        section.folders.forEach(s => {
+
+            // ── PINNED ARTICLE entry ──
+            if (s.title === '[PINNED ARTICLE]') {
+                const pinned = allArticles.find(a => a.id === s.pinned_article_id);
+                const pin = document.createElement('div');
+                pin.dataset.folderId = s.id;
+                pin.className = 'p-2.5 mb-1 flex items-center gap-2 border border-matrix-border/50 border-dashed relative group overflow-hidden text-matrix-muted hover:text-white hover:border-matrix-green transition-colors';
+                pin.innerHTML = `
+                    <span class="text-[10px] opacity-60 shrink-0">📄</span>
+                    <span class="min-w-0 flex-1 font-bold tracking-wide text-[11px] truncate italic">${pinned ? pinned.title : '[MISSING ARTICLE]'}</span>
+                    <div class="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="btn-del-pin text-[8px] font-bold text-matrix-green/50 hover:text-red-500">[D]</button>
+                    </div>`;
+                pin.querySelector('.btn-del-pin').addEventListener('click', async e => {
+                    e.stopPropagation();
+                    const ok = await sovereignConfirm(`UNPIN: "${pinned ? pinned.title : s.id}"?`);
+                    if (!ok) return;
+                    await supabase.from('series').delete().eq('id', s.id);
+                    loadData();
+                });
+                // Clicking the row opens the article in a new tab
+                pin.addEventListener('click', () => {
+                    if (pinned) window.open(`/post/?id=${pinned.id}`, '_blank');
+                });
+                wrapper.appendChild(pin);
+                return; // skip folder rendering for this entry
+            }
+
+            // ── Regular folder row ──
             const isActive = activeFolderId === s.id;
             const count = allArticles.filter(a =>
                 a.series_id === s.id || folderMap.get(a.id)?.has(s.id)
@@ -390,15 +445,19 @@ function renderFolders() {
                 setMobileTab('articles');
             });
 
+            if (s.hidden && !isActive) el.classList.add('opacity-40');
+
             el.innerHTML = `
                 <span class="text-[10px] opacity-50 shrink-0">📁</span>
-                <span class="min-w-0 flex-1 uppercase font-bold tracking-wide text-xs truncate" style="${isActive ? 'color:#000' : ''}">${s.title}</span>
+                <span class="min-w-0 flex-1 uppercase font-bold tracking-wide text-xs truncate ${s.hidden ? 'line-through' : ''}" style="${isActive ? 'color:#000' : ''}">${s.title}${s.hidden ? ' [HIDDEN]' : ''}</span>
                 <span class="text-[9px] font-bold shrink-0 ml-auto" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:#6b7280'}">(${count})</span>
                 <div class="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button class="btn-edit-folder text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[E]</button>
+                    <button class="btn-hide-folder text-[8px] font-bold" style="color:${s.hidden ? '#facc15' : 'rgba(167,139,250,0.6)'}">[${s.hidden ? 'SHOW' : 'H'}]</button>
+                    <button class="btn-edit-folder text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[  E]</button>
                     <button class="btn-del-folder  text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[D]</button>
                 </div>`;
 
+            el.querySelector('.btn-hide-folder').addEventListener('click', e => { e.stopPropagation(); toggleHiddenFolder(s.id, s.hidden); });
             el.querySelector('.btn-edit-folder').addEventListener('click', e => { e.stopPropagation(); editFolder(s.id); });
             el.querySelector('.btn-del-folder').addEventListener('click', e => { e.stopPropagation(); deleteFolder(s.id); });
 
@@ -418,11 +477,13 @@ function renderFolders() {
                 }
             });
 
-            foldersContainer.appendChild(el);
-        }
+            wrapper.appendChild(el);
+        });
+
+        foldersContainer.appendChild(wrapper);
     });
 
-    // Folder drag-to-reorder
+    // ── SortableJS on SECTION WRAPPERS — drags the whole group ──
     if (foldersSortable) foldersSortable.destroy();
     foldersSortable = new Sortable(foldersContainer, {
         group: 'folders-group',
@@ -430,15 +491,11 @@ function renderFolders() {
         delay: 150,
         delayOnTouchOnly: true,
         touchStartThreshold: 3,
-        filter: '.drag-blocker',
-        preventOnFilter: false,
-        direction: 'vertical',
-        invertSwap: true,
-        swapThreshold: 0.65,
-        emptyInsertThreshold: 20,
+        draggable: '[data-section-group]',
         ghostClass: 'drag-ghost',
         chosenClass: 'drag-chosen',
         onMove: (evt) => {
+            // Never drag UNASSIGNED bucket
             if (evt.dragged.dataset.folderId === 'unassigned' ||
                 evt.related?.dataset.folderId === 'unassigned') return false;
         },
@@ -798,6 +855,14 @@ async function deleteFolder(id, isHeading = false) {
     loadData();
 }
 
+async function toggleHiddenFolder(id, currentlyHidden) {
+    const next = !currentlyHidden;
+    const { error } = await supabase.from('series').update({ hidden: next }).eq('id', id);
+    if (error) { console.error('Toggle hidden failed:', error.message); showToast('Failed to update visibility.', true); return; }
+    showToast(next ? 'Folder hidden from public.' : 'Folder visible to public.');
+    loadData();
+}
+
 // ============================================================
 // NEW HEADING
 // ============================================================
@@ -848,6 +913,36 @@ if (btnNewFolder) {
 }
 
 // ============================================================
+// PIN ARTICLE TO SIDEBAR
+// ============================================================
+
+const btnPinArticle = document.getElementById('btn-pin-article');
+if (btnPinArticle) {
+    btnPinArticle.addEventListener('click', async () => {
+        const choices = allArticles.filter(a => a.title);
+        if (choices.length === 0) { showToast('No articles available.', true); return; }
+        const options = choices.map(a => ({ value: a.id, label: a.title }));
+        const articleId = await sovereignSelect('PIN ARTICLE TO SIDEBAR:', options);
+        if (!articleId) return;
+
+        let defaultCat = 'UNCATEGORIZED';
+        if (masterSeries.length > 0) defaultCat = masterSeries[masterSeries.length - 1].category_label || 'UNCATEGORIZED';
+        const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
+
+        const { error } = await supabase.from('series').insert([{
+            title: '[PINNED ARTICLE]',
+            pinned_article_id: articleId,
+            category_label: defaultCat,
+            order_index: maxOrder + 1
+        }]);
+        if (error) { console.error('Pin article failed:', error.message); showToast('Pin failed.', true); return; }
+        showToast('📄 Article pinned to sidebar.');
+        await loadData();
+        setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
+    });
+}
+
+// ============================================================
 // SAVE FOLDER ORDER — single upsert
 // ============================================================
 
@@ -856,21 +951,28 @@ if (btnSaveFolderOrder) {
         btnSaveFolderOrder.innerText = '[ SAVING... ]';
         btnSaveFolderOrder.classList.remove('animate-pulse');
 
-        const items = Array.from(foldersContainer.children);
+        // Walk section wrappers in their new DOM order, then items within each wrapper.
+        // This re-flattens the grouped structure back into a linear order_index sequence.
         const updates = [];
         let dbIndex = 0;
-        let currentCategory = 'UNCATEGORIZED';
 
-        items.forEach(item => {
-            const id = item.dataset.folderId;
-            if (!id || id === 'unassigned') return;
-            const s = masterSeries.find(series => series.id === id);
-            if (!s) return;
-            if (s.title === '[HEADING ONLY]') {
-                currentCategory = s.category_label || 'UNCATEGORIZED';
-            }
-            updates.push({ id, order_index: dbIndex, category_label: currentCategory });
-            dbIndex++;
+        Array.from(foldersContainer.children).forEach(child => {
+            if (!child.dataset.sectionGroup) return; // skip UNASSIGNED bucket
+
+            // Walk every [data-folder-id] inside this section wrapper
+            Array.from(child.querySelectorAll('[data-folder-id]')).forEach(item => {
+                const id = item.dataset.folderId;
+                if (!id || id === 'unassigned') return;
+                const s = masterSeries.find(series => series.id === id);
+                if (!s) return;
+
+                // Derive category_label from the heading inside this same wrapper
+                const headingEl = child.querySelector('[data-folder-id] h3');
+                const categoryLabel = headingEl ? headingEl.textContent.replace(' [HIDDEN]', '').trim() : (s.category_label || 'UNCATEGORIZED');
+
+                updates.push({ id, order_index: dbIndex, category_label: categoryLabel });
+                dbIndex++;
+            });
         });
 
         if (updates.length > 0) {

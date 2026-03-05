@@ -20,6 +20,10 @@ export default defineConfig({
                 admin_about: resolve(__dirname, 'admin/about.html'),
                 receipts_ep2: resolve(__dirname, 'receipts/pack/RealityEP2Receipts/index.html'),
                 admin_receipts: resolve(__dirname, 'admin/receipts.html'),
+                terminal: resolve(__dirname, 'terminal/index.html'),
+                profile: resolve(__dirname, 'profile/index.html'),
+                profile_view: resolve(__dirname, 'profile/view.html'),
+                lexicon: resolve(__dirname, 'lexicon/index.html'),
                 // ADD NEW PUBLIC PAGES HERE
             }
         }

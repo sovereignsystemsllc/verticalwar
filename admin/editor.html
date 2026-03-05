@@ -105,10 +105,23 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Thumbnail URL</label>
-                    <input type="text" id="iptThumbnail"
-                        class="w-full bg-black border border-gray-700 text-gray-300 p-2 focus:outline-none focus:border-[#00ff41]"
-                        placeholder="https://...">
+                    <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Thumbnail</label>
+                    <!-- Hidden ghost input — editor.js reads this for save -->
+                    <input type="hidden" id="iptThumbnail" aria-hidden="true">
+                    <div class="flex items-start gap-3">
+                        <div id="thumbnail-preview-wrap" class="hidden shrink-0">
+                            <img id="thumbnail-preview" src="" alt="Thumbnail"
+                                class="w-20 h-14 object-cover border border-gray-700">
+                        </div>
+                        <div class="flex flex-col gap-1 flex-1">
+                            <button type="button" id="btn-upload-thumbnail"
+                                class="text-xs font-bold tracking-widest uppercase border border-[#00ff41]/50 text-[#00ff41]/70 hover:bg-[#00ff41] hover:text-black transition px-3 py-1.5 w-full text-left">
+                                📁 UPLOAD IMAGE
+                            </button>
+                            <span id="thumbnail-filename" class="text-[10px] text-gray-600 font-mono truncate">No file
+                                selected</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
@@ -162,8 +175,10 @@
         </form>
     </div>
 
-    <!-- Hidden file input for image uploads -->
+    <!-- Hidden file input for Quill image uploads -->
     <input type="file" id="imageUploadInput" accept="image/*" class="hidden">
+    <!-- Hidden file input for thumbnail upload -->
+    <input type="file" id="thumbnailUploadInput" accept="image/*" class="hidden">
 
     <!-- Terminal Overlay for Logging -->
     <div id="statusTerminal"
