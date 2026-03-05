@@ -215,27 +215,48 @@ function startAutoplay() {
   }
 }
 
+const SIDEBAR_CACHE_KEY = 'vw_sidebar_v1';
+const SIDEBAR_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 async function fetchArticles() {
+  // \u2500\u2500 CACHE HIT: serve instantly, skip Supabase entirely ──────────────────
   try {
-    // 1. Fetch Series mapped by user's explicit drag-and-drop order
-    const { data: sData, error: sErr } = await supabase
-      .from('series')
-      .select('*')
-      .order('order_index', { ascending: true });
+    const cached = localStorage.getItem(SIDEBAR_CACHE_KEY);
+    if (cached) {
+      const { ts, series, articles } = JSON.parse(cached);
+      if (Date.now() - ts < SIDEBAR_CACHE_TTL) {
+        globalSeries = series;
+        globalArticles = articles;
+        return;
+      }
+    }
+  } catch (_) { /* corrupted cache \u2014 fall through to fetch */ }
+
+  // \u2500\u2500 CACHE MISS / STALE: parallel fetch from Supabase ────────────────────
+  try {
+    const [
+      { data: sData, error: sErr },
+      { data: aData, error: aErr }
+    ] = await Promise.all([
+      supabase.from('series').select('*').order('order_index', { ascending: true }),
+      supabase.from('articles').select('*').order('order_index', { ascending: true }),
+    ]);
 
     if (sErr) throw sErr;
-    globalSeries = sData || [];
-
-    // 2. Fetch Articles (ordered by their internal order_index)
-    const { data: aData, error: aErr } = await supabase
-      .from('articles')
-      .select('*')
-      .order('order_index', { ascending: true });
-
     if (aErr) throw aErr;
+    globalSeries = sData || [];
     globalArticles = aData || [];
+
+    // Update cache
+    try {
+      localStorage.setItem(SIDEBAR_CACHE_KEY, JSON.stringify({
+        ts: Date.now(),
+        series: globalSeries,
+        articles: globalArticles,
+      }));
+    } catch (_) { /* storage full \u2014 ignore */ }
   } catch (e) {
-    console.error("Failed to load payload:", e);
+    console.error('Failed to load payload:', e);
   }
 }
 

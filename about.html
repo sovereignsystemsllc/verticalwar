@@ -16,48 +16,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://verticalwar.com/og-image.png">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;600&display=swap"
     rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'noir': '#05010a',
-            'noir-02': '#0a0414',
-            'rika': '#a78bfa',
-            'amber': '#f59e0b',
-          },
-          fontFamily: {
-            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
-            serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-          animation: {
-            'scanline': 'scanline 10s linear infinite',
-            'pulse-slow': 'pulse 3s ease-in-out infinite',
-            'flicker': 'flicker 6s step-end infinite',
-          },
-          keyframes: {
-            scanline: {
-              '0%': { transform: 'translateY(-100vh)' },
-              '100%': { transform: 'translateY(100vh)' },
-            },
-            flicker: {
-              '0%, 95%, 100%': { opacity: '1' },
-              '96%': { opacity: '0.85' },
-              '97%': { opacity: '1' },
-              '98%': { opacity: '0.9' },
-            }
-          }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="/src/style.css">
 
   <style>
