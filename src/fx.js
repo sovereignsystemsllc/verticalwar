@@ -22,8 +22,8 @@ function initCursorGlow() {
     glow.id = 'cursor-glow';
     glow.style.cssText = `
         position: fixed;
-        width: 280px;
-        height: 280px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
@@ -61,12 +61,12 @@ function initCursorGlow() {
 
     // Burst on click
     document.addEventListener('click', () => {
-        glow.style.width = '420px';
-        glow.style.height = '420px';
+        glow.style.width = '160px';
+        glow.style.height = '160px';
         glow.style.transition = 'width 0.15s ease, height 0.15s ease, background 1.2s ease';
         setTimeout(() => {
-            glow.style.width = '280px';
-            glow.style.height = '280px';
+            glow.style.width = '100px';
+            glow.style.height = '100px';
             glow.style.transition = 'width 0.4s ease, height 0.4s ease, background 1.2s ease';
         }, 150);
     });
@@ -163,7 +163,7 @@ function initRipple() {
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    initCursorGlow();
+    if (window.matchMedia('(pointer: fine)').matches) { initCursorGlow(); }
     initScrollReveal();
     initGlitch();
     initStagger();
