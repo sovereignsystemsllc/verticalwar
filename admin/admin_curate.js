@@ -449,15 +449,19 @@ function renderFolders() {
 
             el.innerHTML = `
                 <span class="text-[10px] opacity-50 shrink-0">📁</span>
-                <span class="min-w-0 flex-1 uppercase font-bold tracking-wide text-xs truncate ${s.hidden ? 'line-through' : ''}" style="${isActive ? 'color:#000' : ''}">${s.title}${s.hidden ? ' [HIDDEN]' : ''}</span>
+                <span class="min-w-0 flex-1 uppercase font-bold tracking-wide text-xs truncate ${s.hidden ? 'line-through' : ''}" style="${isActive ? 'color:#000' : ''}">${s.title}${s.hidden ? ' [HIDDEN]' : ''}${s.splash_article_id ? ' <span title="Has splash page" style="opacity:0.7">🎯</span>' : ''}</span>
                 <span class="text-[9px] font-bold shrink-0 ml-auto" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:#6b7280'}">(${count})</span>
                 <div class="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button class="btn-splash-folder text-[8px] font-bold" style="color:${s.splash_article_id ? '#22d3ee' : 'rgba(167,139,250,0.6)'}" title="${s.splash_article_id ? 'Change splash page' : 'Assign splash page'}">[${s.splash_article_id ? 'S✓' : 'S'}]</button>
                     <button class="btn-hide-folder text-[8px] font-bold" style="color:${s.hidden ? '#facc15' : 'rgba(167,139,250,0.6)'}">[${s.hidden ? 'SHOW' : 'H'}]</button>
-                    <button class="btn-edit-folder text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[  E]</button>
-                    <button class="btn-del-folder  text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'};">[D]</button>
+                    <button class="btn-move-folder text-[8px] font-bold" style="color:rgba(167,139,250,0.6);" title="Move to a different heading">[M]</button>
+                    <button class="btn-edit-folder text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'}">[E]</button>
+                    <button class="btn-del-folder  text-[8px] font-bold" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:rgba(167,139,250,0.6)'}">[D]</button>
                 </div>`;
 
+            el.querySelector('.btn-splash-folder').addEventListener('click', e => { e.stopPropagation(); assignFolderSplash(s.id); });
             el.querySelector('.btn-hide-folder').addEventListener('click', e => { e.stopPropagation(); toggleHiddenFolder(s.id, s.hidden); });
+            el.querySelector('.btn-move-folder').addEventListener('click', e => { e.stopPropagation(); moveFolderToHeading(s.id); });
             el.querySelector('.btn-edit-folder').addEventListener('click', e => { e.stopPropagation(); editFolder(s.id); });
             el.querySelector('.btn-del-folder').addEventListener('click', e => { e.stopPropagation(); deleteFolder(s.id); });
 
@@ -864,6 +868,71 @@ async function toggleHiddenFolder(id, currentlyHidden) {
 }
 
 // ============================================================
+// ASSIGN SPLASH ARTICLE TO FOLDER
+// ============================================================
+async function assignFolderSplash(folderId) {
+    const choices = allArticles.filter(a => a.title && !a.hidden);
+    if (choices.length === 0) { showToast('No articles available.', true); return; }
+
+    // Prepend a [CLEAR] option so admin can unassign
+    const options = [
+        { value: '__CLEAR__', label: '[ CLEAR — Remove Splash Page ]' },
+        ...choices.map(a => ({ value: a.id, label: a.title }))
+    ];
+
+    const selected = await sovereignSelect('ASSIGN SPLASH ARTICLE TO FOLDER:', options);
+    if (!selected) return; // cancelled
+
+    const newValue = selected === '__CLEAR__' ? null : selected;
+    const { error } = await supabase.from('series').update({ splash_article_id: newValue }).eq('id', folderId);
+    if (error) { showToast('Failed to assign splash article.', true); return; }
+
+    showToast(newValue ? 'Splash page assigned.' : 'Splash page cleared.');
+    loadData();
+}
+
+// ============================================================
+// MOVE FOLDER TO A DIFFERENT HEADING
+// ============================================================
+
+async function moveFolderToHeading(folderId) {
+    const headings = masterSeries.filter(s => s.title === '[HEADING ONLY]');
+    if (headings.length === 0) {
+        await sovereignConfirm('No headings exist. Create a heading first.');
+        return;
+    }
+
+    const options = headings.map(h => ({ value: h.id, label: h.category_label || 'UNCATEGORIZED' }));
+    const targetHeadingId = await sovereignSelect('MOVE FOLDER UNDER HEADING:', options);
+    if (!targetHeadingId) return;
+
+    // Find the heading's current order_index, then slot the folder right after it.
+    // We rebuild a new flat ordering: everything in order, but with the folder
+    // removed from its old position and inserted after the chosen heading.
+    const headingRow = masterSeries.find(s => s.id === targetHeadingId);
+    if (!headingRow) return;
+
+    const withoutFolder = masterSeries.filter(s => s.id !== folderId);
+    const headingPos = withoutFolder.findIndex(s => s.id === targetHeadingId);
+
+    // Insert folder immediately after the heading
+    withoutFolder.splice(headingPos + 1, 0, masterSeries.find(s => s.id === folderId));
+
+    // Assign sequential order_index values
+    const updates = withoutFolder.map((s, idx) => ({
+        id: s.id,
+        order_index: idx,
+        category_label: s.category_label
+    }));
+
+    const { error } = await supabase.from('series').upsert(updates, { onConflict: 'id' });
+    if (error) { console.error('Move folder failed:', error.message); showToast('Move failed.', true); return; }
+
+    showToast(`Moved under "${headingRow.category_label || 'UNCATEGORIZED'}".`);
+    await loadData();
+}
+
+// ============================================================
 // NEW HEADING
 // ============================================================
 
@@ -877,7 +946,8 @@ if (btnNewHeading) {
             category_label: catLabel.trim(),
             order_index: maxOrder + 1
         }]);
-        if (error) { console.error('New heading failed:', error.message); return; }
+        if (error) { console.error('New heading failed:', error.message); showToast('Failed to create heading.', true); return; }
+        showToast(`Heading "${catLabel.trim()}" created.`);
         await loadData();
         setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
     });
@@ -903,7 +973,8 @@ if (btnNewFolder) {
             .insert([{ title: name.trim(), category_label: defaultCat, order_index: maxOrder + 1 }])
             .select();
 
-        if (error) { console.error('New folder failed:', error.message); return; }
+        if (error) { console.error('New folder failed:', error.message); showToast('Failed to create folder.', true); return; }
+        showToast(`Folder "${name.trim()}" created.`);
         await loadData();
         if (data && data.length > 0) {
             renderArticles(data[0].id);

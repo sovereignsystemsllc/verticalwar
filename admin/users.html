@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITIZEN REGISTRY // USER MODERATION</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'matrix-bg': '#05010a',
+                        'matrix-panel': '#0a0a0a',
+                        'matrix-green': '#a78bfa',
+                        'matrix-border': 'rgba(167, 139, 250, 0.2)',
+                        'matrix-text': '#e0e0e0',
+                        'matrix-muted': '#6b7280',
+                        'cyan': '#22d3ee',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #a78bfa;
+            border-radius: 2px;
+        }
+
+        .user-row {
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .user-row:hover {
+            background: rgba(34, 211, 238, 0.05);
+            border-color: rgba(34, 211, 238, 0.4) !important;
+        }
+
+        .user-row.active {
+            background: rgba(34, 211, 238, 0.08);
+            border-color: #22d3ee !important;
+        }
+
+        .activity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .badge-comment {
+            background: rgba(167, 139, 250, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .badge-bookmark {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-read {
+            background: rgba(34, 211, 238, 0.12);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        /* Profile overlay */
+        #profile-overlay {
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        #profile-overlay.hidden-overlay {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Tab active */
+        .tab-btn.active {
+            color: #22d3ee;
+            border-bottom-color: #22d3ee;
+        }
+
+        .tab-btn {
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s;
+        }
+
+        @media (max-width: 1023px) {
+            #panel-users {
+                display: none;
+            }
+
+            #panel-activity {
+                display: none;
+            }
+
+            main[data-active="users"] #panel-users {
+                display: flex;
+            }
+
+            main[data-active="activity"] #panel-activity {
+                display: flex;
+            }
+
+            #mobile-tabs {
+                display: flex;
+            }
+        }
+
+        #mobile-tabs {
+            display: none;
+        }
+    </style>
+</head>
+
+<body
+    class="pl-0 lg:pl-64 bg-matrix-bg text-matrix-text font-mono h-screen flex flex-col overflow-hidden selection:bg-matrix-green selection:text-black">
+    <div class="scanline-overlay"></div>
+
+    <!-- NAV -->
+    <nav
+        class="w-full h-14 border-b border-matrix-border px-4 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
+        <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-[#22d3ee] animate-pulse shrink-0"></span>
+            <span class="text-xs font-bold text-[#22d3ee] tracking-widest uppercase">CITIZEN REGISTRY //</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span id="registry-total" class="text-[10px] text-matrix-muted tracking-widest hidden sm:inline">—
+                USERS</span>
+            <a href="/admin/index.html"
+                class="text-[10px] font-bold text-matrix-muted hover:text-white transition-colors tracking-widest border border-matrix-border px-3 py-1.5 hover:bg-white/5">[
+                GATEWAY ]</a>
+        </div>
+    </nav>
+
+    <!-- MOBILE TABS -->
+    <div id="mobile-tabs" class="shrink-0 border-b border-matrix-border bg-matrix-panel">
+        <button id="tab-users"
+            class="flex-1 py-3 text-[11px] font-bold tracking-widest uppercase text-[#22d3ee] border-b-2 border-[#22d3ee]">CITIZENS</button>
+        <button id="tab-activity"
+            class="flex-1 py-3 text-[11px] font-bold tracking-widest uppercase text-matrix-muted border-b-2 border-transparent">ACTIVITY</button>
+    </div>
+
+    <!-- SPLIT WORKSPACE -->
+    <main id="main-workspace" data-active="users" class="flex-1 flex flex-col lg:flex-row overflow-hidden w-full">
+
+        <!-- LEFT: USER LIST -->
+        <section id="panel-users"
+            class="w-full lg:w-[340px] flex flex-col border-b lg:border-b-0 lg:border-r border-matrix-border bg-matrix-panel/30 shrink-0">
+            <header class="p-3 border-b border-matrix-border bg-matrix-bg shrink-0">
+                <h2 class="text-xs font-bold text-[#22d3ee] tracking-widest uppercase mb-2">Registered Citizens</h2>
+                <input type="search" id="user-search" placeholder="SEARCH NAME / EMAIL..." autocomplete="off"
+                    spellcheck="false"
+                    class="w-full bg-transparent border-b border-[#22d3ee]/40 text-xs text-white focus:outline-none focus:border-[#22d3ee] px-1 py-1 placeholder-[#22d3ee]/30 font-mono tracking-widest uppercase transition-colors">
+            </header>
+            <div id="users-container" class="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+                <p class="text-[10px] text-matrix-muted animate-pulse tracking-widest p-4">LOADING REGISTRY...</p>
+            </div>
+        </section>
+
+        <!-- RIGHT: ACTIVITY FEED -->
+        <section id="panel-activity" class="w-full flex flex-col bg-matrix-bg">
+            <header class="p-3 border-b border-matrix-border bg-matrix-bg shrink-0">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 id="activity-title" class="text-xs font-bold text-white tracking-[0.2em] uppercase">ALL ACTIVITY
+                    </h2>
+                    <button id="btn-clear-filter"
+                        class="hidden text-[9px] font-bold text-matrix-muted hover:text-white border border-matrix-border px-2 py-1 tracking-widest uppercase transition-colors">[
+                        ALL USERS ]</button>
+                </div>
+                <!-- TABS -->
+                <div class="flex gap-4 border-b border-matrix-border/50 pb-0">
+                    <button class="tab-btn active pb-2 text-[10px] font-bold tracking-widest uppercase"
+                        data-tab="all">ALL</button>
+                    <button class="tab-btn pb-2 text-[10px] font-bold text-matrix-muted tracking-widest uppercase"
+                        data-tab="comment">COMMENTS</button>
+                    <button class="tab-btn pb-2 text-[10px] font-bold text-matrix-muted tracking-widest uppercase"
+                        data-tab="bookmark">BOOKMARKS</button>
+                    <button class="tab-btn pb-2 text-[10px] font-bold text-matrix-muted tracking-widest uppercase"
+                        data-tab="read">READS</button>
+                </div>
+            </header>
+            <div id="activity-container" class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-2 pb-6">
+                <p class="text-[10px] text-matrix-muted animate-pulse tracking-widest p-4">LOADING FEED...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PROFILE OVERLAY (slides in from right) -->
+    <div id="profile-overlay"
+        class="hidden-overlay fixed inset-y-0 right-0 w-full max-w-md bg-[#07030e] border-l border-[#22d3ee]/30 z-[80] flex flex-col shadow-[-10px_0_40px_rgba(0,0,0,0.8)]">
+        <div class="p-4 border-b border-[#22d3ee]/20 flex items-center justify-between shrink-0">
+            <span class="text-xs font-bold text-[#22d3ee] tracking-widest uppercase">// CITIZEN FILE</span>
+            <button id="btn-close-overlay"
+                class="text-matrix-muted hover:text-white text-xs tracking-widest font-bold transition-colors">[ CLOSE
+                ]</button>
+        </div>
+        <div id="overlay-content" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-5">
+            <!-- injected by JS -->
+        </div>
+    </div>
+    <div id="overlay-backdrop" class="hidden fixed inset-0 bg-black/60 z-[79]"></div>
+
+    <!-- TOAST -->
+    <div id="users-toast"
+        class="fixed bottom-6 right-6 z-[200] px-4 py-2 text-xs font-bold tracking-widest uppercase border opacity-0 translate-y-2 transition-all duration-300 pointer-events-none"
+        style="background:#0a0a0a;border-color:#22d3ee;color:#22d3ee;"></div>
+
+    <script type="module" src="/src/sidebar.js"></script>
+    <script type="module" src="/admin/admin_users.js"></script>
+</body>
+
+</html>

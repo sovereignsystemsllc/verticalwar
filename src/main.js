@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient.js';
 import { initAuth, currentUser, currentRole, setAuthChangeCallback } from './auth.js';
+import { getArticleDescription } from './article-descriptions.js';
 
 // ==========================================
 // FORGE STATE
@@ -246,7 +247,7 @@ function renderSidebar() {
   const query = currentSearchQuery.toLowerCase();
 
   // Helper function to build folder HTML
-  const buildFolder = (title, tracks, sKey, categoryLabel = null) => {
+  const buildFolder = (title, tracks, sKey, categoryLabel = null, seriesId = null, splashArticleId = null) => {
     // SECURITY GATE: Only OPERATOR or SOVEREIGN can see Inside the Forge
     if (title === 'Inside the Forge' && !['OPERATOR', 'SOVEREIGN'].includes(currentRole)) {
       return '';
@@ -267,33 +268,39 @@ function renderSidebar() {
 
     let fHtml = `
             <div id="album-${sKey}" class="mb-4">
-                <div onclick="window.toggleFolder('${sKey}')" class="pl-3 border-l-2 border-[#a78bfa]/50 cursor-pointer group flex justify-between items-center hover:bg-[#a78bfa]/10 py-4 transition-all bg-[#05010a]/50">
+                <div onclick="window.openFolderSplash('${seriesId}','${sKey}')" class="pl-3 border-l-2 border-[#a78bfa]/50 cursor-pointer group flex justify-between items-center hover:bg-[#a78bfa]/10 py-4 transition-all bg-[#05010a]/50">
                     <div>
                         ${catHtml}
                         <h2 class="text-base font-bold text-white tracking-widest uppercase">${title}</h2>
                         <p class="text-[10px] text-[#a78bfa]/90 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
                     </div>
-                    <div class="flex items-center gap-2 mr-3">
-                        <button onclick="event.stopPropagation();window.copySeriesLink('${title}')" title="Copy link to this series" class="text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors px-1 tracking-widest">&#x1F517;</button>
-                        <div class="text-xs font-bold text-white/30 group-hover:text-[#a78bfa] transition-colors" id="folder-icon-${sKey}">[ + ]</div>
+                    <div class="flex items-center gap-2 mr-3 shrink-0">
+                        <button onclick="event.stopPropagation();window.copySeriesLink('${title}')" title="Copy link to this series" class="text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors px-1 tracking-widest shrink-0">&#x1F517;</button>
+                        <div class="text-xs font-bold text-white/30 group-hover:text-[#a78bfa] transition-colors whitespace-nowrap shrink-0" id="folder-icon-${sKey}">[ + ]</div>
                     </div>
                 </div>
                 <div id="folder-content-${sKey}" class="flex flex-col hidden bg-[#05010a]/20 border-l border-[#a78bfa]/10 ml-[11px] mt-1 pl-2">
     `;
 
     filteredTracks.forEach((t, idx) => {
-      // Monk: Display sequential index based on drag/drop sorting, padded to 2 digits for aesthetic consistency
+      // Monk: Display sequential index based on drag/drop sorting, padded to 2 digits
       const displayIdx = String(idx + 1).padStart(2, '0');
       const dateStr = t.post_date ? new Date(t.post_date).toLocaleDateString() : 'UNKNOWN_DATE';
+      // Monk: hasDesc flag only — actual description looked up lazily from window._articleDescMap
+      const hasDesc = !!getArticleDescription(t.title);
 
       fHtml += `
-                <button onclick="window.openArticle('${t.id}')" class="w-full text-left py-4 px-3 hover:bg-[#a78bfa]/10 group transition-colors flex flex-col gap-1 border border-transparent border-b-white/5 hover:border-[#a78bfa] pl-4">
-                    <span class="text-[9px] text-[#a78bfa]/50 tracking-[0.2em] group-hover:text-[#a78bfa] flex justify-between">
-                        <span>SYS_RECORD // ${displayIdx}</span>
-                        <span>[${dateStr}]</span>
-                    </span>
-                    <span class="text-xs text-white/80 group-hover:text-white font-bold leading-snug tracking-wider">${t.title}</span>
-                </button>
+                <div class="relative group/row flex items-stretch border border-transparent border-b-white/5 hover:border-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors"
+                     data-article-id="${t.id}">
+                    <button onclick="window.openArticle('${t.id}')" class="flex-1 text-left py-4 px-3 pl-4 flex flex-col gap-1">
+                        <span class="text-[9px] text-[#a78bfa]/50 tracking-[0.2em] group-hover/row:text-[#a78bfa] flex justify-between">
+                            <span>SYS_RECORD // ${displayIdx}</span>
+                            <span>[${dateStr}]</span>
+                        </span>
+                        <span class="text-xs text-white/80 group-hover/row:text-white font-bold leading-snug tracking-wider">${t.title}</span>
+                    </button>${hasDesc ? `
+                    <button onclick="event.stopPropagation();window.showArticleInfo('${t.id}')" class="shrink-0 px-2 text-[10px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors flex items-center lg:hidden" title="About this article">ⓘ</button>` : ''}
+                </div>
       `;
     });
 
@@ -309,7 +316,7 @@ function renderSidebar() {
   visibleSeries.forEach((seriesDef, sIdx) => {
     const cat = seriesDef.category_label || 'UNCATEGORIZED';
     if (cat !== currentCategory) {
-      html += `<div class="mt-10 mb-2 px-3 border-b-2 border-[#a78bfa]/50 pb-2">
+      html += `<div class="mt-4 mb-2 px-3 border-b-2 border-[#a78bfa]/50 pb-2">
                  <h3 class="text-sm md:text-base text-[#a78bfa] font-bold tracking-[0.3em] uppercase drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">${cat}</h3>
                </div>`;
       currentCategory = cat;
@@ -339,7 +346,7 @@ function renderSidebar() {
       .filter(a => a.series_id === seriesDef.id)
       .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
-    html += buildFolder(seriesDef.title, tracks, 'series_' + sIdx, seriesDef.category_label);
+    html += buildFolder(seriesDef.title, tracks, 'series_' + sIdx, seriesDef.category_label, seriesDef.id, seriesDef.splash_article_id);
   });
 
   // 2. Render Unassigned Singles at the bottom, also sorted
@@ -347,9 +354,16 @@ function renderSidebar() {
     .filter(a => !a.series_id)
     .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
-  html += buildFolder("Unassigned Singles", singles, 'unassigned_singles');
+  html += buildFolder("Unassigned Singles", singles, 'unassigned_singles', null, null, null);
 
   listContainer.innerHTML = html;
+
+  // Build description lookup map keyed by article ID — avoids embedding long strings in DOM
+  window._articleDescMap = {};
+  globalArticles.forEach(a => {
+    const d = getArticleDescription(a.title);
+    if (d) window._articleDescMap[a.id] = d;
+  });
 }
 
 window.toggleFolder = function (sKey) {
@@ -372,6 +386,37 @@ window.toggleFolder = function (sKey) {
     }
   }
 };
+
+// ==========================================
+// FOLDER SPLASH — opens splash article on click
+// ==========================================
+window.openFolderSplash = function (seriesId, sKey) {
+  // Always toggle the folder open/closed
+  window.toggleFolder(sKey);
+
+  // Look up the series to get its splash_article_id
+  const series = globalSeries.find(s => s.id === seriesId);
+  if (!series || !series.splash_article_id) return;
+
+  const splashId = series.splash_article_id;
+  const splashArticle = globalArticles.find(a => a.id === splashId);
+  if (!splashArticle) return;
+
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    // Mobile: show folder info popup with series name + article teaser
+    const popup = document.getElementById('article-info-popup');
+    const text = document.getElementById('article-info-text');
+    if (popup && text) {
+      text.textContent = `${series.title.toUpperCase()}\n\n${splashArticle.title}`;
+      popup.classList.remove('hidden');
+    }
+  } else {
+    // Desktop: load the splash article in the reader panel
+    window.openArticle(splashId);
+  }
+};
+
 
 // ==========================================
 // FOLDER REVEAL + GLOW (shared deep-link helper)

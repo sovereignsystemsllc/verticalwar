@@ -73,7 +73,8 @@
       <div class="p-4 border-b border-[#a78bfa]/30 bg-[#05010a]/40 shrink-0">
         <div class="flex items-center gap-3">
           <div class="w-2 h-2 bg-[#a78bfa] animate-pulse rounded-full"></div>
-          <h1 class="font-bold text-xl md:text-2xl text-white tracking-[0.2em] uppercase" data-typewriter="THE CODEX"></h1>
+          <h1 class="font-bold text-xl md:text-2xl text-white tracking-[0.2em] uppercase" data-typewriter="THE CODEX">
+          </h1>
         </div>
         <p class="text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mt-1">Field Manuals & Archives</p>
         <div id="admin-sidebar-controls" class="hidden mt-4 border-t border-[#a78bfa]/20 pt-2">
@@ -251,11 +252,96 @@
       </div>
     </div>
   </div>
-
-
   <script type="module" src="/src/sidebar.js"></script>
   <script type="module" src="/src/main.js"></script>
-    <script type="module" src="/src/fx.js"></script>
+  <script type="module" src="/src/fx.js"></script>
+  <!-- ARTICLE DESCRIPTION TOOLTIP (desktop: cursor-follow) -->
+  <div id="article-tooltip"
+    style="display:none;position:fixed;z-index:9998;pointer-events:none;max-width:280px;background:rgba(5,1,10,0.96);border:1px solid rgba(167,139,250,0.4);padding:10px 14px;font-family:monospace;font-size:10px;line-height:1.6;color:rgba(255,255,255,0.85);box-shadow:0 0 20px rgba(167,139,250,0.15);transition:opacity 0.15s ease;"
+    aria-hidden="true"></div>
+
+  <!-- MOBILE ARTICLE INFO POPUP -->
+  <div id="article-info-popup"
+    class="hidden fixed inset-0 z-[9990] flex items-end justify-center p-4 bg-black/70 backdrop-blur-sm"
+    onclick="this.classList.add('hidden')">
+    <div
+      class="w-full max-w-lg bg-[#0a0a0a] border border-[#a78bfa]/50 p-5 rounded-sm shadow-[0_0_30px_rgba(167,139,250,0.2)]"
+      onclick="event.stopPropagation()">
+      <div class="flex justify-between items-start mb-3">
+        <span class="text-[9px] text-[#a78bfa]/60 uppercase tracking-[0.25em] font-bold">// ARTICLE BRIEF</span>
+        <button onclick="document.getElementById('article-info-popup').classList.add('hidden')"
+          class="text-[#a78bfa]/40 hover:text-[#a78bfa] font-bold text-xs transition-colors">[ CLOSE ]</button>
+      </div>
+      <p id="article-info-text" class="text-xs text-white/80 leading-relaxed tracking-wide"></p>
+    </div>
+  </div>
+
+  <script>
+      // ── ARTICLE DESCRIPTION TOOLTIP (desktop) + INFO POPUP (mobile) ──────────
+      (function () {
+        const tip = document.getElementById('article-tooltip');
+        if (!tip) return;
+        let visible = false;
+
+        function getDesc(el) {
+          const id = el.dataset.articleId;
+          return id && window._articleDescMap ? (window._articleDescMap[id] || null) : null;
+        }
+
+        function showTip(el, e) {
+          const desc = getDesc(el);
+          if (!desc) return;
+          tip.textContent = desc;
+          tip.style.display = 'block';
+          tip.style.opacity = '1';
+          moveTip(e);
+          visible = true;
+        }
+
+        function moveTip(e) {
+          const ow = tip.offsetWidth, oh = tip.offsetHeight;
+          const vw = window.innerWidth, vh = window.innerHeight;
+          let x = e.clientX + 16, y = e.clientY + 16;
+          if (x + ow > vw - 10) x = e.clientX - ow - 10;
+          if (y + oh > vh - 10) y = e.clientY - oh - 10;
+          tip.style.left = x + 'px';
+          tip.style.top = y + 'px';
+        }
+
+        function hideTip() {
+          tip.style.opacity = '0';
+          setTimeout(() => { if (!visible) tip.style.display = 'none'; }, 150);
+          visible = false;
+        }
+
+        // Desktop only — cursor-follow tooltip
+        if (!window.matchMedia('(hover: none)').matches) {
+          document.addEventListener('mouseover', (e) => {
+            const row = e.target.closest('[data-article-id]');
+            if (row) showTip(row, e);
+          });
+          document.addEventListener('mousemove', (e) => {
+            if (visible) moveTip(e);
+          });
+          document.addEventListener('mouseout', (e) => {
+            const row = e.target.closest('[data-article-id]');
+            if (row && !row.contains(e.relatedTarget)) hideTip();
+          });
+        }
+
+        // Mobile: (i) button calls showArticleInfo(articleId)
+        window.showArticleInfo = function (articleId) {
+          const desc = window._articleDescMap ? window._articleDescMap[articleId] : null;
+          if (!desc) return;
+          const popup = document.getElementById('article-info-popup');
+          const text = document.getElementById('article-info-text');
+          if (!popup || !text) return;
+          text.textContent = desc;
+          popup.classList.remove('hidden');
+        };
+      })();
+  </script>
+
 </body>
 
 </html>

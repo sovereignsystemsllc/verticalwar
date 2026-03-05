@@ -1,4 +1,5 @@
 // sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
+import { initAuth } from './auth.js';
 
 // ============================================================
 // NAV CONFIG — Add new public pages here, not buried in HTML
@@ -128,13 +129,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- FOOTER / LOGOUT -->
         <div class="p-4 border-t border-[#a78bfa]/20 mt-auto bg-[#05010a]/50 shrink-0 space-y-2">
            <a href="https://constructamiracle.com" target="_blank" rel="noopener" class="block w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold">
-              COMMON SENSE REBEL // SUBSTACK
+             COMMON SENSE REBEL // SUBSTACK
            </a>
            <a id="sidebar-profile-link" href="/profile/index.html"
-               class="hidden w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold block">
+               class="hidden w-full text-center py-2.5 px-4 text-white font-bold tracking-widest uppercase text-xs transition-all border border-[#a78bfa]/60 hover:border-[#a78bfa] hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] block">
                ◈ MY PROFILE
            </a>
-           <button id="btn-toggle-login" class="block w-full text-left py-2 px-4 text-white/40 hover:bg-red-500/10 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/30 tracking-widest uppercase">
+           <button id="btn-toggle-login"
+               class="relative block w-full text-center py-2.5 px-4 font-bold tracking-widest uppercase text-xs transition-all
+                      bg-[#a78bfa]/10 border border-[#a78bfa] text-[#a78bfa]
+                      hover:bg-[#a78bfa] hover:text-black
+                      shadow-[0_0_10px_rgba(167,139,250,0.2)] hover:shadow-[0_0_18px_rgba(167,139,250,0.5)]">
                [ LOGIN ]
            </button>
         </div>
@@ -144,7 +149,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Prepend to body
     document.body.insertBefore(aside, document.body.firstChild);
 
-    // Collapsible sidebar section toggles
+    // ── BOOT ANIMATION: stagger nav elements like a terminal loading ──────────
+    // Groups: logo (0s), section labels (0.15s), nav links (0.05s apart from 0.25s),
+    //         channels toggle (0.7s), footer buttons (0.85s each)
+    requestAnimationFrame(() => {
+        const applyBoot = (el, delay) => {
+            el.classList.add('sb-boot');
+            el.style.animationDelay = delay + 's';
+        };
+
+        // Logo block
+        const logo = aside.querySelector('h1');
+        if (logo) applyBoot(logo, 0.05);
+        const tagline = aside.querySelector('p.text-\\[\\#a78bfa\\]\\/50');
+        if (tagline) applyBoot(tagline, 0.12);
+
+        // Section heading "roster:"
+        const sectionLabels = aside.querySelectorAll('span.italic');
+        sectionLabels.forEach((el, i) => applyBoot(el, 0.18 + i * 0.1));
+
+        // Nav links
+        const navLinks = aside.querySelectorAll('nav > div:first-child > a');
+        navLinks.forEach((el, i) => applyBoot(el, 0.28 + i * 0.06));
+
+        // Channels toggle button
+        const channelsBtn = aside.querySelector('[data-target="nav-channels"]');
+        if (channelsBtn) applyBoot(channelsBtn, 0.72);
+
+        // Footer buttons (profile + login)
+        const footerEls = aside.querySelectorAll('#sidebar-profile-link, #btn-toggle-login');
+        footerEls.forEach((el, i) => applyBoot(el, 0.85 + i * 0.12));
+    });
+
+
     document.querySelectorAll('.sidebar-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
             const targetId = btn.dataset.target;
@@ -218,13 +255,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ── MENU TAB AUTO-FADE ────────────────────────────────────────────────────
+    // Fades to mostly transparent 3s after last use (keeps mobile reading clean).
+    // Snaps back full on hover or any click.
+    let fadeTimer = null;
+    function resetFadeTimer() {
+        edgeTab.style.opacity = '';       // restore to CSS default (opacity-70)
+        clearTimeout(fadeTimer);
+        fadeTimer = setTimeout(() => {
+            edgeTab.style.opacity = '0.15';
+        }, 3000);
+    }
+    edgeTab.addEventListener('mouseenter', () => { edgeTab.style.opacity = '1'; clearTimeout(fadeTimer); });
+    edgeTab.addEventListener('mouseleave', resetFadeTimer);
+    edgeTab.addEventListener('touchstart', () => { edgeTab.style.opacity = '1'; clearTimeout(fadeTimer); }, { passive: true });
+
     edgeTab.addEventListener('click', () => {
+        resetFadeTimer();
         if (window.innerWidth >= 1024) {
             desktopMenuOpen ? closeMenu() : openMenu();
         } else {
             menuOpen ? closeMenu() : openMenu();
         }
     });
+
+    // Kick off the first fade timer on load
+    setTimeout(resetFadeTimer, 3000);
 
     backdrop.addEventListener('click', closeMenu);
 
@@ -239,4 +295,39 @@ document.addEventListener('DOMContentLoaded', () => {
     links.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
+    // ── UNIVERSAL LOGIN MODAL ─────────────────────────────────────────────────
+    // index.html already has the modal; inject it on every other page so
+    // the sidebar LOGIN button works site-wide.
+    if (!document.getElementById('login-modal')) {
+        const modal = document.createElement('div');
+        modal.id = 'login-modal';
+        modal.className = 'hidden fixed inset-0 z-[100] bg-[#05010a]/90 backdrop-blur-sm flex items-center justify-center p-4';
+        modal.innerHTML = `
+          <div class="w-full max-w-sm border border-[#a78bfa]/50 bg-[#0a0a0a] p-6 relative shadow-[0_0_30px_rgba(34,197,94,0.1)]">
+            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold">X</button>
+            <div class="flex items-center justify-center gap-3 mb-6 border-b border-[#a78bfa]/30 pb-4">
+              <div class="w-2 h-2 bg-[#a78bfa] animate-pulse rounded-full"></div>
+              <h2 class="text-[#a78bfa] font-bold tracking-[0.2em] uppercase text-xl font-mono">SOVEREIGN ACCESS</h2>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">OPERATOR EMAIL</label>
+                <input type="email" id="login-email" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="identification@verticalwar.com">
+              </div>
+              <div>
+                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">DECRYPTION KEY</label>
+                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••">
+              </div>
+              <button id="btn-submit-login" class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-4 text-sm font-mono">INITIATE OVERRIDE</button>
+              <div id="login-error" class="hidden text-red-500 text-[10px] text-center mt-2 uppercase font-bold tracking-widest font-mono">ERROR: CREDENTIALS REJECTED</div>
+            </div>
+          </div>`;
+        document.body.appendChild(modal);
+
+        // Close on backdrop click
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+    }
+
+    // Run auth (session check + UI wiring). Safe to call multiple times — each call re-resolves IDs.
+    initAuth();
 });
