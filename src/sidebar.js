@@ -70,6 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="/admin/splash.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; splash
                         </a>
+                        <a href="/admin/receipts.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; receipts
+                        </a>
                     </div>
                 </div>
             </div>

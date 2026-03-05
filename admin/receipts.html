@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOVEREIGN OS // RECEIPT PACKS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { 'matrix-bg': '#05010a', 'matrix-muted': '#6b7280' }, fontFamily: { mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'] } } }
+    }
+  </script>
+  <style>
+    body { background-color: #05010a; color: #e0e0e0; cursor: crosshair; }
+    .glass-panel { background: rgba(5,5,10,0.9); border: 1px solid rgba(59,130,246,0.4); box-shadow: 0 0 20px rgba(59,130,246,0.08); }
+    .scanline-overlay { position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #05010a; border-left: 1px solid rgba(59,130,246,0.1); }
+    ::-webkit-scrollbar-thumb { background: #3b82f6; }
+    .btn-ghost { border:1px solid rgba(59,130,246,0.4);color:#3b82f6;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;font-weight:700;font-family:monospace;background:transparent;cursor:crosshair;transition:background 0.2s,color 0.2s;display:inline-block;text-decoration:none; }
+    .btn-ghost:hover { background:rgba(59,130,246,0.15);color:#fff; }
+    .btn-red { border:1px solid rgba(239,68,68,0.4);color:#ef4444;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;font-weight:700;font-family:monospace;background:transparent;cursor:crosshair;transition:background 0.2s,color 0.2s; }
+    .btn-red:hover { background:rgba(239,68,68,0.15);color:#fff; }
+    .btn-green { border:1px solid rgba(34,197,94,0.4);color:#22c55e;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:6px 14px;font-weight:700;font-family:monospace;background:transparent;cursor:crosshair;transition:background 0.2s,color 0.2s; }
+    .btn-green:hover { background:rgba(34,197,94,0.15);color:#fff; }
+    .field { background:rgba(255,255,255,0.03);border:1px solid rgba(59,130,246,0.2);color:#e0e0e0;font-family:monospace;font-size:12px;padding:8px 12px;width:100%;outline:none;transition:border-color 0.2s; }
+    .field:focus { border-color:rgba(59,130,246,0.6); }
+    #toast { transition: opacity 0.3s; }
+  </style>
+</head>
+
+<body class="min-h-screen font-mono">
+  <div class="scanline-overlay"></div>
+
+  <!-- AUTH LOCK -->
+  <div id="auth-lock" class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
+    <span class="text-red-500 text-5xl mb-6">🔒</span>
+    <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING CLEARANCE...</p>
+    <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session</p>
+    <a href="/admin/index.html" class="mt-6 btn-ghost">[ RETURN TO GATEWAY ]</a>
+  </div>
+
+  <!-- HEADER NAV -->
+  <nav class="w-full h-16 border-b border-blue-500/20 px-6 flex justify-between items-center bg-[#05010a]/90 z-50 relative shrink-0">
+    <div class="flex items-center gap-4">
+      <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+      <span class="text-sm font-bold text-blue-500 tracking-widest uppercase">RECEIPT PACK MANAGER</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/admin/index.html" class="btn-ghost">[ GATEWAY ]</a>
+    </div>
+  </nav>
+
+  <!-- MAIN LAYOUT -->
+  <div class="flex h-[calc(100vh-64px)]">
+
+    <!-- LEFT: PACK LIST -->
+    <aside class="w-72 border-r border-blue-500/15 bg-[#05010a] flex flex-col shrink-0 overflow-hidden">
+      <div class="p-4 border-b border-blue-500/15 flex items-center justify-between">
+        <span class="text-[10px] text-blue-400 tracking-widest uppercase">Receipt Packs</span>
+        <button onclick="showCreatePanel()" class="btn-ghost py-1">[ + NEW ]</button>
+      </div>
+      <div id="pack-list" class="flex-1 overflow-y-auto p-2 space-y-1">
+        <div class="animate-pulse text-blue-400/30 text-xs px-2 py-4">Loading packs...</div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: DETAIL / CREATE PANEL -->
+    <main class="flex-1 overflow-y-auto p-8">
+
+      <!-- EMPTY STATE -->
+      <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center opacity-30">
+        <p class="text-4xl mb-4">📦</p>
+        <p class="text-xs tracking-widest uppercase">Select a pack or create a new one</p>
+      </div>
+
+      <!-- CREATE PANEL -->
+      <div id="create-panel" class="hidden max-w-2xl">
+        <h2 class="text-xl font-bold text-white tracking-wider mb-6 border-b border-blue-500/20 pb-4">Create New Receipt Pack</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-[10px] text-blue-400 tracking-widest uppercase mb-1">Slug (URL-safe, no spaces) *</label>
+            <input id="new-slug" type="text" class="field" placeholder="e.g. RealityEP3Receipts">
+          </div>
+          <div>
+            <label class="block text-[10px] text-blue-400 tracking-widest uppercase mb-1">Title *</label>
+            <input id="new-title" type="text" class="field" placeholder="e.g. The Reality Check">
+          </div>
+          <div>
+            <label class="block text-[10px] text-blue-400 tracking-widest uppercase mb-1">Episode Label</label>
+            <input id="new-episode" type="text" class="field" placeholder="e.g. Episode 3 // Module VII: The Signal">
+          </div>
+          <div>
+            <label class="block text-[10px] text-blue-400 tracking-widest uppercase mb-1">Description</label>
+            <textarea id="new-desc" rows="3" class="field resize-none" placeholder="What are these receipts for?"></textarea>
+          </div>
+          <div>
+            <label class="block text-[10px] text-blue-400 tracking-widest uppercase mb-1">Version</label>
+            <input id="new-version" type="text" class="field" placeholder="v1.0" value="v1.0">
+          </div>
+          <div class="flex gap-3 pt-2">
+            <button onclick="createPack()" class="btn-green">[ CREATE PACK ]</button>
+            <button onclick="document.getElementById('create-panel').classList.add('hidden'); document.getElementById('empty-state').classList.remove('hidden')" class="btn-ghost">[ CANCEL ]</button>
+          </div>
+        </div>
+
+        <div class="mt-10 border border-blue-500/10 bg-blue-500/02 p-5">
+          <p class="text-[10px] text-blue-400 tracking-widest uppercase mb-3">After Creating Your Pack</p>
+          <ol class="text-xs text-white/40 space-y-1 leading-relaxed list-decimal list-inside">
+            <li>Select the pack in the left panel</li>
+            <li>Upload your PDF and ZIP files in the detail view</li>
+            <li>Click <strong class="text-white/60">[ GENERATE PAGE ]</strong> to download the pre-configured HTML file</li>
+            <li>Save it to: <code class="text-blue-400">receipts/pack/YourSlug/index.html</code> in the V4 project</li>
+            <li>Register it in <code class="text-blue-400">vite.config.js</code>, then run <code class="text-blue-400">npm run build</code> + deploy</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- DETAIL PANEL -->
+      <div id="detail-panel" class="hidden max-w-3xl">
+        <!-- Populated by JS -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-blue-600 text-white text-xs font-bold tracking-widest uppercase px-5 py-3 border border-blue-400 opacity-0">
+    <span id="toast-msg"></span>
+  </div>
+
+  <script type="module" src="./admin_receipts.js"></script>
+</body>
+
+</html>
