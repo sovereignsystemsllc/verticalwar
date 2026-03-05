@@ -45,6 +45,7 @@ function initCursorGlow() {
 
     // Smooth lag follow
     function tick() {
+        if (window._snapGlow) { cx = window._snapGlow.x; cy = window._snapGlow.y; mx = cx; my = cy; window._snapGlow = null; }
         cx += (mx - cx) * 0.08;
         cy += (my - cy) * 0.08;
         glow.style.left = cx + 'px';
@@ -163,7 +164,46 @@ function initRipple() {
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.matchMedia('(pointer: fine)').matches) { initCursorGlow(); }
+    initCursorGlow();
+
+// Touch: snap glow to tap spot, smaller size, fade on lift
+(function() {
+    var g = document.getElementById('cursor-glow');
+    if (!g) return;
+    var idleTimer = null;
+
+    // Desktop: fade after mouse idle 400ms
+    document.addEventListener('mousemove', function() {
+        clearTimeout(idleTimer);
+        g.style.transition = 'opacity 0.2s ease';
+        g.style.opacity = '1';
+        idleTimer = setTimeout(function() {
+            g.style.transition = 'opacity 1s ease';
+            g.style.opacity = '0';
+        }, 400);
+    });
+
+    // Mobile: snap to tap, small size, fade on lift
+    document.addEventListener('touchstart', function(e) {
+        var t = e.touches[0];
+        window._snapGlow = { x: t.clientX, y: t.clientY };
+        clearTimeout(idleTimer);
+        g.style.width  = '55px';
+        g.style.height = '55px';
+        g.style.transition = 'opacity 0.1s ease';
+        g.style.opacity = '1';
+    }, { passive: true });
+
+    document.addEventListener('touchend', function() {
+        idleTimer = setTimeout(function() {
+            g.style.transition = 'opacity 0.5s ease';
+            g.style.opacity = '0';
+        }, 350);
+    }, { passive: true });
+
+    // Start hidden until first interaction
+    g.style.opacity = '0';
+})();
     initScrollReveal();
     initGlitch();
     initStagger();

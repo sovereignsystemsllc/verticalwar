@@ -79,6 +79,7 @@ async function init() {
 
   await Promise.all([fetchArticles(), fetchSplashSlides()]);
   renderSidebar();
+  activateSeriesDeepLink();
   renderCarousel();
   setupEventListeners();
 
@@ -267,7 +268,10 @@ function renderSidebar() {
                         <h2 class="text-base font-bold text-white tracking-widest uppercase">${title}</h2>
                         <p class="text-[10px] text-[#a78bfa]/90 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
                     </div>
-                    <div class="text-xs font-bold text-white/30 group-hover:text-[#a78bfa] mr-3 transition-colors" id="folder-icon-${sKey}">[ + ]</div>
+                    <div class="flex items-center gap-2 mr-3">
+                        <button onclick="event.stopPropagation();window.copySeriesLink('${title}')" title="Copy link to this series" class="text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors px-1 tracking-widest">&#x1F517;</button>
+                        <div class="text-xs font-bold text-white/30 group-hover:text-[#a78bfa] transition-colors" id="folder-icon-${sKey}">[ + ]</div>
+                    </div>
                 </div>
                 <div id="folder-content-${sKey}" class="flex flex-col hidden bg-[#05010a]/20 border-l border-[#a78bfa]/10 ml-[11px] mt-1 pl-2">
     `;
@@ -340,6 +344,42 @@ window.toggleFolder = function (sKey) {
     }
   }
 };
+
+// Series deep link helpers
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+window.copySeriesLink = function (seriesTitle) {
+  const slug = slugify(seriesTitle);
+  const url = `${location.origin}/?series=${slug}`;
+  navigator.clipboard.writeText(url).then(() => {
+    // Brief toast
+    const toast = document.createElement('div');
+    toast.textContent = 'LINK COPIED';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#a78bfa;color:#000;font-family:monospace;font-size:10px;font-weight:bold;letter-spacing:.15em;padding:6px 16px;z-index:9999;pointer-events:none';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1800);
+  });
+};
+
+function activateSeriesDeepLink() {
+  const param = new URLSearchParams(location.search).get('series');
+  if (!param) return;
+  // Find matching series folder by slugified title
+  globalSeries.forEach((s, i) => {
+    if (slugify(s.title) === param) {
+      const sKey = 'series_' + i;
+      const el = document.getElementById(`folder-content-${sKey}`);
+      if (el && el.classList.contains('hidden')) {
+        window.toggleFolder(sKey);
+        // Scroll sidebar to the folder
+        const folder = document.getElementById(`album-${sKey}`);
+        if (folder) setTimeout(() => folder.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    }
+  });
+}
 
 window.openArticle = function (id, skipState = false) {
   activeArticleId = id;
@@ -483,6 +523,13 @@ function setupEventListeners() {
   // Mobile Return Button uses history.back() to pop the stack
   btnCloseDoc.addEventListener('click', () => { history.back(); });
   btnMobileReturn.addEventListener('click', () => { history.back(); });
+
+  // Hide return buttons if user landed directly (not from verticalwar.com)
+  const fromSite = document.referrer && document.referrer.includes('verticalwar.com');
+  if (!fromSite) {
+    if (btnCloseDoc) btnCloseDoc.classList.add('hidden');
+    if (btnMobileReturn) btnMobileReturn.classList.add('hidden');
+  }
 
   // Carousel arrow controls
   if (carouselPrev) {
