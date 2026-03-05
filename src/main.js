@@ -360,6 +360,11 @@ window.toggleFolder = function (sKey) {
       el.classList.remove('hidden');
       el.classList.add('flex');
       if (icon) icon.innerText = '[ - ]';
+      // Mobile: scroll to the folder so the article list is in view
+      if (window.innerWidth <= 768) {
+        const album = document.getElementById(`album-${sKey}`);
+        if (album) setTimeout(() => album.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+      }
     } else {
       el.classList.add('hidden');
       el.classList.remove('flex');
@@ -384,19 +389,42 @@ function revealFolder(sKey) {
   // Scroll into view
   setTimeout(() => albumEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 
-  // Purple glow flash on the folder header
+  // NEON GLOW — folder header gets a strong multi-color glow sequence
   const headerEl = albumEl.querySelector('div');
-  if (!headerEl) return;
-  const glowSteps = [
-    [0, '0 0 0px rgba(167,139,250,0)'],
-    [150, '0 0 18px rgba(167,139,250,0.7)'],
-    [350, '0 0 28px rgba(167,139,250,0.9)'],
-    [650, '0 0 10px rgba(167,139,250,0.4)'],
-    [1100, '0 0 0px rgba(167,139,250,0)'],
-  ];
-  headerEl.style.transition = 'box-shadow 0.15s ease';
-  glowSteps.forEach(([delay, shadow]) => setTimeout(() => { headerEl.style.boxShadow = shadow; }, delay));
-  setTimeout(() => { headerEl.style.transition = ''; headerEl.style.boxShadow = ''; }, 1300);
+  if (headerEl) {
+    const glowSteps = [
+      [0, '0 0 0px transparent'],
+      [80, '0 0 12px #00ff41, 0 0 28px rgba(0,255,65,0.5)'],
+      [250, '0 0 20px #00ff41, 0 0 45px rgba(0,255,65,0.7), 0 0 8px #a78bfa'],
+      [450, '0 0 25px #00ffcc, 0 0 55px rgba(0,255,200,0.6), 0 0 12px #00ff41'],
+      [750, '0 0 14px #a78bfa, 0 0 30px rgba(167,139,250,0.5)'],
+      [1150, '0 0 0px transparent'],
+    ];
+    headerEl.style.transition = 'box-shadow 0.12s ease';
+    glowSteps.forEach(([delay, shadow]) =>
+      setTimeout(() => { headerEl.style.boxShadow = shadow; }, delay)
+    );
+    setTimeout(() => { headerEl.style.transition = ''; headerEl.style.boxShadow = ''; }, 1300);
+  }
+
+  // CASCADE GLOW — each article button inside the folder gets a staggered neon flash
+  const articleBtns = contentEl.querySelectorAll('button');
+  articleBtns.forEach((btn, idx) => {
+    const delay = 150 + idx * 55; // stagger each article
+    setTimeout(() => {
+      btn.style.transition = 'box-shadow 0.1s ease, background 0.1s ease';
+      btn.style.boxShadow = '0 0 14px #00ff41, 0 0 30px rgba(0,255,65,0.4)';
+      btn.style.background = 'rgba(0,255,65,0.07)';
+      setTimeout(() => {
+        btn.style.boxShadow = '0 0 6px rgba(167,139,250,0.3)';
+        btn.style.background = '';
+        setTimeout(() => {
+          btn.style.transition = '';
+          btn.style.boxShadow = '';
+        }, 400);
+      }, 350);
+    }, delay);
+  });
 }
 
 // Series deep link helpers
@@ -420,7 +448,16 @@ function activateSeriesDeepLink() {
   const param = new URLSearchParams(location.search).get('series');
   if (!param) return;
   globalSeries.forEach((s, i) => {
-    if (slugify(s.title) === param) revealFolder('series_' + i);
+    if (slugify(s.title) === param) {
+      revealFolder('series_' + i);
+      // Mobile: switch to sidebar pane so user sees the open folder
+      if (window.innerWidth <= 768 && sidebar && reader) {
+        reader.classList.add('hidden');
+        reader.classList.remove('flex');
+        sidebar.classList.remove('hidden');
+        sidebar.classList.add('flex');
+      }
+    }
   });
 }
 
