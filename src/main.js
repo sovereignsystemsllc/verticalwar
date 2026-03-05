@@ -534,3 +534,15 @@ function setupEventListeners() {
 }
 
 window.onload = init;
+
+// Mobile sigil tap flash (< 1024px only)
+const sigilEl = document.querySelector('.sigil-bg');
+if (sigilEl) {
+  let sigilTimer = null;
+  document.addEventListener('touchstart', () => {
+    if (window.innerWidth >= 1024) return;
+    sigilEl.classList.add('sigil-tap');
+    clearTimeout(sigilTimer);
+    sigilTimer = setTimeout(() => sigilEl.classList.remove('sigil-tap'), 600);
+  }, { passive: true });
+}

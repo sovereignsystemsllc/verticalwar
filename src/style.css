@@ -175,7 +175,7 @@ body {
   pointer-events: none;
   z-index: 0;
   background-image: url('/sigil_bg.png');
-  background-size: 65%;
+  background-size: 28%;
   background-position: center center;
   background-repeat: no-repeat;
   animation: sigil-flicker 8s ease-in-out infinite;
@@ -280,3 +280,8 @@ a[href].group:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(
     100% { background: transparent; }
 }
 .sv-new-comment { animation: sv-new-comment 1.5s ease forwards; }
+
+@media (max-width: 1023px) {
+  .sigil-bg { opacity: 0; animation: none; transition: opacity 0.15s ease; }
+  .sigil-bg.sigil-tap { opacity: 0.07; }
+}
