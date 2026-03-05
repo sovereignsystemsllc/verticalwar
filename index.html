@@ -314,8 +314,8 @@
           visible = false;
         }
 
-        // Desktop only — cursor-follow tooltip
-        if (!window.matchMedia('(hover: none)').matches) {
+        // Desktop only — cursor-follow tooltip (dual guard: no touch + real hover)
+        if (!('ontouchstart' in window) && window.matchMedia('(hover: hover)').matches) {
           document.addEventListener('mouseover', (e) => {
             const row = e.target.closest('[data-article-id]');
             if (row) showTip(row, e);

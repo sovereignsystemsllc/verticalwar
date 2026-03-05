@@ -18,12 +18,17 @@ let glowIdx = 0;
 
 // ── 1. CURSOR GLOW ────────────────────────────────────────────────────────────
 function initCursorGlow() {
+    const isTouch = window.matchMedia('(hover: none)').matches || ('ontouchstart' in window);
+    const baseSize = isTouch ? 8 : 20;
+    const burstSize = isTouch ? 50 : 160;
+    const midSize = isTouch ? 12 : 60;
+
     const glow = document.createElement('div');
     glow.id = 'cursor-glow';
     glow.style.cssText = `
         position: fixed;
-        width: 20px;
-        height: 20px;
+        width: ${baseSize}px;
+        height: ${baseSize}px;
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
@@ -39,9 +44,19 @@ function initCursorGlow() {
     let cx = -500, cy = -500;
     let raf;
 
-    document.addEventListener('mousemove', (e) => {
-        mx = e.clientX; my = e.clientY;
-    });
+    // Only follow mouse on non-touch devices
+    if (!isTouch) {
+        document.addEventListener('mousemove', (e) => {
+            mx = e.clientX; my = e.clientY;
+        });
+    }
+
+    // On touch: snap glow to tap position
+    document.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        mx = t.clientX; my = t.clientY;
+        cx = mx; cy = my;
+    }, { passive: true });
 
     // Smooth lag follow
     function tick() {
@@ -54,25 +69,27 @@ function initCursorGlow() {
     }
     tick();
 
-    // Cycle glow color every 4s
-    setInterval(() => {
-        glowIdx = (glowIdx + 1) % GLOW_SEQUENCE.length;
-        glow.style.background = `radial-gradient(circle, ${GLOW_SEQUENCE[glowIdx]} 0%, transparent 70%)`;
-    }, 4000);
+    // Color cycle — skip on touch to save battery
+    if (!isTouch) {
+        setInterval(() => {
+            glowIdx = (glowIdx + 1) % GLOW_SEQUENCE.length;
+            glow.style.background = `radial-gradient(circle, ${GLOW_SEQUENCE[glowIdx]} 0%, transparent 70%)`;
+        }, 4000);
+    }
 
-    // Burst on click — resets back to base 20px after animation so it never stays large
+    // Burst on click/tap — sized appropriately for device
     document.addEventListener('click', () => {
-        glow.style.width = '160px';
-        glow.style.height = '160px';
+        glow.style.width = burstSize + 'px';
+        glow.style.height = burstSize + 'px';
         glow.style.transition = 'width 0.15s ease, height 0.15s ease, background 1.2s ease';
         setTimeout(() => {
-            glow.style.width = '60px';
-            glow.style.height = '60px';
+            glow.style.width = midSize + 'px';
+            glow.style.height = midSize + 'px';
             glow.style.transition = 'width 0.3s ease, height 0.3s ease, background 1.2s ease';
         }, 150);
         setTimeout(() => {
-            glow.style.width = '20px';
-            glow.style.height = '20px';
+            glow.style.width = baseSize + 'px';
+            glow.style.height = baseSize + 'px';
             glow.style.transition = 'width 0.4s ease, height 0.4s ease, background 1.2s ease';
         }, 480);
     });
