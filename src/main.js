@@ -733,7 +733,7 @@ function setupEventListeners() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+window.onload = init;
 
 // Mobile sigil tap flash (< 1024px only)
 const sigilEl = document.querySelector('.sigil-bg');
