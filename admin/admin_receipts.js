@@ -7,10 +7,9 @@ let activePack = null;
 
 // ── AUTH GUARD (canonical — matches every other admin tool) ───────────────────
 function onAuthChange() {
-    if (currentRole !== 'SOVEREIGN') {
-        window.location.replace('/');
-        return;
-    }
+    if (currentRole !== 'SOVEREIGN') { window.location.replace('/'); return; }
+    const lock = document.getElementById('auth-lock');
+    if (lock) lock.style.display = 'none';
     loadPacks();
 }
 

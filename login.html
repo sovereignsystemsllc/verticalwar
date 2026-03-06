@@ -5,45 +5,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sovereign Gate // Access Control</title>
-        <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body class="bg-[#05010a] text-[#a78bfa] min-h-screen font-mono flex items-center justify-center p-8">
-    <!-- CRT SCANLINE (RIKA AESTHETIC) -->
+    <!-- CRT SCANLINE -->
     <div class="scanline-overlay"></div>
 
     <div class="max-w-md w-full border border-[#a78bfa]/40 p-8 glass-panel relative z-10">
-        <div class="flex items-center gap-3 mb-8 border-b border-[#a78bfa]/20 pb-6">
+
+        <!-- HEADER -->
+        <div class="flex items-center gap-3 mb-6 border-b border-[#a78bfa]/20 pb-5">
             <div class="w-2 h-2 bg-[#a78bfa] animate-pulse rounded-full"></div>
             <h1 class="text-xl font-bold tracking-[0.2em] uppercase text-white">SOVEREIGN GATE</h1>
         </div>
-        <div id="loginError"
+
+        <!-- MODE TABS -->
+        <div class="flex mb-6 border-b border-[#a78bfa]/20">
+            <button id="tab-login"
+                class="flex-1 pb-2 text-[10px] font-bold tracking-widest uppercase border-b-2 border-[#a78bfa] text-[#a78bfa] transition-all">
+                [ LOGIN ]
+            </button>
+            <button id="tab-register"
+                class="flex-1 pb-2 text-[10px] font-bold tracking-widest uppercase border-b-2 border-transparent text-[#a78bfa]/40 hover:text-[#a78bfa]/70 transition-all">
+                [ REGISTER ]
+            </button>
+        </div>
+
+        <!-- ERROR -->
+        <div id="gate-error"
             class="text-red-500 mb-4 hidden font-bold text-xs tracking-widest uppercase border border-red-500/30 p-2">
         </div>
-        <form id="loginForm" class="space-y-4">
-            <div>
-                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Operator Email</label>
-                <input type="email" id="email"
+
+        <!-- SUCCESS (register only) -->
+        <div id="gate-success" class="hidden text-center py-6">
+            <p class="text-[#a78bfa] text-2xl mb-3">📡</p>
+            <p class="text-white font-bold tracking-widest uppercase text-sm mb-2">TRANSMISSION SENT</p>
+            <p class="text-[#a78bfa]/60 text-xs tracking-widest leading-relaxed">
+                Check your email to verify your account.<br>
+                If you're a Stripe subscriber, your role will<br>
+                auto-upgrade within seconds of verification.
+            </p>
+            <button id="btn-back-to-login"
+                class="mt-6 text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-4 py-2">
+                ← BACK TO LOGIN
+            </button>
+        </div>
+
+        <!-- FORM -->
+        <form id="gate-form" class="space-y-4">
+
+            <!-- REGISTER ONLY: Display Name -->
+            <div id="field-display-name" class="hidden">
+                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Display Name</label>
+                <input type="text" id="display-name"
                     class="w-full bg-transparent border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm"
-                    placeholder="identification@verticalwar.com" required>
+                    placeholder="How you'll appear to others" autocomplete="name">
             </div>
+
             <div>
-                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Decryption Key</label>
-                <input type="password" id="password"
+                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Email</label>
+                <input type="email" id="gate-email"
                     class="w-full bg-transparent border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm"
-                    placeholder="••••••••••••••••" required>
+                    placeholder="identification@domain.com" required autocomplete="email">
             </div>
-            <button type="submit"
+
+            <div>
+                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Password</label>
+                <input type="password" id="gate-password"
+                    class="w-full bg-transparent border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm"
+                    placeholder="••••••••••••••••" required autocomplete="current-password">
+            </div>
+
+            <!-- REGISTER ONLY: Confirm Password -->
+            <div id="field-confirm-password" class="hidden">
+                <label class="block text-[10px] text-[#a78bfa]/70 mb-1 tracking-widest uppercase">Confirm
+                    Password</label>
+                <input type="password" id="gate-confirm-password"
+                    class="w-full bg-transparent border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm"
+                    placeholder="••••••••••••••••" autocomplete="new-password">
+            </div>
+
+            <button type="submit" id="gate-submit"
                 class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-4 text-sm">
                 INITIATE OVERRIDE
             </button>
         </form>
+
+        <!-- FOOTER LINK -->
         <div class="mt-6 text-center">
             <a href="/"
                 class="text-[10px] text-[#a78bfa]/40 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">←
                 RETURN TO CODEX</a>
         </div>
     </div>
+
     <script type="module" src="/src/login.js"></script>
 </body>
 

@@ -1,33 +1,116 @@
 import { supabase } from './supabaseClient.js';
 
-// SOVEREIGN GATE — Standalone login page handler
-// Used as a shareable /login URL. On success, redirects to the Codex.
+// ── DOM REFS ──────────────────────────────────────────────────────────────────
+const tabLogin = document.getElementById('tab-login');
+const tabRegister = document.getElementById('tab-register');
+const gateForm = document.getElementById('gate-form');
+const gateError = document.getElementById('gate-error');
+const gateSuccess = document.getElementById('gate-success');
+const submitBtn = document.getElementById('gate-submit');
+const emailInput = document.getElementById('gate-email');
+const passwordInput = document.getElementById('gate-password');
+const confirmInput = document.getElementById('gate-confirm-password');
+const displayName = document.getElementById('display-name');
+const fieldDisplayName = document.getElementById('field-display-name');
+const fieldConfirmPassword = document.getElementById('field-confirm-password');
+const btnBackToLogin = document.getElementById('btn-back-to-login');
 
-const form = document.getElementById('loginForm');
-const errorDiv = document.getElementById('loginError');
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let mode = 'login'; // 'login' | 'register'
 
-if (form) {
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errorDiv.classList.add('hidden');
-        errorDiv.innerText = '';
+// ── MODE SWITCH ───────────────────────────────────────────────────────────────
+function setMode(m) {
+    mode = m;
+    clearError();
 
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+    const isRegister = m === 'register';
 
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) submitBtn.innerText = 'AUTHENTICATING...';
+    // Tab styles
+    const ACTIVE = 'border-b-2 border-[#a78bfa] text-[#a78bfa]';
+    const INACTIVE = 'border-b-2 border-transparent text-[#a78bfa]/40 hover:text-[#a78bfa]/70';
+    tabLogin.className = `flex-1 pb-2 text-[10px] font-bold tracking-widest uppercase transition-all ${isRegister ? INACTIVE : ACTIVE}`;
+    tabRegister.className = `flex-1 pb-2 text-[10px] font-bold tracking-widest uppercase transition-all ${isRegister ? ACTIVE : INACTIVE}`;
 
-        try {
+    // Show/hide register-only fields
+    fieldDisplayName.classList.toggle('hidden', !isRegister);
+    fieldConfirmPassword.classList.toggle('hidden', !isRegister);
+
+    // Update submit label + autocomplete hint
+    submitBtn.textContent = isRegister ? 'CREATE ACCOUNT' : 'INITIATE OVERRIDE';
+    passwordInput.setAttribute('autocomplete', isRegister ? 'new-password' : 'current-password');
+
+    // Reset success screen
+    gateSuccess.classList.add('hidden');
+    gateForm.classList.remove('hidden');
+}
+
+tabLogin.addEventListener('click', () => setMode('login'));
+tabRegister.addEventListener('click', () => setMode('register'));
+btnBackToLogin?.addEventListener('click', () => setMode('login'));
+
+// ── ERROR HELPERS ─────────────────────────────────────────────────────────────
+function showError(msg) {
+    gateError.textContent = msg;
+    gateError.classList.remove('hidden');
+}
+function clearError() {
+    gateError.textContent = '';
+    gateError.classList.add('hidden');
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+gateForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) return;
+
+    submitBtn.textContent = mode === 'login' ? 'AUTHENTICATING...' : 'REGISTERING...';
+    submitBtn.disabled = true;
+
+    try {
+        if (mode === 'login') {
+            // ── LOGIN ─────────────────────────────────────────────────────────
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
-
-            // On success, send them to the Codex
             window.location.replace('/');
-        } catch (err) {
-            errorDiv.innerText = 'ACCESS DENIED: ' + err.message;
-            errorDiv.classList.remove('hidden');
-            if (submitBtn) submitBtn.innerText = 'Initialize Decryption';
+
+        } else {
+            // ── REGISTER ──────────────────────────────────────────────────────
+            const confirm = confirmInput.value;
+            const name = displayName.value.trim();
+
+            if (password !== confirm) {
+                throw new Error('Passwords do not match.');
+            }
+            if (password.length < 8) {
+                throw new Error('Password must be at least 8 characters.');
+            }
+
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { display_name: name || null }
+                }
+            });
+            if (error) throw error;
+
+            // Supabase may auto-confirm if email confirmation is disabled.
+            // Profile row is inserted by DB trigger (handle_new_user),
+            // which then fires the verify-stripe webhook automatically.
+            // Show confirmation screen regardless.
+            gateForm.classList.add('hidden');
+            gateSuccess.classList.remove('hidden');
         }
-    });
-}
+
+    } catch (err) {
+        showError(err.message);
+    } finally {
+        submitBtn.textContent = mode === 'login' ? 'INITIATE OVERRIDE' : 'CREATE ACCOUNT';
+        submitBtn.disabled = false;
+    }
+});
