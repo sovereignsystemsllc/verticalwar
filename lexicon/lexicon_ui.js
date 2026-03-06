@@ -311,7 +311,7 @@ function initSidebar() {
         html += `<div class="cat-label">${catLabels[cat]}</div>`;
         termsInCat.forEach(key => {
             html += `<button id="btn-${key}" onclick="loadTerm('${key}')"
-                class="term-btn w-full text-left px-3 py-2 text-[11px] font-mono text-[#a78bfa]/60 hover:text-white hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                class="term-btn block w-full text-left px-3 py-2 text-[11px] font-mono text-[#a78bfa]/60 hover:text-white hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
                 ${FULL_DB[key].title}
             </button>`;
         });
