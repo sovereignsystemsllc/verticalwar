@@ -1,24 +1,17 @@
 // admin_receipts.js — Receipt Pack Publisher Suite
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-const SUPABASE_URL = 'https://zazzwdaexhkeusfjdphv.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_M2pQlMXjvnzLuYpkdOzTmQ_-zX0zQPg';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+import { supabase } from '../src/supabaseClient.js';
+import { initAuth, currentRole, setAuthChangeCallback } from '../src/auth.js';
 
 let activePack = null;
 
-// ── AUTH ──────────────────────────────────────────────────────────────────────
-async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        document.getElementById('auth-lock').style.display = 'flex';
-        document.getElementById('auth-status-title').textContent = 'ACCESS DENIED';
-        document.getElementById('auth-status-detail').textContent = 'No active session. Return to gateway.';
-        return false;
+// ── AUTH GUARD (canonical — matches every other admin tool) ───────────────────
+function onAuthChange() {
+    if (currentRole !== 'SOVEREIGN') {
+        window.location.replace('/');
+        return;
     }
-    document.getElementById('auth-lock').style.display = 'none';
-    return true;
+    loadPacks();
 }
 
 // ── SHA256 ─────────────────────────────────────────────────────────────────────
@@ -356,8 +349,9 @@ window.generatePageTemplate = function (slug) {
 };
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-    const ok = await checkAuth();
-    if (!ok) return;
-    await loadPacks();
-});
+async function bootstrap() {
+    setAuthChangeCallback(onAuthChange);
+    await initAuth();
+}
+
+document.addEventListener('DOMContentLoaded', bootstrap);

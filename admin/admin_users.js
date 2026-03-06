@@ -436,4 +436,4 @@ if (overlayBackdrop) overlayBackdrop.addEventListener('click', closeOverlay);
 // ============================================================
 // BOOT
 // ============================================================
-window.onload = bootstrap;
+document.addEventListener('DOMContentLoaded', bootstrap);
