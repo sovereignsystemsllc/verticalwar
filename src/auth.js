@@ -44,7 +44,7 @@ export async function initAuth() {
     // 3. Bind UI
     // Register button — opens modal directly on register tab
     document.addEventListener('click', (e) => {
-        const regBtn = e.target.closest('#btn-sidebar-register');
+        const regBtn = e.target.closest('#btn-sidebar-register, #btn-nav-register');
         if (regBtn) {
             const m = document.getElementById('login-modal');
             if (m) { m.classList.remove('hidden'); _modalSetMode('register'); }
@@ -231,8 +231,8 @@ function updateAuthUI() {
         el.classList.toggle('hidden', !currentUser);
     });
 
-    // Hide register button when logged in
-    document.querySelectorAll('#btn-sidebar-register').forEach(el => {
+    // Hide register buttons when logged in
+    document.querySelectorAll('#btn-sidebar-register, #btn-nav-register').forEach(el => {
         el.classList.toggle('hidden', !!currentUser);
     });
 }
