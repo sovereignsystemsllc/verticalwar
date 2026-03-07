@@ -312,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-close menu when clicking a link
     const links = aside.querySelectorAll('a');
     links.forEach(link => {
+        if (link.target === '_blank') return; // external — don't close sidebar
         link.addEventListener('click', closeMenu);
     });
     // â”€â”€ UNIVERSAL LOGIN MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
