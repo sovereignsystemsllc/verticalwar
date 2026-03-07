@@ -1099,7 +1099,7 @@ if (btnSyncTimeline) {
         if (error) { console.error('Sync timeline failed:', error); showToast('Sync failed.', true); }
         else {
             await saveAllArticleOrder(); // commit full matrix sort state atomically
-            showToast('Timeline synced ✓');
+            showToast('Timeline synced [OK]');
         }
 
         renderArticles(activeFolderId);
