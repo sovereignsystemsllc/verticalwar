@@ -201,7 +201,7 @@
 
         <!-- LEFT PANEL: MASTER FOLDERS -->
         <section id="panel-folders"
-            class="w-full lg:w-1/3 flex flex-col border-b lg:border-b-0 lg:border-r border-matrix-border bg-matrix-panel/30">
+            class="w-full lg:w-1/3 min-h-0 flex flex-col border-b lg:border-b-0 lg:border-r border-matrix-border bg-matrix-panel/30">
             <header class="p-3 border-b border-matrix-border flex justify-between items-center bg-matrix-bg shrink-0">
                 <h2 class="text-xs font-bold text-matrix-green tracking-widest uppercase">Master Directories</h2>
                 <div class="flex items-center gap-2">
@@ -226,13 +226,13 @@
                 </div>
             </header>
 
-            <div id="series-container" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+            <div id="series-container" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-3 space-y-2">
                 <!-- Folders injected here -->
             </div>
         </section>
 
         <!-- RIGHT PANEL: ARTICLES IN FOLDER -->
-        <section id="panel-articles" class="w-full lg:w-2/3 flex flex-col bg-matrix-bg">
+        <section id="panel-articles" class="w-full lg:w-2/3 min-h-0 flex flex-col bg-matrix-bg">
             <!-- Articles sub-header -->
             <header class="p-3 border-b border-matrix-border flex flex-col gap-2 bg-matrix-bg shrink-0 relative">
                 <!-- Row 1: title + count -->
@@ -258,6 +258,10 @@
                     <button id="btn-sync-timeline" title="Organize current folder chronologically"
                         class="text-[9px] font-bold text-matrix-green hover:bg-matrix-green hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-matrix-green shrink-0">
                         SYNC
+                    </button>
+                    <button id="btn-rss-sync" title="Import new articles from constructamiracle.com/feed"
+                        class="text-[9px] font-bold text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black tracking-widest px-2 py-1 transition-colors uppercase border border-[#22d3ee]/60 hover:border-[#22d3ee] shrink-0">
+                        ↓ RSS
                     </button>
                 </div>
                 <!-- DECORATIVE CORNER -->
@@ -285,7 +289,7 @@
                     <div class="w-7 shrink-0"></div>
                 </div>
 
-                <div id="articles-container" class="flex-1 overflow-y-auto custom-scrollbar pr-1 pb-24">
+                <div id="articles-container" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 pb-24">
                     <!-- Articles injected here -->
                 </div>
             </div>
