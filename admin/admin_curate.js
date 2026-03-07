@@ -1109,6 +1109,124 @@ if (btnSyncTimeline) {
 }
 
 // ============================================================
+// RSS SYNC — Import new Substack articles into the Matrix
+// ============================================================
+
+const SOVEREIGN_UUID = '5abcdeb3-0d75-4201-ba36-2f0c9d7a41ff';
+const RSS_FEED_URL = 'https://constructamiracle.com/feed';
+// allorigins proxies the RSS so we dodge the CORS wall in the browser
+const CORS_PROXY = 'https://api.allorigins.win/get?url=';
+
+async function syncFromRSS() {
+    const btn = document.getElementById('btn-rss-sync');
+    if (btn) { btn.innerText = '[ LOADING... ]'; btn.disabled = true; }
+
+    try {
+        // ── 1. Fetch feed via CORS proxy ───────────────────────
+        const proxyUrl = CORS_PROXY + encodeURIComponent(RSS_FEED_URL);
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error(`Proxy fetch failed: ${res.status}`);
+        const json = await res.json();
+        const xmlText = json.contents;
+        if (!xmlText) throw new Error('Empty response from proxy.');
+
+        // ── 2. Parse XML ────────────────────────────────────────
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xmlText, 'text/xml');
+        const items = Array.from(doc.querySelectorAll('item'));
+        if (items.length === 0) {
+            showToast('RSS feed returned 0 articles.', true);
+            return;
+        }
+
+        // ── 3. Pull existing slugs to deduplicate ───────────────
+        const { data: existingSlugs, error: slugErr } = await supabase
+            .from('articles')
+            .select('slug');
+        if (slugErr) throw new Error(`Slug fetch failed: ${slugErr.message}`);
+        const knownSlugs = new Set((existingSlugs || []).map(r => r.slug).filter(Boolean));
+
+        // ── 4. Build insert payload ─────────────────────────────
+        const toInsert = [];
+
+        for (const item of items) {
+            const title = item.querySelector('title')?.textContent?.trim() || 'Untitled';
+            const link = item.querySelector('link')?.textContent?.trim() || '';
+            const pubDate = item.querySelector('pubDate')?.textContent?.trim() || null;
+            const desc = item.querySelector('description')?.textContent?.trim() || '';
+
+            // Full HTML body — Substack puts it in <content:encoded>
+            const contentEl = item.getElementsByTagNameNS('*', 'encoded')[0];
+            const contentHtml = contentEl ? contentEl.textContent.trim() : desc;
+
+            // Thumbnail: <media:thumbnail> or <enclosure>
+            let thumbnailUrl = null;
+            const mediaThumbnail = item.getElementsByTagNameNS('*', 'thumbnail')[0];
+            if (mediaThumbnail) thumbnailUrl = mediaThumbnail.getAttribute('url');
+            if (!thumbnailUrl) {
+                const enclosure = item.querySelector('enclosure');
+                if (enclosure) thumbnailUrl = enclosure.getAttribute('url');
+            }
+
+            // Derive a slug from the URL path (last segment)
+            let slug = null;
+            try {
+                const url = new URL(link);
+                const segments = url.pathname.replace(/\/$/, '').split('/');
+                slug = segments[segments.length - 1] || null;
+            } catch (_) { /* malformed URL — skip slug */ }
+
+            // Skip if we already have it
+            if (slug && knownSlugs.has(slug)) continue;
+
+            // Strip Substack-flavoured HTML (keep it simple — just use as-is,
+            // admin can clean inside the editor if needed)
+            const subtitle = desc.replace(/<[^>]+>/g, '').substring(0, 300).trim() || null;
+
+            toInsert.push({
+                title,
+                content_html: contentHtml || '<p></p>',
+                subtitle,
+                slug,
+                post_date: pubDate ? new Date(pubDate).toISOString() : null,
+                thumbnail_url: thumbnailUrl,
+                author_id: SOVEREIGN_UUID,
+                author_name: 'Ethan',
+                status: 'draft',
+                hidden: true,        // land in staging — you review before publishing
+                published: false,
+                audience: 'everyone',
+                series: null,
+                order_index: 0,
+            });
+        }
+
+        if (toInsert.length === 0) {
+            showToast('✓ Already up to date — no new articles.');
+            return;
+        }
+
+        // ── 5. Insert ──────────────────────────────────────────
+        const { error: insertErr } = await supabase.from('articles').insert(toInsert);
+        if (insertErr) throw new Error(`Insert failed: ${insertErr.message}`);
+
+        showToast(`↓ ${toInsert.length} article(s) imported as hidden drafts.`);
+        await loadData(); // refresh the matrix
+
+    } catch (err) {
+        console.error('[syncFromRSS]', err);
+        showToast(`RSS sync failed: ${err.message}`, true);
+    } finally {
+        if (btn) { btn.innerText = '↓ RSS'; btn.disabled = false; }
+    }
+}
+
+const btnRssSync = document.getElementById('btn-rss-sync');
+if (btnRssSync) {
+    btnRssSync.addEventListener('click', syncFromRSS);
+}
+
+// ============================================================
 // SEARCH
 // ============================================================
 
