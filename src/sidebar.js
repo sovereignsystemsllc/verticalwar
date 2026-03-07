@@ -100,26 +100,26 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="mb-4 border-t border-[#a78bfa]/30 pt-4">
                 <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-2 text-[11px] font-bold text-[#a78bfa] tracking-[0.2em] uppercase hover:text-white hover:bg-[#a78bfa]/10 transition-colors" data-target="nav-channels" data-open="false">
                     <span>// CHANNELS</span>
-                    <span class="toggle-arrow transition-transform duration-200 -rotate-90">â–¼</span>
+                    <span class="toggle-arrow transition-transform duration-200 -rotate-90">&#x25BC;</span>
                 </button>
                 <div id="nav-channels" class="hidden">
                 <a href="https://www.youtube.com/@commonsenserebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-red-500/70">â–¶</span> YouTube
+                    <span class="text-red-500/70">&#x25B6;</span> YouTube
                 </a>
                 <a href="https://rumble.com/user/CommonRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-green-500/70">â—‰</span> Rumble
+                    <span class="text-green-500/70">&#x25C9;</span> Rumble
                 </a>
                 <a href="https://www.instagram.com/faulkinner/" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-pink-500/70">â—ˆ</span> Instagram
+                    <span class="text-pink-500/70">&#x25C8;</span> Instagram
                 </a>
                 <a href="https://www.facebook.com/profile.php?id=61584796418902" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-blue-400/70">â—†</span> Facebook
+                    <span class="text-blue-400/70">&#x25C6;</span> Facebook
                 </a>
                 <a href="https://www.threads.com/?hl=en" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
                     <span class="text-white/50">@</span> Threads
                 </a>
                 <a href="https://x.com/CSRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-white/50">âœ•</span> X
+                    <span class="text-white/50">&#x2715;</span> X
                 </a>
                 </div>
             </div>
