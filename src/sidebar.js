@@ -262,17 +262,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // â”€â”€ MENU TAB AUTO-FADE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Fades to mostly transparent 3s after last use (keeps mobile reading clean).
     // Snaps back full on hover or any click.
+    // ── MENU TAB IDLE GLOW ──────────────────────────────────────────────────
+    // Border ring pulses every 5s while faded to hint the tab is there.
+    const _glowStyle = document.createElement('style');
+    _glowStyle.textContent = [
+        '@keyframes tab-ring-pulse {',
+        '  0%,70%,100% { box-shadow:2px 0 10px rgba(34,197,94,0.2); border-color:rgba(167,139,250,0.6); }',
+        '  75%         { box-shadow:2px 0 18px rgba(167,139,250,0.8),0 0 12px rgba(167,139,250,0.4); border-color:rgba(167,139,250,1); }',
+        '  85%         { box-shadow:2px 0 10px rgba(34,197,94,0.2); border-color:rgba(167,139,250,0.6); }',
+        '}',
+        '.tab-glow-idle { animation: tab-ring-pulse 5s ease-in-out infinite; }'
+    ].join('\n');
+    document.head.appendChild(_glowStyle);
+
     let fadeTimer = null;
     function resetFadeTimer() {
         edgeTab.style.opacity = '';       // restore to CSS default (opacity-70)
+        edgeTab.classList.remove('tab-glow-idle');
         clearTimeout(fadeTimer);
         fadeTimer = setTimeout(() => {
             edgeTab.style.opacity = '0.15';
+            edgeTab.classList.add('tab-glow-idle');
         }, 3000);
     }
-    edgeTab.addEventListener('mouseenter', () => { edgeTab.style.opacity = '1'; clearTimeout(fadeTimer); });
+    edgeTab.addEventListener('mouseenter', () => { edgeTab.style.opacity = '1'; edgeTab.classList.remove('tab-glow-idle'); clearTimeout(fadeTimer); });
     edgeTab.addEventListener('mouseleave', resetFadeTimer);
-    edgeTab.addEventListener('touchstart', () => { edgeTab.style.opacity = '1'; clearTimeout(fadeTimer); }, { passive: true });
+    edgeTab.addEventListener('touchstart', () => { edgeTab.style.opacity = '1'; edgeTab.classList.remove('tab-glow-idle'); clearTimeout(fadeTimer); }, { passive: true });
 
     edgeTab.addEventListener('click', () => {
         resetFadeTimer();
