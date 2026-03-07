@@ -1,8 +1,8 @@
-// sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
+﻿// sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
 import { initAuth } from './auth.js';
 
 // ============================================================
-// NAV CONFIG — Add new public pages here, not buried in HTML
+// NAV CONFIG â€” Add new public pages here, not buried in HTML
 // ============================================================
 const NAV_ITEMS = [
     { href: '/', label: '/ codex_root' },
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             $ matrix_admin/
                         </a>
                         <button class="sidebar-toggle text-white/30 hover:text-[#a78bfa] transition-colors px-1 text-[10px]" data-target="nav-matrix" data-open="false">
-                            <span class="toggle-arrow block transition-transform duration-200 -rotate-90">▼</span>
+                            <span class="toggle-arrow block transition-transform duration-200 -rotate-90">â–¼</span>
                         </button>
                     </div>
                     <div id="nav-matrix" class="hidden">
@@ -100,26 +100,26 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="mb-4 border-t border-[#a78bfa]/30 pt-4">
                 <button class="sidebar-toggle w-full flex items-center justify-between px-6 py-2 text-[11px] font-bold text-[#a78bfa] tracking-[0.2em] uppercase hover:text-white hover:bg-[#a78bfa]/10 transition-colors" data-target="nav-channels" data-open="false">
                     <span>// CHANNELS</span>
-                    <span class="toggle-arrow transition-transform duration-200 -rotate-90">▼</span>
+                    <span class="toggle-arrow transition-transform duration-200 -rotate-90">â–¼</span>
                 </button>
                 <div id="nav-channels" class="hidden">
                 <a href="https://www.youtube.com/@commonsenserebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-red-500/70">▶</span> YouTube
+                    <span class="text-red-500/70">â–¶</span> YouTube
                 </a>
                 <a href="https://rumble.com/user/CommonRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-green-500/70">◉</span> Rumble
+                    <span class="text-green-500/70">â—‰</span> Rumble
                 </a>
                 <a href="https://www.instagram.com/faulkinner/" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-pink-500/70">◈</span> Instagram
+                    <span class="text-pink-500/70">â—ˆ</span> Instagram
                 </a>
                 <a href="https://www.facebook.com/profile.php?id=61584796418902" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-blue-400/70">◆</span> Facebook
+                    <span class="text-blue-400/70">â—†</span> Facebook
                 </a>
                 <a href="https://www.threads.com/?hl=en" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
                     <span class="text-white/50">@</span> Threads
                 </a>
                 <a href="https://x.com/CSRebel" target="_blank" rel="noopener" class="flex items-center gap-3 py-1.5 px-6 text-white/40 hover:text-white hover:bg-white/5 transition-colors text-[10px] tracking-widest">
-                    <span class="text-white/50">✕</span> X
+                    <span class="text-white/50">âœ•</span> X
                 </a>
                 </div>
             </div>
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
            </a>
            <a id="sidebar-profile-link" href="/profile/index.html"
                class="hidden w-full text-center py-2.5 px-4 text-white font-bold tracking-widest uppercase text-xs transition-all border border-[#a78bfa]/60 hover:border-[#a78bfa] hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] block">
-               ◈ MY PROFILE
+               â—ˆ MY PROFILE
            </a>
            <button id="btn-toggle-login"
                class="relative block w-full text-center py-2.5 px-4 font-bold tracking-widest uppercase text-xs transition-all
@@ -142,6 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
                       shadow-[0_0_10px_rgba(167,139,250,0.2)] hover:shadow-[0_0_18px_rgba(167,139,250,0.5)]">
                [ LOGIN ]
            </button>
+            <button id="btn-sidebar-register"
+                class="block w-full text-center py-2 px-4 font-bold tracking-widest uppercase text-[10px] transition-all border border-[#a78bfa]/30 text-[#a78bfa]/50 hover:border-[#a78bfa] hover:text-[#a78bfa] hover:bg-[#a78bfa]/10">
+                [ REGISTER ]
+            </button>
         </div>
     `;
 
@@ -149,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Prepend to body
     document.body.insertBefore(aside, document.body.firstChild);
 
-    // ── BOOT ANIMATION: stagger nav elements like a terminal loading ──────────
+    // â”€â”€ BOOT ANIMATION: stagger nav elements like a terminal loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Groups: logo (0s), section labels (0.15s), nav links (0.05s apart from 0.25s),
     //         channels toggle (0.7s), footer buttons (0.85s each)
     requestAnimationFrame(() => {
@@ -255,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ── MENU TAB AUTO-FADE ────────────────────────────────────────────────────
+    // â”€â”€ MENU TAB AUTO-FADE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Fades to mostly transparent 3s after last use (keeps mobile reading clean).
     // Snaps back full on hover or any click.
     let fadeTimer = null;
@@ -295,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     links.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
-    // ── UNIVERSAL LOGIN MODAL ─────────────────────────────────────────────────
+    // â”€â”€ UNIVERSAL LOGIN MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // index.html already has the modal; inject it on every other page so
     // the sidebar LOGIN button works site-wide.
     if (!document.getElementById('login-modal')) {
@@ -304,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.className = 'hidden fixed inset-0 z-[100] bg-[#05010a]/90 backdrop-blur-sm flex items-center justify-center p-4';
         modal.innerHTML = `
           <div class="w-full max-w-sm border border-[#a78bfa]/50 bg-[#0a0a0a] p-6 relative shadow-[0_0_30px_rgba(167,139,250,0.1)]">
-            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold text-lg leading-none">×</button>
+            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold text-lg leading-none">Ã—</button>
 
             <!-- HEADER -->
             <div class="flex items-center gap-3 mb-5 border-b border-[#a78bfa]/20 pb-4">
@@ -320,10 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- SUCCESS SCREEN (register only) -->
             <div id="modal-success" class="hidden text-center py-6">
-              <p class="text-3xl mb-3">📡</p>
+              <p class="text-3xl mb-3">ðŸ“¡</p>
               <p class="text-white font-bold tracking-widest uppercase text-sm mb-2 font-mono">TRANSMISSION SENT</p>
               <p class="text-[#a78bfa]/60 text-[10px] tracking-widest leading-relaxed font-mono">Check your email to verify your account.</p>
-              <button id="modal-back-to-login" class="mt-5 text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-4 py-2 font-mono">← BACK TO LOGIN</button>
+              <button id="modal-back-to-login" class="mt-5 text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-4 py-2 font-mono">â† BACK TO LOGIN</button>
             </div>
 
             <!-- FORM -->
@@ -341,13 +345,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <div>
                 <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono" id="modal-pass-label">Decryption Key</label>
-                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••" autocomplete="current-password">
+                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password">
               </div>
 
               <!-- REGISTER ONLY: Confirm Password -->
               <div id="modal-field-confirm" class="hidden">
                 <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">Confirm Password</label>
-                <input type="password" id="modal-confirm-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••" autocomplete="new-password">
+                <input type="password" id="modal-confirm-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="new-password">
               </div>
 
               <button id="btn-submit-login" class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-2 text-sm font-mono">INITIATE OVERRIDE</button>
@@ -360,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     }
 
-    // Run auth (session check + UI wiring). Safe to call multiple times — each call re-resolves IDs.
+    // Run auth (session check + UI wiring). Safe to call multiple times â€” each call re-resolves IDs.
     initAuth();
 });
+

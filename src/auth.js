@@ -42,6 +42,16 @@ export async function initAuth() {
     });
 
     // 3. Bind UI
+    // Register button — opens modal directly on register tab
+    document.addEventListener('click', (e) => {
+        const regBtn = e.target.closest('#btn-sidebar-register');
+        if (regBtn) {
+            const m = document.getElementById('login-modal');
+            if (m) { m.classList.remove('hidden'); _modalSetMode('register'); }
+            return;
+        }
+    });
+
     // Delegation catches clicks on sidebar #btn-toggle-login and any injected variant
     document.addEventListener('click', (e) => {
         const toggleBtn = e.target.closest('#btn-toggle-login, #btn-sidebar-login');
@@ -219,6 +229,11 @@ function updateAuthUI() {
     // Show profile link when logged in
     document.querySelectorAll('#sidebar-profile-link').forEach(el => {
         el.classList.toggle('hidden', !currentUser);
+    });
+
+    // Hide register button when logged in
+    document.querySelectorAll('#btn-sidebar-register').forEach(el => {
+        el.classList.toggle('hidden', !!currentUser);
     });
 }
 
