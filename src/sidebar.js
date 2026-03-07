@@ -303,23 +303,55 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.id = 'login-modal';
         modal.className = 'hidden fixed inset-0 z-[100] bg-[#05010a]/90 backdrop-blur-sm flex items-center justify-center p-4';
         modal.innerHTML = `
-          <div class="w-full max-w-sm border border-[#a78bfa]/50 bg-[#0a0a0a] p-6 relative shadow-[0_0_30px_rgba(34,197,94,0.1)]">
-            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold">X</button>
-            <div class="flex items-center justify-center gap-3 mb-6 border-b border-[#a78bfa]/30 pb-4">
-              <div class="w-2 h-2 bg-[#a78bfa] animate-pulse rounded-full"></div>
-              <h2 class="text-[#a78bfa] font-bold tracking-[0.2em] uppercase text-xl font-mono">SOVEREIGN ACCESS</h2>
+          <div class="w-full max-w-sm border border-[#a78bfa]/50 bg-[#0a0a0a] p-6 relative shadow-[0_0_30px_rgba(167,139,250,0.1)]">
+            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold text-lg leading-none">×</button>
+
+            <!-- HEADER -->
+            <div class="flex items-center gap-3 mb-5 border-b border-[#a78bfa]/20 pb-4">
+              <div class="w-2 h-2 bg-[#a78bfa] animate-pulse rounded-full shrink-0"></div>
+              <h2 class="text-[#a78bfa] font-bold tracking-[0.2em] uppercase text-base font-mono">SOVEREIGN GATE</h2>
             </div>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">OPERATOR EMAIL</label>
-                <input type="email" id="login-email" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="identification@verticalwar.com">
+
+            <!-- TABS -->
+            <div class="flex mb-5 border-b border-[#a78bfa]/20">
+              <button id="modal-tab-login" class="flex-1 pb-2 text-[10px] font-bold tracking-widest uppercase border-b-2 border-[#a78bfa] text-[#a78bfa] transition-all font-mono">[ LOGIN ]</button>
+              <button id="modal-tab-register" class="flex-1 pb-2 text-[10px] font-bold tracking-widest uppercase border-b-2 border-transparent text-[#a78bfa]/40 hover:text-[#a78bfa]/70 transition-all font-mono">[ REGISTER ]</button>
+            </div>
+
+            <!-- SUCCESS SCREEN (register only) -->
+            <div id="modal-success" class="hidden text-center py-6">
+              <p class="text-3xl mb-3">📡</p>
+              <p class="text-white font-bold tracking-widest uppercase text-sm mb-2 font-mono">TRANSMISSION SENT</p>
+              <p class="text-[#a78bfa]/60 text-[10px] tracking-widest leading-relaxed font-mono">Check your email to verify your account.</p>
+              <button id="modal-back-to-login" class="mt-5 text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-4 py-2 font-mono">← BACK TO LOGIN</button>
+            </div>
+
+            <!-- FORM -->
+            <div id="modal-form-wrap" class="space-y-3">
+              <!-- REGISTER ONLY: Display Name -->
+              <div id="modal-field-name" class="hidden">
+                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">Display Name</label>
+                <input type="text" id="modal-display-name" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="How you'll appear to others" autocomplete="name">
               </div>
+
               <div>
-                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">DECRYPTION KEY</label>
-                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••">
+                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">Email</label>
+                <input type="email" id="login-email" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="identification@domain.com" autocomplete="email">
               </div>
-              <button id="btn-submit-login" class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-4 text-sm font-mono">INITIATE OVERRIDE</button>
-              <div id="login-error" class="hidden text-red-500 text-[10px] text-center mt-2 uppercase font-bold tracking-widest font-mono">ERROR: CREDENTIALS REJECTED</div>
+
+              <div>
+                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono" id="modal-pass-label">Decryption Key</label>
+                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••" autocomplete="current-password">
+              </div>
+
+              <!-- REGISTER ONLY: Confirm Password -->
+              <div id="modal-field-confirm" class="hidden">
+                <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">Confirm Password</label>
+                <input type="password" id="modal-confirm-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••" autocomplete="new-password">
+              </div>
+
+              <button id="btn-submit-login" class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-2 text-sm font-mono">INITIATE OVERRIDE</button>
+              <div id="login-error" class="hidden text-red-500 text-[10px] text-center mt-2 uppercase font-bold tracking-widest font-mono"></div>
             </div>
           </div>`;
         document.body.appendChild(modal);
