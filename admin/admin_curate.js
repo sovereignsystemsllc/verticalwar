@@ -371,6 +371,7 @@ function renderFolders() {
 
         const wrapper = document.createElement('div');
         wrapper.dataset.sectionGroup = '1';
+        wrapper.dataset.headingId = section.heading ? section.heading.id : '';
         wrapper.className = 'section-group';
 
         // ── Heading row ──
@@ -1030,16 +1031,17 @@ if (btnSaveFolderOrder) {
         Array.from(foldersContainer.children).forEach(child => {
             if (!child.dataset.sectionGroup) return; // skip UNASSIGNED bucket
 
+            // Resolve category_label from in-memory masterSeries — never from DOM text
+            const headingId = child.dataset.headingId;
+            const headingRow = headingId ? masterSeries.find(s => s.id === headingId) : null;
+            const categoryLabel = headingRow ? (headingRow.category_label || 'UNCATEGORIZED') : 'UNCATEGORIZED';
+
             // Walk every [data-folder-id] inside this section wrapper
             Array.from(child.querySelectorAll('[data-folder-id]')).forEach(item => {
                 const id = item.dataset.folderId;
                 if (!id || id === 'unassigned') return;
                 const s = masterSeries.find(series => series.id === id);
                 if (!s) return;
-
-                // Derive category_label from the heading inside this same wrapper
-                const headingEl = child.querySelector('[data-folder-id] h3');
-                const categoryLabel = headingEl ? headingEl.textContent.replace(' [HIDDEN]', '').trim() : (s.category_label || 'UNCATEGORIZED');
 
                 updates.push({ id, order_index: dbIndex, category_label: categoryLabel });
                 dbIndex++;
@@ -1095,7 +1097,10 @@ if (btnSyncTimeline) {
 
         const { error } = await supabase.from('articles').upsert(updates, { onConflict: 'id' });
         if (error) { console.error('Sync timeline failed:', error); showToast('Sync failed.', true); }
-        else { showToast('Timeline synced.'); }
+        else {
+            await saveAllArticleOrder(); // commit full matrix sort state atomically
+            showToast('Timeline synced ✓');
+        }
 
         renderArticles(activeFolderId);
         btnSyncTimeline.innerText = '[ SYNC ]';
