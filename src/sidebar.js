@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             $ matrix_admin/
                         </a>
                         <button class="sidebar-toggle text-white/30 hover:text-[#a78bfa] transition-colors px-1 text-[10px]" data-target="nav-matrix" data-open="false">
-                            <span class="toggle-arrow block transition-transform duration-200 -rotate-90">â–¼</span>
+                            <span class="toggle-arrow block transition-transform duration-200 -rotate-90">&#x25BC;</span>
                         </button>
                     </div>
                     <div id="nav-matrix" class="hidden">
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
            </a>
            <a id="sidebar-profile-link" href="/profile/index.html"
                class="hidden w-full text-center py-2.5 px-4 text-white font-bold tracking-widest uppercase text-xs transition-all border border-[#a78bfa]/60 hover:border-[#a78bfa] hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] block">
-               â—ˆ MY PROFILE
+               &#x25C8; MY PROFILE
            </a>
            <button id="btn-toggle-login"
                class="relative block w-full text-center py-2.5 px-4 font-bold tracking-widest uppercase text-xs transition-all
