@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [tailwindcss()],
     build: {
+        manifest: true,
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),
