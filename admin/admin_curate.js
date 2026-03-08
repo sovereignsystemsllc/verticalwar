@@ -1199,21 +1199,38 @@ if (btnSyncTimeline) {
 
 const SOVEREIGN_UUID = '5abcdeb3-0d75-4201-ba36-2f0c9d7a41ff';
 const RSS_FEED_URL = 'https://constructamiracle.com/feed';
-// allorigins proxies the RSS so we dodge the CORS wall in the browser
-const CORS_PROXY = 'https://api.allorigins.win/get?url=';
+
+// Two CORS proxies in priority order — first live one wins
+const CORS_PROXIES = [
+    (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+];
+
+async function fetchRSSXml(feedUrl) {
+    for (const proxyFn of CORS_PROXIES) {
+        try {
+            const res = await fetch(proxyFn(feedUrl), { signal: AbortSignal.timeout(8000) });
+            if (!res.ok) continue;
+            const text = await res.text();
+            // allorigins wraps in JSON {contents:...}, corsproxy returns raw XML
+            if (text.trim().startsWith('{')) {
+                const json = JSON.parse(text);
+                if (json.contents) return json.contents;
+            } else if (text.trim().startsWith('<')) {
+                return text;
+            }
+        } catch (_) { /* try next proxy */ }
+    }
+    throw new Error('All CORS proxies failed. Check network or try again.');
+}
 
 async function syncFromRSS() {
     const btn = document.getElementById('btn-rss-sync');
     if (btn) { btn.innerText = '[ LOADING... ]'; btn.disabled = true; }
 
     try {
-        // ── 1. Fetch feed via CORS proxy ───────────────────────
-        const proxyUrl = CORS_PROXY + encodeURIComponent(RSS_FEED_URL);
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error(`Proxy fetch failed: ${res.status}`);
-        const json = await res.json();
-        const xmlText = json.contents;
-        if (!xmlText) throw new Error('Empty response from proxy.');
+        // ── 1. Fetch feed via CORS proxy (dual-proxy fallback) ──
+        const xmlText = await fetchRSSXml(RSS_FEED_URL);
 
         // ── 2. Parse XML ────────────────────────────────────────
         const parser = new DOMParser();

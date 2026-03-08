@@ -43,8 +43,8 @@ function showToast(msg, isError = false) {
 // MOBILE TABS
 // ============================================================
 function isMobile() { return window.innerWidth < 1024; }
-function setMobileTab(tab) {
-    if (!isMobile()) return;
+
+function _applyMobileTabUI(tab) {
     mainWorkspace.dataset.active = tab;
     const onUsers = tab === 'users';
     if (tabUsersBtn) {
@@ -54,6 +54,21 @@ function setMobileTab(tab) {
         tabActivityBtn.className = `flex-1 py-3 text-[11px] font-bold tracking-widest uppercase transition-colors border-b-2 ${!onUsers ? 'text-[#22d3ee] border-[#22d3ee]' : 'text-matrix-muted border-transparent'}`;
     }
 }
+
+function setMobileTab(tab) {
+    if (!isMobile()) return;
+    _applyMobileTabUI(tab);
+    history.pushState({ usersTab: tab }, '');
+}
+
+window.addEventListener('popstate', (e) => {
+    if (!isMobile()) return;
+    const tab = e.state?.usersTab;
+    if (tab) _applyMobileTabUI(tab);
+});
+
+history.replaceState({ usersTab: 'users' }, '');
+
 if (tabUsersBtn) tabUsersBtn.addEventListener('click', () => setMobileTab('users'));
 if (tabActivityBtn) tabActivityBtn.addEventListener('click', () => setMobileTab('activity'));
 

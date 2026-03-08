@@ -85,8 +85,8 @@ function renderList() {
                 ${slide.link_url ? `<p class="text-[9px] text-matrix-green/60 mt-1 truncate">${slide.link_url}</p>` : ''}
             </div>
             <div class="flex gap-2 shrink-0">
-                <button class="btn-edit text-[9px] font-bold tracking-widest uppercase border border-matrix-border text-matrix-muted hover:text-matrix-green hover:border-matrix-green px-3 py-1 transition-colors" data-id="${slide.id}">EDIT</button>
-                <button class="btn-delete text-[9px] font-bold tracking-widest uppercase border border-red-500/30 text-red-500/60 hover:text-red-500 hover:border-red-500 px-3 py-1 transition-colors" data-id="${slide.id}">DEL</button>
+                <button class="btn-edit text-[9px] font-bold tracking-widest uppercase border border-matrix-border text-matrix-muted hover:text-matrix-green hover:border-matrix-green px-4 py-2 min-h-[40px] transition-colors" data-id="${slide.id}">EDIT</button>
+                <button class="btn-delete text-[9px] font-bold tracking-widest uppercase border border-red-500/30 text-red-500/60 hover:text-red-500 hover:border-red-500 px-4 py-2 min-h-[40px] transition-colors" data-id="${slide.id}">DEL</button>
             </div>
         `;
         card.querySelector('.btn-edit').addEventListener('click', () => openModal(slide));
