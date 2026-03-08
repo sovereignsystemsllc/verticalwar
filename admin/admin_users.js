@@ -220,59 +220,52 @@ async function loadActivity() {
 
     const events = [];
 
-    // ── Comments ──
+    // Build queries
+    let commentsQ = null, bookmarksQ = null, activityQ = null;
+
     if (activeTab === 'all' || activeTab === 'comment') {
-        let q = supabase.from('comments')
+        commentsQ = supabase.from('comments')
             .select('id, content, created_at, user_id, article_id, articles(id, title)')
-            .order('created_at', { ascending: false })
-            .limit(100);
-        if (activeUserId) q = q.eq('user_id', activeUserId);
-        const { data } = await q;
-        (data || []).forEach(c => events.push({
-            type: 'comment',
-            user_id: c.user_id,
-            created_at: c.created_at,
-            label: c.content?.slice(0, 80) || '[empty]',
-            article_id: c.article_id,
-            article_title: c.articles?.title || '—',
-        }));
+            .order('created_at', { ascending: false }).limit(100);
+        if (activeUserId) commentsQ = commentsQ.eq('user_id', activeUserId);
     }
 
-    // ── Bookmarks ──
     if (activeTab === 'all' || activeTab === 'bookmark') {
-        let q = supabase.from('bookmarks')
+        bookmarksQ = supabase.from('bookmarks')
             .select('id, created_at, user_id, article_id, articles(id, title)')
-            .order('created_at', { ascending: false })
-            .limit(100);
-        if (activeUserId) q = q.eq('user_id', activeUserId);
-        const { data } = await q;
-        (data || []).forEach(b => events.push({
-            type: 'bookmark',
-            user_id: b.user_id,
-            created_at: b.created_at,
-            label: 'Added to reading list',
-            article_id: b.article_id,
-            article_title: b.articles?.title || '—',
-        }));
+            .order('created_at', { ascending: false }).limit(100);
+        if (activeUserId) bookmarksQ = bookmarksQ.eq('user_id', activeUserId);
     }
 
-    // ── Activity Log (reads etc.) ──
     if (activeTab === 'all' || activeTab === 'read') {
-        let q = supabase.from('activity_log')
+        activityQ = supabase.from('activity_log')
             .select('id, action, created_at, user_id, article_id, meta, articles(id, title)')
-            .order('created_at', { ascending: false })
-            .limit(100);
-        if (activeUserId) q = q.eq('user_id', activeUserId);
-        const { data } = await q;
-        (data || []).forEach(a => events.push({
-            type: 'read',
-            user_id: a.user_id,
-            created_at: a.created_at,
-            label: a.action || 'page_view',
-            article_id: a.article_id,
-            article_title: a.articles?.title || '—',
-        }));
+            .order('created_at', { ascending: false }).limit(100);
+        if (activeUserId) activityQ = activityQ.eq('user_id', activeUserId);
     }
+
+    // ── Fire all queries IN PARALLEL ──────────────────────────────────────────
+    const [commentsRes, bookmarksRes, activityRes] = await Promise.all([
+        commentsQ ? commentsQ : Promise.resolve({ data: [] }),
+        bookmarksQ ? bookmarksQ : Promise.resolve({ data: [] }),
+        activityQ ? activityQ : Promise.resolve({ data: [] }),
+    ]);
+
+    (commentsRes.data || []).forEach(c => events.push({
+        type: 'comment', user_id: c.user_id, created_at: c.created_at,
+        label: c.content?.slice(0, 80) || '[empty]',
+        article_id: c.article_id, article_title: c.articles?.title || '—',
+    }));
+    (bookmarksRes.data || []).forEach(b => events.push({
+        type: 'bookmark', user_id: b.user_id, created_at: b.created_at,
+        label: 'Added to reading list',
+        article_id: b.article_id, article_title: b.articles?.title || '—',
+    }));
+    (activityRes.data || []).forEach(a => events.push({
+        type: 'read', user_id: a.user_id, created_at: a.created_at,
+        label: a.action || 'page_view',
+        article_id: a.article_id, article_title: a.articles?.title || '—',
+    }));
 
     // Sort newest first
     events.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));

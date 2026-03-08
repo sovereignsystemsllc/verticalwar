@@ -36,7 +36,8 @@ else {
     $curr.PSObject.Properties | ForEach-Object {
         $key = $_.Name
         $entry = $_.Value
-        $prevFile = $prev.PSObject.Properties[$key]?.Value?.file
+        $prevProp = $prev.PSObject.Properties[$key]
+        $prevFile = if ($prevProp) { $prevProp.Value.file } else { $null }
 
         if ($entry.file -and $entry.file -ne $prevFile) {
             $toUpload.Add($entry.file)

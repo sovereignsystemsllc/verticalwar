@@ -21,17 +21,14 @@ async function loadTelemetry() {
     const statArticles = document.getElementById('stat-articles');
     const statFolders = document.getElementById('stat-folders');
     try {
-        const { count: articleCount, error: aErr } = await supabase
-            .from('articles')
-            .select('*', { count: 'exact', head: true });
-        if (aErr) throw aErr;
-        statArticles.innerText = articleCount || 0;
-
-        const { count: seriesCount, error: sErr } = await supabase
-            .from('series')
-            .select('*', { count: 'exact', head: true });
-        if (sErr) throw sErr;
-        statFolders.innerText = seriesCount || 0;
+        const [aRes, sRes] = await Promise.all([
+            supabase.from('articles').select('*', { count: 'exact', head: true }),
+            supabase.from('series').select('*', { count: 'exact', head: true }),
+        ]);
+        if (aRes.error) throw aRes.error;
+        if (sRes.error) throw sRes.error;
+        statArticles.innerText = aRes.count || 0;
+        statFolders.innerText = sRes.count || 0;
     } catch (e) {
         console.error('Telemetry Load Error', e);
         statArticles.innerText = 'ERR';
