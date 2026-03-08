@@ -1,0 +1,25 @@
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+[33m
+Unable to parse HTML; parse5 error code control-character-in-input-stream
+ at C:/Users/76com/OneDrive/Desktop/verticalwar_v4/about.html:185:12
+184 |  
+185 |      <!-- +óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É...
+186 |           SECTION 1: THE COLD OPEN / HERO
+    |                         ^
+187 |      +óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó-É+óGÇó...
+188 |      <section class="relative min-h-screen flex items-center justify-center px-6 py-24 overflow-hidden">[39m
+transforming...
+[32mG£ô[39m 94 modules transformed.
+[31mG£ù[39m Build failed in 864ms
+[31merror during build:
+[31m[vite:prepare-out-dir] EPERM, Permission denied: \\?\C:\Users\76com\OneDrive\Desktop\verticalwar_v4\dist\assets '\\?\C:\Users\76com\OneDrive\Desktop\verticalwar_v4\dist\assets'[31m
+    at Object.rmSync (node:fs:1205:18)
+    at emptyDir (file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/vite/dist/node/chunks/config.js:2167:11)
+    at prepareOutDir (file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/vite/dist/node/chunks/config.js:33325:55)
+    at Object.handler (file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/vite/dist/node/chunks/config.js:33315:6)
+    at Object.handler (file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/vite/dist/node/chunks/config.js:33743:13)
+    at file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/rollup/dist/es/shared/node-entry.js:22571:40
+    at async Promise.all (index 0)
+    at async PluginDriver.hookParallel (file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/rollup/dist/es/shared/node-entry.js:22481:9)
+    at async Bundle.generate (file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/rollup/dist/es/shared/node-entry.js:20603:13)
+    at async file:///C:/Users/76com/OneDrive/Desktop/verticalwar_v4/node_modules/rollup/dist/es/shared/node-entry.js:23558:27[39m

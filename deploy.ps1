@@ -1,31 +1,43 @@
-# deploy.ps1 — Sovereign V4 Fast Deploy
-# Builds, packs dist/ into a single tar.gz, SCPs it, SSH-extracts on server.
-# Much faster than SCP of individual files.
+# deploy.ps1 — Sovereign V4 Deploy (smart: only uploads changed files)
+$KEY = "C:\Users\76com\.ssh\rika"
+$PORT = "18765"
+$TARGET = "u2222-vxkuggohnxin@gvam1020.siteground.biz:~/www/verticalwar.com/public_html"
+$STAMP = ".\.last_deploy"
 
-$KEY      = "C:\Users\76com\.ssh\rika"
-$PORT     = "18765"
-$HOST     = "u2222-vxkuggohnxin@gvam1020.siteground.biz"
-$REMOTE   = "~/www/verticalwar.com/public_html"
-$ARCHIVE  = "$env:TEMP\vw_deploy.tar.gz"
-
-Write-Host "[1/4] Building..." -ForegroundColor Cyan
+# ── 1. BUILD ──────────────────────────────────────────────────────────────────
+Write-Host "[1/3] Building..." -ForegroundColor Cyan
 npm run build
 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed." -ForegroundColor Red; exit 1 }
 
-Write-Host "[2/4] Packing dist..." -ForegroundColor Cyan
-tar -czf $ARCHIVE -C dist .
-if ($LASTEXITCODE -ne 0) { Write-Host "Pack failed." -ForegroundColor Red; exit 1 }
+# ── 2. FIND CHANGED FILES ─────────────────────────────────────────────────────
+Write-Host "[2/3] Detecting changed files..." -ForegroundColor Cyan
 
-$sizeMB = [math]::Round((Get-Item $ARCHIVE).Length / 1MB, 2)
-Write-Host "  -> $ARCHIVE ($sizeMB MB)" -ForegroundColor Gray
+$lastDeploy = if (Test-Path $STAMP) { (Get-Item $STAMP).LastWriteTime } else { [DateTime]::MinValue }
 
-Write-Host "[3/4] Uploading archive (enter passphrase when prompted)..." -ForegroundColor Cyan
-scp -i $KEY -P $PORT -o StrictHostKeyChecking=no $ARCHIVE "${HOST}:~/vw_deploy.tar.gz"
-if ($LASTEXITCODE -ne 0) { Write-Host "Upload failed." -ForegroundColor Red; exit 1 }
+$changed = Get-ChildItem -Path .\dist -Recurse -File |
+Where-Object { $_.LastWriteTime -gt $lastDeploy }
 
-Write-Host "[4/4] Extracting on server (enter passphrase again)..." -ForegroundColor Cyan
-ssh -i $KEY -p $PORT -o StrictHostKeyChecking=no $HOST "cd $REMOTE && tar xzf ~/vw_deploy.tar.gz && rm ~/vw_deploy.tar.gz"
-if ($LASTEXITCODE -ne 0) { Write-Host "Extract failed." -ForegroundColor Red; exit 1 }
+if ($changed.Count -eq 0) {
+    Write-Host "Nothing changed since last deploy. Exiting." -ForegroundColor Yellow
+    exit 0
+}
 
-Remove-Item $ARCHIVE -ErrorAction SilentlyContinue
-Write-Host "Deployed." -ForegroundColor Green
+Write-Host "  $($changed.Count) file(s) to upload:" -ForegroundColor Gray
+$changed | ForEach-Object { Write-Host "  + $($_.FullName.Replace((Get-Location).Path + '\dist\', ''))" -ForegroundColor Gray }
+
+# ── 3. UPLOAD ONLY CHANGED FILES ──────────────────────────────────────────────
+Write-Host "[3/3] Uploading (enter passphrase when prompted)..." -ForegroundColor Cyan
+
+foreach ($file in $changed) {
+    $rel = $file.FullName.Replace((Get-Location).Path + '\dist\', '')
+    $relDir = Split-Path $rel -Parent
+    $remPath = if ($relDir) { "$TARGET/$($relDir.Replace('\', '/'))/" } else { "$TARGET/" }
+
+    scp -i $KEY -P $PORT -o StrictHostKeyChecking=no $file.FullName $remPath
+    if ($LASTEXITCODE -ne 0) { Write-Host "Upload failed: $rel" -ForegroundColor Red; exit 1 }
+}
+
+# ── STAMP ─────────────────────────────────────────────────────────────────────
+New-Item -Path $STAMP -ItemType File -Force | Out-Null
+
+Write-Host "Deployed $($changed.Count) file(s)." -ForegroundColor Green

@@ -17,6 +17,7 @@ const btnBackToLogin = document.getElementById('btn-back-to-login');
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let mode = 'login'; // 'login' | 'register'
+let isSubmitting = false; // hard gate to prevent double-submit
 
 // ── MODE SWITCH ───────────────────────────────────────────────────────────────
 function setMode(m) {
@@ -61,6 +62,7 @@ function clearError() {
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 gateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // hard gate: block any concurrent call
     clearError();
 
     const email = emailInput.value.trim();
@@ -68,8 +70,9 @@ gateForm.addEventListener('submit', async (e) => {
 
     if (!email || !password) return;
 
-    submitBtn.textContent = mode === 'login' ? 'AUTHENTICATING...' : 'REGISTERING...';
+    isSubmitting = true;
     submitBtn.disabled = true;
+    submitBtn.textContent = mode === 'login' ? 'AUTHENTICATING...' : 'REGISTERING...';
 
     try {
         if (mode === 'login') {
@@ -99,18 +102,18 @@ gateForm.addEventListener('submit', async (e) => {
             });
             if (error) throw error;
 
-            // Supabase may auto-confirm if email confirmation is disabled.
-            // Profile row is inserted by DB trigger (handle_new_user),
-            // which then fires the verify-stripe webhook automatically.
-            // Show confirmation screen regardless.
+            // Profile row is inserted by DB trigger (handle_new_user).
+            // Show confirmation screen — button stays disabled permanently on success.
             gateForm.classList.add('hidden');
             gateSuccess.classList.remove('hidden');
+            return; // do NOT reset isSubmitting on success
         }
 
     } catch (err) {
         showError(err.message);
-    } finally {
-        submitBtn.textContent = mode === 'login' ? 'INITIATE OVERRIDE' : 'CREATE ACCOUNT';
+        // Only re-enable on error so the user can try again
+        isSubmitting = false;
         submitBtn.disabled = false;
+        submitBtn.textContent = mode === 'login' ? 'INITIATE OVERRIDE' : 'CREATE ACCOUNT';
     }
 });

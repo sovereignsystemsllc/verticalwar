@@ -38,6 +38,65 @@ const articleCountTab = document.getElementById('article-count-tab');
 const toastEl = document.getElementById('curate-toast');
 
 // ============================================================
+// MOBILE ACTION BAR (bottom-sheet)
+// ============================================================
+const mobileActionBar = document.getElementById('mobile-action-bar');
+const mobileBackdrop = document.getElementById('mobile-backdrop');
+const mabTitle = document.getElementById('mab-title');
+const mabEdit = document.getElementById('mab-edit');
+const mabVisibility = document.getElementById('mab-visibility');
+const mabCarousel = document.getElementById('mab-carousel');
+const mabFolder = document.getElementById('mab-folder');
+const mabDelete = document.getElementById('mab-delete');
+
+let _mabCleanup = null;
+
+function openMobileActionBar(article) {
+    if (!mobileActionBar) return;
+    // Tear down previous listeners
+    if (_mabCleanup) { _mabCleanup(); _mabCleanup = null; }
+
+    mabTitle.textContent = article.title;
+    mabEdit.href = `/admin/editor.html?id=${article.id}`;
+
+    const hiddenNow = article.hidden;
+    mabVisibility.textContent = hiddenNow ? '[SHOW]' : '[HIDE]';
+    mabVisibility.className = hiddenNow
+        ? 'mab-btn'
+        : 'mab-btn muted';
+
+    const onVisibility = async () => { closeMobileActionBar(); await toggleHidden(article); };
+    const onCarousel = async () => { closeMobileActionBar(); await pinToCarousel(article); };
+    const onFolder = async () => { closeMobileActionBar(); await assignExtraFolder(article); };
+    const onDelete = async () => { closeMobileActionBar(); await deleteArticle(article.id); };
+    const onBackdrop = () => closeMobileActionBar();
+
+    mabVisibility.addEventListener('click', onVisibility);
+    mabCarousel.addEventListener('click', onCarousel);
+    mabFolder.addEventListener('click', onFolder);
+    mabDelete.addEventListener('click', onDelete);
+    mobileBackdrop.addEventListener('click', onBackdrop);
+
+    _mabCleanup = () => {
+        mabVisibility.removeEventListener('click', onVisibility);
+        mabCarousel.removeEventListener('click', onCarousel);
+        mabFolder.removeEventListener('click', onFolder);
+        mabDelete.removeEventListener('click', onDelete);
+        mobileBackdrop.removeEventListener('click', onBackdrop);
+    };
+
+    mobileBackdrop.classList.add('open');
+    mobileActionBar.classList.add('open');
+}
+
+function closeMobileActionBar() {
+    if (!mobileActionBar) return;
+    mobileActionBar.classList.remove('open');
+    mobileBackdrop.classList.remove('open');
+    if (_mabCleanup) { _mabCleanup(); _mabCleanup = null; }
+}
+
+// ============================================================
 // TOAST
 // ============================================================
 function showToast(msg, isError = false) {
@@ -58,8 +117,7 @@ function showToast(msg, isError = false) {
 // ============================================================
 function isMobile() { return window.innerWidth < 1024; }
 
-function setMobileTab(tab) {
-    if (!isMobile()) return;
+function _applyMobileTabUI(tab) {
     mainWorkspace.dataset.active = tab;
     if (!tabFolders || !tabArticles) return;
     const onFolders = tab === 'folders';
@@ -73,8 +131,30 @@ function setMobileTab(tab) {
     tabArticles.classList.toggle('border-transparent', onFolders);
 }
 
+function setMobileTab(tab) {
+    if (!isMobile()) return;
+    _applyMobileTabUI(tab);
+    // Push a history entry so swipe-back returns to the previous tab
+    history.pushState({ matrixTab: tab }, '');
+}
+
+// Intercept swipe-back: navigate to the other tab instead of leaving the page
+window.addEventListener('popstate', (e) => {
+    if (!isMobile()) return;
+    const tab = e.state?.matrixTab;
+    if (tab) {
+        // Only update the UI — do NOT push another state (that would loop)
+        _applyMobileTabUI(tab);
+    }
+    // No matrixTab in state = genuine back navigation, let browser proceed
+});
+
+// Anchor the page entry so the very first swipe-back stays within the page
+history.replaceState({ matrixTab: 'folders' }, '');
+
 if (tabFolders) tabFolders.addEventListener('click', () => setMobileTab('folders'));
 if (tabArticles) tabArticles.addEventListener('click', () => setMobileTab('articles'));
+
 
 // ============================================================
 // MODAL SYSTEM
@@ -383,7 +463,7 @@ function renderFolders() {
             head.innerHTML = `
                 <div class="flex items-center justify-between px-1">
                     <h3 class="text-[9px] ${s.hidden ? 'text-matrix-muted line-through' : 'text-matrix-green/70'} font-bold tracking-[0.4em] uppercase">${s.category_label || 'UNCATEGORIZED'}${s.hidden ? ' [HIDDEN]' : ''}</h3>
-                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="flex gap-2 folder-actions-group opacity-0 group-hover:opacity-100 transition-opacity">
                         <button class="btn-hide-folder text-[8px] font-bold ${s.hidden ? 'text-yellow-400 hover:text-yellow-300' : 'text-matrix-green/50 hover:text-yellow-400'}">[${s.hidden ? 'SHOW' : 'H'}]</button>
                         <button class="btn-edit-folder text-[8px] text-matrix-green/50 hover:text-matrix-green font-bold">[E]</button>
                         <button class="btn-del-folder  text-[8px] text-matrix-green/50 hover:text-red-500 font-bold">[D]</button>
@@ -407,7 +487,7 @@ function renderFolders() {
                 pin.innerHTML = `
                     <span class="text-[10px] opacity-60 shrink-0">📄</span>
                     <span class="min-w-0 flex-1 font-bold tracking-wide text-[11px] truncate italic">${pinned ? pinned.title : '[MISSING ARTICLE]'}</span>
-                    <div class="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="flex gap-1.5 shrink-0 folder-actions-group opacity-0 group-hover:opacity-100 transition-opacity">
                         <button class="btn-del-pin text-[8px] font-bold text-matrix-green/50 hover:text-red-500">[D]</button>
                     </div>`;
                 pin.querySelector('.btn-del-pin').addEventListener('click', async e => {
@@ -452,7 +532,7 @@ function renderFolders() {
                 <span class="text-[10px] opacity-50 shrink-0">📁</span>
                 <span class="min-w-0 flex-1 uppercase font-bold tracking-wide text-xs truncate ${s.hidden ? 'line-through' : ''}" style="${isActive ? 'color:#000' : ''}">${s.title}${s.hidden ? ' [HIDDEN]' : ''}${s.splash_article_id ? ' <span title="Has splash page" style="opacity:0.7">🎯</span>' : ''}</span>
                 <span class="text-[9px] font-bold shrink-0 ml-auto" style="${isActive ? 'color:rgba(0,0,0,0.5)' : 'color:#6b7280'}">(${count})</span>
-                <div class="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="flex gap-1.5 shrink-0 folder-actions-group opacity-0 group-hover:opacity-100 transition-opacity">
                     <button class="btn-splash-folder text-[8px] font-bold" style="color:${s.splash_article_id ? '#22d3ee' : 'rgba(167,139,250,0.6)'}" title="${s.splash_article_id ? 'Change splash page' : 'Assign splash page'}">[${s.splash_article_id ? 'S✓' : 'S'}]</button>
                     <button class="btn-hide-folder text-[8px] font-bold" style="color:${s.hidden ? '#facc15' : 'rgba(167,139,250,0.6)'}">[${s.hidden ? 'SHOW' : 'H'}]</button>
                     <button class="btn-move-folder text-[8px] font-bold" style="color:rgba(167,139,250,0.6);" title="Move to a different heading">[M]</button>
@@ -640,11 +720,16 @@ function renderArticles(folderId) {
             e.stopPropagation();
 
             if (action === 'toggle-tray') {
-                const tray = el.querySelector('.article-actions');
-                const isOpen = tray.classList.contains('open');
-                // Close others first
-                articlesContainer.querySelectorAll('.article-actions.open').forEach(t => t.classList.remove('open'));
-                if (!isOpen) tray.classList.add('open');
+                if (isMobile()) {
+                    // Mobile: open bottom-sheet
+                    openMobileActionBar(a);
+                } else {
+                    // Desktop: absolute dropdown
+                    const tray = el.querySelector('.article-actions');
+                    const isOpen = tray.classList.contains('open');
+                    articlesContainer.querySelectorAll('.article-actions.open').forEach(t => t.classList.remove('open'));
+                    if (!isOpen) tray.classList.add('open');
+                }
                 return;
             }
             if (action === 'color') { await cycleColorTag(a); return; }
