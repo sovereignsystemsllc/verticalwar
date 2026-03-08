@@ -554,6 +554,16 @@ window.openArticle = function (id, skipState = false) {
 
   articleContent.innerHTML = article.content_html || "<i>[EMPTY PAYLOAD]</i>";
 
+  // Reader actions + comments
+  const readerActions = document.getElementById('reader-actions');
+  const readerComments = document.getElementById('reader-comments');
+  const readerDirectLink = document.getElementById('reader-direct-link');
+  const readerCommentsLink = document.getElementById('reader-comments-link');
+  if (readerActions) readerActions.classList.remove('hidden');
+  if (readerComments) readerComments.classList.remove('hidden');
+  if (readerDirectLink) readerDirectLink.href = `/post/?id=${article.id}`;
+  if (readerCommentsLink) readerCommentsLink.href = `/post/?id=${article.id}`;
+
   // VISUAL ACTIVE STATE (Monk Fix)
   document.querySelectorAll('#doc-list button').forEach(btn => {
     btn.classList.remove('bg-[#a78bfa]/10', 'border-[#a78bfa]');
@@ -609,6 +619,10 @@ window.openArticle = function (id, skipState = false) {
 
   // RESET SCROLL TO TOP
   setTimeout(() => { htmlFrame.scrollTop = 0; }, 10);
+
+  // Load bookmark state + comments async (don't block render)
+  loadReaderBookmarkState(id);
+  loadReaderComments(id);
 };
 
 window.closeArticle = function (skipState = false) {
@@ -620,8 +634,13 @@ window.closeArticle = function (skipState = false) {
 
   placeholderMsg.classList.remove('hidden');
   htmlFrame.classList.add('hidden');
-  // Closed
   btnCloseDoc.classList.add('hidden');
+
+  // Hide reader sections
+  const readerActions = document.getElementById('reader-actions');
+  const readerComments = document.getElementById('reader-comments');
+  if (readerActions) readerActions.classList.add('hidden');
+  if (readerComments) readerComments.classList.add('hidden');
 
   infoPanelTitle.innerText = "AWAITING SELECTION...";
   infoLinkContainer.classList.add('hidden');
@@ -732,6 +751,118 @@ function setupEventListeners() {
     }
   });
 }
+
+// ==========================================
+// READER: BOOKMARK + COMMENTS
+// ==========================================
+
+async function loadReaderBookmarkState(articleId) {
+  const btn = document.getElementById('reader-bookmark-btn');
+  const icon = document.getElementById('reader-bookmark-icon');
+  if (!btn) return;
+
+  if (!currentUser) {
+    btn.classList.add('hidden');
+    return;
+  }
+  btn.classList.remove('hidden');
+  btn.dataset.articleId = articleId;
+
+  const { data } = await supabase
+    .from('bookmarks')
+    .select('id')
+    .eq('user_id', currentUser.id)
+    .eq('article_id', articleId)
+    .maybeSingle();
+
+  if (data) {
+    icon.textContent = '★';
+    btn.classList.add('text-[#a78bfa]', 'border-[#a78bfa]/70');
+    btn.classList.remove('text-[#a78bfa]/60');
+  } else {
+    icon.textContent = '☆';
+    btn.classList.remove('text-[#a78bfa]', 'border-[#a78bfa]/70');
+    btn.classList.add('text-[#a78bfa]/60');
+  }
+}
+
+window.toggleReaderBookmark = async function () {
+  if (!currentUser || !activeArticleId) return;
+  const icon = document.getElementById('reader-bookmark-icon');
+  const btn = document.getElementById('reader-bookmark-btn');
+  const alreadySaved = icon && icon.textContent === '★';
+
+  if (alreadySaved) {
+    await supabase.from('bookmarks').delete()
+      .eq('user_id', currentUser.id).eq('article_id', activeArticleId);
+  } else {
+    await supabase.from('bookmarks').upsert(
+      { user_id: currentUser.id, article_id: activeArticleId },
+      { onConflict: 'user_id,article_id' }
+    );
+  }
+  loadReaderBookmarkState(activeArticleId);
+};
+
+async function loadReaderComments(articleId) {
+  const list = document.getElementById('reader-comments-list');
+  const inputEl = document.getElementById('reader-comment-input');
+  const loginPrompt = document.getElementById('reader-comment-login-prompt');
+  if (!list) return;
+
+  list.innerHTML = '<p class="text-[9px] text-[#a78bfa]/30 animate-pulse tracking-widest">LOADING...</p>';
+
+  const { data: comments } = await supabase
+    .from('comments')
+    .select('content, created_at, profiles(display_name, username)')
+    .eq('article_id', articleId)
+    .order('created_at', { ascending: false })
+    .limit(2);
+
+  if (!comments || comments.length === 0) {
+    list.innerHTML = '<p class="text-[9px] text-[#a78bfa]/20 tracking-widest italic">No signals yet.</p>';
+  } else {
+    list.innerHTML = comments.map(c => {
+      const name = c.profiles?.display_name || c.profiles?.username || 'CITIZEN';
+      const date = new Date(c.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+      return `<div class="border-l-2 border-[#a78bfa]/20 pl-3 py-1">
+        <p class="text-[9px] text-[#a78bfa]/50 tracking-widest mb-1">${name.toUpperCase()} · ${date}</p>
+        <p class="text-xs text-white/70 leading-relaxed">${c.content}</p>
+      </div>`;
+    }).join('');
+  }
+
+  if (inputEl && loginPrompt) {
+    if (currentUser) {
+      inputEl.classList.remove('hidden');
+      loginPrompt.classList.add('hidden');
+    } else {
+      inputEl.classList.add('hidden');
+      loginPrompt.classList.remove('hidden');
+    }
+  }
+  // Store for submit
+  if (inputEl) inputEl.dataset.articleId = articleId;
+}
+
+window.submitReaderComment = async function () {
+  if (!currentUser || !activeArticleId) return;
+  const textarea = document.getElementById('reader-comment-text');
+  const submit = document.getElementById('reader-comment-submit');
+  if (!textarea) return;
+  const content = textarea.value.trim();
+  if (!content) return;
+
+  submit.textContent = '[ SENDING... ]';
+  submit.disabled = true;
+  const { error } = await supabase.from('comments').insert({ user_id: currentUser.id, article_id: activeArticleId, content });
+  if (!error) {
+    textarea.value = '';
+    loadReaderComments(activeArticleId);
+  }
+  submit.textContent = '[ POST ]';
+  submit.disabled = false;
+};
 
 window.onload = init;
 

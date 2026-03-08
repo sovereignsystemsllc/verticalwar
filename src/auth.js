@@ -235,5 +235,10 @@ function updateAuthUI() {
     document.querySelectorAll('#btn-sidebar-register, #btn-nav-register').forEach(el => {
         el.classList.toggle('hidden', !!currentUser);
     });
+
+    // Show admin matrix links for SOVEREIGN on every page
+    document.querySelectorAll('#link-matrix-admin').forEach(el => {
+        el.classList.toggle('hidden', currentRole !== 'SOVEREIGN');
+    });
 }
 

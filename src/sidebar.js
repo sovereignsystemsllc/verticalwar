@@ -1,5 +1,5 @@
 ﻿// sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
-import { initAuth } from './auth.js';
+import { initAuth, currentRole, setAuthChangeCallback } from './auth.js';
 
 // ============================================================
 // NAV CONFIG â€” Add new public pages here, not buried in HTML

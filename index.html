@@ -169,20 +169,55 @@
           </div>
 
           <!-- MOBILE DIRECTORY BRIDGE -->
-          <button id="btn-open-directory"
-            class="md:hidden mt-8 border border-[#a78bfa] bg-[#a78bfa]/10 text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-4 px-8 transition-all text-[10px] w-full shadow-[0_0_15px_rgba(167,139,250,0.2)]">
-            [ ACCESS CODEX DIRECTORY ]
-          </button>
+          <div class="md:hidden mt-8 w-full flex flex-col items-center gap-2">
+            <button id="btn-open-directory"
+              class="border-2 border-[#a78bfa] bg-[#a78bfa]/15 text-white hover:bg-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-5 px-8 transition-all text-sm w-full shadow-[0_0_25px_rgba(167,139,250,0.35)] hover:shadow-[0_0_35px_rgba(167,139,250,0.6)] animate-pulse hover:animate-none">
+              ↓ READ THE ARTICLES
+            </button>
+            <p class="text-[10px] text-[#a78bfa]/50 tracking-widest uppercase">Browse all articles, archives &amp;
+              doctrine</p>
+          </div>
         </div>
 
         <!-- HTML READER FRAME -->
         <div id="html-frame"
           class="w-full h-full hidden overflow-y-auto bg-[#0a0a0a] px-6 py-12 md:p-16 custom-scrollbar text-white reader-text border-l border-[#a78bfa]/20">
-          <div id="article-header" class="mb-8 border-b border-[#a78bfa]/30 pb-6">
+          <div id="article-header" class="mb-6 border-b border-[#a78bfa]/30 pb-6">
             <h1 id="article-display-title" class="text-3xl lg:text-5xl text-white font-mono font-bold mb-2"></h1>
             <h2 id="article-display-subtitle" class="text-xl text-[#a78bfa]/80 font-mono mt-2 hidden"></h2>
           </div>
+          <!-- READER ACTIONS: bookmark + direct link (top of article) -->
+          <div id="reader-actions" class="hidden mb-8 flex flex-wrap items-center gap-3">
+            <button id="reader-bookmark-btn"
+              class="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-4 py-2 transition-colors"
+              onclick="window.toggleReaderBookmark()">
+              <span id="reader-bookmark-icon">☆</span> SAVE TO READING LIST
+            </button>
+            <a id="reader-direct-link" href="#" target="_blank"
+              class="text-[10px] font-bold tracking-widest uppercase border border-[#a78bfa]/20 text-[#a78bfa]/40 hover:text-[#a78bfa] hover:border-[#a78bfa]/60 px-4 py-2 transition-colors">
+              ↗ DIRECT LINK
+            </a>
+          </div>
           <div id="article-content" class="space-y-6"></div>
+          <!-- READER COMMENTS: latest 2, link to full thread -->
+          <div id="reader-comments" class="hidden mt-16 pt-8 border-t border-[#a78bfa]/20 max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-[10px] font-bold text-[#a78bfa]/50 tracking-widest uppercase">// SIGNAL FEED</span>
+              <a id="reader-comments-link" href="#" target="_blank"
+                class="text-[9px] font-bold text-[#a78bfa]/40 hover:text-[#a78bfa] tracking-widest uppercase transition-colors">VIEW
+                ALL →</a>
+            </div>
+            <div id="reader-comments-list" class="space-y-4 mb-6"></div>
+            <div id="reader-comment-input" class="hidden flex flex-col gap-2">
+              <textarea id="reader-comment-text" rows="2" placeholder="TRANSMIT A SIGNAL..."
+                class="w-full bg-transparent border border-[#a78bfa]/30 text-xs text-white focus:outline-none focus:border-[#a78bfa] px-3 py-2 placeholder-[#a78bfa]/30 font-mono resize-none"></textarea>
+              <button id="reader-comment-submit"
+                class="self-end text-[9px] font-bold tracking-widest uppercase border border-[#a78bfa]/50 text-[#a78bfa] hover:bg-[#a78bfa] hover:text-black px-4 py-2 transition-colors"
+                onclick="window.submitReaderComment()">[ POST ]</button>
+            </div>
+            <p id="reader-comment-login-prompt" class="hidden text-[9px] text-[#a78bfa]/30 tracking-widest italic">Login
+              to join the signal feed.</p>
+          </div>
         </div>
 
 
