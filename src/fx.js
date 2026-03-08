@@ -20,8 +20,8 @@ let glowIdx = 0;
 function initCursorGlow() {
     const isTouch = window.matchMedia('(hover: none)').matches || ('ontouchstart' in window);
     const baseSize = isTouch ? 8 : 20;
-    const burstSize = isTouch ? 50 : 160;
-    const midSize = isTouch ? 12 : 60;
+    const burstSize = isTouch ? 50 : 60;
+    const midSize = isTouch ? 12 : 30;
 
     const glow = document.createElement('div');
     glow.id = 'cursor-glow';
