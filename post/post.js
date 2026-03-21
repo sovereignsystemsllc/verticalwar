@@ -187,6 +187,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     articleId = urlParams.get('id');
 
+    // Fallback: Extract UUID from the URL path if we're in /post/UUID/
+    if (!articleId) {
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        if (pathParts[0] === 'post' && pathParts.length > 1) {
+            articleId = pathParts[1];
+        }
+    }
+
     const loadingMsg = document.getElementById('loading-msg');
     const errorMsg = document.getElementById('error-msg');
     const articleContainer = document.getElementById('article-container');

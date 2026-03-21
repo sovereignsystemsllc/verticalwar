@@ -76,7 +76,15 @@ async function init() {
 
   // Handle Initial Deep Link (SPA)
   const urlParams = new URLSearchParams(window.location.search);
-  const requestedId = urlParams.get('id');
+  let requestedId = urlParams.get('id');
+
+  // Fallback to path extraction for /post/UUID/ routing if landed via direct link
+  if (!requestedId) {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    if (pathParts[0] === 'post' && pathParts.length > 1) {
+      requestedId = pathParts[1];
+    }
+  }
 
   await Promise.all([fetchArticles(), fetchSplashSlides()]);
   renderSidebar();
@@ -500,7 +508,7 @@ function slugify(str) {
 
 window.copySeriesLink = function (seriesTitle) {
   const slug = slugify(seriesTitle);
-  const url = `${location.origin}/?series=${slug}`;
+  const url = `${location.origin}/series/${slug}/`;
   navigator.clipboard.writeText(url).then(() => {
     const toast = document.createElement('div');
     toast.textContent = 'LINK COPIED';
@@ -511,7 +519,15 @@ window.copySeriesLink = function (seriesTitle) {
 };
 
 function activateSeriesDeepLink() {
-  const param = new URLSearchParams(location.search).get('series');
+  let param = new URLSearchParams(location.search).get('series');
+  
+  if (!param) {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      if (pathParts[0] === 'series' && pathParts.length > 1) {
+          param = pathParts[1];
+      }
+  }
+  
   if (!param) return;
   globalSeries.forEach((s, i) => {
     if (slugify(s.title) === param) {
@@ -527,7 +543,7 @@ function activateSeriesDeepLink() {
   });
 }
 
-window.openArticle = function (id, skipState = false) {
+window.openArticle = async function (id, skipState = false) {
   activeArticleId = id;
   const article = globalArticles.find(a => a.id === id);
   if (!article) return;
@@ -552,11 +568,23 @@ window.openArticle = function (id, skipState = false) {
     articleSubtitleDisplay.classList.add('hidden');
   }
 
+  // --- LAZY LOAD CORE PAYLOAD ---
+  articleContent.innerHTML = '<div class="text-[#a78bfa] text-xs font-bold tracking-[0.2em] animate-pulse py-12 text-center">[ ESTABLISHING SECURE CONNECTION... DECRYPTING PAYLOAD ]</div>';
+  
+  const { data: fullArticle, error } = await supabase
+    .from('articles')
+    .select('content_html, video_url')
+    .eq('id', id)
+    .single();
+
+  const content_html = (!error && fullArticle) ? fullArticle.content_html : "<p class='text-red-500'>[ ERROR: PAYLOAD DECRYPTION FAILED ]</p>";
+  const video_url = (!error && fullArticle) ? fullArticle.video_url : null;
+
   // Handle Video Embed
   const videoContainer = document.getElementById('video-embed-container');
   const videoIframe = document.getElementById('video-iframe');
   if (videoContainer && videoIframe) {
-      const embedSrc = resolveEmbedUrl(article.video_url);
+      const embedSrc = resolveEmbedUrl(video_url);
       if (embedSrc) {
           videoIframe.src = embedSrc;
           videoContainer.classList.remove('hidden');
@@ -566,7 +594,7 @@ window.openArticle = function (id, skipState = false) {
       }
   }
 
-  articleContent.innerHTML = article.content_html || "<i>[EMPTY PAYLOAD]</i>";
+  articleContent.innerHTML = content_html || "<i>[EMPTY PAYLOAD]</i>";
 
   // Reader actions + comments
   const readerActions = document.getElementById('reader-actions');
@@ -575,8 +603,8 @@ window.openArticle = function (id, skipState = false) {
   const readerCommentsLink = document.getElementById('reader-comments-link');
   if (readerActions) readerActions.classList.remove('hidden');
   if (readerComments) readerComments.classList.remove('hidden');
-  if (readerDirectLink) readerDirectLink.href = `/post/?id=${article.id}`;
-  if (readerCommentsLink) readerCommentsLink.href = `/post/?id=${article.id}`;
+  if (readerDirectLink) readerDirectLink.href = `/post/${article.id}/`;
+  if (readerCommentsLink) readerCommentsLink.href = `/post/${article.id}/#comment-section`;
 
   // VISUAL ACTIVE STATE (Monk Fix)
   document.querySelectorAll('#doc-list button').forEach(btn => {
@@ -610,12 +638,12 @@ window.openArticle = function (id, skipState = false) {
   // Set the Direct Link to the public V4 routing format
   const directLinkBtn = document.getElementById('info-link');
   if (directLinkBtn) {
-    directLinkBtn.href = `/post/?id=${article.id}`;
+    directLinkBtn.href = `/post/${article.id}/`;
   }
 
   const mobileLinkBtn = document.getElementById('mobile-info-link');
   if (mobileLinkBtn) {
-    mobileLinkBtn.href = `/post/?id=${article.id}`;
+    mobileLinkBtn.href = `/post/${article.id}/`;
     mobileLinkBtn.classList.remove('hidden');
   }
 
