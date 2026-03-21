@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -63,6 +63,12 @@
             background: rgba(34, 211, 238, 0.12);
             color: #22d3ee;
             border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        .badge-register {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         /* Profile overlay */
@@ -148,22 +154,22 @@
 
         <!-- LEFT: USER LIST -->
         <section id="panel-users"
-            class="w-full lg:w-[340px] flex flex-col border-b lg:border-b-0 lg:border-r border-matrix-border bg-matrix-panel/30 shrink-0">
-            <header class="p-3 border-b border-matrix-border bg-matrix-bg shrink-0">
+            class="w-full lg:w-[420px] flex flex-col border-b lg:border-b-0 lg:border-r border-matrix-border bg-matrix-panel/30 shrink-0">
+            <header class="p-4 border-b border-matrix-border bg-matrix-bg shrink-0">
                 <h2 class="text-xs font-bold text-[#22d3ee] tracking-widest uppercase mb-2">Registered Citizens</h2>
                 <input type="search" id="user-search" placeholder="SEARCH NAME / EMAIL..." autocomplete="off"
                     spellcheck="false"
                     class="w-full bg-transparent border-b border-[#22d3ee]/40 text-xs text-white focus:outline-none focus:border-[#22d3ee] px-1 py-1 placeholder-[#22d3ee]/30 font-mono tracking-widest uppercase transition-colors">
             </header>
-            <div id="users-container" class="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+            <div id="users-container" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
                 <p class="text-[10px] text-matrix-muted animate-pulse tracking-widest p-4">LOADING REGISTRY...</p>
             </div>
         </section>
 
         <!-- RIGHT: ACTIVITY FEED -->
         <section id="panel-activity" class="w-full flex flex-col bg-matrix-bg">
-            <header class="p-3 border-b border-matrix-border bg-matrix-bg shrink-0">
-                <div class="flex items-center justify-between mb-2">
+            <header class="p-4 border-b border-matrix-border bg-matrix-bg shrink-0">
+                <div class="flex items-center justify-between mb-3">
                     <h2 id="activity-title" class="text-xs font-bold text-white tracking-[0.2em] uppercase">ALL ACTIVITY
                     </h2>
                     <button id="btn-clear-filter"
@@ -182,7 +188,7 @@
                         data-tab="read">READS</button>
                 </div>
             </header>
-            <div id="activity-container" class="flex-1 overflow-y-auto custom-scrollbar px-3 pt-2 pb-6">
+            <div id="activity-container" class="flex-1 overflow-y-auto custom-scrollbar px-5 pt-4 pb-8">
                 <p class="text-[10px] text-matrix-muted animate-pulse tracking-widest p-4">LOADING FEED...</p>
             </div>
         </section>

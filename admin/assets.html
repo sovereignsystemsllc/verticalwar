@@ -1,242 +1,169 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOVEREIGN OS // ASSET LIBRARY</title>
+    <!-- PURE V4 STACK -->
+    <link rel="stylesheet" href="/src/style.css">
     <style>
         body {
-            background-color: #05010a;
-            color: #e0e0e0;
-            cursor: crosshair;
-        }
-
-        .glass-panel {
-            background: rgba(5, 5, 10, 0.9);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
-        }
-
-        .asset-card {
-            background: rgba(5, 5, 10, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            transition: border-color 0.2s, box-shadow 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .asset-card:hover {
-            border-color: rgba(59, 130, 246, 0.8);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
-        }
-
-        .asset-card .actions {
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .asset-card:hover .actions {
-            opacity: 1;
-        }
-
-        @media (max-width: 1023px) {
-            .asset-card .actions {
-                opacity: 1;
-            }
-
-            .asset-card .actions .btn-ghost,
-            .asset-card .actions .btn-red {
-                min-height: 36px;
-                padding: 6px 10px;
-            }
+            background-color: #050505;
+            background-image: radial-gradient(circle at top right, rgba(59,130,246,0.05) 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(59,130,246,0.03) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
         .dragover {
-            background: rgba(59, 130, 246, 0.08);
-            border: 2px dashed #3b82f6 !important;
+            border-color: rgba(59, 130, 246, 0.8) !important;
+            background-color: rgba(59, 130, 246, 0.05) !important;
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
         }
 
-        /* Scanline overlay — CRT Rika Aesthetic */
-        .scanline-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(0, 0, 0, 0.03) 2px,
-                    rgba(0, 0, 0, 0.03) 4px);
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #05010a;
-            border-left: 1px solid rgba(59, 130, 246, 0.1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #fff;
-        }
-
-        .btn-ghost {
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #3b82f6;
-            font-size: 10px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            font-weight: 700;
-            font-family: monospace;
-            background: transparent;
-            cursor: crosshair;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .btn-ghost:hover {
-            background: rgba(59, 130, 246, 0.15);
-            color: #fff;
-        }
-
-        .btn-red {
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #ef4444;
-            font-size: 10px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            font-weight: 700;
-            font-family: monospace;
-            background: transparent;
-            cursor: crosshair;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .btn-red:hover {
-            background: rgba(239, 68, 68, 0.15);
-            color: #fff;
-        }
-
-        #toast {
-            transition: opacity 0.3s;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.3); }
+        
+        #toast { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
 
-<body class="min-h-screen font-mono flex flex-col">
-    <!-- CRT SCANLINE -->
-    <div class="scanline-overlay"></div>
+<body class="min-h-screen p-6 md:p-12 font-sans selection:bg-blue-500/30 selection:text-white flex flex-col items-center">
 
-    <!-- HEADER NAV -->
-    <nav
-        class="w-full h-16 border-b border-blue-500/20 px-6 flex justify-between items-center bg-[#05010a]/90 z-50 shrink-0">
-        <div class="flex items-center gap-4">
-            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-            <span class="text-sm font-bold text-blue-500 tracking-widest uppercase">ASSET LIBRARY // SOVEREIGN
-                VAULT</span>
+    <!-- Header -->
+    <div class="w-full max-w-7xl mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-white/5 pb-6 gap-6">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Asset Library
+            </h1>
+            <p class="text-gray-400 text-sm mt-2 font-medium">Sovereign Vault Storage &middot; <span class="text-blue-400 font-semibold tracking-wide">/article_assets</span></p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="/admin/index.html"
-                class="text-[10px] font-bold text-matrix-muted hover:text-white tracking-widest border border-matrix-border px-3 py-2 hover:bg-white/5 transition-colors uppercase">
-                [ GATEWAY ]
+        <div class="flex gap-4">
+            <a href="/admin/index.html" class="flex items-center gap-2 text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 border border-white/10 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl backdrop-blur-md shadow-sm">
+                Gateway
             </a>
-            <a href="/admin/upload.html"
-                class="text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 tracking-widest border border-yellow-500/20 px-3 py-2 hover:bg-yellow-500/5 transition-colors uppercase">
-                [ INGESTION ENGINE ]
+            <a href="/admin/upload.html" class="flex items-center gap-2 text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 border border-white/10 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl backdrop-blur-md shadow-sm">
+                Ingestion
             </a>
         </div>
-    </nav>
-
-    <!-- AUTH LOCK OVERLAY -->
-    <div id="auth-lock"
-        class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
-        <span class="text-red-500 text-5xl mb-6">🔒</span>
-        <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
-            CLEARANCE...</p>
-        <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
-        </p>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full flex flex-col gap-8">
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="flex-1 w-full max-w-7xl flex flex-col gap-10">
 
-        <!-- PAGE HEADER -->
-        <header class="border-b border-blue-500/20 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">Asset Library</h1>
-                <p class="text-matrix-muted text-xs tracking-widest uppercase mt-2">> Visual Grid of All Artifacts in
-                    the <span class="text-blue-400">article_assets</span> Bucket</p>
+        <!-- Header Actions -->
+        <div class="flex flex-col sm:flex-row justify-between items-center bg-[#0a0a0c] border border-white/5 rounded-2xl p-5 shadow-lg gap-4">
+            <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto flex-1">
+                <div class="flex items-center gap-3 bg-white/5 px-4 py-2.5 rounded-xl border border-white/5 min-w-[155px] justify-center shadow-inner">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                    <span id="asset-count" class="text-xs text-blue-300 font-bold tracking-widest uppercase">LOADING...</span>
+                </div>
+                <!-- Search Bar -->
+                <div class="relative w-full sm:max-w-md">
+                    <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Search Vault by Filename..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/60 transition-all shadow-inner">
+                </div>
             </div>
-            <div class="flex items-center gap-4">
-                <span id="asset-count" class="text-[10px] text-blue-500/60 tracking-widest uppercase">LOADING...</span>
-                <button id="refresh-btn" class="btn-ghost">[ REFRESH ]</button>
-            </div>
-        </header>
+            <button id="refresh-btn" class="w-full sm:w-auto text-xs font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 px-5 py-2.5 rounded-xl transition-all duration-300 shadow-inner active:scale-95 flex items-center justify-center gap-2 shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Force Sync
+            </button>
+        </div>
 
         <!-- UPLOAD DROP ZONE -->
         <div id="drop-zone"
-            class="glass-panel w-full h-44 flex flex-col items-center justify-center transition-all relative">
-            <span class="text-3xl mb-3 text-blue-400">📤</span>
-            <p class="text-sm tracking-[0.2em] font-bold uppercase text-white pointer-events-none">DROP FILES TO UPLOAD
-            </p>
-            <p class="text-xs text-blue-400/60 mt-1 mb-4 pointer-events-none tracking-wider">PNG, JPG, WEBP, GIF — Max
-                10MB each</p>
+            class="w-full h-56 bg-[#0a0a0c] border border-white/5 rounded-3xl flex flex-col items-center justify-center transition-all duration-500 relative group cursor-pointer hover:bg-white/[0.02] hover:border-blue-500/30 shadow-xl overflow-hidden">
+            
+            <!-- Security Lock Overlay -->
+            <div id="auth-lock" class="absolute inset-0 bg-[#050505]/95 border border-red-500/20 rounded-3xl z-20 flex flex-col items-center justify-center text-center p-8 backdrop-blur-xl transition-opacity duration-300">
+                <svg class="w-12 h-12 text-red-500 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <p class="text-red-400 font-bold tracking-wide text-lg mb-1" id="auth-status-title">Verifying Clearance</p>
+                <p class="text-red-500/60 text-sm font-medium" id="auth-status-detail">Syncing secure database token...</p>
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-500 ease-out shadow-lg">
+                <svg class="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+            </div>
+            
+            <p class="text-xl font-bold text-gray-200 pointer-events-none z-10 tracking-tight">Deploy Artifacts to Library</p>
+            <p class="text-sm text-gray-500 mt-2 pointer-events-none z-10 font-medium max-w-sm text-center">Batch drop images (PNG, JPG, WEBP, SVG). Click area to browse manually.</p>
+
             <input type="file" id="file-input" multiple accept="image/*" class="hidden">
-            <button id="browse-btn" class="btn-ghost relative z-10">[ OR BROWSE FILES ]</button>
-            <div id="upload-progress" class="absolute bottom-0 left-0 h-1 bg-blue-500 transition-all duration-300"
-                style="width: 0%;"></div>
+            <button id="browse-btn" class="hidden relative z-10">Browse</button> 
+
+            <!-- Progress Bar -->
+            <div id="upload-progress" class="absolute bottom-0 left-0 h-1.5 bg-blue-500 transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.8)] rounded-b-3xl" style="width: 0%;"></div>
         </div>
 
         <!-- UPLOAD LOG (mini) -->
-        <div id="upload-log-wrap" class="hidden glass-panel p-4 text-xs space-y-1 max-h-32 overflow-y-auto">
-            <p class="text-[10px] text-blue-500/50 tracking-widest uppercase border-b border-blue-500/20 pb-2 mb-2">
-                UPLOAD LOG</p>
-            <ul id="upload-log"></ul>
+        <div id="upload-log-wrap" class="hidden w-full bg-[#0a0a0c] border border-white/5 rounded-3xl p-6 shadow-xl max-h-56 overflow-y-auto">
+            <div class="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <p class="text-sm font-bold text-gray-200 tracking-wide">Sync Stream</p>
+            </div>
+            <ul id="upload-log" class="text-sm space-y-3 font-mono"></ul>
         </div>
 
-        <!-- ASSET GRID -->
-        <section>
-            <div class="flex items-center justify-between mb-4">
-                <h2
-                    class="text-xs font-bold text-blue-400 tracking-widest uppercase border-b border-blue-500/20 pb-2 w-full">
-                    Stored Artifacts</h2>
-            </div>
+        <!-- ASSET GRID SECTION -->
+        <section class="mt-2 w-full max-w-7xl flex flex-col relative min-h-[400px]">
             <!-- Empty state -->
-            <div id="empty-state" class="hidden text-center py-20 text-matrix-muted text-xs tracking-widest uppercase">
-                <p class="text-4xl mb-4 opacity-30">📁</p>
-                <p>> No artifacts found in the bucket.</p>
-                <p class="opacity-50 mt-1">Upload your first asset above to deploy it.</p>
+            <div id="empty-state" class="hidden w-full bg-[#0a0a0c] border border-white/5 rounded-3xl p-24 flex flex-col items-center justify-center text-center shadow-lg my-12">
+                <svg class="w-24 h-24 text-blue-500/20 mb-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="text-2xl font-bold text-gray-300">Vault Empty</p>
+                <p class="text-gray-500 text-sm mt-3 font-medium">No artifacts found in the storage bucket. Drop files above to populate your gallery.</p>
             </div>
+            
             <!-- Grid -->
-            <div id="asset-grid"
-                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div id="asset-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 w-full mb-8">
                 <!-- Cards injected by JS -->
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="flex items-center justify-between bg-[#0a0a0c] border border-white/5 rounded-2xl p-4 mt-auto shadow-lg w-full">
+                <button id="prev-page-btn" disabled class="px-5 py-2.5 text-xs font-bold tracking-widest uppercase rounded-xl transition-all duration-300 border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-30 disabled:cursor-not-allowed">
+                    ← Prev
+                </button>
+                <div class="text-xs text-gray-400 font-semibold tracking-widest uppercase">
+                    Page <span id="current-page-display" class="text-white font-bold text-sm">1</span>
+                </div>
+                <button id="next-page-btn" disabled class="px-5 py-2.5 text-xs font-bold tracking-widest uppercase rounded-xl transition-all duration-300 border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 hover:border-blue-500/30 disabled:opacity-30 disabled:cursor-not-allowed">
+                    Next →
+                </button>
             </div>
         </section>
 
     </main>
 
     <!-- GLOBAL FOOTER -->
-    <footer class="w-full border-t border-blue-500/10 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
-        <p class="text-[9px] text-blue-500/30 tracking-[0.3em] uppercase font-mono">
-            SOVEREIGN SYSTEM V4.0 // ASSET LIBRARY // END OF TRANSMISSION
+    <footer class="w-full text-center py-12 shrink-0 z-40 relative mt-auto opacity-50 hover:opacity-100 transition-opacity">
+        <p class="text-xs text-gray-500 font-medium">
+            Sovereign OS v4.0 &middot; Asset Library
         </p>
     </footer>
 
     <!-- TOAST NOTIFICATION -->
-    <div id="toast"
-        class="fixed bottom-6 right-6 z-50 hidden bg-blue-600 text-white text-xs font-bold tracking-widest uppercase px-5 py-3 border border-blue-400 opacity-0">
+    <div id="toast" class="fixed bottom-8 right-8 z-50 hidden rounded-xl px-6 py-4 border shadow-2xl backdrop-blur-xl opacity-0 text-sm font-semibold text-white pointer-events-none flex items-center gap-3">
         <span id="toast-msg"></span>
     </div>
 

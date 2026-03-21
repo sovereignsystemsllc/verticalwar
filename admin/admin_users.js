@@ -135,7 +135,7 @@ function renderUsers() {
 
     filtered.forEach(u => {
         const el = document.createElement('div');
-        el.className = `user-row flex items-center gap-3 p-2.5 border border-transparent rounded-sm ${activeUserId === u.id ? 'active' : ''}`;
+        el.className = `user-row flex items-center gap-4 p-3 border border-transparent rounded-sm ${activeUserId === u.id ? 'active' : ''}`;
         el.dataset.userId = u.id;
 
         const joinDate = u.created_at
@@ -144,7 +144,7 @@ function renderUsers() {
 
         el.innerHTML = `
             <!-- AVATAR -->
-            <div class="w-8 h-8 rounded-full border border-[#22d3ee]/30 flex items-center justify-center text-[10px] font-bold text-[#22d3ee] bg-[#22d3ee]/10 shrink-0 overflow-hidden">
+            <div class="w-10 h-10 rounded-full border border-[#22d3ee]/30 flex items-center justify-center text-xs font-bold text-[#22d3ee] bg-[#22d3ee]/10 shrink-0 overflow-hidden">
                 ${u.avatar_url
                 ? `<img src="${u.avatar_url}" alt="" class="w-full h-full object-cover">`
                 : initials(u)
@@ -152,13 +152,13 @@ function renderUsers() {
             </div>
             <!-- INFO -->
             <div class="flex-1 min-w-0">
-                <p class="text-xs font-bold text-white truncate">${u.display_name || u.username || u.email || '[NO NAME]'}</p>
-                <p class="text-[9px] text-matrix-muted truncate">${u.username ? '@' + u.username : (u.email || '')}</p>
+                <p class="text-[13px] font-bold text-white truncate">${u.display_name || u.username || u.email || '[NO NAME]'}</p>
+                <p class="text-[11px] text-matrix-muted truncate mt-0.5">${u.username ? '@' + u.username : (u.email || '')}</p>
             </div>
             <!-- ROLE + DATE -->
-            <div class="flex flex-col items-end gap-1 shrink-0">
-                <span class="text-[8px] font-bold px-1.5 py-0.5 border tracking-widest uppercase ${roleClass(u.role)}">${u.role || 'Observer'}</span>
-                <span class="text-[8px] text-matrix-muted">${joinDate}</span>
+            <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[10px] font-bold px-1.5 py-0.5 border tracking-widest uppercase ${roleClass(u.role)}">${u.role || 'Observer'}</span>
+                <span class="text-[11px] text-matrix-muted">${joinDate}</span>
             </div>`;
 
         el.addEventListener('click', () => {
@@ -267,6 +267,18 @@ async function loadActivity() {
         article_id: a.article_id, article_title: a.articles?.title || '—',
     }));
 
+    // Inject "User Registered" events directly from the loaded profiles
+    if (activeTab === 'all') {
+        allUsers.forEach(u => {
+            if (activeUserId && activeUserId !== u.id) return;
+            events.push({
+                type: 'register', user_id: u.id, created_at: u.created_at,
+                label: 'Citizen Registration',
+                article_id: null, article_title: '—'
+            });
+        });
+    }
+
     // Sort newest first
     events.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
@@ -298,29 +310,29 @@ async function loadActivity() {
             hour: '2-digit', minute: '2-digit',
         });
 
-        const badgeClass = { comment: 'badge-comment', bookmark: 'badge-bookmark', read: 'badge-read' }[ev.type] || 'badge-read';
-        const badgeLabel = { comment: '💬 COMMENT', bookmark: '📌 SAVE', read: '👁 READ' }[ev.type] || ev.type.toUpperCase();
+        const badgeClass = { comment: 'badge-comment', bookmark: 'badge-bookmark', read: 'badge-read', register: 'badge-register' }[ev.type] || 'badge-read';
+        const badgeLabel = { comment: '💬 COMMENT', bookmark: '📌 SAVE', read: '👁 READ', register: '✅ JOINED' }[ev.type] || ev.type.toUpperCase();
 
         const el = document.createElement('div');
-        el.className = 'flex items-start gap-3 py-2.5 border-b border-matrix-border/30 hover:bg-white/[0.02] transition-colors';
+        el.className = 'flex items-start gap-4 py-4 border-b border-matrix-border/30 hover:bg-white/[0.02] transition-colors';
         el.innerHTML = `
             <!-- BADGE -->
-            <div class="pt-0.5 shrink-0">
-                <span class="activity-badge ${badgeClass}">${badgeLabel}</span>
+            <div class="pt-1 shrink-0 w-[100px]">
+                <span class="activity-badge ${badgeClass} w-full justify-center py-1 text-[10px]">${badgeLabel}</span>
             </div>
             <!-- BODY -->
             <div class="flex-1 min-w-0">
-                <p class="text-[10px] text-white/70 font-bold truncate">${name}
-                    <span class="text-matrix-muted font-normal">·</span>
+                <p class="text-xs text-white/80 font-bold truncate leading-relaxed">${name}
+                    <span class="text-matrix-muted font-normal mx-1">·</span>
                     ${ev.article_id
-                ? `<a href="/post/?id=${ev.article_id}" target="_blank" class="text-[#22d3ee]/70 hover:text-[#22d3ee] hover:underline transition-colors">${ev.article_title}</a>`
-                : `<span class="text-matrix-muted italic text-[9px]">${ev.label}</span>`
+                ? `<a href="/post/?id=${ev.article_id}" target="_blank" class="text-[#22d3ee]/80 hover:text-[#22d3ee] hover:underline transition-colors">${ev.article_title}</a>`
+                : `<span class="text-matrix-muted italic font-normal text-xs">${ev.label}</span>`
             }
                 </p>
-                ${ev.type === 'comment' ? `<p class="text-[9px] text-matrix-muted mt-0.5 truncate italic">"${ev.label}"</p>` : ''}
+                ${ev.type === 'comment' ? `<p class="text-[11px] text-matrix-muted mt-1.5 truncate italic">"${ev.label}"</p>` : ''}
             </div>
             <!-- TIME -->
-            <span class="text-[8px] text-matrix-muted shrink-0 pt-0.5 font-mono">${ts}</span>`;
+            <span class="text-xs text-matrix-muted shrink-0 pt-1 font-mono">${ts}</span>`;
 
         // Click to filter by this user
         el.addEventListener('click', () => {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -25,6 +25,12 @@
         .sortable-selected {
             background-color: rgba(167, 139, 250, 0.15) !important;
             border-color: #a78bfa !important;
+        }
+
+        /* Explicit option coloring for Windows default select backgrounds */
+        #modal-select option {
+            background-color: #0d0d0d;
+            color: #a78bfa;
         }
 
         /* ── Custom scrollbar ── */
@@ -54,10 +60,13 @@
         .file-row {
             position: relative;
         }
+        .file-row:has(.article-actions.open) {
+            z-index: 40;
+        }
 
         /* ── Hidden article dim ── */
-        .article-hidden-row {
-            opacity: 0.35;
+        .article-hidden-row > div:not(.article-actions) {
+            opacity: 0.7;
         }
 
         /* ── Color dot ── */
@@ -413,7 +422,7 @@
                     class="text-[10px] font-bold text-matrix-muted hover:text-white transition-colors px-3 py-1.5 border border-transparent hover:border-matrix-border">
                     [ CANCEL ]</button>
                 <button id="modal-btn-confirm"
-                    class="text-[10px] font-bold text-black bg-matrix-green hover:bg-white transition-colors px-4 py-1.5 tracking-widest">
+                    class="text-[10px] font-bold text-black bg-[#a78bfa] hover:bg-white transition-colors px-4 py-1.5 tracking-widest">
                     [ ACCEPT ]</button>
             </div>
         </div>

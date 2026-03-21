@@ -223,7 +223,13 @@ async function loadArticle() {
     }
 
     document.getElementById('selAudience').value = data.audience || 'everyone';
-    document.getElementById('selStatus').value = data.status || 'draft';
+    
+    // Explicitly sync the editor dropdown to the Matrix Database 'hidden' visibility state
+    if (data.hidden !== undefined && data.hidden !== null) {
+        document.getElementById('selStatus').value = data.hidden ? 'draft' : 'published';
+    } else {
+        document.getElementById('selStatus').value = data.status || 'draft';
+    }
 
     // Populate Quill using the direct HTML node
     quill.clipboard.dangerouslyPasteHTML(data.content_html || '');
@@ -248,61 +254,86 @@ async function saveArticle() {
     btnSave.textContent = 'SAVING...';
     btnSave.disabled = true;
 
-    const title = document.getElementById('iptTitle').value.trim();
-    let slug = document.getElementById('iptSlug').value.trim();
+    try {
+        const title = document.getElementById('iptTitle').value.trim();
+        let slug = document.getElementById('iptSlug').value.trim();
 
-    if (!slug && title) {
-        slug = generateSlug(title);
-        document.getElementById('iptSlug').value = slug;
-    }
-
-    const subtitle = document.getElementById('iptSubtitle').value.trim();
-    const thumbnail_url = document.getElementById('iptThumbnail').value.trim();
-    const dateInput = document.getElementById('iptDate').value;
-    const post_date = dateInput ? new Date(dateInput).toISOString() : new Date().toISOString();
-    const audience = document.getElementById('selAudience').value;
-    const status = document.getElementById('selStatus').value;
-
-    // Extract root HTML from Quill
-    const content_html = quill.root.innerHTML;
-
-    const video_url = (document.getElementById('iptVideoUrl')?.value || '').trim() || null;
-
-    const payload = {
-        title,
-        subtitle,
-        slug,
-        thumbnail_url,
-        post_date,
-        audience,
-        status,
-        content_html,
-        video_url,
-    };
-
-    let dbResponse;
-    if (currentArticleId) {
-        // OVERWRITE EXISTING
-        dbResponse = await supabase
-            .from('articles')
-            .update(payload)
-            .eq('id', currentArticleId);
-    } else {
-        // CREATE NEW
-        dbResponse = await supabase
-            .from('articles')
-            .insert([payload])
-            .select();
-
-        // Update URL to active state ID so further saves overwrite rather than duplicate
-        if (dbResponse.data && dbResponse.data.length > 0) {
-            currentArticleId = dbResponse.data[0].id;
-            window.history.replaceState({}, '', `/admin/editor.html?id=${currentArticleId}`);
+        if (!slug && title) {
+            slug = generateSlug(title);
+            document.getElementById('iptSlug').value = slug;
         }
-    }
 
-    if (dbResponse.error) {
-        logTerminal(`${currentArticleId ? 'Overwrite' : 'Injection'} Failed: ${dbResponse.error.message}`, 'ERROR');
+        const subtitle = document.getElementById('iptSubtitle').value.trim();
+        const thumbnail_url = document.getElementById('iptThumbnail').value.trim();
+        const dateInput = document.getElementById('iptDate').value;
+        const post_date = dateInput ? new Date(dateInput).toISOString() : new Date().toISOString();
+        const audience = document.getElementById('selAudience').value;
+        const status = document.getElementById('selStatus').value;
+        const hidden = (status === 'draft');
+
+        // Extract root HTML from Quill
+        const content_html = quill.root.innerHTML;
+
+        const video_url = (document.getElementById('iptVideoUrl')?.value || '').trim() || null;
+
+        const payload = {
+            title,
+            subtitle,
+            slug,
+            thumbnail_url,
+            post_date,
+            audience,
+            status,
+            hidden,
+            content_html,
+            video_url,
+        };
+
+        let dbResponse;
+        if (currentArticleId) {
+            // OVERWRITE EXISTING
+            dbResponse = await supabase
+                .from('articles')
+                .update(payload)
+                .eq('id', currentArticleId);
+        } else {
+            // CREATE NEW
+            dbResponse = await supabase
+                .from('articles')
+                .insert([payload])
+                .select();
+
+            // Update URL to active state ID so further saves overwrite rather than duplicate
+            if (dbResponse.data && dbResponse.data.length > 0) {
+                currentArticleId = dbResponse.data[0].id;
+                window.history.replaceState({}, '', `/admin/editor.html?id=${currentArticleId}`);
+            }
+        }
+
+        if (dbResponse.error) {
+            throw new Error(dbResponse.error.message);
+        }
+
+        logTerminal(`${currentArticleId ? 'Overwrite' : 'Injection'} Successful. Record Secured.`);
+        
+        // Massive visual feedback for Operator
+        btnSave.textContent = 'RECORD SECURED';
+        btnSave.classList.remove('bg-[#00ff41]', 'border-[#00ff41]');
+        btnSave.classList.add('bg-white', 'border-white', 'text-black');
+        
+        const saveStatus = document.getElementById('saveStatus');
+        if (saveStatus) saveStatus.classList.remove('hidden');
+
+        setTimeout(() => {
+            btnSave.textContent = 'Save Changes';
+            btnSave.classList.remove('bg-white', 'border-white', 'text-black');
+            btnSave.classList.add('bg-[#00ff41]', 'border-[#00ff41]');
+            btnSave.disabled = false;
+            if (saveStatus) saveStatus.classList.add('hidden');
+        }, 3000);
+
+    } catch (err) {
+        logTerminal(`Save Failed: ${err.message}`, 'ERROR');
         btnSave.textContent = 'SAVE FAILED';
         btnSave.classList.add('bg-red-500', 'text-white');
         setTimeout(() => {
@@ -310,17 +341,6 @@ async function saveArticle() {
             btnSave.classList.remove('bg-red-500', 'text-white');
             btnSave.disabled = false;
         }, 3000);
-    } else {
-        logTerminal(`${currentArticleId ? 'Overwrite' : 'Injection'} Successful. Record Secured.`);
-        btnSave.textContent = 'SAVED';
-        const saveStatus = document.getElementById('saveStatus');
-        saveStatus.classList.remove('hidden');
-
-        setTimeout(() => {
-            btnSave.textContent = 'Save Changes';
-            btnSave.disabled = false;
-            saveStatus.classList.add('hidden');
-        }, 2000);
     }
 }
 
@@ -345,6 +365,8 @@ async function deleteArticle() {
     }
 }
 
+let isForgeInitialized = false;
+
 // Boot Sequence — unified through auth.js
 async function bootstrap() {
     setAuthChangeCallback(async () => {
@@ -353,6 +375,10 @@ async function bootstrap() {
             setTimeout(() => window.location.replace('/'), 1500);
             return;
         }
+        
+        if (isForgeInitialized) return;
+        isForgeInitialized = true;
+
         logTerminal('Clearance granted. The Forge is Online.');
         initForge();
         await loadArticle();

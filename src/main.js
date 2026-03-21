@@ -552,6 +552,20 @@ window.openArticle = function (id, skipState = false) {
     articleSubtitleDisplay.classList.add('hidden');
   }
 
+  // Handle Video Embed
+  const videoContainer = document.getElementById('video-embed-container');
+  const videoIframe = document.getElementById('video-iframe');
+  if (videoContainer && videoIframe) {
+      const embedSrc = resolveEmbedUrl(article.video_url);
+      if (embedSrc) {
+          videoIframe.src = embedSrc;
+          videoContainer.classList.remove('hidden');
+      } else {
+          videoContainer.classList.add('hidden');
+          videoIframe.src = '';
+      }
+  }
+
   articleContent.innerHTML = article.content_html || "<i>[EMPTY PAYLOAD]</i>";
 
   // Reader actions + comments
@@ -636,6 +650,11 @@ window.closeArticle = function (skipState = false) {
   htmlFrame.classList.add('hidden');
   btnCloseDoc.classList.add('hidden');
 
+  const videoContainer = document.getElementById('video-embed-container');
+  const videoIframe = document.getElementById('video-iframe');
+  if (videoContainer) videoContainer.classList.add('hidden');
+  if (videoIframe) videoIframe.src = '';
+
   // Hide reader sections
   const readerActions = document.getElementById('reader-actions');
   const readerComments = document.getElementById('reader-comments');
@@ -670,6 +689,31 @@ function openEditor() {
 function createNewArticle() {
   if (currentRole !== 'SOVEREIGN') return;
   window.location.href = '/admin/editor.html';
+}
+
+// ── URL resolver (same as post.js) ─────────────────────────────────────────
+function resolveEmbedUrl(url) {
+    if (!url) return null;
+    try {
+        const u = new URL(url);
+        if (u.hostname.includes('youtube.com')) {
+            const id = u.searchParams.get('v') || u.pathname.split('/').pop();
+            if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+        }
+        if (u.hostname === 'youtu.be') {
+            const id = u.pathname.replace('/', '');
+            if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+        }
+        if (u.hostname.includes('rumble.com')) {
+            const match = u.pathname.match(/\/(v[a-z0-9]+)/i);
+            if (match) return `https://rumble.com/embed/${match[1]}/`;
+        }
+        if (u.hostname.includes('vimeo.com')) {
+            const id = u.pathname.replace('/', '');
+            if (id) return `https://player.vimeo.com/video/${id}`;
+        }
+    } catch (_) { /* ignore */ }
+    return null;
 }
 
 // ==========================================

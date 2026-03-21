@@ -488,8 +488,10 @@ function renderFolders() {
                     <span class="text-[10px] opacity-60 shrink-0">📄</span>
                     <span class="min-w-0 flex-1 font-bold tracking-wide text-[11px] truncate italic">${pinned ? pinned.title : '[MISSING ARTICLE]'}</span>
                     <div class="flex gap-1.5 shrink-0 folder-actions-group opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="btn-move-pin text-[8px] font-bold text-matrix-green/50 hover:text-matrix-green" title="Move to a different heading">[M]</button>
                         <button class="btn-del-pin text-[8px] font-bold text-matrix-green/50 hover:text-red-500">[D]</button>
                     </div>`;
+                pin.querySelector('.btn-move-pin').addEventListener('click', e => { e.stopPropagation(); moveFolderToHeading(s.id); });
                 pin.querySelector('.btn-del-pin').addEventListener('click', async e => {
                     e.stopPropagation();
                     const ok = await sovereignConfirm(`UNPIN: "${pinned ? pinned.title : s.id}"?`);
@@ -677,7 +679,7 @@ function renderArticles(folderId) {
 
             <!-- TITLE + FLAGS -->
             <div class="flex-1 min-w-0 px-2 py-2">
-                <p class="text-xs font-bold tracking-wide truncate${a.hidden ? ' line-through opacity-40' : ''}">${a.title}</p>
+                <p class="text-xs font-bold tracking-wide truncate${a.hidden ? ' italic text-matrix-muted line-through' : ''}">${a.title}</p>
                 <div class="flex items-center gap-1 mt-0.5">
                     ${multiBadge}
                     ${a.hidden ? '<span class="text-[7px] text-red-500/70 border border-red-500/30 px-1 tracking-widest">HIDDEN</span>' : ''}
@@ -708,6 +710,9 @@ function renderArticles(folderId) {
                         title="Pin to homepage carousel">[📌 CAROUSEL]</button>
                 <button data-action="delete"
                         class="text-[8px] font-bold text-matrix-muted hover:text-red-500 tracking-widest shrink-0">[DEL]</button>
+                <button data-action="pin-sidebar"
+                        class="text-[8px] font-bold text-matrix-muted hover:text-matrix-green tracking-widest shrink-0" title="Pin article to left sidebar folders">[📌 SIDEBAR]</button>
+                ${activeFolderId !== null ? `<button data-action="remove-folder" class="text-[8px] font-bold text-matrix-muted hover:text-red-400 tracking-widest shrink-0">[- FOLDER]</button>` : ''}
                 <button data-action="multi-folder"
                         class="text-[8px] font-bold text-matrix-muted hover:text-matrix-green tracking-widest ml-auto shrink-0">[+FOLDER]</button>
             </div>`;
@@ -739,6 +744,8 @@ function renderArticles(folderId) {
             if (action === 'carousel') { await pinToCarousel(a); return; }
             if (action === 'delete') { await deleteArticle(a.id); return; }
             if (action === 'multi-folder') { await assignExtraFolder(a); return; }
+            if (action === 'remove-folder') { await removeFromActiveFolder(a); return; }
+            if (action === 'pin-sidebar') { await pinArticleDirectly(a); return; }
         });
 
         articlesContainer.appendChild(el);
@@ -835,6 +842,40 @@ async function assignExtraFolder(article) {
     folderMap.get(article.id).add(target.id);
     showToast(`Assigned to "${target.title}"`);
     renderArticles(activeFolderId);
+}
+
+async function removeFromActiveFolder(article) {
+    if (activeFolderId === null) return;
+    const confirmed = await sovereignConfirm(`UNLINK: Remove "${article.title}" from this folder?`);
+    if (!confirmed) return;
+
+    let success = false;
+    
+    // 1. Remove from primary series_id if it matches
+    if (article.series_id === activeFolderId) {
+        article.series_id = null;
+        article.series = null;
+        const { error } = await supabase.from('articles').update({ series_id: null, series: null }).eq('id', article.id);
+        if (error) console.error('Primary remove error:', error.message);
+        else success = true;
+    }
+    
+    // 2. Remove from article_folders mapping if it exists
+    if (folderMap.get(article.id)?.has(activeFolderId)) {
+        folderMap.get(article.id).delete(activeFolderId);
+        const { error } = await supabase.from('article_folders').delete()
+            .eq('article_id', article.id).eq('series_id', activeFolderId);
+        if (error) console.error('Extra folder remove error:', error.message);
+        else success = true;
+    }
+
+    if (success) {
+        showToast('Removed from folder.');
+        renderFolders(); 
+        renderArticles(activeFolderId);
+    } else {
+        showToast('Remove failed.', true);
+    }
 }
 
 // Quick-pin article to homepage carousel (splash_slides)
@@ -989,24 +1030,32 @@ async function moveFolderToHeading(folderId) {
     }
 
     const options = headings.map(h => ({ value: h.id, label: h.category_label || 'UNCATEGORIZED' }));
-    const targetHeadingId = await sovereignSelect('MOVE FOLDER UNDER HEADING:', options);
+    options.unshift({ value: 'TOP', label: '-- TOP OF LIST (NO HEADING) --' });
+    
+    const targetHeadingId = await sovereignSelect('MOVE ITEM UNDER HEADING:', options);
     if (!targetHeadingId) return;
 
-    // Find the heading's current order_index, then slot the folder right after it.
-    // We rebuild a new flat ordering: everything in order, but with the folder
-    // removed from its old position and inserted after the chosen heading.
-    const headingRow = masterSeries.find(s => s.id === targetHeadingId);
-    if (!headingRow) return;
-
     const withoutFolder = masterSeries.filter(s => s.id !== folderId);
-    const headingPos = withoutFolder.findIndex(s => s.id === targetHeadingId);
+    let insertPos = 0;
+    const itemToMove = masterSeries.find(s => s.id === folderId);
+
+    if (targetHeadingId === 'TOP') {
+        insertPos = 0;
+        itemToMove.category_label = 'UNCATEGORIZED';
+    } else {
+        const headingRow = masterSeries.find(s => s.id === targetHeadingId);
+        itemToMove.category_label = headingRow ? (headingRow.category_label || 'UNCATEGORIZED') : 'UNCATEGORIZED';
+        
+        const headingPos = withoutFolder.findIndex(s => s.id === targetHeadingId);
+        insertPos = headingPos + 1;
+    }
 
     // Insert folder immediately after the heading
-    withoutFolder.splice(headingPos + 1, 0, masterSeries.find(s => s.id === folderId));
+    withoutFolder.splice(insertPos, 0, itemToMove);
 
     // Assign sequential order_index values
     const updates = withoutFolder.map((s, idx) => ({
-        id: s.id,
+        ...s,
         order_index: idx,
         category_label: s.category_label
     }));
@@ -1014,7 +1063,7 @@ async function moveFolderToHeading(folderId) {
     const { error } = await supabase.from('series').upsert(updates, { onConflict: 'id' });
     if (error) { console.error('Move folder failed:', error.message); showToast('Move failed.', true); return; }
 
-    showToast(`Moved under "${headingRow.category_label || 'UNCATEGORIZED'}".`);
+    showToast(`Moved to "${itemToMove.category_label === 'UNCATEGORIZED' && targetHeadingId === 'TOP' ? 'TOP' : itemToMove.category_label}".`);
     await loadData();
 }
 
@@ -1099,6 +1148,27 @@ if (btnPinArticle) {
     });
 }
 
+// Function to allow pinning an article directly without modal search
+async function pinArticleDirectly(article) {
+    const confirmed = await sovereignConfirm(`PIN TO SIDEBAR: "${article.title.substring(0, 50)}${article.title.length > 50 ? '...' : ''}"?`);
+    if (!confirmed) return;
+
+    let defaultCat = 'UNCATEGORIZED';
+    if (masterSeries.length > 0) defaultCat = masterSeries[masterSeries.length - 1].category_label || 'UNCATEGORIZED';
+    const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
+
+    const { error } = await supabase.from('series').insert([{
+        title: '[PINNED ARTICLE]',
+        pinned_article_id: article.id,
+        category_label: defaultCat,
+        order_index: maxOrder + 1
+    }]);
+    if (error) { console.error('Pin article failed:', error.message); showToast('Pin failed.', true); return; }
+    showToast('📄 Article pinned to sidebar.');
+    await loadData();
+    setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
+}
+
 // ============================================================
 // SAVE FOLDER ORDER — single upsert
 // ============================================================
@@ -1128,7 +1198,7 @@ if (btnSaveFolderOrder) {
                 const s = masterSeries.find(series => series.id === id);
                 if (!s) return;
 
-                updates.push({ id, order_index: dbIndex, category_label: categoryLabel });
+                updates.push({ ...s, order_index: dbIndex, category_label: categoryLabel });
                 dbIndex++;
             });
         });
@@ -1200,74 +1270,49 @@ if (btnSyncTimeline) {
 const SOVEREIGN_UUID = '5abcdeb3-0d75-4201-ba36-2f0c9d7a41ff';
 const RSS_FEED_URL = 'https://constructamiracle.com/feed';
 
-// Two CORS proxies in priority order — first live one wins
-const CORS_PROXIES = [
-    (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-];
-
-async function fetchRSSXml(feedUrl) {
-    for (const proxyFn of CORS_PROXIES) {
-        try {
-            const res = await fetch(proxyFn(feedUrl), { signal: AbortSignal.timeout(8000) });
-            if (!res.ok) continue;
-            const text = await res.text();
-            // allorigins wraps in JSON {contents:...}, corsproxy returns raw XML
-            if (text.trim().startsWith('{')) {
-                const json = JSON.parse(text);
-                if (json.contents) return json.contents;
-            } else if (text.trim().startsWith('<')) {
-                return text;
-            }
-        } catch (_) { /* try next proxy */ }
-    }
-    throw new Error('All CORS proxies failed. Check network or try again.');
+async function fetchRSSJson(feedUrl) {
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+    const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error(`rss2json API error: ${res.status} ${res.statusText}`);
+    const data = await res.json();
+    if (data.status !== 'ok') throw new Error(`rss2json API returned status: ${data.status}`);
+    return data;
 }
 
 async function syncFromRSS() {
-    const btn = document.getElementById('btn-rss-sync');
-    if (btn) { btn.innerText = '[ LOADING... ]'; btn.disabled = true; }
+    const btns = document.querySelectorAll('#btn-rss-sync');
+    btns.forEach(btn => { btn.innerText = '[ LOADING... ]'; btn.disabled = true; });
 
     try {
-        // ── 1. Fetch feed via CORS proxy (dual-proxy fallback) ──
-        const xmlText = await fetchRSSXml(RSS_FEED_URL);
-
-        // ── 2. Parse XML ────────────────────────────────────────
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xmlText, 'text/xml');
-        const items = Array.from(doc.querySelectorAll('item'));
+        // ── 1. Fetch feed via rss2json API ───────────────────────
+        const data = await fetchRSSJson(RSS_FEED_URL);
+        const items = data.items || [];
         if (items.length === 0) {
             showToast('RSS feed returned 0 articles.', true);
             return;
         }
 
-        // ── 3. Pull existing slugs to deduplicate ───────────────
+        // ── 2. Pull existing slugs to deduplicate ───────────────
         const { data: existingSlugs, error: slugErr } = await supabase
             .from('articles')
             .select('slug');
         if (slugErr) throw new Error(`Slug fetch failed: ${slugErr.message}`);
         const knownSlugs = new Set((existingSlugs || []).map(r => r.slug).filter(Boolean));
 
-        // ── 4. Build insert payload ─────────────────────────────
+        // ── 3. Build insert payload ─────────────────────────────
         const toInsert = [];
 
         for (const item of items) {
-            const title = item.querySelector('title')?.textContent?.trim() || 'Untitled';
-            const link = item.querySelector('link')?.textContent?.trim() || '';
-            const pubDate = item.querySelector('pubDate')?.textContent?.trim() || null;
-            const desc = item.querySelector('description')?.textContent?.trim() || '';
-
-            // Full HTML body — Substack puts it in <content:encoded>
-            const contentEl = item.getElementsByTagNameNS('*', 'encoded')[0];
-            const contentHtml = contentEl ? contentEl.textContent.trim() : desc;
-
-            // Thumbnail: <media:thumbnail> or <enclosure>
-            let thumbnailUrl = null;
-            const mediaThumbnail = item.getElementsByTagNameNS('*', 'thumbnail')[0];
-            if (mediaThumbnail) thumbnailUrl = mediaThumbnail.getAttribute('url');
-            if (!thumbnailUrl) {
-                const enclosure = item.querySelector('enclosure');
-                if (enclosure) thumbnailUrl = enclosure.getAttribute('url');
+            const title = item.title || 'Untitled';
+            const link = item.link || '';
+            const pubDate = item.pubDate || null;
+            const desc = item.description || '';
+            const contentHtml = item.content || desc;
+            
+            // Thumbnail usually in thumbnail or enclosure
+            let thumbnailUrl = item.thumbnail || null;
+            if (!thumbnailUrl && item.enclosure && item.enclosure.link) {
+                thumbnailUrl = item.enclosure.link;
             }
 
             // Derive a slug from the URL path (last segment)
@@ -1281,8 +1326,7 @@ async function syncFromRSS() {
             // Skip if we already have it
             if (slug && knownSlugs.has(slug)) continue;
 
-            // Strip Substack-flavoured HTML (keep it simple — just use as-is,
-            // admin can clean inside the editor if needed)
+            // Strip Substack-flavoured HTML
             const subtitle = desc.replace(/<[^>]+>/g, '').substring(0, 300).trim() || null;
 
             toInsert.push({
@@ -1308,7 +1352,7 @@ async function syncFromRSS() {
             return;
         }
 
-        // ── 5. Insert ──────────────────────────────────────────
+        // ── 4. Insert ──────────────────────────────────────────
         const { error: insertErr } = await supabase.from('articles').insert(toInsert);
         if (insertErr) throw new Error(`Insert failed: ${insertErr.message}`);
 
@@ -1319,14 +1363,15 @@ async function syncFromRSS() {
         console.error('[syncFromRSS]', err);
         showToast(`RSS sync failed: ${err.message}`, true);
     } finally {
-        if (btn) { btn.innerText = '↓ RSS'; btn.disabled = false; }
+        const btns = document.querySelectorAll('#btn-rss-sync');
+        btns.forEach(btn => { btn.innerText = '↓ RSS'; btn.disabled = false; });
     }
 }
 
-const btnRssSync = document.getElementById('btn-rss-sync');
-if (btnRssSync) {
-    btnRssSync.addEventListener('click', syncFromRSS);
-}
+const btnRssSyncNodes = document.querySelectorAll('#btn-rss-sync');
+btnRssSyncNodes.forEach(btn => {
+    btn.addEventListener('click', syncFromRSS);
+});
 
 // ============================================================
 // SEARCH

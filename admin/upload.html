@@ -1,110 +1,151 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOVEREIGN OS // INGESTION VAULT</title>
+    <!-- PURE V4 STACK -->
+    <link rel="stylesheet" href="/src/style.css">
     <style>
         body {
             background-color: #050505;
-            color: #a78bfa;
-            cursor: crosshair;
-        }
-
-        .glass-panel {
-            background: rgba(5, 5, 5, 0.9);
-            border: 1px solid #a78bfa;
-            box-shadow: 0 0 15px rgba(167, 139, 250, 0.1);
+            background-image: radial-gradient(circle at top right, rgba(167,139,250,0.05) 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(167,139,250,0.03) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
         .dragover {
-            background: rgba(167, 139, 250, 0.1);
-            border: 2px dashed #a78bfa;
+            border-color: rgba(167, 139, 250, 0.8) !important;
+            background-color: rgba(167, 139, 250, 0.05) !important;
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(167, 139, 250, 0.1);
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #050505;
-            border-left: 1px solid rgba(167, 139, 250, 0.2);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #a78bfa;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #fff;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(167,139,250,0.3); }
     </style>
 </head>
 
-<body class="min-h-screen p-8 font-mono selection:bg-term-purple selection:text-black flex flex-col items-center">
-  <!-- CRT SCANLINE (RIKA AESTHETIC) -->
-  <div class="scanline-overlay"></div>
+<body class="min-h-screen p-6 md:p-12 font-sans selection:bg-purple-500/30 selection:text-white flex flex-col items-center">
 
     <!-- Header -->
-    <div class="w-full max-w-5xl mb-8 flex justify-between items-end border-b border-term-purple/30 pb-4">
+    <div class="w-full max-w-5xl mb-12 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-white/5 pb-6 gap-6">
         <div>
-            <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">INGESTION VAULT</h1>
-            <p class="text-term-purple/60 text-xs tracking-widest mt-2 uppercase">> SECURE BATCH UPLOAD: SUBSTACK .HTML
-                EXPORTS</p>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                <svg class="w-8 h-8 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Ingestion Vault
+            </h1>
+            <p class="text-gray-400 text-sm mt-2 font-medium">Secure batch processing for Substack HTML & CSV exports.</p>
         </div>
-        <div class="flex gap-4">
+        <div>
             <a href="curate.html"
-                class="text-[10px] tracking-widest hover:text-white transition-colors border border-term-purple/50 px-4 py-2 hover:bg-term-purple/20 uppercase font-bold text-term-purple">
-                [ SWITCH TO CURATION ]
+                class="flex items-center gap-2 text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 border border-white/10 px-6 py-3 bg-white/5 hover:bg-white/10 rounded-xl backdrop-blur-md shadow-sm">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+                Switch to Curation
             </a>
         </div>
     </div>
 
-    <!-- The Drop Zone -->
-    <div id="drop-zone"
-        class="w-full max-w-5xl h-64 glass-panel flex flex-col items-center justify-center transition-all mb-8 relative">
-        <!-- Security Lock Overlay -->
-        <div id="auth-lock"
-            class="absolute inset-0 bg-[#05010a]/95 border border-red-500 z-20 flex flex-col items-center justify-center text-center p-8">
-            <span class="text-red-500 text-4xl mb-4">🔒</span>
-            <p class="text-red-500 font-bold tracking-[0.2em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
-                CLEARANCE...</p>
-            <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase
-                Session</p>
+    <!-- The Drop Zones -->
+    <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6 mb-10">
+        
+        <!-- 1. CSV Ledger Drop Zone -->
+        <div id="csv-drop-zone"
+            class="w-full md:w-1/3 h-72 bg-[#0a0a0c] border border-white/5 rounded-3xl flex flex-col items-center justify-center transition-all duration-500 relative group cursor-pointer hover:bg-white/[0.02] hover:border-blue-500/30 shadow-xl overflow-hidden">
+            
+            <div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-500 ease-out shadow-md">
+                <svg class="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            
+            <p class="text-lg font-bold text-gray-200 pointer-events-none z-10 tracking-tight text-center">Ledger Config</p>
+            <p class="text-xs text-gray-500 mt-2 pointer-events-none z-10 font-medium text-center">Drop your <b>posts.csv</b> here</p>
+            
+            <div id="ledger-status-badge" class="mt-4 px-3 py-1 rounded bg-white/5 border border-white/5 flex items-center gap-2 z-10 shadow-inner">
+                <span id="ledger-status-dot" class="w-2 h-2 rounded-full bg-red-500"></span>
+                <span id="ledger-status-text" class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Unmapped</span>
+            </div>
+
+            <input type="file" id="csv-file-input" accept=".csv" class="hidden">
         </div>
 
-        <span class="text-4xl mb-4 text-term-purple">📥</span>
-        <p class="text-lg tracking-[0.2em] font-bold uppercase text-white pointer-events-none">DROP SUBSTACK HTML FILES
-            HERE</p>
-        <p class="text-xs text-term-purple/60 mt-2 pointer-events-none tracking-wider mb-6">Files will be parsed
-            automatically
-            and inserted into V4 Database as DRAFTS.</p>
+        <!-- 2. HTML Batch Drop Zone -->
+        <div id="html-drop-zone"
+            class="w-full md:w-2/3 h-72 bg-[#0a0a0c] border border-white/5 rounded-3xl flex flex-col items-center justify-center transition-all duration-500 relative group cursor-pointer hover:bg-white/[0.02] hover:border-purple-500/30 shadow-2xl overflow-hidden">
+            
+            <!-- Security Lock Overlay -->
+            <div id="auth-lock"
+                class="absolute inset-0 bg-[#050505]/95 border border-red-500/20 rounded-3xl z-20 flex flex-col items-center justify-center text-center p-8 backdrop-blur-xl transition-opacity duration-300">
+                <svg class="w-12 h-12 text-red-500 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <p class="text-red-400 font-bold tracking-wide text-lg mb-1" id="auth-status-title">Verifying Clearance</p>
+                <p class="text-red-500/60 text-sm font-medium" id="auth-status-detail">Syncing secure database token...</p>
+            </div>
 
-        <input type="file" id="file-input" multiple accept=".html" class="hidden">
-        <button id="browse-btn"
-            class="border border-term-purple/50 px-6 py-2 text-xs font-bold tracking-widest uppercase text-term-purple hover:bg-term-purple/20 hover:text-white transition-colors relative z-10">
-            [ OR BROWSE FILES ]
-        </button>
+            <div class="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-purple-500/20 transition-all duration-500 ease-out shadow-lg">
+                <svg class="w-8 h-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+            </div>
+            
+            <p class="text-2xl font-bold text-gray-200 pointer-events-none z-10 tracking-tight">Article Payloads</p>
+            <p class="text-sm text-gray-500 mt-1 pointer-events-none z-10 font-medium max-w-sm text-center">Batch drop Substack .html exports. The memory ledger will map the titles.</p>
+
+            <input type="file" id="html-file-input" multiple accept=".html" class="hidden">
+            <button id="browse-btn"
+                class="mt-6 bg-purple-600 hover:bg-purple-500 text-white px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 shadow-[0_4px_14px_rgba(167,139,250,0.3)] hover:shadow-[0_6px_20px_rgba(167,139,250,0.5)] relative z-10 active:scale-95 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Browse Payloads
+            </button>
+        </div>
     </div>
 
     <!-- The Log Terminal -->
-    <div class="w-full max-w-5xl glass-panel p-4 h-96 flex flex-col">
-        <div class="flex justify-between items-center border-b border-term-purple/30 pb-3 mb-4 shrink-0">
-            <h2 class="text-xs font-bold tracking-[0.2em] uppercase text-white">SYSTEM LOG / UPLOAD QUEUE</h2>
-            <span id="queue-count" class="text-[10px] text-term-purple/50 tracking-widest uppercase">0 FILES
-                DETECTED</span>
+    <div class="w-full max-w-5xl bg-[#0a0a0c] border border-white/5 rounded-3xl p-8 h-96 flex flex-col relative z-20 shadow-2xl overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="flex justify-between items-center border-b border-white/5 pb-5 mb-5 shrink-0 relative">
+            <h2 class="text-sm font-bold text-gray-200 flex items-center gap-3">
+                <svg class="w-5 h-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                System Logs
+            </h2>
+            <div class="flex items-center gap-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/5">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+                <span id="queue-count" class="text-[11px] text-gray-400 font-semibold tracking-wide uppercase">0 payloads ready</span>
+            </div>
         </div>
-        <ul id="log-list" class="flex-1 overflow-y-auto w-full text-xs space-y-2 opacity-90 pb-4">
-            <li class="text-term-purple/30 italic uppercase tracking-widest">> AWAITING BATCH DROP...</li>
-        </ul>
+        <div class="w-full h-full relative flex flex-col min-h-0 font-mono text-[13px] leading-relaxed">
+            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0a0a0c] to-transparent pointer-events-none z-10 block"></div>
+            <ul id="log-list" class="flex-1 overflow-y-auto w-full h-full text-gray-400 space-y-3 opacity-90 pb-16 pr-4 relative z-0">
+                <li class="flex items-start text-gray-500">
+                    <span class="text-purple-500 mr-3 shrink-0">→</span>
+                    System initialized. Awaiting user interaction.
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!-- GLOBAL FOOTER -->
-    <footer class="w-full border-t border-[#a78bfa]/30 bg-[#05010a]/90 text-center py-4 shrink-0 z-40 relative mt-auto">
-        <p class="text-[9px] text-[#a78bfa]/40 tracking-[0.3em] uppercase font-mono">
-            SOVEREIGN SYSTEM V4.0 // END OF TRANSMISSION
+    <footer class="w-full text-center py-10 shrink-0 z-40 relative mt-auto opacity-50 hover:opacity-100 transition-opacity">
+        <p class="text-xs text-gray-500 font-medium">
+            Sovereign OS v4.0 &middot; Built for The Architect
         </p>
     </footer>
 

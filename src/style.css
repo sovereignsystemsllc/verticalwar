@@ -144,7 +144,21 @@ body {
     max-width: 100%;
     height: auto;
     margin: 2rem auto;
-    /* changed to auto so it centers horizontally if needed, or 0 if 100% width */
+    display: block;
+}
+
+/* Substack Image Captions */
+.reader-text figcaption,
+.reader-text .image-caption {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: -1rem;
+    margin-bottom: 2.5rem;
+    font-style: italic;
+    font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace';
 }
 
 /* Overriding Quill.js editor defaults a little so it feels structured */
