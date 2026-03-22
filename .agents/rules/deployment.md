@@ -1,21 +1,14 @@
----
-trigger: always_on
-glob:
-description: Vertical War Deployment Protocol
----
 # WORKPLACE INSTRUCTIONS // VERTICAL WAR V4
 
-## DEPLOYMENT PROTOCOL (MANDATORY)
-**NEVER** use deployment scripts (`deploy.ps1`, `deploy.js`, etc.). 
-The Architect has mandated that **all deployments** to the live SiteGround server MUST be executed via raw SSH/SCP. 
+## DEPLOYMENT PROTOCOL (ZIP-STRIKE MANDATE)
+The baseline SCP recursive traversal proved fatally slow for static metadata generation (189+ index folders). The Architect has overridden the previous raw `scp -r` mandate.
 
-**The Official Deployment Command is:**
-`scp -i C:\Users\76com\.ssh\rika -P 18765 -o StrictHostKeyChecking=no -r .\dist\* u2222-vxkuggohnxin@ssh.verticalwar.com:www/verticalwar.com/public_html`
+**All deployments to the live SiteGround server MUST be executed via the local `deploy.ps1` script.**
 
-(The passphrase for the SSH key is stored in the `.env` file under `SFTP_PASSWORD`).
+This script executes the following Sovereign Pipeline:
+1. `npm run build` (vite compilation + prerender traversal)
+2. `Compress-Archive` (compresses the `dist/` directory into a single `build.zip` payload)
+3. `scp` (pushes the single payload to the SiteGround box via SSH key)
+4. `ssh` (executes a remote `unzip` over the `public_html` directory and cleans the zip file)
 
-Whenever the Operator asks to deploy or push live:
-1. Build the site (`npm run build`).
-2. Execute the exact SCP command above.
-3. Supply the passphrase via standard input.
-4. Do not attempt to run legacy automation scripts.
+To deploy: Simply run `.\deploy.ps1` and supply the `SFTP_PASSWORD` when OpenSSH prompts for the key passphrase.
