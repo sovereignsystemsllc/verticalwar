@@ -23,6 +23,10 @@ function resolveEmbedUrl(url) {
     return null;
 }
 
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 // ── Avatar initials helper ────────────────────────────────────────────────────
 function avatarHtml(profile) {
     if (profile?.avatar_url) {
@@ -225,7 +229,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (error || !data) { showError(); return; }
 
         articleTitle.textContent = data.title;
-        articleSeries.textContent = data.series || 'UNCLASSIFIED';
+        
+        if (data.series) {
+            articleSeries.textContent = data.series;
+            articleSeries.href = `/series/${slugify(data.series)}/`;
+        } else {
+            articleSeries.textContent = 'UNCLASSIFIED';
+            articleSeries.removeAttribute('href');
+            articleSeries.classList.remove('hover:bg-[#a78bfa]', 'hover:text-black', 'cursor-pointer');
+        }
 
         if (data.subtitle) {
             articleSubtitle.textContent = data.subtitle;

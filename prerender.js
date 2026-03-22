@@ -39,7 +39,7 @@ async function prerender() {
   const indexHtmlTemplate = fs.readFileSync(indexDistHtml, 'utf-8');
 
   // 1. Fetch data
-  const { data: articles, error: errA } = await supabase.from('articles').select('id, title, subtitle, thumbnail_url, hidden');
+  const { data: articles, error: errA } = await supabase.from('articles').select('id, title, subtitle, thumbnail_url, content_html, hidden');
   const { data: series, error: errS } = await supabase.from('series').select('id, title, hidden, category_label');
 
   if (errA || errS) {
@@ -83,15 +83,23 @@ async function prerender() {
         );
     }
 
-    if (article.thumbnail_url) {
+    let imageToUse = article.thumbnail_url;
+    if (!imageToUse && article.content_html) {
+      const imgMatch = article.content_html.match(/<img[^>]+src=["']([^">]+)["']/i);
+      if (imgMatch && imgMatch[1]) {
+        imageToUse = imgMatch[1];
+      }
+    }
+
+    if (imageToUse) {
       modifiedHtml = modifiedHtml
         .replace(
           /<meta property="og:image" content="[^"]*">/,
-          `<meta property="og:image" content="${article.thumbnail_url}">`
+          `<meta property="og:image" content="${imageToUse}">`
         )
         .replace(
           /<meta name="twitter:image" content="[^"]*">/,
-          `<meta name="twitter:image" content="${article.thumbnail_url}">`
+          `<meta name="twitter:image" content="${imageToUse}">`
         );
     }
 

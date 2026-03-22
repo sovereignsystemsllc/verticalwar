@@ -1,3 +1,8 @@
+---
+trigger: always_on
+glob:
+description: Vertical War Deployment Protocol
+---
 # WORKPLACE INSTRUCTIONS // VERTICAL WAR V4
 
 ## DEPLOYMENT PROTOCOL (MANDATORY)

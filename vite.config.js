@@ -2,8 +2,25 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
+function localDirectLinkMiddleware() {
+  return {
+    name: 'local-direct-link-middleware',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        // Intercept routes like /post/UUID/ and serve the standalone post template locally
+        // Exclude actual static file requests (like /post/post.js) by ensuring there's no dot in the ID
+        const parts = req.url.split('?')[0].split('/').filter(Boolean);
+        if (parts.length === 2 && parts[0] === 'post' && !parts[1].includes('.')) {
+          req.url = '/post/index.html';
+        }
+        next();
+      });
+    }
+  };
+}
+
 export default defineConfig({
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), localDirectLinkMiddleware()],
     build: {
         manifest: true,
         rollupOptions: {

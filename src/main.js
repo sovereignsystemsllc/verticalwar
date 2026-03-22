@@ -304,7 +304,10 @@ function renderSidebar() {
                         <p class="text-[10px] text-[#a78bfa]/90 tracking-widest uppercase mt-1">${filteredTracks.length} Documents Located</p>
                     </div>
                     <div class="flex items-center gap-2 mr-3 shrink-0">
-                        <button onclick="event.stopPropagation();window.copySeriesLink('${title}')" title="Copy link to this series" class="text-[9px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors px-1 tracking-widest shrink-0">&#x1F517;</button>
+                        <button onclick="event.stopPropagation();window.copySeriesLink(this, '${title}')" class="group/share relative text-[10px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors p-1 tracking-widest shrink-0 flex items-center justify-center">
+                            <span class="chain-icon">&#x1F517;</span>
+                            <span class="absolute right-full mr-2 whitespace-nowrap bg-[#05010a] text-[#a78bfa] px-2 py-1 text-[8px] font-bold border border-[#a78bfa]/50 opacity-0 group-hover/share:opacity-100 transition-opacity pointer-events-none uppercase tracking-[0.2em] shadow-[0_0_10px_rgba(167,139,250,0.2)]">SHARE SERIES</span>
+                        </button>
                         <div class="text-xs font-bold text-white/30 group-hover:text-[#a78bfa] transition-colors whitespace-nowrap shrink-0" id="folder-icon-${sKey}">[ + ]</div>
                     </div>
                 </div>
@@ -375,7 +378,7 @@ function renderSidebar() {
       .filter(a => a.series_id === seriesDef.id)
       .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
-    html += buildFolder(seriesDef.title, tracks, 'series_' + sIdx, seriesDef.category_label, seriesDef.id, seriesDef.splash_article_id);
+    html += buildFolder(seriesDef.title, tracks, 'series_' + seriesDef.id, seriesDef.category_label, seriesDef.id, seriesDef.splash_article_id);
   });
 
   // 2. Render Unassigned Singles at the bottom, also sorted
@@ -506,15 +509,22 @@ function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-window.copySeriesLink = function (seriesTitle) {
+window.copySeriesLink = function (btn, seriesTitle) {
   const slug = slugify(seriesTitle);
   const url = `${location.origin}/series/${slug}/`;
   navigator.clipboard.writeText(url).then(() => {
-    const toast = document.createElement('div');
-    toast.textContent = 'LINK COPIED';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#a78bfa;color:#000;font-family:monospace;font-size:10px;font-weight:bold;letter-spacing:.15em;padding:6px 16px;z-index:9999;pointer-events:none';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 1800);
+    const icon = btn.querySelector('.chain-icon');
+    if (icon) {
+      const orig = icon.innerHTML;
+      icon.innerHTML = '✓';
+      btn.classList.add('text-[#00ff41]');
+      btn.style.textShadow = '0 0 8px rgba(0,255,65,0.7)';
+      setTimeout(() => {
+        icon.innerHTML = orig;
+        btn.classList.remove('text-[#00ff41]');
+        btn.style.textShadow = '';
+      }, 1500);
+    }
   });
 };
 
@@ -529,9 +539,13 @@ function activateSeriesDeepLink() {
   }
   
   if (!param) return;
-  globalSeries.forEach((s, i) => {
+
+  const isElevated = ['OPERATOR', 'SOVEREIGN'].includes(currentRole);
+  const visibleSeries = isElevated ? globalSeries : globalSeries.filter(s => !s.hidden);
+
+  visibleSeries.forEach((s) => {
     if (slugify(s.title) === param) {
-      revealFolder('series_' + i);
+      revealFolder('series_' + s.id);
       // Mobile: switch to sidebar pane so user sees the open folder
       if (window.innerWidth <= 768 && sidebar && reader) {
         reader.classList.add('hidden');
@@ -550,7 +564,7 @@ window.openArticle = async function (id, skipState = false) {
 
   // SPA Routing: Update URL without reloading
   if (!skipState) {
-    history.pushState({ articleId: id }, '', '?id=' + id);
+    history.pushState({ articleId: id }, '', `/post/${id}/`);
   }
 
   // UI Updates
@@ -619,16 +633,13 @@ window.openArticle = async function (id, skipState = false) {
   }
 
   // REVEAL PARENT FOLDER — open + glow the folder this article belongs to
-  // (Handles ?id= deep links so desktop users notice the sidebar opened)
+  // (Handles ?id= deep links  // REVEAL PARENT FOLDER
   if (article.series_id) {
-    const seriesIdx = globalSeries.findIndex(s => s.id === article.series_id);
-    if (seriesIdx !== -1) {
-      const sKey = 'series_' + seriesIdx;
-      const contentEl = document.getElementById(`folder-content-${sKey}`);
-      // Only reveal if folder is currently closed (don't collapse an open folder)
-      if (contentEl && contentEl.classList.contains('hidden')) {
-        revealFolder(sKey);
-      }
+    const sKey = 'series_' + article.series_id;
+    const contentEl = document.getElementById(`folder-content-${sKey}`);
+    // Only reveal if folder is currently closed (don't collapse an open folder)
+    if (contentEl && contentEl.classList.contains('hidden')) {
+      window.toggleFolder(sKey);
     }
   }
 
@@ -671,7 +682,7 @@ window.closeArticle = function (skipState = false) {
   activeArticleId = null;
 
   if (!skipState) {
-    history.pushState({ page: 'directory' }, '', window.location.pathname);
+    history.pushState({ page: 'directory' }, '', '/');
   }
 
   placeholderMsg.classList.remove('hidden');
