@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GHOST IN THE MACHINE // PART 1: 1773-1794</title>
+    <!-- Tailwind CSS injected directly to ensure utility classes work -->
+    <link rel="stylesheet" href="/src/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* FSR-RYUKO / FSY-YOKO BRUTALIST ACCESSIBILITY OVERRIDE */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-panel: #050505;
+            --data: #39FF14;
+            --anomaly: #FF00FF;
+            --header: #FFFFFF;
+            --text-soft: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--data);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* THE LOCK IS BACK. NO GLOBAL SCROLLING. */
+            line-height: 1.8;
+        }
+
+        /* Monospace restricted strictly to UI and Headers */
+        .font-terminal {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Subtle Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Strict Borders & Internal Scrolling */
+        .hud-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--data);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: auto;
+            min-height: 85vh; /* Mobile fallback */
+            overflow-y: auto; /* SCROLLING HAPPENS INSIDE THE PANELS ONLY */
+            position: relative;
+        }
+
+        @media (min-width: 1024px) {
+            .hud-panel {
+                height: 100%;
+                min-height: 0; /* Let grid control it */
+            }
+        }
+
+        .hud-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .hud-panel::-webkit-scrollbar-thumb {
+            background: var(--anomaly);
+        }
+
+        /* High-legibility text classes */
+        .readable-text {
+            color: var(--text-soft);
+            font-size: 1.15rem; 
+            margin-bottom: 1rem;
+        }
+
+        .massive-header {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--header);
+        }
+
+        /* The Glitch effect */
+        .fatal-glitch {
+            position: relative;
+            animation-play-state: paused;
+            cursor: crosshair;
+        }
+
+        .fatal-glitch:hover {
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch::before, .fatal-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            opacity: 0;
+        }
+
+        .fatal-glitch:hover::before, .fatal-glitch:hover::after {
+            opacity: 1;
+        }
+
+        .fatal-glitch:hover::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--anomaly);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch:hover::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--data);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(62px, 9999px, 14px, 0); }
+            40% { clip: rect(29px, 9999px, 98px, 0); }
+            60% { clip: rect(81px, 9999px, 3px, 0); }
+            80% { clip: rect(45px, 9999px, 55px, 0); }
+            100% { clip: rect(92px, 9999px, 21px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(24px, 9999px, 56px, 0); }
+            20% { clip: rect(89px, 9999px, 12px, 0); }
+            40% { clip: rect(4px, 9999px, 76px, 0); }
+            60% { clip: rect(65px, 9999px, 34px, 0); }
+            80% { clip: rect(19px, 9999px, 88px, 0); }
+            100% { clip: rect(45px, 9999px, 2px, 0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="scanlines"></div>
+
+    <div class="fixed top-4 left-4 z-50">
+        <a href="/" class="font-terminal text-xs text-[#FFFFFF] border border-[#FFFFFF]/30 px-3 py-1 hover:bg-[#FFFFFF]/10 hover:text-[#FF00FF] transition-colors">< HOME NODE</a>
+    </div>
+
+    <!-- The 8-panel Grid: Outer container scrolls vertically to accommodate multiple rows -->
+    <div class="flex flex-col lg:grid lg:grid-cols-2 lg:auto-rows-[80vh] w-full h-full p-2 lg:p-4 pt-14 lg:pt-14 gap-4 box-border relative z-10 overflow-y-auto pb-12 lg:pb-4">
+
+        <!-- PANEL 1: INTRODUCTION -->
+        <div class="hud-panel border-[#FF00FF]">
+            <div class="shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> MASTERCLASS_INDEX: PART 1.DAT</p>
+                <h1 class="fatal-glitch font-terminal massive-header mb-6" data-text="THE GHOST IN THE MACHINE" title="HOVER TO INITIATE GLITCH">THE GHOST IN THE MACHINE</h1>
+                <p class="font-terminal text-sm text-[#FF00FF] animate-pulse mb-6 border-b border-[#39FF14]/30 pb-4">> PART 1: THE SEED [1773 - 1794]</p>
+            </div>
+            
+            <div class="mt-4">
+                <div class="font-terminal text-sm border-l-4 border-[#39FF14] bg-[#39FF14]/10 p-3 mb-6 text-[#39FF14]">
+                    <span class="text-white font-bold">OBJECTIVE:</span> Financial Autopsy of the Republic<br>
+                    <span class="text-white font-bold">LENS:</span> Stripping Patriotism. Exposing the Code.
+                </div>
+                
+                <p class="readable-text">
+                    You are the forensic accountant of history. We are opening the ledgers purely to study the source code. It’s a brutal financial autopsy mixed with cold, unblinking data.
+                </p>
+                <p class="readable-text">
+                    We must identify the root source code of modern monopoly power and hardwire the 1791 financial mechanics into cognitive memory.
+                </p>
+
+                <!-- Receipts CTA -->
+                <a href="/receipts/pack/GhostPart1Receipts/index.html" target="_blank" class="block font-terminal border-2 border-[#FF00FF] bg-[#FF00FF]/10 mt-6 px-4 py-3 text-center cursor-pointer hover:bg-[#FF00FF] hover:text-white text-[#FF00FF] font-bold tracking-widest text-sm transition-colors duration-300">
+                    [ ACCESS CRYPTOGRAPHIC RECEIPTS ]
+                </a>
+            </div>
+            <div class="mt-auto pt-4 flex justify-between font-terminal text-[10px] opacity-50">
+                <span>// NODE: INTRO</span>
+                <span>STATUS: COMPILED</span>
+            </div>
+        </div>
+
+        <!-- PANEL 2: MODULE 01 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_01</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">THE_ALCHEMY_OF_EXHAUSTION // 1776</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-sm text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">Wars are won by logistics, not ideology.</p>
+            </div>
+
+            <p class="readable-text">
+                To fund the war, the Continental Congress printed the Continental Dollar, which immediately entered hyperinflation. This wasn't just an economic crisis; it was a psychological weapon. It destroyed the purchasing power of the agrarian working class.
+            </p>
+            <p class="readable-text font-bold text-[#FF00FF]">
+                When the public is exhausted and starving, the public resistance collapses. They don't have the energy to read the fine print of their new government.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#39FF14] mb-2">> LEDGER SUMMARY [WM. DUER]</p>
+                <p class="text-sm font-terminal text-white">
+                    "William Duer provided his associate with internal Treasury lists containing names of Continental soldiers... systematically tracking down veterans to purchase their certificates at severe discounts, operating entirely on asymmetric information."
+                </p>
+            </div>
+        </div>
+
+        <!-- PANEL 3: MODULE 02 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_02</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">ROBT_MORRIS & THE_FIRST_PRIVATIZATION // 1781</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-sm text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The mother of all public-to-private wealth transfers.</p>
+            </div>
+
+            <p class="readable-text">
+                Morris demanded dictatorial control over the Treasury. He used a massive, emergency shipment of French silver (which belonged to the <em>public</em>) to buy the majority of the stock in his newly created Bank of North America (a <em>private</em> bank).
+            </p>
+            <p class="readable-text font-bold text-[#FF00FF]">
+                He then used the bank to lend the government its own money at interest, paying out 8.5% DIVIDENDS to his inner circle.
+            </p>
+        </div>
+
+        <!-- PANEL 4: MODULE 03 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_03</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">HAMILTON_ASSUMPTION_ENGINE // 1790</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-sm text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The largest, most blatant, state-sponsored insider trading scheme in American history.</p>
+            </div>
+
+            <p class="readable-text">
+                Hamilton's inner circle (the Northern Elite, including William Duer) knew the debt would be funded at 100% par value.
+            </p>
+            <p class="readable-text">
+                They deployed agents on fast horses to the geographic periphery to buy up depreciated Continental notes from uninformed veterans for 10 to 15 cents on the dollar.
+            </p>
+            <p class="readable-text font-bold text-[#FF00FF]">
+                When the Funding Act passed, yields exceeded 800%. The working class bled out to build Wall Street.
+            </p>
+            
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#39FF14] mb-2">> LEDGER SUMMARY [PUBLIC FINANCE]</p>
+                <p class="text-sm font-terminal text-white">
+                    "The Federal Government was permitted to subscribe to only 20% of the shares. Private, unelected individuals controlled the remaining 80%."
+                </p>
+            </div>
+        </div>
+
+        <!-- PANEL 5: MODULE 04 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_04</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">SCRIPOMANIA & HIJACKING_OF_CAPITAL // 1791</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-sm text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">It was a wildly deregulated casino that triggered America's first financial crash.</p>
+            </div>
+
+            <p class="readable-text">
+                The First Bank of the United States was a $10 million monopoly, but 80% was controlled by private investors. The IPO was structurally flawed: Investors could buy "scrips" on margin for just $25.
+            </p>
+            <p class="readable-text font-bold text-[#FF00FF]">
+                This created "Scripomania"—a feral, speculative bubble orchestrated by William Duer's "Six Percent Club." They attempted an illegal bear squeeze, embezzled funds, and ruptured the market in 1792.
+            </p>
+            <p class="font-terminal text-xs bg-[#39FF14]/10 p-2 border border-[#39FF14] mt-4">
+                PRIVATIZE THE PROFIT. SOCIALIZE THE LOSS.
+            </p>
+        </div>
+
+        <!-- PANEL 6: MODULE 05 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_05</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">SUM_CHARTER & THE_APEX_CHEAT_CODE // 1791</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-4">
+                <p class="font-terminal text-sm text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The exact legal blueprint for the unaccountable, modern mega-corporation.</p>
+            </div>
+
+            <p class="readable-text font-bold text-[#FF00FF] mb-4">
+                Hamilton outsourced the violence and immunity of the State to a private board of directors.
+            </p>
+
+            <ul class="font-terminal text-xs space-y-3 bg-black border border-[#39FF14]/30 p-4">
+                <li class="border-b border-[#39FF14]/20 pb-2">
+                    <span class="text-[#FF00FF] font-bold block mb-1">THE FOREVER TAX SHIELD</span> 
+                    <span class="text-white text-opacity-80">Exempt from local property taxes forever.</span>
+                </li>
+                <li class="border-b border-[#39FF14]/20 pb-2">
+                    <span class="text-[#FF00FF] font-bold block mb-1">PRIVATIZED EMINENT DOMAIN</span> 
+                    <span class="text-white text-opacity-80">Violent seizure of land/water strictly for private profit.</span>
+                </li>
+                <li class="border-b border-[#39FF14]/20 pb-2">
+                    <span class="text-[#FF00FF] font-bold block mb-1">THE PUBLIC LOTTERY</span> 
+                    <span class="text-white text-opacity-80">Authorized to socialize VC risk through lotteries.</span>
+                </li>
+                <li>
+                    <span class="text-[#FF00FF] font-bold block mb-1">CORPORATE LAWMAKING</span> 
+                    <span class="text-white text-opacity-80">Empowered to govern and police the physical workforce.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- PANEL 7: MODULE 06 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_06</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">THE_WHISKEY_REBELLION & THE_ARMY // 1794</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-4">
+                <p class="font-terminal text-sm text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The federal government used military terror to enforce a financial monopoly for the eastern elite.</p>
+            </div>
+
+            <p class="readable-text">
+                The excise tax charged large commercial distillers a flat fee while forcing small western farmers to pay a volume rate. It was mathematically designed to bankrupt independent farmers. When they resisted, Hamilton marched a <strong>13,000-man federal army</strong> over the mountains to crush them.
+            </p>
+            
+            <div class="bg-black border border-[#FF00FF]/50 p-4 mt-4 text-[#FF00FF] font-bold text-sm">
+                "Resist the financial elite, and we will bankrupt the country just to deploy the military against you."
+            </div>
+        </div>
+
+        <!-- PANEL 8: THE OUTRO -->
+        <div class="hud-panel border-[#39FF14]">
+            <div class="flex-1 flex flex-col justify-center items-center text-center p-2 lg:p-4 shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> AUDIT_CONCLUSION: THE_COGNITIVE_SALVAGE</p>
+                
+                <blockquote class="readable-text text-lg text-left bg-black border-l-4 border-[#39FF14] p-6 mb-6 mt-4">
+                    "The system didn't break in 2008. It didn't break in 1913. It was engineered this way in <span class="text-[#FF00FF] font-bold">1791</span>. The Robber Barons didn't invent the monopoly; they just optimized Alexander Hamilton’s blueprint."
+                </blockquote>
+                
+                <p class="font-terminal text-[#39FF14] font-bold text-lg mb-6">
+                    THE FINANCIAL ELITE IS ARROGANT. THEY LEFT THE RECEIPTS.
+                </p>
+
+                <p class="readable-text text-sm">
+                    We don't have to be exhausted anymore, because now we can see the exact mechanics of the machine. Proceed to the next archive layer.
+                </p>
+            </div>
+
+            <div class="mt-auto shrink-0 w-full mt-6">
+                <!-- CTA buttons for navigating to the other parts -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="/series/ghost/p2/" class="block font-terminal border border-[#39FF14] bg-black bg-opacity-50 px-4 py-3 text-center cursor-pointer hover:bg-[#39FF14] hover:text-black text-[#39FF14] font-bold tracking-widest text-sm transition-colors duration-300">
+                        [ ACCESS PART 2 ]
+                    </a>
+                    <a href="/series/ghost/p3/" class="block font-terminal border border-[#FF00FF] bg-black bg-opacity-50 px-4 py-3 text-center cursor-pointer hover:bg-[#FF00FF] hover:text-black text-[#FF00FF] font-bold tracking-widest text-sm transition-colors duration-300">
+                        [ ACCESS PART 3 ]
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

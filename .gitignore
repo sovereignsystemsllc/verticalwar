@@ -33,3 +33,7 @@ verticalwar_v4_HANDOVER.md
 
 # Deploy stamp
 .last_deploy
+
+# Media and Builds
+*.zip
+*.mp4

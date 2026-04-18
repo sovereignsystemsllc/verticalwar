@@ -10,10 +10,7 @@ let globalSeries = [];
 let activeArticleId = null;
 let currentSearchQuery = '';
 
-// Carousel state
-let splashSlides = [];
-let carouselIndex = 0;
-let carouselTimer = null;
+
 
 // No local Quill needed
 
@@ -41,12 +38,7 @@ const btnMobileReturn = document.getElementById('btn-mobile-return');
 // Mobile Homepage Bridge
 const btnOpenDirectory = document.getElementById('btn-open-directory');
 
-// Carousel DOM
-const carouselTrack = document.getElementById('carousel-track');
-const carouselDots = document.getElementById('carousel-dots');
-const carouselPrev = document.getElementById('carousel-prev');
-const carouselNext = document.getElementById('carousel-next');
-const btnEditCarousel = document.getElementById('btn-edit-carousel');
+
 
 // ==========================================
 // INITIALIZATION
@@ -86,10 +78,9 @@ async function init() {
     }
   }
 
-  await Promise.all([fetchArticles(), fetchSplashSlides()]);
+  await Promise.all([fetchArticles()]);
   renderSidebar();
   activateSeriesDeepLink();
-  renderCarousel();
   setupEventListeners();
 
   if (requestedId) {
@@ -116,112 +107,13 @@ function onAuthChanged() {
   if (currentRole === 'SOVEREIGN') {
     if (adminControls) adminControls.classList.remove('hidden');
     if (linkMatrixAdmin) linkMatrixAdmin.classList.remove('hidden');
-    if (btnEditCarousel) btnEditCarousel.classList.remove('hidden');
   } else {
     if (adminControls) adminControls.classList.add('hidden');
     if (linkMatrixAdmin) linkMatrixAdmin.classList.add('hidden');
-    if (btnEditCarousel) btnEditCarousel.classList.add('hidden');
   }
 }
 
-// ==========================================
-// SPLASH CAROUSEL
-// ==========================================
-async function fetchSplashSlides() {
-  try {
-    const { data, error } = await supabase
-      .from('splash_slides')
-      .select('*')
-      .order('order_index', { ascending: true });
-    if (error) throw error;
-    splashSlides = data || [];
-  } catch (e) {
-    console.warn('Failed to load splash slides:', e);
-    splashSlides = [];
-  }
-}
 
-function renderCarousel() {
-  if (!carouselTrack) return;
-
-  if (splashSlides.length === 0) {
-    carouselTrack.innerHTML = `<div class="min-w-full p-8 flex flex-col items-center justify-center min-h-[320px]"><p class="text-[#a78bfa]/30 text-xs uppercase tracking-widest">NO TRANSMISSIONS FOUND</p></div>`;
-    if (carouselDots) carouselDots.innerHTML = '';
-    return;
-  }
-
-  // Build slides
-  carouselTrack.innerHTML = splashSlides.map((slide) => {
-    const imgHtml = slide.image_url
-      ? `<img src="${slide.image_url}" alt="${slide.title}" class="w-full max-h-48 object-cover mb-6 border border-[#a78bfa]/10">`
-      : '';
-    const bodyHtml = slide.body
-      ? slide.body.split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('')
-      : '';
-    const linkHtml = slide.link_url
-      ? `<a href="${slide.link_url}" target="_blank" rel="noopener noreferrer"
-           class="inline-block mt-6 text-[10px] text-[#a78bfa]/70 hover:text-[#a78bfa] transition-colors tracking-widest uppercase border border-[#a78bfa]/30 hover:border-[#a78bfa] px-5 py-2">
-           ${slide.link_label || '[ OPEN LINK ]'}
-         </a>`
-      : '';
-    return `
-      <div class="min-w-full p-6 md:p-8 flex flex-col items-center justify-center min-h-[320px]">
-        ${imgHtml}
-        <h2 class="text-lg md:text-2xl text-white font-bold tracking-[0.2em] uppercase mb-4 text-center">${slide.title}</h2>
-        <div class="text-[10px] md:text-xs text-white/70 leading-relaxed font-mono text-center space-y-3 max-w-lg">${bodyHtml}</div>
-        ${linkHtml}
-      </div>`;
-  }).join('');
-
-  // Build dots
-  if (carouselDots) {
-    carouselDots.innerHTML = splashSlides.map((_, i) =>
-      `<button class="carousel-dot w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-[#a78bfa] scale-125' : 'bg-[#a78bfa]/30 hover:bg-[#a78bfa]/60'
-      }" data-index="${i}" title="Slide ${i + 1}"></button>`
-    ).join('');
-
-    carouselDots.querySelectorAll('.carousel-dot').forEach(dot => {
-      dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index)));
-    });
-  }
-
-  goToSlide(0);
-  startAutoplay();
-}
-
-function goToSlide(idx) {
-  carouselIndex = idx;
-  if (carouselTrack) {
-    carouselTrack.style.transform = `translateX(-${idx * 100}%)`;
-  }
-  // Update dots
-  if (carouselDots) {
-    carouselDots.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-      if (i === idx) {
-        dot.classList.add('bg-[#a78bfa]', 'scale-125');
-        dot.classList.remove('bg-[#a78bfa]/30');
-      } else {
-        dot.classList.remove('bg-[#a78bfa]', 'scale-125');
-        dot.classList.add('bg-[#a78bfa]/30');
-      }
-    });
-  }
-}
-
-function startAutoplay() {
-  if (carouselTimer) clearInterval(carouselTimer);
-  if (splashSlides.length <= 1) return;
-  carouselTimer = setInterval(() => {
-    goToSlide((carouselIndex + 1) % splashSlides.length);
-  }, 5000);
-
-  // Pause on hover
-  const wrapper = carouselTrack?.parentElement;
-  if (wrapper) {
-    wrapper.addEventListener('mouseenter', () => clearInterval(carouselTimer));
-    wrapper.addEventListener('mouseleave', startAutoplay);
-  }
-}
 
 const SIDEBAR_CACHE_KEY = 'vw_sidebar_v1';
 const SIDEBAR_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -558,13 +450,28 @@ function activateSeriesDeepLink() {
 }
 
 window.openArticle = async function (id, skipState = false) {
+  const isReplacing = activeArticleId !== null;
   activeArticleId = id;
   const article = globalArticles.find(a => a.id === id);
   if (!article) return;
 
-  // SPA Routing: Update URL without reloading
+  let shareUrl = `/codex/?id=${id}`;
+  if (article.series_id) {
+    const series = globalSeries.find(s => s.id === article.series_id);
+    if (series) {
+      // Must be defined globally or we rely on the helper further down in main.js
+      const slug = series.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      shareUrl = `/codex/?series=${slug}&id=${id}`;
+    }
+  }
+
+  // SPA Routing: Update URL without reloading (prevent infinite history stacking)
   if (!skipState) {
-    history.pushState({ articleId: id }, '', `/post/${id}/`);
+    if (isReplacing) {
+      history.replaceState({ articleId: id }, '', shareUrl);
+    } else {
+      history.pushState({ articleId: id }, '', shareUrl);
+    }
   }
 
   // UI Updates
@@ -617,8 +524,8 @@ window.openArticle = async function (id, skipState = false) {
   const readerCommentsLink = document.getElementById('reader-comments-link');
   if (readerActions) readerActions.classList.remove('hidden');
   if (readerComments) readerComments.classList.remove('hidden');
-  if (readerDirectLink) readerDirectLink.href = `/post/${article.id}/`;
-  if (readerCommentsLink) readerCommentsLink.href = `/post/${article.id}/#comment-section`;
+  if (readerDirectLink) readerDirectLink.href = shareUrl;
+  if (readerCommentsLink) readerCommentsLink.href = shareUrl + '#comment-section';
 
   // VISUAL ACTIVE STATE (Monk Fix)
   document.querySelectorAll('#doc-list button').forEach(btn => {
@@ -649,12 +556,12 @@ window.openArticle = async function (id, skipState = false) {
   // Set the Direct Link to the public V4 routing format
   const directLinkBtn = document.getElementById('info-link');
   if (directLinkBtn) {
-    directLinkBtn.href = `/post/${article.id}/`;
+    directLinkBtn.href = shareUrl;
   }
 
   const mobileLinkBtn = document.getElementById('mobile-info-link');
   if (mobileLinkBtn) {
-    mobileLinkBtn.href = `/post/${article.id}/`;
+    mobileLinkBtn.href = shareUrl;
     mobileLinkBtn.classList.remove('hidden');
   }
 
@@ -682,7 +589,7 @@ window.closeArticle = function (skipState = false) {
   activeArticleId = null;
 
   if (!skipState) {
-    history.pushState({ page: 'directory' }, '', '/');
+    history.pushState({ page: 'directory' }, '', '/codex/');
   }
 
   placeholderMsg.classList.remove('hidden');
@@ -775,9 +682,9 @@ function setupEventListeners() {
     });
   }
 
-  // Mobile Return Button uses history.back() to pop the stack
-  btnCloseDoc.addEventListener('click', () => { history.back(); });
-  btnMobileReturn.addEventListener('click', () => { history.back(); });
+  // Mobile Return & X Button
+  btnCloseDoc.addEventListener('click', () => { window.closeArticle(); });
+  btnMobileReturn.addEventListener('click', () => { window.closeArticle(); });
 
   // Hide return buttons if user landed directly (not from verticalwar.com)
   const fromSite = document.referrer && document.referrer.includes('verticalwar.com');
@@ -786,19 +693,7 @@ function setupEventListeners() {
     if (btnMobileReturn) btnMobileReturn.classList.add('hidden');
   }
 
-  // Carousel arrow controls
-  if (carouselPrev) {
-    carouselPrev.addEventListener('click', () => {
-      clearInterval(carouselTimer);
-      goToSlide((carouselIndex - 1 + splashSlides.length) % splashSlides.length);
-    });
-  }
-  if (carouselNext) {
-    carouselNext.addEventListener('click', () => {
-      clearInterval(carouselTimer);
-      goToSlide((carouselIndex + 1) % splashSlides.length);
-    });
-  }
+  // Removed old carousel controls
 
   btnEditActive.addEventListener('click', openEditor);
   document.getElementById('btn-new-article').addEventListener('click', createNewArticle);

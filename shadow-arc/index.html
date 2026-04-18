@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SHADOW ARC // TERMINAL V4</title>
+    <meta property="og:title" content="THE SHADOW ARC // TERMINAL V4">
+    <meta property="og:description" content="This is not an isolated incident. It is an operating system. Exit the distraction layer and access the full 9-part investigation.">
+    <meta property="og:image" content="https://verticalwar.com/og-image.png">
+    <meta property="og:url" content="https://verticalwar.com/shadow-arc/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/og-image.png">
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        /* FSR-RYUKO / FSY-YOKO BRUTALIST ACCESSIBILITY OVERRIDE */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-panel: #050505;
+            --data: #39FF14;
+            --anomaly: #FF00FF;
+            --header: #FFFFFF;
+            --text-soft: #f8fafc; /* Crisp white for paragraph legibility */
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--data);
+            /* Clean sans-serif for standard paragraphs */
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* THE LOCK IS BACK. NO GLOBAL SCROLLING. */
+            line-height: 1.8;
+        }
+
+        /* Monospace restricted strictly to UI and Headers */
+        .font-terminal {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Subtle Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Strict Borders & Internal Scrolling */
+        .hud-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--data);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: auto;
+            min-height: 85vh; /* Mobile fallback */
+            overflow-y: auto; /* SCROLLING HAPPENS INSIDE THE PANELS ONLY */
+            position: relative;
+        }
+
+        @media (min-width: 1024px) {
+            .hud-panel {
+                height: 100%;
+                min-height: 0;
+            }
+        }
+
+        .hud-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .hud-panel::-webkit-scrollbar-thumb {
+            background: var(--anomaly);
+        }
+
+        /* Ryuko Slash Override */
+        .ryuko-override {
+            background-color: var(--anomaly);
+            color: var(--bg-base);
+            font-weight: bold;
+            padding: 1.5rem;
+            transform: skew(-2deg);
+            border-left: 8px solid var(--header);
+        }
+
+        /* Asset Injection (Videos) - Toxic Green Filter */
+        .ghost-video-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin: 1rem 0;
+            cursor: crosshair;
+            border-bottom: 1px dashed var(--data);
+            padding-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .ghost-video-container video {
+            max-height: 220px; 
+            width: auto;
+            object-fit: contain;
+            mix-blend-mode: screen; /* Background removal technique */
+            /* Toxic Green Filter */
+            filter: drop-shadow(0 0 5px var(--data)) sepia(100%) hue-rotate(70deg) saturate(300%) brightness(0.8);
+            opacity: 0.85;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+
+        .ghost-video-container:hover video {
+            /* Magenta Glitch on Hover */
+            filter: drop-shadow(0 0 10px var(--anomaly)) sepia(100%) hue-rotate(290deg) saturate(300%) brightness(1.2);
+            opacity: 1;
+            transform: scale(1.02) skewX(-1deg);
+        }
+
+        .play-indicator {
+            position: absolute;
+            bottom: 1rem;
+            right: 0;
+            color: var(--data);
+            font-size: 0.75rem;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .ghost-video-container:hover .play-indicator {
+            color: var(--anomaly);
+            opacity: 1;
+        }
+
+        /* High-legibility text classes for older readers */
+        .readable-text {
+            color: var(--text-soft);
+            font-size: 1.15rem; 
+            margin-bottom: 1rem;
+        }
+
+        .massive-header {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: var(--header);
+        }
+
+        /* The $2.3 Trillion Glitch - STATIC UNTIL HOVER */
+        .fatal-glitch {
+            position: relative;
+            animation-play-state: paused;
+            cursor: crosshair;
+        }
+
+        .fatal-glitch:hover {
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch::before, .fatal-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            opacity: 0;
+        }
+
+        .fatal-glitch:hover::before, .fatal-glitch:hover::after {
+            opacity: 1;
+        }
+
+        .fatal-glitch:hover::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--anomaly);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch:hover::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--data);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(62px, 9999px, 14px, 0); }
+            40% { clip: rect(29px, 9999px, 98px, 0); }
+            60% { clip: rect(81px, 9999px, 3px, 0); }
+            80% { clip: rect(45px, 9999px, 55px, 0); }
+            100% { clip: rect(92px, 9999px, 21px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(24px, 9999px, 56px, 0); }
+            20% { clip: rect(89px, 9999px, 12px, 0); }
+            40% { clip: rect(4px, 9999px, 76px, 0); }
+            60% { clip: rect(65px, 9999px, 34px, 0); }
+            80% { clip: rect(19px, 9999px, 88px, 0); }
+            100% { clip: rect(45px, 9999px, 2px, 0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="scanlines"></div>
+
+    <!-- RESPONSIVE TERMINAL GRID: Stack on mobile, 2x2 on Desktop -->
+    <div class="flex flex-col lg:grid lg:grid-cols-2 lg:grid-rows-2 w-full h-full p-2 lg:p-4 gap-4 box-border relative z-10 overflow-y-auto lg:overflow-hidden pb-12 lg:pb-4">
+
+        <!-- COLUMN 1: SYSTEM BOOT & THE LOOP -->
+        <div class="hud-panel">
+            
+            <!-- SLOTTED ASSET: SHADOW_ARC.EXE HEADER TITLE -->
+            <div class="ghost-video-container mt-0 border-b-0" title="Hover to play asset">
+                <video loop muted playsinline class="interactive-video">
+                    <source src="/assets/videos/shadow_arc_title.mp4" type="video/mp4">
+                </video>
+                <span class="play-indicator font-terminal">[ HOVER TO DECRYPT ]</span>
+            </div>
+            
+            <p class="text-sm text-[#FF00FF] font-terminal animate-pulse mb-6 border-b border-[#39FF14]/30 pb-4">> SYS.STATUS: COMPROMISED</p>
+
+            <!-- DOSSIER METADATA -->
+            <div class="grid grid-cols-1 gap-4 font-terminal text-sm mb-6 shrink-0">
+                <div class="p-4 border border-[#39FF14] bg-[#39FF14]/5">
+                    <p class="text-white mb-2 font-bold">> OPERATOR_DOSSIER.DAT</p>
+                    <p><span class="text-[#FF00FF]">ID:</span> Ethan Faulkner</p>
+                    <p><span class="text-[#FF00FF]">ORIGIN:</span> The Common Sense Rebellion</p>
+                    <p class="mt-3 pt-2 border-t border-[#39FF14]/30 text-white font-bold">DIRECTIVE: EXPOSE THE RUST.</p>
+                </div>
+
+                <div class="p-4 border border-[#FFFFFF]/30">
+                    <p class="text-white mb-2 font-bold">> ARCHIVE_STATUS: 9 FILES</p>
+                    <div class="space-y-1 opacity-90 text-xs">
+                        <div class="flex justify-between"><span>EP 1-3: The Install</span> <span class="text-[#FF00FF]">UNLOCKED</span></div>
+                        <div class="flex justify-between"><span>EP 4-6: The Glitch</span> <span class="text-[#FF00FF]">UNLOCKED</span></div>
+                        <div class="flex justify-between"><span>EP 7: The Lifeboat</span> <span class="text-[#FF00FF]">UNLOCKED</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-2 shrink-0">
+                <h2 class="font-terminal text-lg text-white mb-2">> THE_RECURSION_LOOP</h2>
+                <p class="readable-text">
+                    The emergency didn't end. It just changed shape. We were sold a story about hijackers, but the real operation was happening inside the books. This is the structural architecture of the operating system that replaced the Republic.
+                </p>
+                <div class="font-terminal text-xs text-[#39FF14] bg-black border border-[#FF00FF]/50 p-3 text-center">
+                    [01] CREATE CHAOS &nbsp;→&nbsp; [02] DEMAND CONTROL &nbsp;→&nbsp; [03] SEIZE POWER &nbsp;→&nbsp; [04] PRIVATIZE ENFORCERS
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: NODE 01 (WEDGE 1) -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-2xl text-white mb-1">> NODE_01: WEDGE_1</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">INTERNAL_AUDIT_DECAPITATION</p>
+            </div>
+            
+            <!-- SLOTTED ASSET: MELTED SAFE VIDEO -->
+            <div class="ghost-video-container" title="Hover to play asset">
+                <video loop muted playsinline class="interactive-video">
+                    <source src="/assets/videos/melted_steel_bank.mp4" type="video/mp4">
+                </video>
+                <span class="play-indicator font-terminal">[ HOVER TO DECRYPT ]</span>
+            </div>
+
+            <div class="mt-4">
+                <div class="font-terminal text-sm border-l-4 border-[#39FF14] bg-[#39FF14]/10 p-3 mb-6 text-[#39FF14]">
+                    <span class="text-white font-bold">TARGET:</span> Resource Services Washington (RSW)<br>
+                    <span class="text-white font-bold">OBJECTIVE:</span> Reconciliation of $2.3T in adjustments
+                </div>
+                
+                <p class="readable-text">
+                    Wedge 1 was the only fully renovated section of the Pentagon. It possessed a steel superstructure, Kevlar catch mesh, and blast-resistant glazing. When the impact occurred, the blast windows did not fail, and the Kevlar prevented outward venting.
+                </p>
+                <p class="readable-text">
+                    The result was a contained furnace. 34 budget analysts were killed. The safes holding the financial records melted entirely. The unit responsible for reconciling the missing trillions was annihilated in a single thermal event. 
+                </p>
+            </div>
+        </div>
+
+        <!-- COLUMN 3: NODE 02 (WTC 7) -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-2xl text-white mb-1">> NODE_02: WTC_7</h2>
+                <p class="font-terminal text-xs text-[#FF00FF] mb-4">EXTERNAL_REGULATOR_COLLAPSE</p>
+            </div>
+
+            <div class="mt-4">
+                <p class="readable-text">
+                    If the Pentagon strike killed the auditors, the collapse of Building 7 killed the evidence they would have needed. The building housed the densest cluster of federal enforcement on the East Coast. No plane hit it. No debris structurally compromised it. It burned completely.
+                </p>
+
+                <div class="bg-black border border-[#39FF14]/30 p-5 mt-6 mb-6">
+                    <ul class="font-terminal text-xs lg:text-sm space-y-4">
+                        <li class="border-b border-[#39FF14]/20 pb-3">
+                            <span class="text-white font-bold block mb-1">SEC ARCHIVE (FL 11-13)</span> 
+                            <span class="opacity-80 text-white">3,000-4,000 active cases lost. Citigroup prepay transactions. WorldCom IPO ledgers.</span>
+                        </li>
+                        <li class="border-b border-[#39FF14]/20 pb-3">
+                            <span class="text-white font-bold block mb-1">SECRET SERVICE (FL 9-10)</span> 
+                            <span class="opacity-80 text-white">El Dorado Task Force evidence vault. Cartel intermediary maps destroyed.</span>
+                        </li>
+                        <li>
+                            <span class="text-white font-bold block mb-1">IRS COUNSEL / CIA</span> 
+                            <span class="opacity-80 text-white">Tax shelter litigation files destroyed. Clandestine NY station vaporized.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="readable-text font-bold text-[#FF00FF]">
+                    Investigators had to beg corporations to "resubmit" evidence. The destruction created a de facto amnesty event for financial crime.
+                </p>
+            </div>
+        </div>
+
+        <!-- COLUMN 4: THE CONFESSION & CTA -->
+        <div class="hud-panel border-[#FF00FF]">
+            
+            <div class="flex-1 flex flex-col justify-center items-center text-center p-2 lg:p-4 shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> 10-SEP-01_PENTAGON_TRANSCRIPT.LOG</p>
+                <h1 class="fatal-glitch font-terminal massive-header mb-6" data-text="$2.3 TRILLION" title="HOVER TO INITIATE GLITCH">$2.3 TRILLION</h1>
+                <p class="readable-text font-bold text-lg text-white">
+                    "According to some estimates, we cannot track $2.3 trillion in transactions."
+                </p>
+            </div>
+
+            <!-- Ryuko Override -->
+            <div class="ryuko-override text-base lg:text-lg shadow-[0_0_15px_#FF00FF] mt-4 mb-6 shrink-0">
+                <span class="font-terminal text-xs text-[#000000] block mb-2 opacity-80">// FSR-RYUKO_OVR //</span>
+                "They’re not scared of your outrage.<br>They’re scared you might stop being predictable."
+            </div>
+
+            <div class="mt-auto shrink-0">
+                <p class="readable-text text-center text-sm lg:text-base mb-4">
+                    This is not an isolated incident. It is an operating system. Exit the distraction layer and access the full 9-part investigation.
+                </p>
+
+                <a href="/?series=the-shadow-arc" class="block font-terminal border-2 border-[#39FF14] bg-black px-6 py-4 text-center cursor-pointer hover:bg-[#39FF14] hover:text-black text-[#39FF14] font-bold tracking-[0.2em] text-lg transition-colors duration-300 w-full">
+                    [ ACCESS THE SHADOW ARC ]
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INTERACTIVE VIDEO LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Forces video assets to remain frozen until hovered.
+            const interactiveVideos = document.querySelectorAll('.interactive-video');
+            interactiveVideos.forEach(vid => {
+                // Ensure the video loads the first frame before pausing
+                vid.addEventListener('canplay', () => {
+                    vid.pause();
+                });
+                
+                // Fallback in case it's already loaded from cache
+                if (vid.readyState >= 3) {
+                    vid.pause();
+                }
+                
+                // Play when mouse enters the container
+                vid.parentElement.addEventListener('mouseenter', () => {
+                    vid.play();
+                });
+                
+                // Pause when mouse leaves
+                vid.parentElement.addEventListener('mouseleave', () => {
+                    vid.pause();
+                });
+                
+                // For mobile users (tap to play/pause)
+                vid.parentElement.addEventListener('click', () => {
+                    if (vid.paused) {
+                        vid.play();
+                    } else {
+                        vid.pause();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GHOST IN THE MACHINE - Masterclass Interface</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        .glow-text { text-shadow: 0 0 15px rgba(255, 80, 80, 0.8); }
+        .sidebar-btn { transition: all 0.2s ease; }
+        .sidebar-btn:hover { background-color: rgba(255, 255, 255, 0.07); padding-left: 2rem; }
+    </style>
+</head>
+<body class="min-h-screen bg-[var(--c-void)] text-white custom-scrollbar bg-[var(--c-void)] text-white custom-scrollbar antialiased selection:bg-red-600 flex flex-col pt-[80px]">
+    <div class="scanline-overlay pointer-events-none"></div>
+
+    <!-- Top Navigation -->
+    <header class="fixed top-0 w-full z-50 bg-[var(--c-void)]/95 backdrop-blur-md border-b-2 border-[var(--c-primary)]/30 px-8 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <div class="w-5 h-5 rounded-full bg-red-600 animate-pulse"></div>
+            <a href="/" class="text-xs font-bold font-mono tracking-widest text-red-400 hover:text-white mr-4 border border-red-500/30 px-3 py-1 bg-black/50">[ RETURN QUICK NAV ]</a><h1 class="font-mono font-bold tracking-widest text-2xl uppercase text-white">Sovereign_HQ <span class="text-red-400">///</span> STUDY INTERFACE v2.0</h1>
+        </div>
+        <div class="font-mono text-lg font-bold text-gray-300 tracking-widest hidden sm:block">
+            ENCRYPTED CONNECTION [OK]
+        </div>
+    </header>
+
+    <div class="flex flex-1">
+        <!-- Sidebar Navigation -->
+        <nav class="w-[24rem] bg-[#0a0a0a] border-r-2 border-[#444] fixed h-[calc(100vh-80px)] overflow-y-auto flex flex-col py-8 z-40">
+            <div class="px-8 mb-6">
+                <div class="text-lg font-bold font-mono text-white tracking-widest mb-2 border-b-2 border-[#555] pb-3">MASTERCLASS DIRECTORY</div>
+            </div>
+            
+            <button id="nav-intro" onclick="switchTab('intro')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 font-mono text-xl font-bold tracking-wider bg-[#222] border-red-400 text-white">
+                // OBJECTIVE OVERVIEW
+            </button>
+            <button id="nav-mod1" onclick="switchTab('mod1')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300">
+                <span class="text-[var(--c-primary)] inline-block w-10 font-black">01</span> ALCHEMY OF EXHAUSTION
+            </button>
+            <button id="nav-mod2" onclick="switchTab('mod2')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300">
+                <span class="text-[var(--c-primary)] inline-block w-10 font-black">02</span> ROBERT MORRIS
+            </button>
+            <button id="nav-mod3" onclick="switchTab('mod3')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300">
+                <span class="text-[var(--c-primary)] inline-block w-10 font-black">03</span> ASSUMPTION ENGINE
+            </button>
+            <button id="nav-mod4" onclick="switchTab('mod4')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300">
+                <span class="text-[var(--c-primary)] inline-block w-10 font-black">04</span> SCRIPOMANIA
+            </button>
+            <button id="nav-mod5" onclick="switchTab('mod5')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300">
+                <span class="text-[var(--c-primary)] inline-block w-10 font-black">05</span> THE S.U.M. CHARTER
+            </button>
+            <button id="nav-mod6" onclick="switchTab('mod6')" class="sidebar-btn w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300">
+                <span class="text-[var(--c-primary)] inline-block w-10 font-black">06</span> WHISKEY REBELLION
+            </button>
+            <button id="nav-outro" onclick="switchTab('outro')" class="sidebar-btn mt-6 w-full text-left px-8 py-6 border-l-8 border-transparent font-mono text-xl font-bold tracking-wider text-gray-300 border-t-2 border-t-[#333]">
+                // THE COGNITIVE SALVAGE
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="ml-[24rem] flex-1 relative z-10 p-12 md:p-20 h-[calc(100vh-80px)] overflow-y-auto w-full">
+            <div class="max-w-[1200px] mx-auto pb-40">
+
+                <!-- [INTRO TAB] -->
+                <section id="intro" class="tab-pane block">
+                    <div class="mb-14">
+                        <div class="inline-block border-2 border-[var(--c-primary)]/30 rounded-full px-6 py-2 text-lg font-bold font-mono tracking-widest text-gray-200 mb-6 bg-[#111]">
+                            PART 1 THE SEED: 1773 - 1794
+                        </div>
+                        <h1 class="text-6xl md:text-7xl font-black font-sans tracking-tight text-white glow-text mb-6 leading-tight">
+                            THE GHOST IN THE <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">MACHINE</span>
+                        </h1>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel border-2 border-[var(--c-primary)]/30 p-12 rounded-xl">
+                        <h2 class="font-mono font-bold text-4xl mb-10 flex items-center gap-4 uppercase tracking-widest text-white border-b-2 border-[#444] pb-6">
+                            <svg class="w-10 h-10 text-[var(--c-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            Masterclass Objective
+                        </h2>
+                        <div class="space-y-12">
+                            <div>
+                                <h3 class="text-2xl font-bold font-mono text-gray-300 uppercase tracking-widest mb-6">The Structural Goal</h3>
+                                <ul class="space-y-6 font-mono text-2xl text-white font-medium">
+                                    <li class="flex items-start gap-4"><span class="text-red-400 font-black text-3xl">>&nbsp;</span> Hardwire the 1791 financial mechanics into cognitive memory.</li>
+                                    <li class="flex items-start gap-4"><span class="text-red-400 font-black text-3xl">>&nbsp;</span> Identify the root source code of modern monopoly power.</li>
+                                    <li class="flex items-start gap-4"><span class="text-red-400 font-black text-3xl">>&nbsp;</span> Strip the patriotic veneer to precisely map the economic reality.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-[#1a1a1a] p-10 border-l-8 border-[var(--c-primary)] rounded-r-xl">
+                                <h3 class="text-2xl font-bold font-mono text-[var(--c-primary)] uppercase tracking-widest mb-5">The Lens</h3>
+                                <p class="text-3xl leading-relaxed text-white font-medium">
+                                    You are the forensic accountant of history. You are opening the ledgers purely to study the source code. It’s a <span class="text-red-400 font-black">brutal financial autopsy</span> mixed with cold, unblinking data. You are lifting yourself out of the common patriotic mythos and plunging directly into the structural financial reality.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                
+                        <div class="mt-12 bg-red-900/20 border-2 border-red-500 rounded-xl p-8 animate-pulse-glow hover:bg-red-900/40 transition-colors">
+                            <h3 class="text-2xl font-bold font-mono text-white mb-4 flex items-center gap-3">
+                                <div class="w-4 h-4 rounded-full bg-red-500 animate-pulse"></div>
+                                ARCHIVE LINKAGE DETECTED
+                            </h3>
+                            <p class="text-xl text-gray-300 font-mono mb-6">The cryptographic receipts for the Ghost Part 1 analysis are now available on the secure ledger.</p>
+                            <a href="/receipts/pack/GhostPart1Receipts/index.html" target="_blank" class="inline-block px-8 py-4 bg-red-500 text-black font-black font-mono tracking-widest uppercase hover:bg-white transition-colors">
+                                [ ACCESS GHOST PART 1 RECEIPTS ]
+                            </a>
+                        </div>
+</section>
+
+                <!-- [MODULE 1] -->
+                <section id="mod1" class="tab-pane hidden">
+                    <div class="text-2xl font-black font-mono text-[var(--c-primary)] mb-4 tracking-widest">MODULE 01</div>
+                    <h2 class="text-6xl md:text-7xl font-black text-white tracking-wide mb-4">THE ALCHEMY OF EXHAUSTION</h2>
+                    <p class="text-3xl font-bold font-mono text-gray-200 mb-12 pb-8 border-b-2 border-[#444]">The Macro Economy of 1776</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-10 mb-12">
+                        <div class="bg-[#1a1a1a] p-10 rounded-xl border-2 border-[#444] shadow-xl">
+                            <h4 class="text-2xl font-bold font-mono text-white uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-gray-400"></span> The Myth</h4>
+                            <p class="text-2xl text-white font-medium leading-relaxed">A united front of noble patriots throwing tea in the harbor to protest unfair British taxation.</p>
+                        </div>
+                        <div class="bg-[#110505] p-10 rounded-xl border-2 border-red-400 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl rounded-full"></div>
+                            <h4 class="text-2xl font-black font-mono text-red-400 uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-red-400 animate-pulse"></span> The Evidence</h4>
+                            <p class="text-3xl text-white font-black leading-snug">Wars are won by logistics, not ideology.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel p-12 rounded-xl border-2 border-[var(--c-primary)]/30 mb-10 shadow-2xl">
+                        <h4 class="text-2xl font-black font-mono text-[var(--c-primary)] uppercase tracking-widest mb-8 pb-4 border-b-2 border-[var(--c-primary)]/20">The Core Concept & Chokepoint</h4>
+                        <ul class="space-y-6 text-2xl text-white font-medium list-none">
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> To fund the war, the Continental Congress printed the Continental Dollar, which immediately entered hyperinflation.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> This wasn't just an economic crisis; it was a psychological weapon. It destroyed the purchasing power of the agrarian working class.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> When the public is exhausted and starving, the public resistance collapses. They don't have the energy to read the fine print of their new government.</li>
+                            
+                            <li class="mt-12 p-10 border-l-8 border-red-400 bg-[#150a0a] rounded-r-xl shadow-inner">
+                                <span class="uppercase tracking-widest font-black font-mono text-2xl text-red-400 block mb-4">The Chokepoint:</span>
+                                <span class="text-3xl text-white font-bold leading-relaxed">Out of this vacuum rose the "Mega-Merchant" (the first defense contractors). They realized the real profit wasn't fighting the British; it was buying up depreciated, hyper-inflated sovereign debt from starving soldiers for pennies on the dollar.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button onclick="toggleReceipt('rec1')" class="w-full text-center border-4 border-[#333] hover:border-red-400 bg-[#1a1a1a] py-8 text-2xl font-black font-mono text-white hover:text-red-400 hover:bg-[#222] transition-colors uppercase tracking-widest flex items-center justify-center gap-4 rounded-xl shadow-lg cursor-pointer">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        [ DECRYPT LEDGER SNIPPET ]
+                    </button>
+                    <div id="rec1" class="hidden mt-6 p-10 bg-[var(--c-void)] border-l-8 border-red-400 shadow-2xl rounded-r-xl">
+                        <p class="text-red-400 mb-6 font-black font-mono text-2xl tracking-wide">SOURCE: American Revolution Economic Analysis</p>
+                        <p class="text-2xl text-white font-mono leading-relaxed font-medium">"William Duer provided his associate, William J. Vredenburgh, with internal, confidential Treasury lists containing the names of Continental officers and soldiers... Vredenburgh then employed James Reynolds to systematically track down veterans in rural areas and purchase their certificates at severe discounts, operating entirely on the asymmetric information that the federal government was about to make those papers highly valuable."</p>
+                    </div>
+                </section>
+
+                <!-- [MODULE 2] -->
+                <section id="mod2" class="tab-pane hidden">
+                    <div class="text-2xl font-black font-mono text-[var(--c-primary)] mb-4 tracking-widest">MODULE 02</div>
+                    <h2 class="text-6xl md:text-7xl font-black text-white tracking-wide mb-4">ROBERT MORRIS & THE FIRST PRIVATIZATION</h2>
+                    <p class="text-3xl font-bold font-mono text-gray-200 mb-12 pb-8 border-b-2 border-[#444]">1781</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-10 mb-12">
+                        <div class="bg-[#1a1a1a] p-10 rounded-xl border-2 border-[#444] shadow-xl">
+                            <h4 class="text-2xl font-bold font-mono text-white uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-gray-400"></span> The Myth</h4>
+                            <p class="text-2xl text-white font-medium leading-relaxed">Robert Morris, the selfless "Financier of the Revolution," dipped into his own pockets to save the freezing army at Valley Forge.</p>
+                        </div>
+                        <div class="bg-[#110505] p-10 rounded-xl border-2 border-red-400 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl rounded-full"></div>
+                            <h4 class="text-2xl font-black font-mono text-red-400 uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-red-400 animate-pulse"></span> The Evidence</h4>
+                            <p class="text-3xl text-white font-black leading-snug">The mother of all public-to-private wealth transfers.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel p-12 rounded-xl border-2 border-[var(--c-primary)]/30 mb-10 shadow-2xl">
+                        <h4 class="text-2xl font-black font-mono text-[var(--c-primary)] uppercase tracking-widest mb-8 pb-4 border-b-2 border-[var(--c-primary)]/20">Core Concept: Public Risk, Private Monopoly</h4>
+                        <ul class="space-y-6 text-2xl text-white font-medium list-none">
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> Morris demanded dictatorial control over the Treasury as a condition of his help.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> He used a massive, emergency shipment of French silver (which belonged to the <em>public</em>) to buy the majority of the stock in his newly created Bank of North America (a <em>private</em> bank).</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> He then used the bank to lend the government its own money at interest.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> He paid out <span class="text-red-400 font-black bg-[#222] px-3 py-1 ml-2 border border-[#444] rounded">8.5% DIVIDENDS</span> to his inner circle of merchant friends, completely hijacking the public treasury.</li>
+                        </ul>
+                    </div>
+
+                    <button onclick="toggleReceipt('rec2')" class="w-full text-center border-4 border-[#333] hover:border-red-400 bg-[#1a1a1a] py-8 text-2xl font-black font-mono text-white hover:text-red-400 hover:bg-[#222] transition-colors uppercase tracking-widest flex items-center justify-center gap-4 rounded-xl shadow-lg cursor-pointer">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        [ DECRYPT LEDGER SNIPPET ]
+                    </button>
+                    <div id="rec2" class="hidden mt-6 p-10 bg-[var(--c-void)] border-l-8 border-red-400 shadow-2xl rounded-r-xl">
+                        <p class="text-red-400 mb-6 font-black font-mono text-2xl tracking-wide">SOURCE: Analyzing Early US Banks' Structure</p>
+                        <p class="text-2xl text-white font-mono leading-relaxed font-medium">"To force the engine to start, Morris engaged in an act of breathtaking financial ledger-alchemy. In 1781, a shipment of physical silver valued at $450,000 arrived from France, intended as a direct sovereign loan... Instead of using this silver to directly pay the mutinous army, Morris deposited it into his newly created, privately-owned Bank of North America to serve as its foundational, fractional reserve... the Bank then lent the money back to the Congress in the form of newly printed bank notes."</p>
+                    </div>
+                </section>
+
+                <!-- [MODULE 3] -->
+                <section id="mod3" class="tab-pane hidden">
+                    <div class="text-2xl font-black font-mono text-[var(--c-primary)] mb-4 tracking-widest">MODULE 03</div>
+                    <h2 class="text-6xl md:text-7xl font-black text-white tracking-wide mb-4">HAMILTON'S ASSUMPTION ENGINE</h2>
+                    <p class="text-3xl font-bold font-mono text-gray-200 mb-12 pb-8 border-b-2 border-[#444]">1790</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-10 mb-12">
+                        <div class="bg-[#1a1a1a] p-10 rounded-xl border-2 border-[#444] shadow-xl">
+                            <h4 class="text-2xl font-bold font-mono text-white uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-gray-400"></span> The Myth</h4>
+                            <p class="text-2xl text-white font-medium leading-relaxed">Alexander Hamilton brilliantly unites the disparate state debts into one national debt to secure America's global creditworthiness.</p>
+                        </div>
+                        <div class="bg-[#110505] p-10 rounded-xl border-2 border-red-400 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl rounded-full"></div>
+                            <h4 class="text-2xl font-black font-mono text-red-400 uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-red-400 animate-pulse"></span> The Evidence</h4>
+                            <p class="text-3xl text-white font-black leading-snug">The largest, most blatant, state-sponsored insider trading scheme in American history.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel p-12 rounded-xl border-2 border-[var(--c-primary)]/30 mb-10 shadow-2xl">
+                        <h4 class="text-2xl font-black font-mono text-[var(--c-primary)] uppercase tracking-widest mb-8 pb-4 border-b-2 border-[var(--c-primary)]/20">Core Concept: Asymmetric Information Warfare</h4>
+                        <ul class="space-y-6 text-2xl text-white font-medium list-none">
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> Hamilton's inner circle (the Northern Elite, including his assistant William Duer) knew the debt would be funded at 100% par value.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> They deployed agents on fast horses to the geographic periphery (the rural backcountry) to buy up the depreciated Continental notes from desperate, uninformed veterans for 10 to 15 cents on the dollar.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> When the Funding Act passed, the speculators redeemed the paper for new U.S. Treasury bonds. <strong class="text-red-400 font-black bg-[#222] px-3 py-1 mx-2 border border-[#444] rounded uppercase">Yields exceeded 800%.</strong> The working class bled out to build Wall Street.</li>
+                        </ul>
+                    </div>
+
+                    <button onclick="toggleReceipt('rec3')" class="w-full text-center border-4 border-[#333] hover:border-red-400 bg-[#1a1a1a] py-8 text-2xl font-black font-mono text-white hover:text-red-400 hover:bg-[#222] transition-colors uppercase tracking-widest flex items-center justify-center gap-4 rounded-xl shadow-lg cursor-pointer">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        [ DECRYPT LEDGER SNIPPET ]
+                    </button>
+                    <div id="rec3" class="hidden mt-6 p-10 bg-[var(--c-void)] border-l-8 border-red-400 shadow-2xl rounded-r-xl">
+                        <p class="text-red-400 mb-6 font-black font-mono text-2xl tracking-wide">SOURCE: Analyzing Early US Banks' Structure</p>
+                        <p class="text-2xl text-white font-mono leading-relaxed font-medium">"The $10 million in capital was divided into 25,000 shares priced at $400 each. The ownership breakdown explicitly codified the privatization of public finance:<br><br>The Federal Government was permitted to subscribe to only one-fifth (20%) of the total shares. Private, unelected individuals controlled the remaining four-fifths (80%) of the stock."</p>
+                    </div>
+                </section>
+
+                <!-- [MODULE 4] -->
+                <section id="mod4" class="tab-pane hidden">
+                    <div class="text-2xl font-black font-mono text-[var(--c-primary)] mb-4 tracking-widest">MODULE 04</div>
+                    <h2 class="text-6xl md:text-7xl font-black text-white tracking-wide mb-4">SCRIPOMANIA & THE HIJACKING OF CAPITAL</h2>
+                    <p class="text-3xl font-bold font-mono text-gray-200 mb-12 pb-8 border-b-2 border-[#444]">1791</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-10 mb-12">
+                        <div class="bg-[#1a1a1a] p-10 rounded-xl border-2 border-[#444] shadow-xl">
+                            <h4 class="text-2xl font-bold font-mono text-white uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-gray-400"></span> The Myth</h4>
+                            <p class="text-2xl text-white font-medium leading-relaxed">The First Bank of the United States was a necessary, stabilizing force for a uniform currency.</p>
+                        </div>
+                        <div class="bg-[#110505] p-10 rounded-xl border-2 border-red-400 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl rounded-full"></div>
+                            <h4 class="text-2xl font-black font-mono text-red-400 uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-red-400 animate-pulse"></span> The Evidence</h4>
+                            <p class="text-3xl text-white font-black leading-snug">It was a wildly deregulated casino that triggered America's first financial crash.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel p-12 rounded-xl border-2 border-[var(--c-primary)]/30 mb-10 shadow-2xl">
+                        <h4 class="text-2xl font-black font-mono text-[var(--c-primary)] uppercase tracking-widest mb-8 pb-4 border-b-2 border-[var(--c-primary)]/20">Core Concept: The Derivative Bubble</h4>
+                        <ul class="space-y-6 text-2xl text-white font-medium list-none">
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> The Bank was a $10 million monopoly, but 80% was controlled by private investors.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> The IPO was structurally flawed: Investors could buy "scrips" (down-payment options) on margin for just $25.</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> This created <strong class="text-red-400 text-3xl">"Scripomania"</strong>—a feral, out-of-control speculative bubble orchestrated by William Duer and his "Six Percent Club."</li>
+                            <li class="flex gap-4"><span class="text-[var(--c-primary)] font-black text-3xl mt-1">•</span> They attempted an illegal bear squeeze, embezzled funds, and ruptured the market in 1792. Hamilton had to use public taxpayer money to bail them out. <span class="text-red-400 font-black block mt-4 border-l-4 border-red-400 pl-4 uppercase">Privatize the profit, socialize the loss.</span></li>
+                        </ul>
+                    </div>
+
+                    <button onclick="toggleReceipt('rec4')" class="w-full text-center border-4 border-[#333] hover:border-red-400 bg-[#1a1a1a] py-8 text-2xl font-black font-mono text-white hover:text-red-400 hover:bg-[#222] transition-colors uppercase tracking-widest flex items-center justify-center gap-4 rounded-xl shadow-lg cursor-pointer">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        [ DECRYPT LEDGER SNIPPET ]
+                    </button>
+                    <div id="rec4" class="hidden mt-6 p-10 bg-[var(--c-void)] border-l-8 border-red-400 shadow-2xl rounded-r-xl">
+                        <p class="text-red-400 mb-6 font-black font-mono text-2xl tracking-wide">SOURCE: 1791 Scripomania Crisis Analysis</p>
+                        <p class="text-2xl text-white font-mono leading-relaxed font-medium">"James Madison, horrified by the mechanics of the legislation, accurately assessed the situation, writing to Thomas Jefferson on July 10, 1791, that the IPO gave 'a moral certainty of gain to the Subscribers with scarce a physical possibility of loss. The subscriptions are consequently a mere scramble for public plunder'."</p>
+                    </div>
+                </section>
+
+                <!-- [MODULE 5] -->
+                <section id="mod5" class="tab-pane hidden">
+                    <div class="text-2xl font-black font-mono text-[var(--c-primary)] mb-4 tracking-widest">MODULE 05</div>
+                    <h2 class="text-6xl md:text-7xl font-black text-white tracking-wide mb-4">THE S.U.M. CHARTER & THE APEX CHEAT CODE</h2>
+                    <p class="text-3xl font-bold font-mono text-gray-200 mb-12 pb-8 border-b-2 border-[#444]">1791</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-10 mb-12">
+                        <div class="bg-[#1a1a1a] p-10 rounded-xl border-2 border-[#444] shadow-xl">
+                            <h4 class="text-2xl font-bold font-mono text-white uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-gray-400"></span> The Myth</h4>
+                            <p class="text-2xl text-white font-medium leading-relaxed">The Society for Establishing Useful Manufactures (S.U.M.) was a patriotic endeavor to end reliance on British textiles.</p>
+                        </div>
+                        <div class="bg-[#110505] p-10 rounded-xl border-2 border-red-400 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl rounded-full"></div>
+                            <h4 class="text-2xl font-black font-mono text-red-400 uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-red-400 animate-pulse"></span> The Evidence</h4>
+                            <p class="text-3xl text-white font-black leading-snug">It was the exact legal blueprint for the unaccountable, modern mega-corporation.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel p-12 rounded-xl border-2 border-[var(--c-primary)]/30 mb-10 shadow-2xl">
+                        <h4 class="text-2xl font-black font-mono text-[var(--c-primary)] uppercase tracking-widest mb-8 pb-4 border-b-2 border-[var(--c-primary)]/20">Core Concept: The Quasi-Sovereign Entity</h4>
+                        <p class="text-3xl text-white mb-8 font-bold bg-[#222] p-8 rounded-lg border-l-8 border-red-400 shadow-inner">Hamilton outsourced the violence and immunity of the State to a private board of directors.</p>
+                        <ul class="space-y-8 text-2xl text-white font-medium list-none">
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">THE FOREVER TAX SHIELD:</strong> S.U.M. was exempt from local and county taxes <span class="uppercase font-bold underline decoration-red-400">forever</span>, forcing the citizens of Paterson, NJ to permanently subsidize the corporation's civic footprint.</li>
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">PRIVATIZED EMINENT DOMAIN:</strong> The corporation was granted the power to violently seize private land and water rights for their own profit.</li>
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">THE PUBLIC LOTTERY:</strong> They were explicitly permitted to run public lotteries to socialize the risk of their venture capital.</li>
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">CORPORATE LAWMAKING:</strong> They were authorized to run an unelected municipal government to control the workers and crush democratic accountability.</li>
+                        </ul>
+                    </div>
+
+                    <button onclick="toggleReceipt('rec5')" class="w-full text-center border-4 border-[#333] hover:border-red-400 bg-[#1a1a1a] py-8 text-2xl font-black font-mono text-white hover:text-red-400 hover:bg-[#222] transition-colors uppercase tracking-widest flex items-center justify-center gap-4 rounded-xl shadow-lg cursor-pointer">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        [ DECRYPT LEDGER SNIPPET ]
+                    </button>
+                    <div id="rec5" class="hidden mt-6 p-10 bg-[var(--c-void)] border-l-8 border-red-400 shadow-2xl rounded-r-xl">
+                        <p class="text-red-400 mb-6 font-black font-mono text-2xl tracking-wide">SOURCE: S.U.M. Charter & Legal Blueprint</p>
+                        <p class="text-2xl text-white font-mono leading-relaxed font-medium">"The Society for Establishing Useful Manufactures (S.U.M.) was not merely a factory; it was a sovereign corporate micro-state. The charter legally shielded the directors from personal liability, exempted the corporation from local property taxes for ten years, and granted them the municipal authority to act as an unelected local government to police the workforce."</p>
+                    </div>
+                </section>
+
+                <!-- [MODULE 6] -->
+                <section id="mod6" class="tab-pane hidden">
+                    <div class="text-2xl font-black font-mono text-[var(--c-primary)] mb-4 tracking-widest">MODULE 06</div>
+                    <h2 class="text-6xl md:text-7xl font-black text-white tracking-wide mb-4">THE WHISKEY REBELLION & THE ARMY</h2>
+                    <p class="text-3xl font-bold font-mono text-gray-200 mb-12 pb-8 border-b-2 border-[#444]">1794</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-10 mb-12">
+                        <div class="bg-[#1a1a1a] p-10 rounded-xl border-2 border-[#444] shadow-xl">
+                            <h4 class="text-2xl font-bold font-mono text-white uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-gray-400"></span> The Myth</h4>
+                            <p class="text-2xl text-white font-medium leading-relaxed">George Washington bravely puts down tax-evading, drunken rioters to establish the rule of law.</p>
+                        </div>
+                        <div class="bg-[#110505] p-10 rounded-xl border-2 border-red-400 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600 opacity-20 blur-3xl rounded-full"></div>
+                            <h4 class="text-2xl font-black font-mono text-red-400 uppercase tracking-widest mb-6 flex items-center gap-3"><span class="w-5 h-5 rounded-full bg-red-400 animate-pulse"></span> The Evidence</h4>
+                            <p class="text-3xl text-white font-black leading-snug">The federal government used overwhelming military terror to crush small business and enforce a financial monopoly for the eastern elite.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[var(--c-base)] glass-panel p-12 rounded-xl border-2 border-[var(--c-primary)]/30 mb-10 shadow-2xl">
+                        <h4 class="text-2xl font-black font-mono text-[var(--c-primary)] uppercase tracking-widest mb-8 pb-4 border-b-2 border-[var(--c-primary)]/20">Core Concept: Institutionalization of the Financial Elite</h4>
+                        <ul class="space-y-8 text-2xl text-white font-medium list-none">
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">THE ALGORITHMIC TRAP:</strong> The excise tax charged large eastern commercial distillers a flat fee (bringing their cost to ~6 cents/gallon) while forcing small western frontier farmers to pay a volume rate (9 to 18 cents/gallon). It was mathematically designed to bankrupt independent farmers and consolidate the industry.</li>
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">WEAPONIZED CURRENCY:</strong> The tax required payment in gold/silver in a geographic region where whiskey <em>was</em> the only currency. Literally taxing their money supply.</li>
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">THE DISPLAY OF DOMINANCE:</strong> When the farmers resisted, Hamilton marched a <strong>13,000-man federal army</strong> over the mountains to crush ~500 disorganized farmers.</li>
+                            <li><strong class="text-red-400 block mb-2 font-black text-3xl">THE DREADFUL NIGHT:</strong> Federal cavalry kicked in doors, tortured prisoners (General "Blackbeard" White), and paraded innocent men in chains through Philadelphia on Christmas Day.</li>
+                        </ul>
+                        <div class="mt-12 p-8 bg-[#2a0808] border-l-8 border-red-400 text-white font-serif font-bold text-3xl rounded-r-xl shadow-inner leading-normal">
+                            The lesson to the working class: Resist the financial elite, and we will bankrupt the country just to deploy the military against you.
+                        </div>
+                    </div>
+
+                    <button onclick="toggleReceipt('rec6')" class="w-full text-center border-4 border-[#333] hover:border-red-400 bg-[#1a1a1a] py-8 text-2xl font-black font-mono text-white hover:text-red-400 hover:bg-[#222] transition-colors uppercase tracking-widest flex items-center justify-center gap-4 rounded-xl shadow-lg cursor-pointer">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        [ DECRYPT LEDGER SNIPPET ]
+                    </button>
+                    <div id="rec6" class="hidden mt-6 p-10 bg-[var(--c-void)] border-l-8 border-red-400 shadow-2xl rounded-r-xl">
+                        <p class="text-red-400 mb-6 font-black font-mono text-2xl tracking-wide">SOURCE: Whiskey Rebellion & State Violence</p>
+                        <p class="text-2xl text-white font-mono leading-relaxed font-medium">"The excise tax was explicitly designed to consolidate the distilling industry into the hands of wealthy eastern commercial operators by disproportionately taxing western family farmers. When the farmers resisted the liquidation of their livelihoods, Hamilton successfully lobbied for the deployment of 13,000 federal troops to crush the dissent, establishing the ultimate state violence precedent for financial compliance."</p>
+                    </div>
+                </section>
+
+                <!-- [OUTRO TAB] -->
+                <section id="outro" class="tab-pane hidden">
+                    <div class="min-h-[60vh] flex flex-col items-center justify-center text-center p-12">
+                        <h2 class="font-mono font-black text-4xl uppercase tracking-widest text-white mb-12 border-b-4 border-[var(--c-primary)]/30 pb-6">
+                            The Cognitive Salvage
+                        </h2>
+                        <blockquote class="text-4xl md:text-5xl font-serif font-bold italic text-gray-300 leading-normal max-w-[900px] border-l-8 border-red-400 pl-10 text-left bg-[#111] p-10 rounded-r-2xl shadow-2xl">
+                            "The system didn't break in <span class="text-white">2008</span>. It didn't break in <span class="text-white">1913</span>. It was engineered this way in <span class="text-red-400">1791</span>. The Robber Barons didn't invent the monopoly; they just optimized Alexander Hamilton’s blueprint. <br><br>
+                            <span class="text-red-400 font-black not-italic font-sans block mt-8 mb-6 border-b border-red-400/30 pb-4">But here is the good news: The Financial Elite is arrogant. They left the receipts.</span>
+                            <span class="text-3xl not-italic font-sans font-medium text-white block">We don't have to be exhausted anymore, because now we can see the exact mechanics of the machine."</span>
+                        </blockquote>
+                    </div>
+                </section>
+
+                <!-- Spacer for scrolling -->
+                <div class="h-40"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show target tab
+            const target = document.getElementById(id);
+            target.classList.remove('hidden');
+            target.classList.add('block');
+            
+            // Reset nav button styles
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.classList.remove('bg-[#222]', 'border-red-400', 'text-white');
+                btn.classList.add('border-transparent', 'text-gray-300');
+                // Ensure intro tab text stays normal if not selected
+                if(btn.id === 'nav-intro') {
+                    btn.classList.remove('border-transparent');
+                    btn.classList.add('border-l-8'); // Keep the left border space
+                }
+            });
+
+            // Activate target nav button
+            const activeBtn = document.getElementById('nav-' + id);
+            activeBtn.classList.remove('border-transparent', 'text-gray-300');
+            activeBtn.classList.add('bg-[#222]', 'border-red-400', 'text-white');
+            
+            // Scroll main pane to top
+            document.querySelector('main').scrollTo(0, 0);
+        }
+
+        function toggleReceipt(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

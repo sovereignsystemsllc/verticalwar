@@ -125,57 +125,43 @@
       </div>
 
       <div class="flex-1 relative w-full h-full min-h-0 overflow-hidden flex flex-col">
-        <!-- SPLASH CAROUSEL -->
+        <!-- SPLASH CAROUSEL / TERMINAL CORE -->
         <div id="placeholder-msg"
-          class="flex-1 flex flex-col items-center justify-center text-center p-4 md:p-8 bg-[#0a0a0a] overflow-y-auto custom-scrollbar">
-          <p class="text-[10px] text-[#a78bfa]/50 font-bold uppercase tracking-[0.2em] mb-6 animate-pulse">
-            >> SELECT DIRECTORY NODE TO INITIATE DECRYPTION
-          </p>
+          class="flex-1 flex flex-col items-center justify-center text-center p-4 md:p-8 bg-[#0a0a0a] overflow-y-auto custom-scrollbar relative">
+          
+          <!-- Massive pulsing background sigil -->
+          <div class="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
+            <svg viewBox="0 0 100 100" class="w-full max-w-md h-auto animate-pulse">
+              <polygon points="50,10 90,90 10,90" fill="none" stroke="#a78bfa" stroke-width="2" />
+              <circle cx="50" cy="63" r="15" fill="none" stroke="#a78bfa" stroke-width="1" />
+            </svg>
+          </div>
 
-          <!-- CAROUSEL CONTAINER -->
-          <div class="w-full max-w-2xl relative">
-
-            <!-- SOVEREIGN EDIT BUTTON -->
-            <a id="btn-edit-carousel" href="/admin/splash.html"
-              class="hidden absolute -top-8 right-0 text-[9px] font-bold tracking-widest uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-3 py-1 transition-colors z-10">
-              [ EDIT CAROUSEL ]
-            </a>
-
-            <!-- SLIDE TRACK WRAPPER -->
-            <div class="overflow-hidden border border-[#a78bfa]/20 bg-[#05010a]/50 glass-panel relative">
-              <div id="carousel-track" class="flex transition-transform duration-500 ease-in-out">
-                <!-- Slides injected by main.js -->
-                <div class="min-w-full p-8 flex flex-col items-center justify-center min-h-[320px]">
-                  <p class="text-[#a78bfa]/30 text-xs uppercase tracking-widest animate-pulse">LOADING TRANSMISSION...
-                  </p>
-                </div>
-              </div>
+          <div class="z-10 flex flex-col items-center max-w-lg">
+            <h2 class="text-3xl md:text-5xl font-mono font-bold text-white tracking-[0.4em] mb-4 drop-shadow-[0_0_15px_rgba(167,139,250,0.5)]">
+              THE CODEX
+            </h2>
+            
+            <div class="h-px w-32 bg-gradient-to-r from-transparent via-[#a78bfa] to-transparent mb-6"></div>
+            
+            <div class="flex flex-col gap-2 mb-8 bg-[#05010a]/80 p-4 border border-[#a78bfa]/20 font-mono text-[10px] text-[#a78bfa]/60 tracking-widest uppercase items-start text-left w-full shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]">
+               <p>> SYSTEM: ONLINE</p>
+               <p>> CONNECTION: SECURE</p>
+               <p>> DIRECTORY ACCESS: VERIFIED</p>
+               <p id="splash-node-count" class="text-[#a78bfa]/80">> ACTIVE NODES: CALCULATING...</p>
             </div>
 
-            <!-- CAROUSEL CONTROLS -->
-            <div class="flex items-center justify-between mt-4 px-1">
-              <button id="carousel-prev"
-                class="text-[10px] font-bold text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase border border-[#a78bfa]/20 hover:border-[#a78bfa]/60 px-4 py-2 transition-colors">
-                &lt; PREV
-              </button>
-              <div id="carousel-dots" class="flex gap-2 items-center">
-                <!-- Dots injected by JS -->
-              </div>
-              <button id="carousel-next"
-                class="text-[10px] font-bold text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase border border-[#a78bfa]/20 hover:border-[#a78bfa]/60 px-4 py-2 transition-colors">
-                NEXT &gt;
-              </button>
-            </div>
+            <p class="text-xs md:text-sm text-[#a78bfa] font-bold uppercase tracking-[0.2em] animate-pulse">
+              >> SELECT DIRECTORY NODE TO INITIATE DECRYPTION_
+            </p>
           </div>
 
           <!-- MOBILE DIRECTORY BRIDGE -->
-          <div class="md:hidden mt-8 w-full flex flex-col items-center gap-2">
+          <div class="md:hidden mt-12 w-full flex flex-col items-center gap-2 z-10">
             <button id="btn-open-directory"
-              class="border-2 border-[#a78bfa] bg-[#a78bfa]/15 text-white hover:bg-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-5 px-8 transition-all text-sm w-full shadow-[0_0_25px_rgba(167,139,250,0.35)] hover:shadow-[0_0_35px_rgba(167,139,250,0.6)] animate-pulse hover:animate-none">
-              ↓ READ THE ARTICLES
+              class="border-2 border-[#a78bfa] bg-[#a78bfa]/15 text-white hover:bg-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-4 px-8 transition-all text-sm w-full shadow-[0_0_25px_rgba(167,139,250,0.35)] hover:shadow-[0_0_35px_rgba(167,139,250,0.6)]">
+              ↓ BROWSE ARCHIVES
             </button>
-            <p class="text-[10px] text-[#a78bfa]/50 tracking-widest uppercase">Browse all articles, archives &amp;
-              doctrine</p>
           </div>
         </div>
 

@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Pack // Ghost Part 4 — Vertical War</title>
+    <meta name="description"
+        content="The unaltered research papers, audits, and source documents behind The Ghost of the East India Company series. Verify the receipts yourself.">
+    <meta property="og:url" content="https://verticalwar.com/receipts/pack/GhostPart4Receipts">
+    <meta property="og:title" content="Receipt Pack // Ghost Part 4">
+    <meta property="og:description"
+        content="Primary source documents. Chain of custody verified. Don't trust the summary — read the receipts.">
+    <meta property="og:image" content="https://verticalwar.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://verticalwar.com/og-image.png">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #05010a;
+            color: #d1d5db;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            overflow-x: hidden;
+            padding-left: 256px;
+        }
+
+        @media (max-width: 1023px) {
+            body {
+                padding-left: 0;
+            }
+        }
+
+        .scanline-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(167, 139, 250, 0.02) 50%, rgba(0, 0, 0, 0) 100%);
+            animation: scanline 10s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .receipt-row {
+            border: 1px solid rgba(167, 139, 250, 0.12);
+            background: rgba(167, 139, 250, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .receipt-row:hover {
+            border-color: rgba(167, 139, 250, 0.35);
+            background: rgba(167, 139, 250, 0.05);
+        }
+
+        .download-link {
+            color: #a78bfa;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .download-link:hover {
+            color: #fff;
+        }
+
+        .master-btn {
+            display: block;
+            width: 100%;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            color: #a78bfa;
+            padding: 1rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            background: rgba(167, 139, 250, 0.04);
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .master-btn:hover {
+            background: rgba(167, 139, 250, 0.12);
+            border-color: rgba(167, 139, 250, 0.8);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.1);
+        }
+
+        .type-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            padding: 2px 6px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            color: rgba(167, 139, 250, 0.7);
+            background: rgba(167, 139, 250, 0.05);
+        }
+
+        .hash-text {
+            font-size: 9px;
+            color: rgba(167, 139, 250, 0.25);
+            letter-spacing: 0.05em;
+            transition: color 0.2s;
+            word-break: break-all;
+        }
+
+        .hash-text:hover {
+            color: rgba(167, 139, 250, 0.6);
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(167, 139, 250, 0.5);
+        }
+
+        .pocket-razor {
+            border-left: 2px solid rgba(167, 139, 250, 0.5);
+            padding: 0.75rem 1.25rem;
+            background: rgba(167, 139, 250, 0.04);
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen antialiased">
+    <div class="scanline-overlay"></div>
+
+    <!-- TOPNAV -->
+    <nav
+        class="fixed top-0 left-64 right-0 z-50 h-14 border-b border-[#a78bfa]/20 bg-[#05010a]/90 backdrop-blur-sm px-6 flex items-center justify-between lg:left-64 left-0">
+        <div class="flex items-center gap-3 font-mono text-[10px] text-[#a78bfa]/40 tracking-widest">
+            <a href="/" class="hover:text-[#a78bfa] transition-colors">THE CODEX</a>
+            <span>/</span>
+            <span class="text-[#a78bfa]/60">receipts</span>
+            <span>/</span>
+            <span class="text-[#a78bfa]/60">pack</span>
+            <span>/</span>
+            <span class="text-white/70">GhostPart4Receipts</span>
+        </div>
+        <span id="manifest-version"
+            class="font-mono text-[9px] text-[#a78bfa]/30 tracking-widest border border-[#a78bfa]/15 px-2 py-1">VERSION:
+            --</span>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="pt-14 px-6 lg:px-10 max-w-5xl mx-auto py-12">
+
+        <!-- HEADER -->
+        <section class="pt-12 pb-10 border-b border-[#a78bfa]/15 mb-12">
+            <p class="section-label mb-4">Receipt Pack // Evidence Archive</p>
+            <h1 class="font-mono font-bold text-3xl md:text-5xl text-white tracking-tight mb-4 leading-[1.1]">
+                THE PAPER<br><span class="text-[#a78bfa]">TRAIL.</span>
+            </h1>
+            <p class="font-mono text-[10px] text-[#a78bfa]/40 tracking-widest mb-6">
+                THE GHOST IN THE MACHINE // PART 4 // UPDATED: <span id="manifest-date">--/--/----</span>
+            </p>
+
+            <div class="pocket-razor max-w-2xl mb-8">
+                ACCESS GRANTED. The following directory contains the unaltered research binders, financial ledgers,
+                and institutional audits used to construct the logic tree for The Ghost of the East India Company.
+            </div>
+
+            <div class="font-mono text-xs text-white/50 max-w-2xl leading-relaxed">
+                <span class="text-[#a78bfa] font-bold">WARNING:</span> Do not trust the summary. Verify the primary
+                data.
+                SHA-256 cryptographic hashes are provided for all files to ensure chain of custody.
+                The receipt does not lie. The narrative might.
+            </div>
+        </section>
+
+        <!-- MASTER DOWNLOAD -->
+        <section class="mb-12">
+            <p class="section-label mb-4">ls -la ./master_archive/</p>
+            <div id="master-download-container">
+                <div class="animate-pulse text-[#a78bfa]/40 text-xs font-mono">[ QUERYING MANIFEST... ]</div>
+            </div>
+        </section>
+
+        <!-- INDIVIDUAL FILES -->
+        <section>
+            <p class="section-label mb-6">ls -la ./binders/</p>
+            <div id="file-list" class="space-y-3">
+                <div class="animate-pulse text-[#a78bfa]/40 text-xs font-mono">[ LOADING FILE INDEX... ]</div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <div
+            class="mt-16 pt-8 border-t border-[#a78bfa]/10 flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div class="font-mono text-[9px] text-white/20 tracking-widest">
+                CONNECTION: SECURE<br>
+                NODE: RECEIPTS_ARCHIVE<br>
+                VERTICAL WAR // SOVEREIGN_V4
+            </div>
+            <a href="https://constructamiracle.com" target="_blank" rel="noopener"
+                class="font-mono text-[9px] text-[#a78bfa]/40 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/15 hover:border-[#a78bfa]/40 px-3 py-2">
+                [ SUBSCRIBE ON SUBSTACK ]
+            </a>
+        </div>
+
+    </main>
+
+    <!-- MANIFEST LOADER -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(`/receipts/pack/GhostPart4Receipts/manifest.json?v=${Date.now()}`);
+                if (!response.ok) throw new Error('Manifest not found.');
+                const manifest = await response.json();
+
+                // Header metadata
+                const dateEl = document.getElementById('manifest-date');
+                const versionEl = document.getElementById('manifest-version');
+                if (dateEl) dateEl.textContent = manifest.last_updated || '--';
+                if (versionEl) versionEl.textContent = `VERSION: ${manifest.version || '--'}`;
+
+                // Master archive
+                const master = manifest.master_archive;
+                if (master) {
+                    document.getElementById('master-download-container').innerHTML = `
+            <a href="/receipts/pack/GhostPart4Receipts/${master.filename}" download
+               class="master-btn group">
+              <span class="font-bold tracking-wider">⬇ DOWNLOAD MASTER ARCHIVE</span>
+              <span class="text-white/40 group-hover:text-white/70 transition-colors">${master.size_kb} KB</span>
+            </a>
+            <div class="mt-2 hash-text pl-1">
+              <span class="text-[#a78bfa]/30">sha256: </span>${master.sha256}
+            </div>
+          `;
+                }
+
+                // Individual files
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = '';
+
+                manifest.files.forEach((file, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'receipt-row p-4';
+                    row.innerHTML = `
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="type-badge shrink-0">${file.type}</span>
+                <a href="/receipts/pack/GhostPart4Receipts/${file.filename}" target="_blank"
+                   class="download-link font-mono font-bold text-sm truncate">
+                  ${file.title}
+                </a>
+              </div>
+              <span class="font-mono text-xs text-white/30 shrink-0 whitespace-nowrap">${file.size_kb} KB</span>
+            </div>
+            <div class="hash-text pl-0">
+              <span class="text-[#a78bfa]/25">sha256: </span>${file.sha256}
+            </div>
+          `;
+                    fileList.appendChild(row);
+                });
+
+            } catch (err) {
+                document.getElementById('file-list').innerHTML = `
+          <div class="border border-red-500/30 bg-red-900/10 p-4 text-xs font-mono text-red-400">
+            [ERROR] FAILED TO RETRIEVE MANIFEST.<br>
+            PATH: /receipts/pack/GhostPart4Receipts/manifest.json<br>
+            ${err.message}
+          </div>
+        `;
+                console.error('Receipt Pack Error:', err);
+            }
+        });
+    </script>
+
+    <!-- GLOBAL SIDEBAR -->
+    <script type="module" src="/src/sidebar.js"></script>
+</body>
+
+</html>

@@ -1,11 +1,12 @@
-﻿// sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
+// sidebar.js - Sovereign MSX-Style Root Navigation (V4 Port)
 import { initAuth, currentRole, setAuthChangeCallback } from './auth.js';
 
 // ============================================================
 // NAV CONFIG â€” Add new public pages here, not buried in HTML
 // ============================================================
 const NAV_ITEMS = [
-    { href: '/', label: '/ codex_root' },
+    { href: '/', label: '/ homepage' },
+    { href: '/codex/', label: '/ codex_root' },
     { href: '/about.html', label: '/ about' },
     { href: '/archives.html', label: '/ archives' },
     { href: '/lexicon/', label: '/ lexicon' },
@@ -31,9 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <button id="btn-desktop-collapse" class="hidden lg:block absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] transition-colors p-2 text-[10px] font-bold tracking-widest cursor-pointer" title="Collapse Navigator">
                 [ < ]
             </button>
-            <h1 class="text-white font-mono font-bold text-lg tracking-[0.2em] uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
-                COMMON SENSE <br> REBEL
-            </h1>
+            <!-- Video explicitly plays once and stops without looping. -->
+            <video src="/csr_animated_logo.mp4" autoplay muted playsinline class="w-full max-w-[180px] h-auto drop-shadow-[0_0_8px_rgba(167,139,250,0.3)] block mix-blend-screen"></video>
             <p class="text-[#a78bfa]/50 text-[9px] tracking-widest mt-2 uppercase">>> SOVEREIGN_V4</p>
         </div>
 
@@ -206,9 +206,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mobile/Desktop Edge Toggle (MENU Button)
     const edgeTab = document.createElement('button');
-    // Removed lg:hidden here so it appears on desktop when sidebar is closed
-    edgeTab.className = 'fixed left-0 top-1/2 -translate-y-1/2 z-[55] bg-[#05010a] border border-l-0 border-[#a78bfa] text-[#a78bfa] px-1 py-4 rounded-r-md flex items-center justify-center opacity-70 hover:opacity-100 transition-all shadow-[2px_0_10px_rgba(34,197,94,0.2)] cursor-pointer';
-    edgeTab.innerHTML = '<span class="text-[10px] transform -rotate-90 origin-center block tracking-widest font-bold">MENU</span>';
+    edgeTab.className = 'fixed left-2 top-1/2 -translate-y-1/2 z-[55] flex items-center justify-center bg-[#05010a]/80 backdrop-blur-md border border-[#a78bfa]/40 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(167,139,250,0.1)] cursor-pointer group hover:border-[#a78bfa] overflow-hidden menu-expanded';
+    edgeTab.innerHTML = `
+        <div class="relative w-2 h-2 rounded-full border border-[#a78bfa] flex-shrink-0 bg-transparent flex items-center justify-center transition-all duration-700 menu-orb">
+            <div class="absolute w-1 h-1 bg-[#a78bfa] rounded-full opacity-0 transition-opacity duration-700 menu-orb-core"></div>
+        </div>
+        <span class="menu-label font-mono text-[10px] tracking-widest font-bold text-[#a78bfa] ml-2 overflow-hidden whitespace-nowrap transition-all duration-700 max-w-[50px] opacity-100">MENU</span>
+    `;
 
     const backdrop = document.createElement('div');
     backdrop.className = 'fixed inset-0 bg-black/80 z-[50] hidden lg:hidden transition-opacity duration-300 opacity-0';
@@ -236,9 +240,14 @@ document.addEventListener('DOMContentLoaded', () => {
             backdrop.classList.add('opacity-0');
             setTimeout(() => backdrop.classList.add('hidden'), 300);
         }
+        resetFadeTimer(); // Start the collapse timer when menu hides
     }
 
     function openMenu() {
+        clearTimeout(fadeTimer); // Keep it expanded while menu is open
+        edgeTab.classList.remove('menu-collapsed');
+        edgeTab.classList.add('menu-expanded');
+        
         if (window.innerWidth >= 1024) {
             // Desktop Open Logic
             if (desktopMenuOpen) return;
@@ -259,35 +268,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // â”€â”€ MENU TAB AUTO-FADE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // Fades to mostly transparent 3s after last use (keeps mobile reading clean).
-    // Snaps back full on hover or any click.
-    // ── MENU TAB IDLE GLOW ──────────────────────────────────────────────────
-    // Border ring pulses every 5s while faded to hint the tab is there.
+    // ── DYNAMIC MENU TAB AUTO-COLLAPSE ──────────────────────────────────────
     const _glowStyle = document.createElement('style');
-    _glowStyle.textContent = [
-        '@keyframes tab-ring-pulse {',
-        '  0%,70%,100% { box-shadow:2px 0 10px rgba(34,197,94,0.2); border-color:rgba(167,139,250,0.6); }',
-        '  75%         { box-shadow:2px 0 18px rgba(167,139,250,0.8),0 0 12px rgba(167,139,250,0.4); border-color:rgba(167,139,250,1); }',
-        '  85%         { box-shadow:2px 0 10px rgba(34,197,94,0.2); border-color:rgba(167,139,250,0.6); }',
-        '}',
-        '.tab-glow-idle { animation: tab-ring-pulse 5s ease-in-out infinite; }'
-    ].join('\n');
+    _glowStyle.textContent = `
+        .menu-expanded {
+            padding: 12px 16px;
+        }
+        .menu-collapsed {
+            padding: 8px !important;
+            background: rgba(5,1,10, 0.4) !important;
+            border-color: rgba(167,139,250, 0.2) !important;
+            box-shadow: none !important;
+            left: 4px !important;
+        }
+        .menu-collapsed .menu-label {
+            max-width: 0 !important;
+            opacity: 0 !important;
+            margin-left: 0 !important;
+        }
+        .menu-collapsed .menu-orb {
+            border-color: rgba(167,139,250, 0.6) !important;
+        }
+        .menu-collapsed .menu-orb-core {
+            opacity: 0.8 !important;
+            animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes subtle-aura {
+            0%, 100% { box-shadow: 0 0 0 rgba(167,139,250,0); }
+            50% { box-shadow: 0 0 12px rgba(167,139,250,0.4); }
+        }
+        .menu-collapsed {
+            animation: subtle-aura 5s infinite ease-in-out;
+        }
+    `;
     document.head.appendChild(_glowStyle);
 
     let fadeTimer = null;
     function resetFadeTimer() {
-        edgeTab.style.opacity = '';       // restore to CSS default (opacity-70)
-        edgeTab.classList.remove('tab-glow-idle');
+        edgeTab.classList.remove('menu-collapsed');
+        edgeTab.classList.add('menu-expanded');
         clearTimeout(fadeTimer);
-        fadeTimer = setTimeout(() => {
-            edgeTab.style.opacity = '0.15';
-            edgeTab.classList.add('tab-glow-idle');
-        }, 3000);
+        
+        // Only collapse if the appropriate menu for the device size is closed
+        const isMenuHiding = window.innerWidth >= 1024 ? !desktopMenuOpen : !menuOpen;
+        if (isMenuHiding) {
+            fadeTimer = setTimeout(() => {
+                edgeTab.classList.remove('menu-expanded');
+                edgeTab.classList.add('menu-collapsed');
+            }, 3000);
+        }
     }
-    edgeTab.addEventListener('mouseenter', () => { edgeTab.style.opacity = '1'; edgeTab.classList.remove('tab-glow-idle'); clearTimeout(fadeTimer); });
+
+    edgeTab.addEventListener('mouseenter', () => { 
+        edgeTab.classList.remove('menu-collapsed'); 
+        edgeTab.classList.add('menu-expanded'); 
+        clearTimeout(fadeTimer); 
+    });
+    
     edgeTab.addEventListener('mouseleave', resetFadeTimer);
-    edgeTab.addEventListener('touchstart', () => { edgeTab.style.opacity = '1'; edgeTab.classList.remove('tab-glow-idle'); clearTimeout(fadeTimer); }, { passive: true });
+    
+    edgeTab.addEventListener('touchstart', () => { 
+        edgeTab.classList.remove('menu-collapsed'); 
+        edgeTab.classList.add('menu-expanded'); 
+        clearTimeout(fadeTimer); 
+    }, { passive: true });
 
     edgeTab.addEventListener('click', () => {
         resetFadeTimer();
@@ -380,7 +424,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     }
 
-    // Run auth (session check + UI wiring). Safe to call multiple times â€” each call re-resolves IDs.
+    // Run auth (session check + UI wiring). Safe to call multiple times — each call re-resolves IDs.
     initAuth();
+    
+    // Boot sequence: Trigger the auto-collapse timer right after rendering
+    resetFadeTimer();
 });
 

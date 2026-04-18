@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GHOST IN THE MACHINE // PART 3</title>
+    <!-- Tailwind CSS injected directly to ensure utility classes work -->
+    <link rel="stylesheet" href="/src/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* FSR-RYUKO / FSY-YOKO BRUTALIST ACCESSIBILITY OVERRIDE */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-panel: #050505;
+            --data: #39FF14;
+            --anomaly: #FF00FF;
+            --header: #FFFFFF;
+            --text-soft: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--data);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* THE LOCK IS BACK. NO GLOBAL SCROLLING. */
+            line-height: 1.8;
+        }
+
+        /* Monospace restricted strictly to UI and Headers */
+        .font-terminal {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Subtle Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Strict Borders & Internal Scrolling */
+        .hud-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--data);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: auto;
+            min-height: 85vh; /* Mobile fallback */
+            overflow-y: auto; /* SCROLLING HAPPENS INSIDE THE PANELS ONLY */
+            position: relative;
+        }
+
+        @media (min-width: 1024px) {
+            .hud-panel {
+                height: 100%;
+                min-height: 0; /* Let grid control it */
+            }
+        }
+
+        .hud-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .hud-panel::-webkit-scrollbar-thumb {
+            background: var(--anomaly);
+        }
+
+        /* High-legibility text classes */
+        .readable-text {
+            color: var(--text-soft);
+            font-size: 1.15rem; 
+            margin-bottom: 1rem;
+        }
+
+        .massive-header {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--header);
+        }
+
+        /* The Glitch effect */
+        .fatal-glitch {
+            position: relative;
+            animation-play-state: paused;
+            cursor: crosshair;
+        }
+
+        .fatal-glitch:hover {
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch::before, .fatal-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            opacity: 0;
+        }
+
+        .fatal-glitch:hover::before, .fatal-glitch:hover::after {
+            opacity: 1;
+        }
+
+        .fatal-glitch:hover::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--anomaly);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch:hover::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--data);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(62px, 9999px, 14px, 0); }
+            40% { clip: rect(29px, 9999px, 98px, 0); }
+            60% { clip: rect(81px, 9999px, 3px, 0); }
+            80% { clip: rect(45px, 9999px, 55px, 0); }
+            100% { clip: rect(92px, 9999px, 21px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(24px, 9999px, 56px, 0); }
+            20% { clip: rect(89px, 9999px, 12px, 0); }
+            40% { clip: rect(4px, 9999px, 76px, 0); }
+            60% { clip: rect(65px, 9999px, 34px, 0); }
+            80% { clip: rect(19px, 9999px, 88px, 0); }
+            100% { clip: rect(45px, 9999px, 2px, 0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="scanlines"></div>
+
+    <div class="fixed top-4 left-4 z-50 py-1 bg-black/80 px-2">
+        <a href="/" class="font-terminal text-xs text-[#FFFFFF] border border-[#FFFFFF]/30 px-3 py-1 hover:bg-[#FFFFFF]/10 hover:text-[#FF00FF] transition-colors">< HOME NODE</a>
+    </div>
+
+    <!-- The Grid Container -->
+    <div class="flex flex-col lg:grid lg:grid-cols-2 lg:auto-rows-[80vh] w-full h-full p-2 lg:p-4 pt-14 lg:pt-14 gap-4 box-border relative z-10 overflow-y-auto pb-12 lg:pb-4">
+
+        <!-- PANEL 1: INTRODUCTION -->
+        <div class="hud-panel border-[#FF00FF]">
+            <div class="shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> MASTERCLASS_INDEX: PART 3.DAT</p>
+                <h1 class="fatal-glitch font-terminal massive-header mb-6" data-text="THE GHOST IN THE MACHINE" title="HOVER TO INITIATE GLITCH">THE GHOST IN THE MACHINE</h1>
+                <p class="font-terminal text-sm text-[#FF00FF] animate-pulse mb-6 border-b border-[#39FF14]/30 pb-4">> PART 3: THE_BLOOD_ENGINE // 1914-1934</p>
+            </div>
+            
+            <div class="mt-4">
+                <div class="font-terminal text-sm border-l-4 border-[#39FF14] bg-[#39FF14]/10 p-3 mb-6 text-[#39FF14]">
+                    <span class="text-white font-bold">THE EVIDENCE:</span> The realization that an automated financial extraction engine requires the mass consumption of human lives to scale.
+                </div>
+                
+                <p class="readable-text">
+                    By the end of 1913, the architects of the American monopoly had accomplished the impossible: they captured the sovereign money supply, decoupled it from democratic oversight, and shielded it within immortal corporate personhood.
+                </p>
+                <p class="readable-text">
+                    But an engine that can print infinite capital needs an ultimate, physical market to dump it into. You do not build localized infrastructure to scale the machine; you invest in global slaughter. Less than twelve months after the Federal Reserve was locked in, the Rust found their ultimate ROI optimization event. They were about to drown a generation of teenagers in the mud of the trench lines to ensure their ledgers balanced.
+                </p>
+
+                <!-- Receipts CTA -->
+                <a href="/receipts/pack/GhostPart3Receipts/index.html" target="_blank" class="block font-terminal border-2 border-[#FF00FF] bg-[#FF00FF]/10 mt-6 px-4 py-3 text-center cursor-pointer hover:bg-[#FF00FF] hover:text-white text-[#FF00FF] font-bold tracking-widest text-sm transition-colors duration-300">
+                    [ ACCESS CRYPTOGRAPHIC RECEIPTS ]
+                </a>
+            </div>
+            <div class="mt-auto pt-4 flex justify-between font-terminal text-[10px] opacity-50">
+                <span>// NODE: INTRO</span>
+                <span>STATUS: OPERATIONAL</span>
+            </div>
+        </div>
+
+        <!-- PANEL 2: MODULE 01 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_01</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_WAR_RACKET // 1914-1918</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The most profitable venue on earth was an artillery meat grinder filled with traumatized working-class men.</p>
+            </div>
+
+            <p class="readable-text">
+                Every systemic horror is sold under the guise of an ideological crusade. Patriotism is just the marketing department for a financial racket. As Major General Smedley Butler proved in his forensic autopsy, the military functioned as the publicly funded enforcement arm for Wall Street.
+            </p>
+            <p class="readable-text">
+                The state issued taxpayer-funded debt to buy munitions from corporate monopolies at violently inflated margins. DuPont pulled a 950% profit spike while soldiers, nominally promised $30 a month, had their wages mathematically garnished down to $9.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">"I spent most of my time as a high class muscle man for Big Business, for Wall Street and the bankers... a gangster for capitalism." — Major General Smedley Butler</p>
+            </div>
+        </div>
+
+        <!-- PANEL 3: MODULE 02 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_02</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_CLOSED_LOOP // 1918-1932</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The Gears were forced to fund their own slaughter, and then systematically stripped of their remaining wealth.</p>
+            </div>
+
+            <p class="readable-text">
+                The soldiers bleeding in the trenches were psychologically coerced into buying Liberty Bonds from their $9 a month paychecks to fund the war. But the kill shot happened after the armistice.
+            </p>
+            <p class="readable-text">
+                When the engineered crash of the Great Depression hit, broken and starving veterans were forced to sell those bonds back to the banks at a severe discount. The banking syndicates bought back the debt instruments they had designed for pennies on the dollar. When 500,000 desperate veterans marched on Washington as the "Bonus Army" to demand their unpaid wages, the military unleashed cavalry, tanks, and tear gas on unarmed men and their families. 
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">The exact same monopolies that enjoyed a 1,700% margin on the slaughter cheered as the veterans who survived it were tear-gassed in the streets.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 4: MODULE 03 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_03</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_BUSINESS_PLOT // 1933</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The financial elite attempted to explicitly purchase Layer 0 state violence to formalize their control.</p>
+            </div>
+
+            <p class="readable-text">
+                When FDR's New Deal decoupled the dollar from the Gold Standard, the elite faced the devaluation of their empire. When the Rust face an existential threat, they do not vote; they buy an override. Backed by corporate treasuries like Remington Arms and the J.P. Morgan syndicates, they approached Smedley Butler with an open checkbook.
+            </p>
+            <p class="readable-text">
+                They offered him an astronomical $18,000 to lead a mercenary army of 500,000 veterans—the same men they just tear-gassed—to march on D.C. The objective: force FDR to install a Wall-Street-controlled "Supersecretary." It was a bloodless bureaucratic coup disguised as a national emergency.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">The Rust did not view the veterans as patriotic heroes; they viewed them as cheap, highly traumatized kinetic capital ready to be deployed.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 5: MODULE 04 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_04</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_ASTROTURF_DECOY // 1934</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">They use the language of freedom to fund the architecture of a literal prison.</p>
+            </div>
+
+            <p class="readable-text">
+                If you are going to commit high treason, you need a PR department. While back-channel operatives were attempting to purchase a fascist mercenary army, the Architects constructed a public-facing decoy: the American Liberty League.
+            </p>
+            <p class="readable-text">
+                Billed to the public as a non-partisan, grassroots organization defending the Constitution from government overreach, the receipts proved it was funded by the exact same men financing the physical putsch—the DuPonts, Morgans, Rockefellers, and General Motors.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">The Liberty League became the ultimate blueprint for the modern corporate think tank: demand the public thank you for defending their liberty while you actively orchestrate their enslavement.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 6: MODULE 05 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_05</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_CASSANDRA_ALGORITHM // 1934</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The algorithmic activation of media smears to bury the truth and protect the Architects.</p>
+            </div>
+
+            <p class="readable-text">
+                Smedley Butler didn't take the bribe; he blew the whistle. He stood before Congress under oath and named the wealthiest men in America as conspirators in an active coup. But before the investigation concluded, the system activated the Cassandra Algorithm.
+            </p>
+            <p class="readable-text">
+                <i>Time Magazine</i>—a prime organ of the Rust—ran a highly coordinated smear campaign. They printed a double-page spread mocking the two-time Medal of Honor recipient as a senile eccentric hallucinating a plot, specifically designed to gaslight the public and put them back to sleep.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">Despite independent corroboration from the national commander of the VFW, the media successfully isolated Butler. The system isolated the truth-teller to bury the truth.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 7: MODULE 06 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_06</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_GHOST_OVERRIDE // 1934-1935</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The terrifying realization that you cannot arrest the state when the architects of the crime own the state.</p>
+            </div>
+
+            <p class="readable-text">
+                The MacCormack-Dickstein Committee concluded that Smedley Butler told the absolute truth. The fascist plot was real. Yet, not a single billionaire was arrested. The committee refused to subpoena the J.P. Morgan syndicates or the DuPonts, completely redacting their names from the public record. 
+            </p>
+            <p class="readable-text">
+                FDR was held mathematically hostage by the bond markets the elite controlled. Worse, the only operational node who could be cross-examined—37-year-old bond salesman Gerald MacGuire—suddenly died of "pneumonia" exactly one month after the committee closed. The map to the billionaires vanished with him.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">"Like most committees, it has slaughtered the little and allowed the big to escape." — Major General Smedley Butler</p>
+            </div>
+        </div>
+
+        <!-- THE OUTRO -->
+        <div class="hud-panel border-[#39FF14]">
+            <div class="flex-1 flex flex-col justify-center items-center text-center p-2 lg:p-4 shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> AUDIT_CONCLUSION: THE_LANTERN_SKIFF // SALVAGE</p>
+                
+                <div class="text-white font-terminal text-xs mb-2 tracking-widest text-[#FF00FF]">> THE EVIDENCE: Shattering the illusion of the Horizontal War to expose the continuity of the Machine.</div>
+                
+                <blockquote class="readable-text text-lg text-left bg-black border-l-4 border-[#39FF14] p-6 mb-6 mt-4 opacity-75">
+                    For a brief, terrifying moment in 1933, the Ghost of the East India Company was explicitly visible pulling the levers. The Rust grabbed the mask and permanently bolted it to the floor, but the mechanism never died. The J.P. Morgan syndicates of the 1930s evolved into the Vanguard and BlackRock monoliths of today. The Liberty League evolved into the modern NGO complex. The exact same algorithm that calculated it was profitable to trap a teenager in a trench for $9 a month is writing the zero-redundancy schedule today. The Horizontal War of Left vs. Right is perfectly designed to keep your eyes locked on Layer 2. But once you see the receipts, you cannot unsee them. The real war is Bottom versus Top.
+                </blockquote>
+            </div>
+
+            <div class="mt-auto shrink-0 w-full mt-6">
+                <!-- CTA buttons for navigating to the other parts -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="/series/ghost/p1/" class="block font-terminal border border-[#39FF14] bg-black bg-opacity-50 px-4 py-3 text-center cursor-pointer hover:bg-[#39FF14] hover:text-black text-[#39FF14] font-bold tracking-widest text-sm transition-colors duration-300">
+                        [ ACCESS PART 1 ]
+                    </a>
+                    <a href="/series/ghost/p2/" class="block font-terminal border border-[#FF00FF] bg-black bg-opacity-50 px-4 py-3 text-center cursor-pointer hover:bg-[#FF00FF] hover:text-black text-[#FF00FF] font-bold tracking-widest text-sm transition-colors duration-300">
+                        [ ACCESS PART 2 ]
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

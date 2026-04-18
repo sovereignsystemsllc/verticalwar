@@ -37,6 +37,7 @@ export default defineConfig({
                 admin_upload: resolve(__dirname, 'admin/upload.html'),
                 admin_assets: resolve(__dirname, 'admin/assets.html'),
                 admin_splash: resolve(__dirname, 'admin/splash.html'),
+                admin_homepage: resolve(__dirname, 'admin/homepage.html'),
                 admin_about: resolve(__dirname, 'admin/about.html'),
                 receipts_ep2: resolve(__dirname, 'receipts/pack/RealityEP2Receipts/index.html'),
                 admin_receipts: resolve(__dirname, 'admin/receipts.html'),
@@ -45,6 +46,7 @@ export default defineConfig({
                 profile: resolve(__dirname, 'profile/index.html'),
                 profile_view: resolve(__dirname, 'profile/view.html'),
                 lexicon: resolve(__dirname, 'lexicon/index.html'),
+                codex: resolve(__dirname, 'codex/index.html'),
                 // ADD NEW PUBLIC PAGES HERE
             }
         }

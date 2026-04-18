@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GHOST IN THE MACHINE // PART 2</title>
+    <!-- Tailwind CSS injected directly to ensure utility classes work -->
+    <link rel="stylesheet" href="/src/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* FSR-RYUKO / FSY-YOKO BRUTALIST ACCESSIBILITY OVERRIDE */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-panel: #050505;
+            --data: #39FF14;
+            --anomaly: #FF00FF;
+            --header: #FFFFFF;
+            --text-soft: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--data);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* THE LOCK IS BACK. NO GLOBAL SCROLLING. */
+            line-height: 1.8;
+        }
+
+        /* Monospace restricted strictly to UI and Headers */
+        .font-terminal {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Subtle Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Strict Borders & Internal Scrolling */
+        .hud-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--data);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: auto;
+            min-height: 85vh; /* Mobile fallback */
+            overflow-y: auto; /* SCROLLING HAPPENS INSIDE THE PANELS ONLY */
+            position: relative;
+        }
+
+        @media (min-width: 1024px) {
+            .hud-panel {
+                height: 100%;
+                min-height: 0; /* Let grid control it */
+            }
+        }
+
+        .hud-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .hud-panel::-webkit-scrollbar-thumb {
+            background: var(--anomaly);
+        }
+
+        /* High-legibility text classes */
+        .readable-text {
+            color: var(--text-soft);
+            font-size: 1.15rem; 
+            margin-bottom: 1rem;
+        }
+
+        .massive-header {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--header);
+        }
+
+        /* The Glitch effect */
+        .fatal-glitch {
+            position: relative;
+            animation-play-state: paused;
+            cursor: crosshair;
+        }
+
+        .fatal-glitch:hover {
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch::before, .fatal-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            opacity: 0;
+        }
+
+        .fatal-glitch:hover::before, .fatal-glitch:hover::after {
+            opacity: 1;
+        }
+
+        .fatal-glitch:hover::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--anomaly);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch:hover::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--data);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(62px, 9999px, 14px, 0); }
+            40% { clip: rect(29px, 9999px, 98px, 0); }
+            60% { clip: rect(81px, 9999px, 3px, 0); }
+            80% { clip: rect(45px, 9999px, 55px, 0); }
+            100% { clip: rect(92px, 9999px, 21px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(24px, 9999px, 56px, 0); }
+            20% { clip: rect(89px, 9999px, 12px, 0); }
+            40% { clip: rect(4px, 9999px, 76px, 0); }
+            60% { clip: rect(65px, 9999px, 34px, 0); }
+            80% { clip: rect(19px, 9999px, 88px, 0); }
+            100% { clip: rect(45px, 9999px, 2px, 0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="scanlines"></div>
+
+    <div class="fixed top-4 left-4 z-50 py-1 bg-black/80 px-2">
+        <a href="/" class="font-terminal text-xs text-[#FFFFFF] border border-[#FFFFFF]/30 px-3 py-1 hover:bg-[#FFFFFF]/10 hover:text-[#FF00FF] transition-colors">< HOME NODE</a>
+    </div>
+
+    <!-- The Grid Container -->
+    <div class="flex flex-col lg:grid lg:grid-cols-2 lg:auto-rows-[80vh] w-full h-full p-2 lg:p-4 pt-14 lg:pt-14 gap-4 box-border relative z-10 overflow-y-auto pb-12 lg:pb-4">
+
+        <!-- PANEL 1: INTRODUCTION -->
+        <div class="hud-panel border-[#FF00FF]">
+            <div class="shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> MASTERCLASS_INDEX: PART 2.DAT</p>
+                <h1 class="fatal-glitch font-terminal massive-header mb-6" data-text="THE GHOST IN THE MACHINE" title="HOVER TO INITIATE GLITCH">THE GHOST IN THE MACHINE</h1>
+                <p class="font-terminal text-sm text-[#FF00FF] animate-pulse mb-6 border-b border-[#39FF14]/30 pb-4">> PART 2: THE_BIOLOGICAL_BUG // 1832</p>
+            </div>
+            
+            <div class="mt-4">
+                <div class="font-terminal text-sm border-l-4 border-[#39FF14] bg-[#39FF14]/10 p-3 mb-6 text-[#39FF14]">
+                    <span class="text-white font-bold">THE EVIDENCE:</span> The realization that an immortal extraction engine cannot run on fragile human biology.
+                </div>
+                
+                <p class="readable-text">
+                    In 1791, Alexander Hamilton built the perfect extraction engine. The math was flawless: the public bore all the risk, and the private monopoly extracted all the profit. But it possessed a fatal glitch—the Architects were human. Humans are a terrible vessel for permanent wealth extraction. Humans have liabilities. They bleed, they panic, and worse, <i>Kings have necks</i>.
+                </p>
+                <p class="readable-text">
+                    If the extraction loop was going to survive for centuries, the elite had to shed their human skin. From 1832 to 1913, Wall Street retreated into the legal laboratory to build an immortal sociopath—a Corporate Person that possessed no empathy, could not be put in a physical prison cell, yet enjoyed all constitutional rights.
+                </p>
+
+                <!-- Receipts CTA -->
+                <a href="/receipts/pack/GhostPart2Receipts/index.html" target="_blank" class="block font-terminal border-2 border-[#FF00FF] bg-[#FF00FF]/10 mt-6 px-4 py-3 text-center cursor-pointer hover:bg-[#FF00FF] hover:text-white text-[#FF00FF] font-bold tracking-widest text-sm transition-colors duration-300">
+                    [ ACCESS CRYPTOGRAPHIC RECEIPTS ]
+                </a>
+            </div>
+            <div class="mt-auto pt-4 flex justify-between font-terminal text-[10px] opacity-50">
+                <span>// NODE: INTRO</span>
+                <span>STATUS: OPERATIONAL</span>
+            </div>
+        </div>
+
+        <!-- PANEL 2: MODULE 01 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_01</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_OXYGEN_GAMBIT // 1832</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The deliberate strangulation of the working class deployed as pure political leverage.</p>
+            </div>
+
+            <p class="readable-text">
+                As president of the Second Bank of the United States, Nicholas Biddle possessed unilateral control over the nation’s money supply. When Andrew Jackson vetoed his private monopoly's charter, Biddle didn't negotiate—he engineered a nationwide economic depression. He aggressively called in commercial loans and hoarded gold, intentionally suffocating the oxygen of the economy to force Congress into submission.
+            </p>
+            <p class="readable-text">
+                Newspapers on his payroll blamed "natural market reactions," while families literally starved in the streets. Biddle proved that when the elite are threatened, they will proudly sacrifice the Gears to protect the Machine.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">"All the other Banks and all the merchants may break, but the Bank of the United States shall not break... Nothing but the evidence of suffering abroad will produce any effect in Congress." — Nicholas Biddle</p>
+            </div>
+        </div>
+
+        <!-- PANEL 3: MODULE 02 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_02</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_BLOOD_ARBITRAGE // 1861-1865</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The greatest risk-free procurement event in human history, built on the corpses of a divided nation.</p>
+            </div>
+
+            <p class="readable-text">
+                During the Civil War, the Union issued fiat "Greenbacks" to pay dying soldiers. While 600,000 Americans bled in the dirt, a ring of banking elites quietly lobbied Congress to slip a 12-word "Exception Clause" into the Legal Tender Act. It forced the government's interest payments to bondholders to be made in physical gold.
+            </p>
+            <p class="readable-text">
+                Wall Street bankers hoarded gold, bought heavily depreciated Greenbacks from starving civilians for pennies, and exchanged them for U.S. War Bonds at face value. They generated massive, risk-free 17% yields completely insulated from inflation, legally forcing the taxpayer to subsidize their returns.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">The soldiers died for paper. The elite collected in gold. They proved they didn't need to physically own a man to enslave him—they just needed to own the unpayable debt his children would be taxed on forever.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 4: MODULE 03 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_03</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_CORPORATE_SHELL // 1864</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The birth of the immortal corporate fraud to siphon 44 million taxpayer dollars.</p>
+            </div>
+
+            <p class="readable-text">
+                The Union Pacific Railroad was granted massive taxpayer subsidies to lay tracks out West. To steal the funds without going to a physical prison cell, the directors birthed a shadow construction company called Crédit Mobilier of America. They awarded the taxpayer-funded contracts to their own shadow shell at extortionate prices, charging $94 million for a $50 million job.
+            </p>
+            <p class="readable-text">
+                When Congress began investigating the missing $44 million, the corporation deployed the ultimate cheat code: legalized bribery. Representative Oakes Ames simply handed out highly discounted VIP shares of the scam to the very officials investigating it.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">The politicians investigating the fraud pocketed massive dividends, smiled at the bleeding taxpayers, and declared the $44 million heist perfectly legal.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 5: MODULE 04 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_04</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_CLERICAL_COUP // 1886</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">Hijacking the 14th Amendment through a clerical typo to grant immortal capital human rights.</p>
+            </div>
+
+            <p class="readable-text">
+                The Rust didn't fight a constitutional war to make corporations legally unkillable—they simply typed it into the record. During the <i>Santa Clara County v. Southern Pacific Railroad</i> tax case, J.C. Bancroft Davis, the Supreme Court Reporter and former railroad executive, inserted a fan-fiction headnote stating that corporations were "persons" entitled to equal protection under the 14th Amendment.
+            </p>
+            <p class="readable-text">
+                The Court never explicitly ruled this, but two years later, a railroad-allied Justice cited the typo as established precedent. The 14th Amendment, meant to protect emancipated slaves, was hijacked to armor immortal capital.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">We live in a dystopia held together by a clerical error. It is the ultimate legal shield, allowing the Architects to retreat to safety while the corporate shell absorbs the fines.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 6: MODULE 05 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_05</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_APEX_LOCK // 1910</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">A clandestine cartel drafting the blueprint to privately capture the American money supply.</p>
+            </div>
+
+            <p class="readable-text">
+                The Biddle Crisis proved that ego-driven humans were a liability. The Panic of 1907 proved that relying on mega-bankers like J.P. Morgan to manually bail out the system was too exposed. The Architects needed a permanent, automated bailout machine.
+            </p>
+            <p class="readable-text">
+                In November 1910, six men representing one-quarter of the global wealth boarded a disguised train to an exclusive resort at Jekyll Island, Georgia. In complete secrecy, they drafted the private legislation to hand over the creation of American currency to a private banking cartel. 
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">When you want to pass a law that permanently enslaves the public, you don't call it slavery. You call it the "Federal Reserve," stamp a bald eagle on it, and tell the public it protects them.</p>
+            </div>
+        </div>
+
+        <!-- PANEL 7: MODULE 06 -->
+        <div class="hud-panel">
+            <div class="shrink-0">
+                <h2 class="font-terminal text-3xl text-white mb-1">> MODULE_06</h2>
+                <p class="font-terminal text-sm text-[#FF00FF] mb-4">THE_CLOSED_SYSTEM // 1913</p>
+            </div>
+            
+            <div class="mt-4 border-l-4 border-[#39FF14] pl-4 mb-6">
+                <p class="font-terminal text-xs text-[#39FF14] font-bold mb-1">THE EVIDENCE:</p>
+                <p class="readable-text text-white">The moment the Ghost fully merged with the Machine and locked the cell door forever.</p>
+            </div>
+
+            <p class="readable-text">
+                On December 23, 1913, while the majority of the republic's representatives had already packed up for the holiday, the remaining politicians rammed the Federal Reserve Act through Congress. The U.S. government structurally surrendered its constitutional authority to issue its own money.
+            </p>
+            <p class="readable-text">
+                Instead, it legally bound itself to borrow its currency from a private banking cartel, sticking the taxpayers with the unpayable interest debt.
+            </p>
+
+            <div class="bg-black border border-[#39FF14]/30 p-4 mt-4">
+                <p class="font-terminal text-xs text-[#FF00FF] mb-2">> LEDGER SUMMARY:</p>
+                <p class="readable-text italic text-sm">The extraction engine was finally running on pure autopilot with zero accountability. The working class ceased attacking the invisible Architects and began violently turning on each other.</p>
+            </div>
+        </div>
+
+        <!-- THE OUTRO -->
+        <div class="hud-panel border-[#39FF14]">
+            <div class="flex-1 flex flex-col justify-center items-center text-center p-2 lg:p-4 shrink-0">
+                <p class="font-terminal text-xs text-[#FFFFFF] mb-4">> AUDIT_CONCLUSION: THE_REBEL_CONTRACT // SALVAGE</p>
+                
+                <div class="text-white font-terminal text-xs mb-2 tracking-widest text-[#FF00FF]">> THE EVIDENCE: Shattering the illusion of "natural markets" to reveal the structural hostage economy.</div>
+                
+                <blockquote class="readable-text text-lg text-left bg-black border-l-4 border-[#39FF14] p-6 mb-6 mt-4 opacity-75">
+                    The Architects rely on your exhaustion. They rely on the assumption that you will never look past their sanitized history books to see the raw ledger of theft. But the ledger survives. We have mapped the exact timeline of how human operators were replaced with an immortal corporate parasite. The cell door was locked, but finding the structural chokepoints is how we build the lantern-skiffs to hack the system. This concludes the mapping of Phase II; the war now moves into the open. The Machine has billions of dollars, but we have the Receipts.
+                </blockquote>
+            </div>
+
+            <div class="mt-auto shrink-0 w-full mt-6">
+                <!-- CTA buttons for navigating to the other parts -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="/series/ghost/p1/" class="block font-terminal border border-[#39FF14] bg-black bg-opacity-50 px-4 py-3 text-center cursor-pointer hover:bg-[#39FF14] hover:text-black text-[#39FF14] font-bold tracking-widest text-sm transition-colors duration-300">
+                        [ ACCESS PART 1 ]
+                    </a>
+                    <a href="/series/ghost/p3/" class="block font-terminal border border-[#FF00FF] bg-black bg-opacity-50 px-4 py-3 text-center cursor-pointer hover:bg-[#FF00FF] hover:text-black text-[#FF00FF] font-bold tracking-widest text-sm transition-colors duration-300">
+                        [ ACCESS PART 3 ]
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

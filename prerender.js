@@ -28,7 +28,7 @@ async function prerender() {
 
   const distDir = path.join(__dirname, 'dist');
   const postDistHtml = path.join(distDir, 'post', 'index.html');
-  const indexDistHtml = path.join(distDir, 'index.html');
+  const indexDistHtml = path.join(distDir, 'codex', 'index.html');
 
   if (!fs.existsSync(postDistHtml) || !fs.existsSync(indexDistHtml)) {
     console.error(`[PRERENDER] Missing HTML files in /dist. Did Vite build successfully?`);

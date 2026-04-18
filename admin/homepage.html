@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // HOMEPAGE ENGINE</title>
+    
+    <!-- PURE V4 STACK -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body
+    class="bg-matrix-bg text-white font-mono min-h-screen flex flex-col selection:bg-matrix-green selection:text-black">
+    <div class="scanline-overlay"></div>
+
+    <!-- HEADER -->
+    <nav
+        class="w-full h-16 border-b border-matrix-border px-6 flex justify-between items-center bg-matrix-bg/90 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="w-2 h-2 rounded-full bg-matrix-green animate-pulse"></span>
+            <span class="text-sm font-bold text-matrix-green tracking-widest uppercase">HOMEPAGE ENGINE // EDITOR</span>
+        </div>
+        <a href="/admin/index.html"
+            class="text-[10px] font-bold text-matrix-muted hover:text-white tracking-widest border border-matrix-border px-3 py-2 hover:bg-white/5 transition-colors uppercase">
+            [ GATEWAY ]
+        </a>
+    </nav>
+
+    <!-- AUTH LOCK -->
+    <div id="auth-lock"
+        class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
+        <span class="text-red-500 text-5xl mb-6">🔒</span>
+        <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
+            CLEARANCE...</p>
+        <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
+        </p>
+    </div>
+
+    <main class="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col gap-8">
+
+        <!-- PAGE HEADER -->
+        <header class="border-b border-matrix-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-[0.2em] uppercase text-white">Homepage Engine</h1>
+                <p class="text-matrix-muted text-xs tracking-widest uppercase mt-2">> Absolute Root Domain Architecture</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="btn-save-order"
+                    class="hidden border border-matrix-green bg-matrix-green text-black hover:bg-white hover:text-black hover:border-white text-[10px] font-bold tracking-widest uppercase px-5 py-2 transition-colors">
+                    SAVE ORDER
+                </button>
+                <button id="btn-add-block"
+                    class="border border-matrix-green/50 text-matrix-green hover:bg-matrix-green hover:text-black text-[10px] font-bold tracking-widest uppercase px-5 py-2 transition-colors">
+                    + ADD BLOCK
+                </button>
+            </div>
+        </header>
+
+        <!-- BLOCK LIST -->
+        <section>
+            <div class="flex items-center justify-between mb-4 border-b border-matrix-border pb-2">
+                <h2 class="text-xs font-bold text-matrix-green tracking-widest uppercase">Content Blocks</h2>
+                <span id="block-count" class="text-[10px] text-matrix-muted tracking-widest">...</span>
+            </div>
+            <p class="text-[9px] text-matrix-muted uppercase tracking-widest mb-4">
+                /// Drag blocks to reorder the root domain layout.
+            </p>
+
+            <div id="empty-state" class="hidden text-center py-16 text-matrix-muted text-xs tracking-widest uppercase">
+                <p class="text-4xl mb-4 opacity-30">📡</p>
+                <p>No blocks configured. Add one above.</p>
+            </div>
+            <div id="blocks-list" class="space-y-3"></div>
+        </section>
+    </main>
+
+    <!-- EDIT MODAL -->
+    <div id="edit-modal"
+        class="hidden fixed inset-0 z-50 bg-[#05010a]/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="w-full max-w-lg border border-matrix-green/40 bg-matrix-panel p-6 relative max-h-[90vh] overflow-y-auto">
+            <button id="modal-close"
+                class="absolute top-3 right-4 text-matrix-muted hover:text-white font-bold text-sm">✕</button>
+            <h2 id="modal-title"
+                class="text-sm font-bold tracking-widest uppercase text-matrix-green mb-6 border-b border-matrix-border pb-3">
+                ADD BLOCK</h2>
+
+            <input type="hidden" id="modal-block-id">
+            <div class="space-y-4">
+                
+                <div>
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Block Type *</label>
+                    <select id="modal-block-type"
+                        class="w-full bg-[#0d0d0d] border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono uppercase tracking-widest">
+                        <option value="SPLASH_CAROUSEL">Splash Carousel</option>
+                        <option value="FEATURED_FOLDER">Featured Folder</option>
+                        <option value="PINNED_ARTICLE">Pinned Article</option>
+                        <option value="CUSTOM_LINK">Custom Link Block</option>
+                        <option value="CUSTOM_HTML">Raw HTML Block</option>
+                    </select>
+                </div>
+
+                <div id="field-content-id" class="hidden">
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Select Content</label>
+                    <select id="modal-content-id" class="w-full bg-[#0d0d0d] border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                        <option value="">[ NONE / ROOT ]</option>
+                        <optgroup label="SERIES (FOLDERS)" id="sg-series"></optgroup>
+                        <optgroup label="ARTICLES (PINNED)" id="sg-articles"></optgroup>
+                    </select>
+                    <p class="text-[9px] text-[#a78bfa]/50 mt-1 uppercase tracking-widest">Select the content to link this block to.</p>
+                </div>
+
+                <div id="field-custom-link" class="hidden space-y-3">
+                    <div>
+                        <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Display Title</label>
+                        <input type="text" id="modal-link-title" placeholder="e.g. PREORDER THE BOOK"
+                            class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">External URL</label>
+                        <input type="url" id="modal-link-url" placeholder="https://..."
+                            class="w-full bg-transparent border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono">
+                    </div>
+                </div>
+
+                <div id="field-custom-html" class="hidden">
+                    <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Custom HTML / Text</label>
+                    <textarea id="modal-custom-html" rows="4" placeholder="Enter custom HTML or plain text here..."
+                        class="w-full bg-[#0d0d0d] border border-matrix-border text-white text-sm px-3 py-2 focus:outline-none focus:border-matrix-green font-mono"></textarea>
+                </div>
+
+                <div class="hidden">
+                    <input type="number" id="modal-order" value="0">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6 pt-4 border-t border-matrix-border">
+                <button id="modal-save"
+                    class="flex-1 border border-matrix-green bg-matrix-green/10 text-matrix-green hover:bg-matrix-green hover:text-black font-bold uppercase tracking-widest py-2 text-[10px] transition-all">
+                    SAVE BLOCK
+                </button>
+                <button id="modal-cancel"
+                    class="border border-matrix-border text-matrix-muted hover:text-white px-5 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors">
+                    CANCEL
+                </button>
+            </div>
+            <div id="modal-error"
+                class="hidden mt-3 text-red-500 text-[10px] font-bold uppercase tracking-widest text-center"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="w-full border-t border-matrix-border bg-matrix-bg/90 text-center py-4 shrink-0 z-40 relative mt-auto">
+        <p class="text-[9px] text-matrix-green/30 tracking-[0.3em] uppercase font-mono">
+            SOVEREIGN SYSTEM V4.0 // HOMEPAGE ENGINE
+        </p>
+    </footer>
+
+    <script type="module" src="./admin_homepage.js"></script>
+</body>
+
+</html>
