@@ -7,11 +7,11 @@ import { initAuth, currentRole, setAuthChangeCallback } from './auth.js';
 const NAV_ITEMS = [
     { href: '/', label: '/ homepage' },
     { href: '/codex/', label: '/ codex_root' },
-    { href: '/about.html', label: '/ about' },
-    { href: '/archives.html', label: '/ archives' },
+    { href: '/about', label: '/ about' },
+    { href: '/archives', label: '/ archives' },
     { href: '/lexicon/', label: '/ lexicon' },
     { href: '/terminal/', label: '/ cmd_link', cls: 'text-[#00ff41]/70 hover:text-[#00ff41] hover:border-[#00ff41]' },
-    { href: '/order.html', label: '/ pre-order', cls: 'text-red-500/70 hover:text-red-400' },
+    { href: '/order', label: '/ pre-order', cls: 'text-red-500/70 hover:text-red-400' },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
