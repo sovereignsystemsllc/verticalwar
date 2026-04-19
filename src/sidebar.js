@@ -16,7 +16,7 @@ const NAV_ITEMS = [
 
 document.addEventListener('DOMContentLoaded', () => {
     const aside = document.createElement('aside');
-    aside.className = 'fixed left-0 top-0 h-full w-64 bg-[#05010a] border-r border-[#a78bfa]/30 font-mono text-xs z-[60] overflow-y-auto flex flex-col shadow-[4px_0_20px_rgba(0,0,0,0.8)] transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 custom-scrollbar';
+    aside.className = 'fixed left-0 top-0 h-full w-64 bg-[#05010a] border-r border-[#a78bfa]/30 font-mono text-xs z-[110] overflow-y-auto flex flex-col shadow-[4px_0_20px_rgba(0,0,0,0.8)] transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 custom-scrollbar';
 
     // Build nav items from config
     const navItemsHtml = NAV_ITEMS.map(item => {
@@ -79,20 +79,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
 
-            <!-- PUBLIC CORRIDOR (TO BE REBUILT) -->
-            <div class="mb-6 opacity-30 grayscale pointer-events-none" title="OFFLINE FOR V4 MIGRATION">
-                <span class="block px-6 text-[10px] text-white/40 tracking-widest mb-1 italic">the manual (offline):</span>
-                <a href="#" class="block w-full text-left py-2 px-6 text-white/50 border-l-2 border-transparent">
+            <!-- THE MANUAL (PUBLIC CORRIDOR) -->
+            <div class="mb-6">
+                <span class="block px-6 text-[10px] text-[#a78bfa]/40 tracking-widest mb-1 italic">the manual (archives):</span>
+                <a href="#" class="block w-full text-left py-2 px-6 text-[#a78bfa]/50 border-l-2 border-transparent opacity-30 grayscale pointer-events-none cursor-not-allowed">
                     + signal_tower
                 </a>
-                <a href="#" class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 border-l-2 border-transparent">
+                <a href="#" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/40 border-l-2 border-transparent opacity-30 grayscale pointer-events-none cursor-not-allowed">
                     $ wire_cutters
                 </a>
-                <a href="#" class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 border-l-2 border-transparent">
+                <a href="#" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/40 border-l-2 border-transparent opacity-30 grayscale pointer-events-none cursor-not-allowed">
                     $ paper_trail
                 </a>
-                <a href="#" class="block w-full text-left py-1.5 px-6 pl-10 text-white/40 border-l-2 border-transparent">
+                <a href="/shadow-arc/index.html" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/50 hover:text-[#a78bfa]">
                     $ shadow_work
+                </a>
+                <a href="/series/ghost/p1/index.html" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/50 hover:text-[#a78bfa]">
+                    $ ghost_of_east_india
                 </a>
             </div>
 
@@ -125,6 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             
         </nav>
+
+        <!-- THE ARCHITECT PLATE -->
+        <div class="px-6 py-4 border-t border-[#a78bfa]/20 bg-[#05010a]/50 shrink-0 relative">
+            <div class="absolute inset-y-0 left-0 w-1 bg-[#a78bfa]/20"></div>
+            <p class="text-[9px] text-[#a78bfa]/80 tracking-[0.3em] font-bold mb-1 uppercase">// THE ARCHITECT</p>
+            <p class="text-[10px] text-white/50 leading-relaxed font-sans">
+                Engineered & Authored by <span class="text-[#a78bfa] font-bold">Ethan Faulkner</span>.
+            </p>
+        </div>
 
         <!-- FOOTER / LOGOUT -->
         <div class="p-4 border-t border-[#a78bfa]/20 mt-auto bg-[#05010a]/50 shrink-0 space-y-2">
@@ -206,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mobile/Desktop Edge Toggle (MENU Button)
     const edgeTab = document.createElement('button');
-    edgeTab.className = 'fixed left-2 top-1/2 -translate-y-1/2 z-[55] flex items-center justify-center bg-[#05010a]/80 backdrop-blur-md border border-[#a78bfa]/40 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(167,139,250,0.1)] cursor-pointer group hover:border-[#a78bfa] overflow-hidden menu-expanded';
+    edgeTab.className = 'fixed left-2 top-1/2 -translate-y-1/2 z-[120] flex items-center justify-center bg-[#05010a]/80 backdrop-blur-md border border-[#a78bfa]/40 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(167,139,250,0.1)] cursor-pointer group hover:border-[#a78bfa] overflow-hidden menu-expanded';
     edgeTab.innerHTML = `
         <div class="relative w-2 h-2 rounded-full border border-[#a78bfa] flex-shrink-0 bg-transparent flex items-center justify-center transition-all duration-700 menu-orb">
             <div class="absolute w-1 h-1 bg-[#a78bfa] rounded-full opacity-0 transition-opacity duration-700 menu-orb-core"></div>
@@ -215,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     const backdrop = document.createElement('div');
-    backdrop.className = 'fixed inset-0 bg-black/80 z-[50] hidden lg:hidden transition-opacity duration-300 opacity-0';
+    backdrop.className = 'fixed inset-0 bg-black/80 z-[105] hidden lg:hidden transition-opacity duration-300 opacity-0';
 
     document.body.appendChild(edgeTab);
     document.body.appendChild(backdrop);

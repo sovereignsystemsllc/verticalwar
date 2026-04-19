@@ -108,18 +108,37 @@
                     <label class="block text-xs text-gray-400 tracking-widest uppercase mb-1">Thumbnail</label>
                     <!-- Hidden ghost input — editor.js reads this for save -->
                     <input type="hidden" id="iptThumbnail" aria-hidden="true">
+                    
                     <div class="flex items-start gap-3">
                         <div id="thumbnail-preview-wrap" class="hidden shrink-0">
                             <img id="thumbnail-preview" src="" alt="Thumbnail"
                                 class="w-20 h-14 object-cover border border-gray-700">
                         </div>
                         <div class="flex flex-col gap-1 flex-1">
-                            <button type="button" id="btn-upload-thumbnail"
-                                class="text-xs font-bold tracking-widest uppercase border border-[#00ff41]/50 text-[#00ff41]/70 hover:bg-[#00ff41] hover:text-black transition px-3 py-1.5 w-full text-left">
-                                📁 UPLOAD IMAGE
-                            </button>
+                            <div class="flex gap-2">
+                                <button type="button" id="btn-upload-thumbnail"
+                                    class="text-xs font-bold tracking-widest uppercase border border-[#00ff41]/50 text-[#00ff41]/70 hover:bg-[#00ff41] hover:text-black transition px-3 py-1.5 w-full text-left">
+                                    📁 UPLOAD IMAGE
+                                </button>
+                                <button type="button" id="btn-extract-thumbnail"
+                                    class="text-xs font-bold tracking-widest uppercase border border-[#00ff41]/50 text-[#00ff41]/70 hover:bg-[#00ff41] hover:text-black transition px-3 py-1.5 w-full text-left">
+                                    🔍 EXTRACT FROM BODY
+                                </button>
+                            </div>
                             <span id="thumbnail-filename" class="text-[10px] text-gray-600 font-mono truncate">No file
                                 selected</span>
+                        </div>
+                    </div>
+
+                    <!-- Inline Image Extractor Grid -->
+                    <div id="thumbnail-extractor-wrap" class="hidden mt-3 p-3 bg-gray-900 border border-gray-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] text-[#00ff41] tracking-widest uppercase">Select an image from the article</span>
+                            <button type="button" id="btn-close-extractor" class="text-gray-500 hover:text-white px-2 py-1 text-sm font-bold">&times;</button>
+                        </div>
+                        <!-- Provide horizontal scrolling for multiple images -->
+                        <div id="extractor-grid" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-700">
+                            <!-- JS injects images here -->
                         </div>
                     </div>
                 </div>

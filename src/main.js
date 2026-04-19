@@ -169,15 +169,8 @@ function renderSidebar() {
 
   // Helper function to build folder HTML
   const buildFolder = (title, tracks, sKey, categoryLabel = null, seriesId = null, splashArticleId = null) => {
-    // SECURITY GATE: Only OPERATOR or SOVEREIGN can see Inside the Forge
-    if (title === 'Inside the Forge' && !['OPERATOR', 'SOVEREIGN'].includes(currentRole)) {
-      return '';
-    }
-
-    // SECURITY GATE: Hidden articles are restricted to OPERATOR/SOVEREIGN, same as Inside the Forge
-    const accessibleTracks = ['OPERATOR', 'SOVEREIGN'].includes(currentRole)
-      ? tracks
-      : tracks.filter(t => !t.hidden);
+    // NEW PAYWALL LOGIC: All tracks are visible in the sidebar to everyone. The lock will act as the hook.
+    const accessibleTracks = tracks;
 
     const filteredTracks = query
       ? accessibleTracks.filter(t => t.title.toLowerCase().includes(query))
@@ -221,7 +214,9 @@ function renderSidebar() {
                             <span>SYS_RECORD // ${displayIdx}</span>
                             <span>[${dateStr}]</span>
                         </span>
-                        <span class="text-xs text-white/80 group-hover/row:text-white font-bold leading-snug tracking-wider">${t.title}</span>
+                        <span class="text-xs text-white/80 group-hover/row:text-white font-bold leading-snug tracking-wider">
+                            ${t.hidden ? '<span class="text-[#f59e0b] mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.6)]">[🔒]</span>' : ''}${t.title}
+                        </span>
                     </button>${hasDesc ? `
                     <button onclick="event.stopPropagation();window.showArticleInfo('${t.id}')" class="shrink-0 px-2 text-[10px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors flex items-center lg:hidden" title="About this article">ⓘ</button>` : ''}
                 </div>
@@ -253,13 +248,14 @@ function renderSidebar() {
     if (seriesDef.title === '[PINNED ARTICLE]') {
       const pinned = globalArticles.find(a => a.id === seriesDef.pinned_article_id);
       if (!pinned) return;
-      if (pinned.hidden && !isElevated) return; // respect visibility rules
       html += `
         <div class="mb-1 pl-3 border-l-2 border-[#a78bfa]/30 hover:border-[#a78bfa] transition-all bg-[#05010a]/50 hover:bg-[#a78bfa]/10 cursor-pointer"
              onclick="window.openArticle('${pinned.id}')">
           <div class="py-3 flex items-center gap-2">
             <span class="text-[10px] text-[#a78bfa]/50">📄</span>
-            <span class="text-xs font-bold text-white/80 hover:text-white tracking-wide truncate italic">${pinned.title}</span>
+            <span class="text-xs font-bold text-white/80 hover:text-white tracking-wide truncate italic">
+              ${pinned.hidden ? '<span class="text-[#f59e0b] mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.6)]">[🔒]</span>' : ''}${pinned.title}
+            </span>
           </div>
         </div>`;
       return;
@@ -401,6 +397,29 @@ function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+window.triggerMagicSync = async function(event) {
+  const emailInput = document.getElementById('sync-email-input');
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
+  if (!email) return;
+
+  const btn = event ? event.currentTarget : document.activeElement;
+  const originalText = btn.innerText;
+  btn.innerText = 'TRANSMITTING...';
+  btn.disabled = true;
+
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href }});
+  if (error) {
+     alert("Sync Failed: " + error.message);
+     btn.innerText = originalText;
+     btn.disabled = false;
+  } else {
+     btn.innerText = 'SYNC INITIATED - CHECK EMAIL';
+     btn.classList.add('bg-[#a78bfa]', 'text-black');
+     btn.classList.remove('bg-[#a78bfa]/10', 'text-[#a78bfa]');
+  }
+};
+
 window.copySeriesLink = function (btn, seriesTitle) {
   const slug = slugify(seriesTitle);
   const url = `${location.origin}/series/${slug}/`;
@@ -498,24 +517,82 @@ window.openArticle = async function (id, skipState = false) {
     .eq('id', id)
     .single();
 
-  const content_html = (!error && fullArticle) ? fullArticle.content_html : "<p class='text-red-500'>[ ERROR: PAYLOAD DECRYPTION FAILED ]</p>";
+  let final_content_html = (!error && fullArticle) ? fullArticle.content_html : "<p class='text-red-500'>[ ERROR: PAYLOAD DECRYPTION FAILED ]</p>";
   const video_url = (!error && fullArticle) ? fullArticle.video_url : null;
+
+  // ------------------------------------------
+  // PAYWALL BLAST DOOR LOGIC (V4 MIGRATION)
+  // ------------------------------------------
+  const isElevated = ['OPERATOR', 'SOVEREIGN'].includes(currentRole);
+  let showBlastDoor = false;
+
+  if (article.hidden && !isElevated) {
+      showBlastDoor = true;
+      // Truncate Payload (roughly 3 blocks)
+      if (final_content_html) {
+          const parts = final_content_html.split('</p>');
+          if (parts.length > 3) {
+              final_content_html = parts.slice(0, 3).join('</p>') + '</p>';
+          }
+      }
+
+      final_content_html += `
+        <div class="mt-16 w-full border border-red-500/50 bg-[#05010a] p-8 text-center shadow-[0_0_30px_rgba(239,68,68,0.1)] relative overflow-hidden group">
+          <div class="absolute inset-0 bg-red-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
+          <div class="relative z-10 flex flex-col items-center">
+            <h3 class="text-xl md:text-2xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">RESTRICTED PAYLOAD</h3>
+            <p class="text-xs text-white/70 mb-8 font-mono tracking-widest leading-relaxed max-w-lg">
+              The remainder of this transmission is locked inside the Sovereign Hub. You must hold active clearance to decrypt this payload.
+            </p>
+            <div class="w-full max-w-sm flex flex-col gap-6">
+              
+              <!-- SECONDARY CTA: SYNC EXISTING (Substack Trap) -->
+              <div class="border border-[#a78bfa]/30 p-5 bg-black/60 relative">
+                <p class="text-[9px] text-[#a78bfa] mb-3 tracking-[0.2em] font-bold uppercase drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">Already paying on Substack?</p>
+                <p class="text-[8px] text-[#a78bfa]/60 mb-4 tracking-widest leading-relaxed">Enter your email below. Our system will automatically verify your active subscription and sync your clearance instantly.</p>
+                <div class="flex flex-col gap-3">
+                  <input type="email" id="sync-email-input" placeholder="Substack Email" autocomplete="email" class="w-full bg-[#050505] border border-[#a78bfa]/40 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] text-xs font-mono placeholder-[#a78bfa]/30 text-center tracking-wider mb-1">
+                  <button onclick="window.triggerMagicSync(event)" class="w-full text-[#a78bfa] hover:text-black font-bold border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] px-4 py-2 uppercase tracking-[0.2em] transition-all text-[10px] shadow-[0_0_10px_rgba(167,139,250,0.2)] hover:shadow-none">
+                    [ SYNC PAID ACCESS ]
+                  </button>
+                </div>
+              </div>
+
+              <!-- PRIMARY CTA: NATIVE V4 CHECKOUT -->
+              <div>
+                <a href="/inner-circle.html" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-4 uppercase tracking-[0.2em] transition-all text-xs text-center block shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
+                  [ UPGRADE NATIVELY ]
+                </a>
+                <p class="text-[8px] text-red-500/50 mt-3 tracking-widest uppercase">New here? Join the Inner Circle directly on native billing.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      `;
+  }
 
   // Handle Video Embed
   const videoContainer = document.getElementById('video-embed-container');
   const videoIframe = document.getElementById('video-iframe');
   if (videoContainer && videoIframe) {
-      const embedSrc = resolveEmbedUrl(video_url);
-      if (embedSrc) {
-          videoIframe.src = embedSrc;
-          videoContainer.classList.remove('hidden');
-      } else {
+      if (showBlastDoor) {
+          // Hide video completely if locked payload
           videoContainer.classList.add('hidden');
           videoIframe.src = '';
+      } else {
+          const embedSrc = resolveEmbedUrl(video_url);
+          if (embedSrc) {
+              videoIframe.src = embedSrc;
+              videoContainer.classList.remove('hidden');
+          } else {
+              videoContainer.classList.add('hidden');
+              videoIframe.src = '';
+          }
       }
   }
 
-  articleContent.innerHTML = content_html || "<i>[EMPTY PAYLOAD]</i>";
+  articleContent.innerHTML = final_content_html || "<i>[EMPTY PAYLOAD]</i>";
 
   // Reader actions + comments
   const readerActions = document.getElementById('reader-actions');

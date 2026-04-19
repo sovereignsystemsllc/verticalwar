@@ -136,6 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('profile-card').classList.remove('hidden');
         await loadProfile(currentUser);
+        
+        // Passive Banner Trap: Targeting active operators (assumed Substack legacy)
+        if (['OPERATOR', 'SOVEREIGN'].includes(currentRole)) {
+            const banner = document.getElementById('v4-migration-banner');
+            if (banner) banner.classList.remove('hidden');
+        }
 
         document.getElementById('btnSaveProfile').addEventListener('click', () => saveProfile(currentUser));
 

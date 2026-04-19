@@ -202,6 +202,13 @@ async function handleSessionData(user) {
     }
 
     updateAuthUI();
+
+    // Prestige "Welcome to the Inner Circle" Modal (One-Time Execution)
+    if (['OPERATOR', 'SOVEREIGN'].includes(currentRole) && !localStorage.getItem('v4_prestige_shown')) {
+        showPrestigeModal();
+        localStorage.setItem('v4_prestige_shown', 'true');
+    }
+
     if (onAuthChangeCallback) onAuthChangeCallback();
 }
 
@@ -240,5 +247,27 @@ function updateAuthUI() {
     document.querySelectorAll('#link-matrix-admin').forEach(el => {
         el.classList.toggle('hidden', currentRole !== 'SOVEREIGN');
     });
+}
+
+// ── PRESTIGE MODAL ────────────────────────────────────────────────────────────
+function showPrestigeModal() {
+    const html = `
+      <div id="prestige-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 px-4 backdrop-blur-sm">
+        <div class="max-w-lg w-full border border-red-500/50 bg-[#05010a] p-8 shadow-[0_0_50px_rgba(239,68,68,0.2)] relative overflow-hidden group">
+          <div class="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors duration-1000"></div>
+          <div class="relative z-10 flex flex-col items-center text-center">
+            <span class="text-4xl mb-4">🩸</span>
+            <h2 class="text-xl md:text-2xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">CLEARANCE GRANTED</h2>
+            <p class="text-[11px] text-white/70 tracking-widest leading-relaxed mb-8 font-mono max-w-md mx-auto">
+              Welcome to the Inner Circle. Your native connection to the Sovereign Architecture is confirmed. The Blast Doors have been lifted. All classified payloads are now decryptable.
+            </p>
+            <button onclick="document.getElementById('prestige-modal').remove()" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-3 text-center uppercase tracking-[0.2em] transition-all text-xs shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
+              [ ENTER THE HUB ]
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
 }
 

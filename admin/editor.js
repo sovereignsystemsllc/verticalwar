@@ -130,6 +130,51 @@ function initForge() {
         logTerminal(`Thumbnail forged: ${url}`);
         e.target.value = '';
     });
+
+    // Thumbnail Extractor Handler
+    const extractorWrap = document.getElementById('thumbnail-extractor-wrap');
+    const extractorGrid = document.getElementById('extractor-grid');
+    
+    document.getElementById('btn-extract-thumbnail').addEventListener('click', () => {
+        // Find all img tags in Quill
+        const images = quill.root.querySelectorAll('img');
+        
+        if (!images || images.length === 0) {
+            logTerminal('No images found in the body.', 'ERROR');
+            return;
+        }
+        
+        // Clear grid
+        extractorGrid.innerHTML = '';
+        
+        // Populate grid
+        images.forEach(img => {
+            const url = img.src;
+            if (!url) return;
+            
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'shrink-0 group overflow-hidden border border-gray-700 hover:border-[#00ff41] transition focus:outline-none';
+            btn.innerHTML = `<img src="${url}" class="w-24 h-16 object-cover opacity-80 group-hover:opacity-100 transition">`;
+            
+            btn.addEventListener('click', () => {
+                document.getElementById('iptThumbnail').value = url;
+                setThumbnailPreview(url);
+                document.getElementById('thumbnail-filename').textContent = 'Extracted from body';
+                logTerminal(`Thumbnail extracted.`);
+                extractorWrap.classList.add('hidden');
+            });
+            
+            extractorGrid.appendChild(btn);
+        });
+        
+        extractorWrap.classList.remove('hidden');
+        logTerminal(`Found ${images.length} image(s) for extraction.`);
+    });
+    
+    document.getElementById('btn-close-extractor').addEventListener('click', () => {
+        extractorWrap.classList.add('hidden');
+    });
 }
 
 // ============================================================
