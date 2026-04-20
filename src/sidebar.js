@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${navItemsHtml}
                 <div id="link-matrix-admin" class="hidden">
                     <div class="flex items-center justify-between px-6 pl-10 py-1.5 border-l-2 border-transparent hover:border-[#a78bfa]/30 group">
-                        <a href="/admin/index.html" class="flex-1 text-white/40 hover:text-white transition-colors tracking-widest text-[10px]">
+                        <a href="/admin/" class="flex-1 text-white/40 hover:text-white transition-colors tracking-widest text-[10px]">
                             $ matrix_admin/
                         </a>
                         <button class="sidebar-toggle text-white/30 hover:text-[#a78bfa] transition-colors px-1 text-[10px]" data-target="nav-matrix" data-open="false">
@@ -54,25 +54,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>
                     </div>
                     <div id="nav-matrix" class="hidden">
-                        <a href="/admin/index.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; suite
                         </a>
-                        <a href="/admin/curate.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/curate" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; curate
                         </a>
-                        <a href="/admin/editor.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/editor" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; editor
                         </a>
-                        <a href="/admin/upload.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/upload" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; ingest
                         </a>
-                        <a href="/admin/assets.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/assets" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; assets
                         </a>
-                        <a href="/admin/splash.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/splash" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; splash
                         </a>
-                        <a href="/admin/receipts.html" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                        <a href="/admin/receipts" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; receipts
                         </a>
                     </div>
@@ -91,10 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="#" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/40 border-l-2 border-transparent opacity-30 grayscale pointer-events-none cursor-not-allowed">
                     $ paper_trail
                 </a>
-                <a href="/shadow-arc/index.html" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/50 hover:text-[#a78bfa]">
+                <a href="/shadow-arc/" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/50 hover:text-[#a78bfa]">
                     $ shadow_work
                 </a>
-                <a href="/series/ghost/p1/index.html" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/50 hover:text-[#a78bfa]">
+                <a href="/series/ghost/p1/" class="block w-full text-left py-1.5 px-6 pl-10 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/50 hover:text-[#a78bfa]">
                     $ ghost_of_east_india
                 </a>
             </div>
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
            <a href="https://constructamiracle.com" target="_blank" rel="noopener" class="block w-full text-center py-2 px-4 text-[#a78bfa]/70 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 tracking-widest uppercase text-[9px] font-bold">
              COMMON SENSE REBEL // SUBSTACK
            </a>
-           <a id="sidebar-profile-link" href="/profile/index.html"
+           <a id="sidebar-profile-link" href="/profile/"
                class="hidden w-full text-center py-2.5 px-4 text-white font-bold tracking-widest uppercase text-xs transition-all border border-[#a78bfa]/60 hover:border-[#a78bfa] hover:bg-[#a78bfa]/10 hover:text-[#a78bfa] block">
                &#x25C8; MY PROFILE
            </a>
@@ -395,11 +395,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- SUCCESS SCREEN (register only) -->
-            <div id="modal-success" class="hidden text-center py-6">
-              <p class="text-3xl mb-3">ðŸ“¡</p>
-              <p class="text-white font-bold tracking-widest uppercase text-sm mb-2 font-mono">TRANSMISSION SENT</p>
-              <p class="text-[#a78bfa]/60 text-[10px] tracking-widest leading-relaxed font-mono">Check your email to verify your account.</p>
-              <button id="modal-back-to-login" class="mt-5 text-[10px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-4 py-2 font-mono">â† BACK TO LOGIN</button>
+            <div id="modal-success" class="hidden py-4 text-center">
+              <h3 class="text-[#a78bfa] font-bold tracking-[0.2em] mb-2 uppercase font-mono border-b border-[#a78bfa]/20 pb-2">IDENTITY SECURED</h3>
+              <p class="text-white text-xs tracking-widest leading-relaxed font-mono mb-4">Transmission Sent. Check your email to verify and complete login.</p>
+              
+              <div class="bg-[#a78bfa]/5 border border-[#a78bfa]/30 p-4 mt-2">
+                <p class="text-[#a78bfa] font-bold text-[10px] tracking-widest uppercase mb-2">CLEARANCE STATUS: RECRUIT</p>
+                <div class="text-[#a78bfa]/60 text-[10px] tracking-widest leading-relaxed font-mono mb-3 text-left">
+                  <span class="text-white/80">> Legacy Substack:</span> Your clearance will auto-sync upon email verification.<br><br>
+                  <span class="text-white/80">> Cold Traffic:</span> If you do not have Inner Circle clearance, secure your rank now to access classified payloads.
+                </div>
+                <a href="https://buy.stripe.com/8x2aEX6sn4uUap89qj7Zu04" id="modal-upsell-btn" target="_blank" class="block w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all text-[11px] font-mono shadow-[0_0_15px_rgba(167,139,250,0.2)]">INITIATE UPGRADE (NATIVE)</a>
+              </div>
+              
+              <button id="modal-back-to-login" class="mt-4 text-[9px] text-[#a78bfa]/50 hover:text-[#a78bfa] tracking-widest uppercase transition-colors border border-[#a78bfa]/20 hover:border-[#a78bfa]/50 px-4 py-1.5 font-mono">← CLOSE & CHECK EMAIL</button>
             </div>
 
             <!-- FORM -->

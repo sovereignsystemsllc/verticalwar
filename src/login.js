@@ -104,6 +104,11 @@ gateForm.addEventListener('submit', async (e) => {
 
             // Profile row is inserted by DB trigger (handle_new_user).
             // Show confirmation screen — button stays disabled permanently on success.
+            const upsellBtn = document.getElementById('gate-upsell-btn');
+            if (upsellBtn) {
+                upsellBtn.href = `https://buy.stripe.com/8x2aEX6sn4uUap89qj7Zu04?prefilled_email=${encodeURIComponent(email)}`;
+            }
+
             gateForm.classList.add('hidden');
             gateSuccess.classList.remove('hidden');
             return; // do NOT reset isSubmitting on success

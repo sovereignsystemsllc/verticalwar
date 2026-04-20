@@ -119,7 +119,7 @@ function I() {
         ${
           m === "SOVEREIGN"
             ? `
-        <a href="/admin/splash.html" class="absolute -top-8 right-0 text-[9px] font-bold tracking-widest uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-3 py-1 transition-colors z-10">
+        <a href="/admin/splash" class="absolute -top-8 right-0 text-[9px] font-bold tracking-widest uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-3 py-1 transition-colors z-10">
           [ EDIT CAROUSEL CARDS ]
         </a>`
             : ""

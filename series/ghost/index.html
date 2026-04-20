@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GHOST IN THE MACHINE // VAULT DIRECTORY</title>
+    <!-- Tailwind CSS injected directly to ensure utility classes work -->
+    <link rel="stylesheet" href="/src/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* FSR-RYUKO / FSY-YOKO BRUTALIST ACCESSIBILITY OVERRIDE */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-base: #000000;
+            --bg-panel: #050505;
+            --bg-hover: #111111;
+            --data: #39FF14;
+            --anomaly: #FF00FF;
+            --header: #FFFFFF;
+            --text-soft: #f8fafc;
+            --locked: #555555;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--data);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            line-height: 1.8;
+            /* Subtle dark grid background */
+            background-image: 
+                linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Monospace restricted strictly to UI and Headers */
+        .font-terminal {
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Subtle Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Glitch Title */
+        .massive-header {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--header);
+        }
+
+        .fatal-glitch {
+            position: relative;
+            animation-play-state: paused;
+            cursor: crosshair;
+        }
+
+        .fatal-glitch:hover {
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch::before, .fatal-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .fatal-glitch:hover::before, .fatal-glitch:hover::after {
+            opacity: 1;
+        }
+
+        .fatal-glitch:hover::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--anomaly);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .fatal-glitch:hover::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--data);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(62px, 9999px, 14px, 0); }
+            40% { clip: rect(29px, 9999px, 98px, 0); }
+            60% { clip: rect(81px, 9999px, 3px, 0); }
+            80% { clip: rect(45px, 9999px, 55px, 0); }
+            100% { clip: rect(92px, 9999px, 21px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(24px, 9999px, 56px, 0); }
+            20% { clip: rect(89px, 9999px, 12px, 0); }
+            40% { clip: rect(4px, 9999px, 76px, 0); }
+            60% { clip: rect(65px, 9999px, 34px, 0); }
+            80% { clip: rect(19px, 9999px, 88px, 0); }
+            100% { clip: rect(45px, 9999px, 2px, 0); }
+        }
+
+        /* Directory Nodes */
+        .vault-node {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--data);
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vault-node:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--anomaly);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 0, 255, 0.15);
+        }
+
+        .vault-node::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 2px;
+            height: 100%;
+            background-color: var(--data);
+            transition: background-color 0.2s;
+        }
+
+        .vault-node:hover::before {
+            background-color: var(--anomaly);
+        }
+
+        /* Locked Nodes */
+        .vault-node.locked {
+            border-color: var(--locked);
+            cursor: not-allowed;
+            background-color: transparent;
+        }
+        
+        .vault-node.locked:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--locked);
+        }
+
+        .vault-node.locked::before {
+            background-color: var(--locked);
+        }
+
+        .vault-node.locked * {
+            color: var(--locked) !important;
+        }
+
+        .status-blink {
+            animation: pulse-slow 2s infinite;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="scanlines"></div>
+
+    <div class="fixed top-4 left-4 z-50">
+        <a href="/" class="font-terminal text-xs text-[#FFFFFF] border border-[#FFFFFF]/30 bg-black/80 px-3 py-1 hover:bg-[#FFFFFF]/10 hover:text-[#FF00FF] transition-colors">&lt; HOME NODE</a>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 py-20 relative z-10 min-h-screen flex flex-col">
+        
+        <!-- HEADER -->
+        <header class="mb-16 border-b border-[#39FF14]/30 pb-8">
+            <p class="font-terminal text-sm text-[#FF00FF] mb-2">> SECURE CONNECTION ESTABLISHED</p>
+            <h1 class="fatal-glitch font-terminal massive-header mb-4" data-text="THE GHOST IN THE MACHINE" title="HOVER TO INITIATE THE GLITCH">THE GHOST IN THE MACHINE</h1>
+            
+            <div class="bg-[#39FF14]/10 border-l-4 border-[#39FF14] p-4 mt-6 max-w-3xl">
+                <p class="font-terminal text-[#39FF14] font-bold text-lg mb-2">WARNING: HISTORICAL LEDGER ACCESS DETECTED</p>
+                <p class="text-[#f8fafc] text-lg">
+                    You are accessing the foundational source code of the American monopoly. The Revolution never ended; the mechanics of power merely transitioned from a foreign crown to a domestic extraction engine. 
+                </p>
+                <p class="text-[#f8fafc] text-lg mt-2 font-bold opacity-80">
+                    Discard all patriotic conditioning before proceeding into the vault.
+                </p>
+            </div>
+        </header>
+
+        <!-- DIRECTORY GRID -->
+        <main class="grid gap-6 flex-1">
+            <h2 class="font-terminal text-2xl text-white mb-2">> 1773-NOW // AVAILABLE ARCHIVES</h2>
+
+            <!-- PART 1 -->
+            <a href="/series/ghost/p1/" class="vault-node p-6 block cursor-pointer group">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="font-terminal text-[#39FF14] text-xs mb-2 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#39FF14] status-blink"></span>
+                            NODE 01 // 1773 - 1794
+                        </div>
+                        <h3 class="font-terminal text-3xl text-white mb-2 group-hover:text-[#FF00FF] transition-colors">THE SEED</h3>
+                        <p class="text-[#f8fafc] opacity-80 text-lg">Alexander Hamilton, Scripomania, and the exact architectural blueprint of the financial monopoly.</p>
+                    </div>
+                    <div class="font-terminal text-[#FF00FF] shrink-0 md:text-right">
+                        <span class="border border-[#FF00FF] px-4 py-2 bg-[#FF00FF]/5 group-hover:bg-[#FF00FF] group-hover:text-black transition-colors">
+                            DECRYPTED &raquo;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PART 2 -->
+            <a href="/series/ghost/p2/" class="vault-node p-6 block cursor-pointer group">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="font-terminal text-[#39FF14] text-xs mb-2 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#39FF14] status-blink"></span>
+                            NODE 02 // 1832 - 1913
+                        </div>
+                        <h3 class="font-terminal text-3xl text-white mb-2 group-hover:text-[#FF00FF] transition-colors">THE BIOLOGICAL BUG</h3>
+                        <p class="text-[#f8fafc] opacity-80 text-lg">The Biddle crisis, the Civil War blood arbitrage, and forging the immortal Corporate Person to lock the cell door.</p>
+                    </div>
+                    <div class="font-terminal text-[#FF00FF] shrink-0 md:text-right">
+                        <span class="border border-[#FF00FF] px-4 py-2 bg-[#FF00FF]/5 group-hover:bg-[#FF00FF] group-hover:text-black transition-colors">
+                            DECRYPTED &raquo;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PART 3 -->
+            <a href="/series/ghost/p3/" class="vault-node p-6 block cursor-pointer group">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="font-terminal text-[#39FF14] text-xs mb-2 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#39FF14] status-blink"></span>
+                            NODE 03 // 1914 - 1934
+                        </div>
+                        <h3 class="font-terminal text-3xl text-white mb-2 group-hover:text-[#FF00FF] transition-colors">THE BLOOD ENGINE</h3>
+                        <p class="text-[#f8fafc] opacity-80 text-lg">World War I profiteering, Smedley Butler's forensic autopsy, and the blatant 1933 fascist Business Plot.</p>
+                    </div>
+                    <div class="font-terminal text-[#FF00FF] shrink-0 md:text-right">
+                        <span class="border border-[#FF00FF] px-4 py-2 bg-[#FF00FF]/5 group-hover:bg-[#FF00FF] group-hover:text-black transition-colors">
+                            DECRYPTED &raquo;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PART 4 (LOCKED) -->
+            <div class="vault-node locked p-6 block mt-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="font-terminal text-xs mb-2 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 border border-current"></span>
+                            NODE 04 // 1945 - 1970s
+                        </div>
+                        <h3 class="font-terminal text-3xl mb-2">THE SHADOW REBUILD</h3>
+                        <p class="opacity-80 text-lg">Operation Paperclip, MKUltra, and the construction of the unaccountable intelligence grid.</p>
+                    </div>
+                    <div class="font-terminal shrink-0 md:text-right text-sm">
+                        [ PENDING COMPILATION ]
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 5 (LOCKED) -->
+            <div class="vault-node locked p-6 block">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="font-terminal text-xs mb-2 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 border border-current"></span>
+                            NODE 05 // THE BRIDGE
+                        </div>
+                        <h3 class="font-terminal text-3xl mb-2">THE CORPORATE SINGULARITY</h3>
+                        <p class="opacity-80 text-lg">The 1971 Nixon Shock bridging directly into the 2001 System Switch and the missing trillions.</p>
+                    </div>
+                    <div class="font-terminal shrink-0 md:text-right text-sm">
+                        [ CLASSIFIED FILE ]
+                    </div>
+                </div>
+            </div>
+            
+            <!-- UPCOMING SERIES FLAG -->
+            <div class="vault-node border-dashed p-6 block border-[#39FF14]/30 bg-transparent">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="font-terminal text-[#FF00FF] text-xs mb-2 tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#FF00FF] animate-ping"></span>
+                            ARCHIVE EXPANSION_FLAG
+                        </div>
+                        <h3 class="font-terminal text-2xl text-white mb-2">THE ASSET CARTELS (UPCOMING)</h3>
+                        <p class="text-[#f8fafc] opacity-60 text-base">Routing the 250-year structural trap directly into the present-day Vanguard and BlackRock monoliths.</p>
+                    </div>
+                    <div class="font-terminal text-[#39FF14] shrink-0 md:text-right text-xs opacity-50">
+                        // AWAITING PROTOCOL //
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="mt-20 pt-8 border-t border-[#39FF14]/20 font-terminal text-[10px] text-[#39FF14] opacity-50 flex justify-between">
+            <span>SOVEREIGN HQ // GHOST.MACHINE.SYS</span>
+            <span>RESTRICTED ACCESS</span>
+        </footer>
+
+    </div>
+
+</body>
+</html>

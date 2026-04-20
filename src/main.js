@@ -560,7 +560,7 @@ window.openArticle = async function (id, skipState = false) {
 
               <!-- PRIMARY CTA: NATIVE V4 CHECKOUT -->
               <div>
-                <a href="/inner-circle.html" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-4 uppercase tracking-[0.2em] transition-all text-xs text-center block shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
+                <a href="/inner-circle" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-4 uppercase tracking-[0.2em] transition-all text-xs text-center block shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
                   [ UPGRADE NATIVELY ]
                 </a>
                 <p class="text-[8px] text-red-500/50 mt-3 tracking-widest uppercase">New here? Join the Inner Circle directly on native billing.</p>

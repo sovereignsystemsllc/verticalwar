@@ -47,6 +47,7 @@ export default defineConfig({
                 profile_view: resolve(__dirname, 'profile/view.html'),
                 lexicon: resolve(__dirname, 'lexicon/index.html'),
                 codex: resolve(__dirname, 'codex/index.html'),
+                inner_circle: resolve(__dirname, 'inner-circle.html'),
                 // ADD NEW PUBLIC PAGES HERE
             }
         }

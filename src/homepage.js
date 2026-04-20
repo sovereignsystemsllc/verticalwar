@@ -106,7 +106,7 @@ function renderSplashCarouselBlock(block) {
       <div class="w-full relative shadow-[0_0_50px_rgba(167,139,250,0.05)] hp-carousel-container">
         <!-- SOVEREIGN EDIT BUTTON -->
         ${currentRole === 'SOVEREIGN' ? `
-        <a href="/admin/splash.html" class="absolute -top-8 right-0 text-[10px] font-bold tracking-[0.2em] uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-4 py-2 transition-colors z-10 bg-[#05010a]/90 backdrop-blur">
+        <a href="/admin/splash" class="absolute -top-8 right-0 text-[10px] font-bold tracking-[0.2em] uppercase border border-[#a78bfa]/40 text-[#a78bfa]/60 hover:text-[#a78bfa] hover:border-[#a78bfa] px-4 py-2 transition-colors z-10 bg-[#05010a]/90 backdrop-blur">
           [ EDIT CAROUSEL ]
         </a>` : ''}
         

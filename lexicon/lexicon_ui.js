@@ -1,4 +1,4 @@
-﻿// lexicon_ui.js â€” V4 Lexicon UI Logic + Remaining Terms
+// lexicon_ui.js â€” V4 Lexicon UI Logic + Remaining Terms
 // This file extends lexicon.js by importing DB and rendering the interface.
 
 import { DB, CATEGORIES } from './lexicon.js';
@@ -311,7 +311,7 @@ function initSidebar() {
         html += `<div class="cat-label">${catLabels[cat]}</div>`;
         termsInCat.forEach(key => {
             html += `<button id="btn-${key}" onclick="loadTerm('${key}')"
-                class="term-btn block w-full text-left px-3 py-2 text-[11px] font-mono text-[#a78bfa]/60 hover:text-white hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+                class="term-btn block w-full text-left px-3 py-2 text-[11px] font-mono text-[#FF00FF]/60 hover:text-white hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-[#FF00FF]">
                 ${FULL_DB[key].title}
             </button>`;
         });
@@ -347,7 +347,7 @@ window.loadTerm = function (key, pushHistory = true) {
     const linkedDef = linkify(data.def);
 
     const imgHtml = data.img ? `
-        <div class="mb-6 rounded-sm overflow-hidden border border-[#a78bfa]/20 bg-black/40 flex justify-center">
+        <div class="mb-6 rounded-sm overflow-hidden border border-[#FF00FF]/20 bg-black/40 flex justify-center">
             <img src="${data.img}" alt="${data.title}" class="def-img">
         </div>` : '';
 
@@ -355,7 +355,7 @@ window.loadTerm = function (key, pushHistory = true) {
     if (data.links) {
         linksHtml = data.links.map(l => `
             <a href="${l.url}" target="_blank" rel="noopener"
-                class="inline-flex items-center gap-2 px-3 py-2 mt-3 mr-2 bg-[#a78bfa]/5 hover:bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/30 rounded-sm transition-all font-mono text-[10px] tracking-wider group">
+                class="inline-flex items-center gap-2 px-3 py-2 mt-3 mr-2 bg-[#FF00FF]/5 hover:bg-[#FF00FF]/15 text-[#FF00FF] border border-[#FF00FF]/30 rounded-sm transition-all font-mono text-[10px] tracking-wider group">
                 <span>${l.text}</span>
                 <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -363,7 +363,7 @@ window.loadTerm = function (key, pushHistory = true) {
             </a>`).join('');
     } else if (data.link) {
         linksHtml = `<a href="${data.link}" target="_blank" rel="noopener"
-            class="inline-flex items-center gap-2 px-3 py-2 mt-3 bg-[#a78bfa]/5 hover:bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/30 rounded-sm transition-all font-mono text-[10px] tracking-wider group">
+            class="inline-flex items-center gap-2 px-3 py-2 mt-3 bg-[#FF00FF]/5 hover:bg-[#FF00FF]/15 text-[#FF00FF] border border-[#FF00FF]/30 rounded-sm transition-all font-mono text-[10px] tracking-wider group">
             <span>ACCESS EXTERNAL PROTOCOL</span>
             <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -414,12 +414,12 @@ window.handleEnter = function (e) {
         loadTerm(matches[0]);
     } else if (matches.length > 1) {
         document.getElementById('display-area').innerHTML = `
-            <div class="mb-4 text-[#00ff41] font-bold border-b border-[#00ff41]/20 pb-2 text-sm">MULTIPLE MATCHES DETECTED:</div>
+            <div class="mb-4 text-[#39FF14] font-bold border-b border-[#39FF14]/20 pb-2 text-sm">MULTIPLE MATCHES DETECTED:</div>
             <div class="space-y-1">
                 ${matches.map(k => `
                     <button onclick="loadTerm('${k}')"
-                        class="block w-full text-left text-gray-400 hover:text-white hover:bg-[#a78bfa]/10 px-4 py-2 border-l-2 border-transparent hover:border-[#a78bfa] transition-all font-mono text-xs group">
-                        <span class="text-[#a78bfa]/50 group-hover:text-[#a78bfa] mr-2">&gt;</span> ${FULL_DB[k].title}
+                        class="block w-full text-left text-gray-400 hover:text-white hover:bg-[#FF00FF]/10 px-4 py-2 border-l-2 border-transparent hover:border-[#FF00FF] transition-all font-mono text-xs group">
+                        <span class="text-[#FF00FF]/50 group-hover:text-[#FF00FF] mr-2">&gt;</span> ${FULL_DB[k].title}
                     </button>`).join('')}
             </div>`;
     } else {

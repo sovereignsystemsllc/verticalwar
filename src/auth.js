@@ -116,6 +116,12 @@ export async function initAuth() {
                     const formWrap = document.getElementById('modal-form-wrap');
                     const successEl = document.getElementById('modal-success');
                     const tabs = loginModal.querySelector('.flex.mb-5');
+                    const upsellBtn = document.getElementById('modal-upsell-btn');
+
+                    if (upsellBtn) {
+                        upsellBtn.href = `https://buy.stripe.com/8x2aEX6sn4uUap89qj7Zu04?prefilled_email=${encodeURIComponent(email)}`;
+                    }
+
                     if (formWrap) formWrap.classList.add('hidden');
                     if (successEl) successEl.classList.remove('hidden');
                     if (tabs) tabs.classList.add('hidden');
