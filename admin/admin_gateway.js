@@ -38,10 +38,10 @@ async function loadTelemetry() {
 
 // ── Activity Log ──────────────────────────────────────────────────────────────
 const ACTION_LABELS = {
-    bookmark_add: { label: '+ BOOKMARK', cls: 'text-[#a78bfa]' },
-    bookmark_remove: { label: '- BOOKMARK', cls: 'text-white/30' },
-    comment_post: { label: '💬 COMMENT', cls: 'text-[#00ff41]' },
-    profile_view: { label: '👁 PROFILE', cls: 'text-yellow-400' },
+    bookmark_add: { label: '+ BOOKMARK', style: 'color: #a78bfa;' },
+    bookmark_remove: { label: '- BOOKMARK', style: 'color: rgba(255,255,255,0.3);' },
+    comment_post: { label: '💬 COMMENT', style: 'color: #00ff41;' },
+    profile_view: { label: '👁 PROFILE', style: 'color: #facc15;' },
 };
 
 async function loadActivityLog() {
@@ -83,12 +83,12 @@ async function loadActivityLog() {
             month: 'short', day: 'numeric',
             hour: '2-digit', minute: '2-digit'
         }).toUpperCase();
-        const action = ACTION_LABELS[row.action] || { label: row.action, cls: 'text-matrix-muted' };
+        const action = ACTION_LABELS[row.action] || { label: row.action, style: 'color: rgba(255,255,255,0.5);' };
         return `
                         <tr class="border-b border-matrix-border/30 hover:bg-matrix-green/5 transition-colors">
                             <td class="py-2 pr-4 text-matrix-muted whitespace-nowrap">${when}</td>
-                            <td class="py-2 pr-4 text-[#a78bfa] font-bold">${displayName}</td>
-                            <td class="py-2 pr-6 ${action.cls} font-bold whitespace-nowrap">${action.label}</td>
+                            <td class="py-2 pr-4 font-bold" style="color: #a78bfa;">${displayName}</td>
+                            <td class="py-2 pr-6 font-bold whitespace-nowrap" style="${action.style}">${action.label}</td>
                             <td class="py-2 text-white/60 truncate max-w-xs">${articleTitle}</td>
                         </tr>`;
     }).join('')}

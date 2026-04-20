@@ -347,8 +347,10 @@ async function saveAllArticleOrder() {
 
     if (updates.length === 0) return;
 
-    const { error } = await supabase.from('articles').upsert(updates, { onConflict: 'id' });
-    if (error) { console.error('Article order upsert failed:', error); showToast('Save failed.', true); return; }
+    // Use atomic update loop to prevent upsert null constraints
+    for (const update of updates) {
+        await supabase.from('articles').update({ order_index: update.order_index }).eq('id', update.id);
+    }
 
     allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 }
@@ -389,7 +391,7 @@ function renderFolders() {
     foldersContainer.innerHTML = '';
 
     // ── UNASSIGNED SINGLES bucket (pinned, not part of section groups) ──
-    const unassignedCount = allArticles.filter(a => !a.series_id).length;
+    const unassignedCount = allArticles.filter(a => !a.series_id && (!folderMap.has(a.id) || folderMap.get(a.id).size === 0)).length;
     const unIsActive = activeFolderId === null && !isGlobalSearch;
 
     const unEl = document.createElement('div');
@@ -459,7 +461,7 @@ function renderFolders() {
             const s = section.heading;
             const head = document.createElement('div');
             head.dataset.folderId = s.id;
-            head.className = 'pt-6 pb-2 border-b border-matrix-border/40 relative cursor-grab group select-none';
+            head.className = 'heading-row pt-6 pb-2 border-b border-matrix-border/40 relative cursor-grab group select-none';
             head.innerHTML = `
                 <div class="flex items-center justify-between px-1">
                     <h3 class="text-[9px] ${s.hidden ? 'text-matrix-muted line-through' : 'text-matrix-green/70'} font-bold tracking-[0.4em] uppercase">${s.category_label || 'UNCATEGORIZED'}${s.hidden ? ' [HIDDEN]' : ''}</h3>
@@ -579,6 +581,7 @@ function renderFolders() {
         delayOnTouchOnly: true,
         touchStartThreshold: 3,
         draggable: '[data-section-group]',
+        handle: '.heading-row',
         ghostClass: 'drag-ghost',
         chosenClass: 'drag-chosen',
         onMove: (evt) => {
@@ -616,13 +619,13 @@ function renderArticles(folderId) {
     let filtered = isGlobalSearch
         ? [...allArticles]
         : (folderId === null
-            ? allArticles.filter(a => !a.series_id)
-            : allArticles.filter(a => a.series_id === folderId));
+            ? allArticles.filter(a => !a.series_id && (!folderMap.has(a.id) || folderMap.get(a.id).size === 0))
+            : allArticles.filter(a => a.series_id === folderId || folderMap.get(a.id)?.has(folderId)));
 
     // Search
     if (matrixSearchQuery) {
         const q = matrixSearchQuery.toLowerCase();
-        filtered = filtered.filter(a => a.title.toLowerCase().includes(q));
+        filtered = filtered.filter(a => a.title.toLowerCase().includes(q) || (a.subtitle && a.subtitle.toLowerCase().includes(q)));
     }
 
     articleCount.innerText = `${filtered.length} RECORDS`;
@@ -1157,6 +1160,18 @@ async function pinArticleDirectly(article) {
     if (masterSeries.length > 0) defaultCat = masterSeries[masterSeries.length - 1].category_label || 'UNCATEGORIZED';
     const maxOrder = masterSeries.reduce((max, s) => Math.max(max, s.order_index || 0), 0);
 
+    // Optimistic Push
+    const tempId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
+    masterSeries.push({
+        id: tempId,
+        title: '[PINNED ARTICLE]',
+        pinned_article_id: article.id,
+        category_label: defaultCat,
+        order_index: maxOrder + 1
+    });
+    renderFolders();
+    setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
+
     const { error } = await supabase.from('series').insert([{
         title: '[PINNED ARTICLE]',
         pinned_article_id: article.id,
@@ -1165,8 +1180,11 @@ async function pinArticleDirectly(article) {
     }]);
     if (error) { console.error('Pin article failed:', error.message); showToast('Pin failed.', true); return; }
     showToast('📄 Article pinned to sidebar.');
-    await loadData();
-    setTimeout(() => { foldersContainer.scrollTop = foldersContainer.scrollHeight; }, 100);
+    
+    // Background sync
+    supabase.from('series').select('*').order('order_index', { ascending: true }).then(res => {
+        if (res.data) masterSeries = res.data;
+    });
 }
 
 // ============================================================
@@ -1204,8 +1222,12 @@ if (btnSaveFolderOrder) {
         });
 
         if (updates.length > 0) {
-            const { error } = await supabase.from('series').upsert(updates, { onConflict: 'id' });
-            if (error) { console.error('Folder order upsert failed:', error); showToast('Save failed.', true); }
+            let hasError = false;
+            for (const update of updates) {
+                const { error } = await supabase.from('series').update({ order_index: update.order_index, category_label: update.category_label }).eq('id', update.id);
+                if (error) hasError = true;
+            }
+            if (hasError) { showToast('Some folder orders failed to save.', true); }
             else {
                 updates.forEach(u => {
                     const s = masterSeries.find(series => series.id === u.id);
@@ -1250,8 +1272,12 @@ if (btnSyncTimeline) {
         allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
         btnSyncTimeline.innerText = '[ SYNCING... ]';
 
-        const { error } = await supabase.from('articles').upsert(updates, { onConflict: 'id' });
-        if (error) { console.error('Sync timeline failed:', error); showToast('Sync failed.', true); }
+        let syncError = false;
+        for (const update of updates) {
+            const { error } = await supabase.from('articles').update({ order_index: update.order_index }).eq('id', update.id);
+            if (error) syncError = true;
+        }
+        if (syncError) { showToast('Sync failed.', true); }
         else {
             await saveAllArticleOrder(); // commit full matrix sort state atomically
             showToast('Timeline synced [OK]');
@@ -1377,10 +1403,14 @@ btnRssSyncNodes.forEach(btn => {
 // SEARCH
 // ============================================================
 
+let searchDebounce;
 if (matrixSearchInput) {
     matrixSearchInput.addEventListener('input', (e) => {
-        matrixSearchQuery = e.target.value;
-        renderArticles(activeFolderId); // single call, no dead branch
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(() => {
+            matrixSearchQuery = e.target.value;
+            renderArticles(activeFolderId);
+        }, 300);
     });
 }
 

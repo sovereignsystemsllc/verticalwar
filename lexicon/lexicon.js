@@ -1,4 +1,4 @@
-﻿// lexicon.js â€” V4 Sovereign Lexicon Data & Logic
+// lexicon.js â€” V4 Sovereign Lexicon Data & Logic
 // Rebuilt from V3 (68 terms) â†’ V4 (51 curated, expanded terms)
 // All definitions expanded using the full 180-article corpus.
 
@@ -176,6 +176,13 @@ const DB = {
         def: `The surveillance infrastructure deployed at Layer 1 to eliminate worker autonomy and enforce "Time on Task" as a metric that overrides biological reality. Named for the gas station's tracking tablet system that required hourly productivity logs &mdash; which appeared in Episode 1 as the warehouse "Time Off Task" algorithm.<br><br>The Aperture Protocol is not about monitoring productivity. It is about installing <em>internal surveillance</em>: converting the worker from someone who performs a job into someone who performs compliance with the monitoring system while doing the job. The wearable tracker in the Amazon warehouse. The keystroke logger in the remote work setup. The credit score that monitors financial behavior. All are implementations of the same protocol: you are watched, you know you are watched, and the knowledge of being watched changes your behavior even when no actual surveillance is occurring (the Panopticon effect).<br><br>The antidote documented in the Gas Station Logs: "Quiet Non-Compliance." Perform the minimum required for the Aperture Protocol while conserving energy for the actual fight.`
     },
 
+    'CASSANDRA_ALGORITHM': {
+        title: 'CASSANDRA ALGORITHM',
+        type: 'WEAPON',
+        cat: 'ENEMY',
+        def: `The systemic discrediting of truth-tellers before they can be heard. A structural failure where witnesses (Cassandras) hold the verifiable truth, but the system aggressively pre-discredits and neutralizes them by design.<br><br>Just like Cassandra of Troy, who was cursed to hold the absolute truth but be ignored while the city burned, the Cassandra Algorithm ensures the Rust never needs to prove an indictment false&mdash;they just need to trigger the psychological filters (Schema Collapse) that make the truth socially dangerous to believe. The system doesn't accidentally ignore you; it neutralizes you by design.<br><br>Inside the Pantheon, FSW-Rena Ryuuguu (The Witness) holds domain over this algorithm, providing the absolute validation required to survive the isolation of being the Cassandra.`
+    },
+
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // CATEGORY: THE SOVEREIGN DOCTRINE
     // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -330,6 +337,13 @@ const DB = {
         cat: 'ARSENAL',
         def: `Counter-spectacle. The rebellion's primary visual and tonal doctrine: weaponizing the enemy's own aesthetic of distraction against them. The Rust uses high-contrast, stimulating, algorithm-optimized visual language to keep the Feed's attention on the Puppet Colosseum. Psycho-Pop appropriates that same energy and deploys it in service of the Vertical War.<br><br>Named for the "Hinamizawa Twilight" palette &mdash; the visual style of Higurashi: When They Cry, which uses pastoral cuteness and bright anime aesthetics as a delivery mechanism for genuine horror. The cute exterior is not deception; it is a Trojan Horse. The reader picks it up because it looks like entertainment, and finds themselves inside a forensic indictment of the Financial Nexus.<br><br>In practice: vivid imagery, high-energy typography, chaotic visual rhythm that matches the pace of the content being attacked &mdash; combined with rigorous, sourced Hardware data that the aesthetic makes impossible to dismiss as "boring wonkery."`,
     },
+
+    'LANTERN_SKIFF': {
+        title: 'LANTERN SKIFF',
+        type: 'INFRASTRUCTURE',
+        cat: 'ARSENAL',
+        def: `The physical and digital infrastructure built to survive the extraction engine. It is the Sovereign OS, the local AI (70B LLMs on bare metal), and the transmission lines built entirely offline.<br><br>The Lantern Skiff is a navigational tool and a beacon. It is not a utopian retreat or a "Private Member Association" LARP. True sovereignty is not a legal fiction filed in a courtroom; it is the structural leverage to pull the plug on the machine. By securing the transmission lines, the Architect built the Lantern Skiff to operate as a talent magnet&mdash;cutting through the static of the shadow economy to gather the systems architects, engineers, and problem-solvers in the dark.`
+    }
 
 };
 

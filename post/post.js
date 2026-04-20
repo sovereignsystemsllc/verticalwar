@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const { data, error } = await supabase
             .from('articles')
-            .select('title, subtitle, content_html, series, post_date, created_at, video_url')
+            .select('title, subtitle, content_html, series, post_date, created_at, video_url, hidden, audience')
             .eq('id', articleId)
             .single();
 
@@ -249,10 +249,56 @@ document.addEventListener('DOMContentLoaded', async () => {
             year: 'numeric', month: 'short', day: 'numeric'
         }).toUpperCase();
 
+        const isElevated = ['OPERATOR', 'SOVEREIGN'].includes(currentRole);
+        let showBlastDoor = false;
+
+        if (data.hidden && !isElevated) {
+            showBlastDoor = true;
+            data.content_html = `
+              <div class="mt-8 w-full border border-red-500/50 bg-[#05010a] p-8 text-center shadow-[0_0_30px_rgba(239,68,68,0.1)] relative overflow-hidden group">
+                <div class="absolute inset-0 bg-red-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
+                <div class="relative z-10 flex flex-col items-center">
+                  <h3 class="text-xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">[ CLASSIFIED DRAFT ]</h3>
+                  <p class="text-xs text-white/70 font-mono tracking-widest leading-relaxed max-w-lg">
+                    This transmission sits in an unfinalized state. It has not been cleared for read access outside of the Forge.
+                  </p>
+                </div>
+              </div>
+            `;
+        } else if (data.audience === 'only_paid' && !isElevated) {
+            showBlastDoor = true;
+            if (data.content_html) {
+                const parts = data.content_html.split('</p>');
+                if (parts.length > 3) {
+                    data.content_html = parts.slice(0, 3).join('</p>') + '</p>';
+                }
+            }
+
+            data.content_html += `
+              <div class="mt-8 w-full border border-[#f59e0b]/50 bg-[#05010a] p-8 text-center shadow-[0_0_30px_rgba(245,158,11,0.1)] relative overflow-hidden group">
+                <div class="absolute inset-0 bg-[#f59e0b]/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
+                <div class="relative z-10 flex flex-col items-center">
+                  <h3 class="text-xl font-black text-[#f59e0b] uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]">RESTRICTED PAYLOAD</h3>
+                  <p class="text-xs text-white/70 mb-8 font-mono tracking-widest leading-relaxed max-w-lg">
+                    The remainder of this transmission is locked inside the Sovereign Hub. You must hold active clearance to decrypt this payload.
+                  </p>
+                  <div class="w-full max-w-sm flex flex-col gap-4">
+                    <a href="/inner-circle" class="w-full bg-[#f59e0b]/10 hover:bg-[#f59e0b] text-[#f59e0b] hover:text-black font-bold border border-[#f59e0b] px-4 py-4 uppercase tracking-[0.2em] transition-all text-xs text-center block shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_40px_rgba(245,158,11,0.5)]">
+                      [ UPGRADE CLEARANCE ]
+                    </a>
+                  </div>
+                </div>
+              </div>
+            `;
+        }
+
         const embedSrc = resolveEmbedUrl(data.video_url);
-        if (embedSrc && videoContainer && videoIframe) {
+        if (embedSrc && videoContainer && videoIframe && !showBlastDoor) {
             videoIframe.src = embedSrc;
             videoContainer.classList.remove('hidden');
+        } else if (videoContainer && videoIframe) {
+            videoContainer.classList.add('hidden');
+            videoIframe.src = '';
         }
 
         articleContent.innerHTML = data.content_html;

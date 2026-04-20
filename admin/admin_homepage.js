@@ -58,7 +58,7 @@ async function loadBlocks() {
     ] = await Promise.all([
       supabase.from('homepage_blocks').select('*').order('order_index', { ascending: true }),
       supabase.from('articles').select('id, title').order('created_at', { ascending: false }),
-      supabase.from('series').select('id, title').order('created_at', { ascending: false })
+      supabase.from('series').select('id, title').order('order_index', { ascending: true })
     ]);
 
     if (bErr) { 
@@ -193,8 +193,7 @@ function initSortable() {
         ghostClass: 'opacity-50',
         handle: '.block-item',
         onEnd: () => {
-            orderChanged = true;
-            btnSaveOrder.classList.remove('hidden');
+            saveOrder();
         }
     });
 }
@@ -329,6 +328,7 @@ btnAddBlock.addEventListener('click', () => openModal());
 btnSaveOrder.addEventListener('click', saveOrder);
 modalClose.addEventListener('click', closeModal);
 modalCancel.addEventListener('click', closeModal);
+if (modalSave) modalSave.addEventListener('click', saveBlock);
 modalSave.addEventListener('click', saveBlock);
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
