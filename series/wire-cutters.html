@@ -100,5 +100,11 @@
       player.src = window.SERIES_AUDIO_TRACK;
     }
   </script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 </html>

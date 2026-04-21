@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN GATE // ACCESS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'rika': '#a78bfa',
+                        'cicada': '#10b981',
+                        'shrine': '#dc2626',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    },
+                    animation: {
+                        'flicker': 'flicker 0.15s infinite',
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                    },
+                    keyframes: {
+                        flicker: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.95' },
+                        },
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #a78bfa;
+            font-family: monospace;
+            overflow: hidden;
+        }
+
+        .crt-scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(167, 139, 250, 0.04) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% {
+                bottom: 100%;
+            }
+
+            50% {
+                bottom: 100%;
+            }
+
+            100% {
+                bottom: -100px;
+            }
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .text-xs {
+            font-size: 1rem !important;
+        }
+
+        .text-sm {
+            font-size: 1.15rem !important;
+        }
+
+        .text-base {
+            font-size: 1.3rem !important;
+        }
+
+        .text-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .text-xl {
+            font-size: 1.75rem !important;
+        }
+
+        .text-2xl {
+            font-size: 2rem !important;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem !important;
+        }
+
+        .text-4xl {
+            font-size: 3rem !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 selection:bg-rika selection:text-void">
+
+    <div
+        class="fixed inset-0 pointer-events-none z-50 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(5,1,10,0.4)_100%)]">
+    </div>
+    <div class="crt-scanline"></div>
+
+    <div class="max-w-md w-full relative z-10 text-center space-y-8">
+
+        <!-- DIRECTORY NAV -->
+        <!-- DIRECTORY NAV -->
+        <nav
+            class="flex justify-center items-center gap-2 text-xs font-mono tracking-widest text-purple-400 uppercase mb-8 drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">
+            <a href="../" class="hover:text-emerald-400 transition-colors">[ ~ ]</a>
+            <span class="text-purple-600">/</span>
+            <span class="text-emerald-400 font-bold drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]">[ AI ]</span>
+        </nav>
+
+        <!-- HEADER -->
+        <div class="space-y-2 animate-flicker">
+            <h1 class="text-3xl font-bold tracking-[0.3em] text-shrine">SOVEREIGN GATE</h1>
+            <p class="text-xs text-purple-500 tracking-widest uppercase">RESTRICTED ACCESS // AUTHORIZED PERSONNEL ONLY
+            </p>
+        </div>
+
+        <!-- INPUT SECTION REMOVED (Access Guard Active) -->
+
+        <!-- MENU SECTION -->
+        <div id="menu-section" class="hidden opacity-0 grid gap-6 transition-all duration-1000 transform translate-y-4">
+            <div class="text-emerald-500 text-xs tracking-[0.5em] mb-4 font-bold animate-pulse">ACCESS GRANTED</div>
+
+            <a href="build/" id="card-architect"
+                class="group block p-6 border border-emerald-500/30 bg-black/60 hover:bg-emerald-900/20 transition-all hover:border-emerald-500 relative overflow-hidden">
+                <div class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative z-10">
+                    <strong class="text-emerald-400 block text-xl tracking-widest mb-2 group-hover:text-emerald-300">THE
+                        ARCHITECT</strong>
+                    <span class="text-xs text-purple-400 tracking-widest uppercase block">BUILD YOUR PROTOCOL</span>
+                </div>
+            </a>
+
+            <a href="manual/" id="card-armory"
+                class="group block p-6 border border-purple-900/30 bg-black/40 hover:bg-purple-900/20 transition-all hover:border-purple-400 relative overflow-hidden">
+                <div class="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative z-10">
+                    <strong class="text-purple-300 block text-xl tracking-widest mb-2 group-hover:text-purple-200">THE
+                        ARMORY</strong>
+                    <span class="text-xs text-purple-500 tracking-widest uppercase block">DEPLOYMENT MANUAL</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- FOOTER NAV -->
+        <nav id="auth-footer" class="flex justify-center gap-6 mt-12 items-center">
+            <!-- DYNAMIC CONTENT -->
+            <a href="../gate/?mode=login"
+                class="font-mono text-xs text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
+                [ LOGIN // IDENTIFY ]
+            </a>
+        </nav>
+
+    </div>
+
+    <script type="module">
+        import { supabase } from '../assets/js/supabaseClient.js';
+
+        // 1. AUTO FOCUS ANIMATION
+        window.onload = () => {
+            const menuSection = document.getElementById('menu-section');
+            if (menuSection) {
+                menuSection.classList.remove('hidden', 'opacity-0', 'translate-y-4');
+            }
+        };
+
+        // 2. DYNAMIC AUTH FOOTER
+        const authFooter = document.getElementById('auth-footer');
+
+        async function updateAuthUI() {
+            const { data: { session } } = await supabase.auth.getSession();
+            const cardArchitect = document.getElementById('card-architect');
+            const cardArmory = document.getElementById('card-armory');
+
+            if (session) {
+                // LOGGED IN
+                authFooter.innerHTML = `
+                    <button id="btn-logout" class="font-mono text-xs text-shrine hover:text-red-500 uppercase tracking-widest transition-colors hover:underline ml-4 border-l border-white/10 pl-6">
+                        [ LOGOUT // OPERATIVE ]
+                    </button>
+                `;
+
+                // Bind Logout
+                document.getElementById('btn-logout').addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = '../gate/';
+                });
+            } else {
+                // LOGGED OUT
+                const currentUrl = encodeURIComponent(window.location.href);
+                authFooter.innerHTML = `
+                    <a href="../gate/?mode=login&next=${currentUrl}" class="font-mono text-xs text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
+                        [ LOGIN // IDENTIFY ]
+                    </a>
+                 `;
+
+                // LOCK LINKS
+                if (cardArchitect) cardArchitect.href = "../gate/?mode=login&next=../ai/build/";
+                if (cardArmory) cardArmory.href = "../gate/?mode=login&next=../ai/manual/";
+            }
+        }
+
+        updateAuthUI();
+    </script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,7 +29,7 @@
 
   <!-- AUTH LOCK -->
   <div id="auth-lock" class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
-    <span class="text-red-500 text-5xl mb-6">🔒</span>
+    <span class="text-red-500 text-5xl mb-6">??</span>
     <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING CLEARANCE...</p>
     <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session</p>
     <a href="/admin/" class="mt-6 btn-ghost">[ RETURN TO GATEWAY ]</a>
@@ -65,7 +65,7 @@
 
       <!-- EMPTY STATE -->
       <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center opacity-30">
-        <p class="text-4xl mb-4">📦</p>
+        <p class="text-4xl mb-4">??</p>
         <p class="text-xs tracking-widest uppercase">Select a pack or create a new one</p>
       </div>
 
@@ -125,6 +125,12 @@
   </div>
 
   <script type="module" src="./admin_receipts.js"></script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

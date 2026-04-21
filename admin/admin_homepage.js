@@ -193,7 +193,9 @@ function initSortable() {
         ghostClass: 'opacity-50',
         handle: '.block-item',
         onEnd: () => {
-            saveOrder();
+            orderChanged = true;
+            btnSaveOrder.classList.remove('hidden');
+            btnSaveOrder.classList.add('animate-pulse');
         }
     });
 }
@@ -203,16 +205,19 @@ async function saveOrder() {
     const updates = items.map((el, index) => ({
         id: el.dataset.id,
         order_index: index,
-        // Carry over other required fields to satisfy Supabase upsert rules if needed, 
-        // though typically updating specific fields is best done loop-by-loop or via RPC.
-        // For simplicity, we just update order_index via loop.
     }));
 
     btnSaveOrder.textContent = "SAVING...";
     btnSaveOrder.disabled = true;
 
-    for (const update of updates) {
-        await supabase.from('homepage_blocks').update({ order_index: update.order_index }).eq('id', update.id);
+    const results = await Promise.all(updates.map(update => 
+        supabase.from('homepage_blocks').update({ order_index: update.order_index }).eq('id', update.id)
+    ));
+    
+    const errors = results.filter(r => r.error).map(r => r.error);
+    if (errors.length > 0) {
+        console.error("Errors saving homepage order:", errors);
+        alert("Failed to save order. Ensure you have the SOVEREIGN role and check console.");
     }
 
     btnSaveOrder.textContent = "SAVE ORDER";

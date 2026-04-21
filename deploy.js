@@ -17,7 +17,7 @@ async function deploy() {
         console.log('[DEPLOY] Connecting via SFTP...');
         await sftp.connect(config);
         console.log('[DEPLOY] Uploading deployment_smart.zip...');
-        await sftp.put('deployment_smart.zip', 'www/verticalwar.com/deployment_smart.zip');
+        await sftp.fastPut('deployment_smart.zip', 'www/verticalwar.com/deployment_smart.zip');
         await sftp.end();
         console.log('[DEPLOY] Upload complete.');
 

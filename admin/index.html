@@ -170,6 +170,14 @@
                     <p class="text-[10px] text-matrix-muted uppercase tracking-widest">Master Folders</p>
                     <p id="stat-folders" class="text-2xl text-white font-bold">...</p>
                 </div>
+                <div>
+                    <p class="text-[10px] text-matrix-muted uppercase tracking-widest">Total Views</p>
+                    <p id="stat-views" class="text-2xl font-bold" style="color:#00ff41;">...</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-matrix-muted uppercase tracking-widest">Unique Guests</p>
+                    <p id="stat-guests" class="text-2xl font-bold" style="color:#facc15;">...</p>
+                </div>
             </div>
         </div>
 
@@ -194,6 +202,12 @@
     </footer>
 
     <script type="module" src="/admin/admin_gateway.js"></script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

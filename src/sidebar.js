@@ -2,7 +2,7 @@
 import { initAuth, currentRole, setAuthChangeCallback } from './auth.js';
 
 // ============================================================
-// NAV CONFIG â€” Add new public pages here, not buried in HTML
+// NAV CONFIG — Add new public pages here, not buried in HTML
 // ============================================================
 const NAV_ITEMS = [
     { href: '/', label: '/ homepage' },
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.className = 'hidden fixed inset-0 z-[100] bg-[#05010a]/90 backdrop-blur-sm flex items-center justify-center p-4';
         modal.innerHTML = `
           <div class="w-full max-w-sm border border-[#a78bfa]/50 bg-[#0a0a0a] p-6 relative shadow-[0_0_30px_rgba(167,139,250,0.1)]">
-            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold text-lg leading-none">Ã—</button>
+            <button id="btn-close-login" class="absolute top-2 right-2 text-[#a78bfa]/50 hover:text-[#a78bfa] font-bold text-lg leading-none">×</button>
 
             <!-- HEADER -->
             <div class="flex items-center gap-3 mb-5 border-b border-[#a78bfa]/20 pb-4">
@@ -426,13 +426,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <div>
                 <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono" id="modal-pass-label">Decryption Key</label>
-                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password">
+                <input type="password" id="login-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••" autocomplete="current-password">
               </div>
 
               <!-- REGISTER ONLY: Confirm Password -->
               <div id="modal-field-confirm" class="hidden">
                 <label class="block text-[10px] text-[#a78bfa]/70 uppercase tracking-widest mb-1 font-mono">Confirm Password</label>
-                <input type="password" id="modal-confirm-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="new-password">
+                <input type="password" id="modal-confirm-password" class="w-full bg-[#050505] border border-[#a78bfa]/30 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] font-mono text-sm placeholder-[#a78bfa]/30" placeholder="••••••••••••••••" autocomplete="new-password">
               </div>
 
               <button id="btn-submit-login" class="w-full border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] text-[#a78bfa] hover:text-black font-bold uppercase tracking-widest py-2 transition-all mt-2 text-sm font-mono">INITIATE OVERRIDE</button>

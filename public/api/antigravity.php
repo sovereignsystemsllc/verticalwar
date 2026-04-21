@@ -1,0 +1,121 @@
+<?php
+header('Content-Type: application/json');
+
+// --- CORS & Preflight ---
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Authorization, Content-Type");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["error" => "Method not allowed"]);
+    exit;
+}
+
+// --- 1. EXTRACT AUTHORIZATION HEADER ---
+$auth_header = '';
+if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    $auth_header = $_SERVER['HTTP_AUTHORIZATION'];
+} elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+    $auth_header = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+} else {
+    $headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
+    if (isset($headers['Authorization'])) {
+        $auth_header = $headers['Authorization'];
+    }
+}
+
+if (empty($auth_header)) {
+    http_response_code(401);
+    echo json_encode(["error" => "Missing Authorization header"]);
+    exit;
+}
+
+if (!preg_match('/Bearer\s(\S+)/', $auth_header, $matches)) {
+    http_response_code(401);
+    echo json_encode(["error" => "Invalid Authorization format. Expected Bearer <token>"]);
+    exit;
+}
+$jwt = $matches[1];
+
+// --- 2. VALIDATE JWT WITH SUPABASE ---
+$supabase_url = 'https://zazzwdaexhkeusfjdphv.supabase.co';
+$supabase_anon_key = 'sb_publishable_M2pQlMXjvnzLuYpkdOzTmQ_-zX0zQPg';
+
+$ch = curl_init("$supabase_url/auth/v1/user");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "apikey: $supabase_anon_key",
+    "Authorization: Bearer $jwt"
+]);
+
+$user_response = curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($http_code !== 200) {
+    http_response_code(401);
+    echo json_encode(["error" => "Unauthorized. Invalid JWT.", "details" => json_decode($user_response)]);
+    exit;
+}
+
+// --- 3. FORWARD REQUEST TO GEMINI API ---
+$input_data = file_get_contents('php://input');
+$data = json_decode($input_data, true);
+
+if (!isset($data['contents'])) {
+    http_response_code(400);
+    echo json_encode(["error" => "Missing 'contents' in payload"]);
+    exit;
+}
+
+$gemini_api_key = 'AIzaSyBWQyiNXrPjwW5umF2--fgAY9QPIbcOinQ';
+$model = isset($data['model']) ? $data['model'] : 'gemini-1.5-pro-latest';
+
+$gemini_payload = [
+    "contents" => $data['contents']
+];
+
+$gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$gemini_api_key";
+
+$ch_gemini = curl_init($gemini_url);
+curl_setopt($ch_gemini, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch_gemini, CURLOPT_POST, true);
+curl_setopt($ch_gemini, CURLOPT_POSTFIELDS, json_encode($gemini_payload));
+curl_setopt($ch_gemini, CURLOPT_HTTPHEADER, [
+    "Content-Type: application/json"
+]);
+
+$gemini_response = curl_exec($ch_gemini);
+$gemini_http_code = curl_getinfo($ch_gemini, CURLINFO_HTTP_CODE);
+curl_close($ch_gemini);
+
+// If error from Gemini
+if ($gemini_http_code !== 200) {
+    http_response_code(502);
+    echo json_encode([
+        "error" => "Error communicating with Gemini API", 
+        "details" => json_decode($gemini_response)
+    ]);
+    exit;
+}
+
+// Parse Gemini Response
+$gemini_json = json_decode($gemini_response, true);
+$response_text = "";
+
+if (isset($gemini_json['candidates'][0]['content']['parts'][0]['text'])) {
+    $response_text = $gemini_json['candidates'][0]['content']['parts'][0]['text'];
+} else {
+    $response_text = "[ SYSTEM ERROR :: MALFORMED GEMINI RESPONSE ]\n" . json_encode($gemini_json);
+}
+
+// Return formatted text as expected by the frontend hook
+http_response_code(200);
+echo json_encode(["text" => $response_text]);
+?>

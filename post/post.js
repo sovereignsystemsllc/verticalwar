@@ -1,6 +1,7 @@
 import '../src/style.css';
 import { supabase } from '../src/supabaseClient.js';
 import { initAuth, currentUser, currentRole, setAuthChangeCallback } from '../src/auth.js';
+import { trackPageview } from '../src/telemetry.js';
 
 // ── URL resolver (same as editor.js) ─────────────────────────────────────────
 function resolveEmbedUrl(url) {
@@ -37,6 +38,17 @@ function avatarHtml(profile) {
 }
 
 let articleId = null;
+let viewLogged = false;
+
+// ── Log Article View (Restored for Admin Matrix) ────────────────────────────────
+function logArticleView() {
+    if (viewLogged || !currentUser || !articleId) return;
+    // Don't log if they hit a blast door or redacted page
+    if (document.title.includes('CLASSIFIED') || document.body.innerHTML.includes('RESTRICTED PAYLOAD')) return;
+    
+    supabase.from('activity_log').insert({ user_id: currentUser.id, action: 'article_view', article_id: articleId }).then(() => {});
+    viewLogged = true;
+}
 
 // ── Render comments ───────────────────────────────────────────────────────────
 async function loadComments() {
@@ -212,10 +224,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!articleId) { showError(); return; }
 
+    // Track the view
+    trackPageview(window.location.pathname + window.location.search);
+
     // Auth init — comment form visibility depends on auth state
     setAuthChangeCallback(() => {
         setupCommentUI();
         setupBookmark();
+        logArticleView();
     });
     initAuth();
 
@@ -253,19 +269,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         let showBlastDoor = false;
 
         if (data.hidden && !isElevated) {
-            showBlastDoor = true;
+            document.title = "CLASSIFIED // THE CODEX";
+            articleTitle.textContent = "CLASSIFIED RECORD";
+            articleSubtitle.classList.add('hidden');
+            articleSeries.textContent = 'RESTRICTED';
+            articleSeries.removeAttribute('href');
+            articleSeries.classList.remove('hover:bg-[#a78bfa]', 'hover:text-black', 'cursor-pointer');
+            articleDate.textContent = 'DATE: [REDACTED]';
+            
             data.content_html = `
               <div class="mt-8 w-full border border-red-500/50 bg-[#05010a] p-8 text-center shadow-[0_0_30px_rgba(239,68,68,0.1)] relative overflow-hidden group">
                 <div class="absolute inset-0 bg-red-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
                 <div class="relative z-10 flex flex-col items-center">
-                  <h3 class="text-xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">[ CLASSIFIED DRAFT ]</h3>
+                  <h3 class="text-xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">CLEARANCE REJECTED</h3>
                   <p class="text-xs text-white/70 font-mono tracking-widest leading-relaxed max-w-lg">
-                    This transmission sits in an unfinalized state. It has not been cleared for read access outside of the Forge.
+                    THIS RECORD DOES NOT EXIST OR HAS BEEN CLASSIFIED.
                   </p>
                 </div>
               </div>
             `;
-        } else if (data.audience === 'only_paid' && !isElevated) {
+            
+            // Securely hide metadata and widgets
+            if (videoContainer) videoContainer.classList.add('hidden');
+            document.getElementById('comment-section')?.classList.add('hidden');
+            document.getElementById('reader-actions')?.classList.add('hidden');
+            
+            articleContent.innerHTML = data.content_html;
+            loadingMsg.classList.add('hidden');
+            articleContainer.classList.remove('hidden', 'sv-hidden');
+            articleContainer.classList.add('flex', 'flex-col');
+            return;
+        }
+        
+        if (data.audience === 'only_paid' && !isElevated) {
             showBlastDoor = true;
             if (data.content_html) {
                 const parts = data.content_html.split('</p>');
@@ -275,17 +311,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             data.content_html += `
-              <div class="mt-8 w-full border border-[#f59e0b]/50 bg-[#05010a] p-8 text-center shadow-[0_0_30px_rgba(245,158,11,0.1)] relative overflow-hidden group">
-                <div class="absolute inset-0 bg-[#f59e0b]/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
+              <div class="mt-16 w-full border border-red-500/50 bg-[#05010a] p-8 text-center shadow-[0_0_30px_rgba(239,68,68,0.1)] relative overflow-hidden group">
+                <div class="absolute inset-0 bg-red-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
                 <div class="relative z-10 flex flex-col items-center">
-                  <h3 class="text-xl font-black text-[#f59e0b] uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]">RESTRICTED PAYLOAD</h3>
-                  <p class="text-xs text-white/70 mb-8 font-mono tracking-widest leading-relaxed max-w-lg">
+                  <h3 class="text-xl md:text-2xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">RESTRICTED PAYLOAD</h3>
+                  <p class="text-sm md:text-base text-white/80 mb-8 font-mono tracking-widest leading-relaxed max-w-lg">
                     The remainder of this transmission is locked inside the Sovereign Hub. You must hold active clearance to decrypt this payload.
                   </p>
-                  <div class="w-full max-w-sm flex flex-col gap-4">
-                    <a href="/inner-circle" class="w-full bg-[#f59e0b]/10 hover:bg-[#f59e0b] text-[#f59e0b] hover:text-black font-bold border border-[#f59e0b] px-4 py-4 uppercase tracking-[0.2em] transition-all text-xs text-center block shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_40px_rgba(245,158,11,0.5)]">
-                      [ UPGRADE CLEARANCE ]
-                    </a>
+                  <div class="w-full max-w-sm flex flex-col gap-6">
+                    
+                    <!-- SECONDARY CTA: SYNC EXISTING (Substack Trap) -->
+                    <div class="border border-[#a78bfa]/30 p-5 bg-black/60 relative">
+                      <p class="text-xs md:text-sm text-[#a78bfa] mb-3 tracking-[0.2em] font-bold uppercase drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">Already paying on Substack?</p>
+                      <p class="text-xs text-[#a78bfa]/70 mb-4 tracking-widest leading-relaxed">Enter your email below. Our system will automatically verify your active subscription and sync your clearance instantly.</p>
+                      <div class="flex flex-col gap-3">
+                        <input type="email" id="sync-email-input" placeholder="Substack Email" autocomplete="email" class="w-full bg-[#050505] border border-[#a78bfa]/40 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] text-xs font-mono placeholder-[#a78bfa]/30 text-center tracking-wider mb-1">
+                        <button onclick="window.triggerMagicSync(event)" class="w-full text-[#a78bfa] hover:text-black font-bold border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] px-4 py-2 uppercase tracking-[0.2em] transition-all text-sm shadow-[0_0_10px_rgba(167,139,250,0.2)] hover:shadow-none">
+                          [ SYNC PAID ACCESS ]
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- PRIMARY CTA: NATIVE V4 CHECKOUT -->
+                    <div>
+                      <a href="/inner-circle" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-4 uppercase tracking-[0.2em] transition-all text-sm md:text-base text-center block shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
+                        [ UPGRADE NATIVELY ]
+                      </a>
+                      <p class="text-xs text-red-500/60 mt-3 tracking-widest uppercase">New here? Join the Inner Circle directly on native billing.</p>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -314,6 +368,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Progress bar + Realtime
         initReadingProgress();
         initRealtimeComments(articleId);
+
+        // Safe to log view now that article is confirmed loaded and unclassified
+        logArticleView();
 
     } catch (err) {
         console.error('Unexpected error:', err);

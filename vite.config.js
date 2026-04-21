@@ -48,6 +48,7 @@ export default defineConfig({
                 lexicon: resolve(__dirname, 'lexicon/index.html'),
                 codex: resolve(__dirname, 'codex/index.html'),
                 inner_circle: resolve(__dirname, 'inner-circle.html'),
+                ai: resolve(__dirname, 'ai/build/index.html'),
                 // ADD NEW PUBLIC PAGES HERE
             }
         }

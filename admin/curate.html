@@ -457,6 +457,11 @@
     <div id="curate-toast"
         class="fixed bottom-6 right-6 z-[200] px-4 py-2 text-xs font-bold tracking-widest uppercase border opacity-0 translate-y-2 transition-all duration-300 pointer-events-none"
         style="background:#0a0a0a;border-color:#a78bfa;color:#a78bfa;"></div>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

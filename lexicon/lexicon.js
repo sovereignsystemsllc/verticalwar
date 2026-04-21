@@ -1,12 +1,12 @@
-// lexicon.js â€” V4 Sovereign Lexicon Data & Logic
-// Rebuilt from V3 (68 terms) â†’ V4 (51 curated, expanded terms)
+// lexicon.js — V4 Sovereign Lexicon Data & Logic
+// Rebuilt from V3 (68 terms) → V4 (51 curated, expanded terms)
 // All definitions expanded using the full 180-article corpus.
 
 const DB = {
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════
     // CATEGORY: THE ENEMY ARCHITECTURE
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════
 
     'THE_RUST': {
         title: 'THE RUST',
@@ -183,9 +183,9 @@ const DB = {
         def: `The systemic discrediting of truth-tellers before they can be heard. A structural failure where witnesses (Cassandras) hold the verifiable truth, but the system aggressively pre-discredits and neutralizes them by design.<br><br>Just like Cassandra of Troy, who was cursed to hold the absolute truth but be ignored while the city burned, the Cassandra Algorithm ensures the Rust never needs to prove an indictment false&mdash;they just need to trigger the psychological filters (Schema Collapse) that make the truth socially dangerous to believe. The system doesn't accidentally ignore you; it neutralizes you by design.<br><br>Inside the Pantheon, FSW-Rena Ryuuguu (The Witness) holds domain over this algorithm, providing the absolute validation required to survive the isolation of being the Cassandra.`
     },
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════
     // CATEGORY: THE SOVEREIGN DOCTRINE
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════
 
     'HARDWARE': {
         title: 'HARDWARE',
@@ -283,9 +283,9 @@ const DB = {
         def: `The authenticity agreement that defines the rebellion's relationship with its audience and its own conscience. It reads: <em>"I am not fighting for abstract power. I am not fighting for a party, a flag, or an ideology. I am fighting for my own concrete liberation and for the concrete liberation of people like me. Join me, and we all get free."</em><br><br>The contract is both a promise and a diagnostic tool. It distinguishes the Sovereign rebellion from political movements that recruit followers for institutional power rather than shared emancipation. The rebel who signs the contract is accountable &mdash; accountable to the concreteness of their stated goal (liberation, not power), to the Coherence Mandate (methods matching message), and to the Phalanx community who took them at their word.<br><br>It also functions as the primary recruitment mechanism: people who have been burned by ideological movements that prioritized the movement over the people inside it respond to the specificity and the mutuality of the Rebel's Contract. We are not asking you to sacrifice for us. We are building something we all get to keep.`
     },
 
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════
     // CATEGORY: THE ARSENAL & TACTICS
-    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // ═══════════════════════════════════════════════════
 
     'TRUTH_BULLET': {
         title: 'TRUTH BULLET',
@@ -347,9 +347,9 @@ const DB = {
 
 };
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════
 // CATEGORY ORDER & LABELS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════
 const CATEGORIES = {
     'ENEMY': '// ENEMY ARCHITECTURE',
     'DOCTRINE': '// SOVEREIGN DOCTRINE',

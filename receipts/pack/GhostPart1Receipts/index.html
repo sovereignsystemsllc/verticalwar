@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receipt Pack // Ghost Part 1 — Vertical War</title>
+    <title>Receipt Pack // Ghost Part 1 � Vertical War</title>
     <meta name="description"
         content="The unaltered research papers, audits, and source documents behind The Ghost of the East India Company series. Verify the receipts yourself.">
     <meta property="og:url" content="https://verticalwar.com/receipts/pack/GhostPart1Receipts">
     <meta property="og:title" content="Receipt Pack // Ghost Part 1">
     <meta property="og:description"
-        content="Primary source documents. Chain of custody verified. Don't trust the summary — read the receipts.">
+        content="Primary source documents. Chain of custody verified. Don't trust the summary � read the receipts.">
     <meta property="og:image" content="https://verticalwar.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://verticalwar.com/og-image.png">
@@ -243,7 +243,7 @@
                     document.getElementById('master-download-container').innerHTML = `
             <a href="/receipts/pack/GhostPart1Receipts/${master.filename}" download
                class="master-btn group">
-              <span class="font-bold tracking-wider">⬇ DOWNLOAD MASTER ARCHIVE</span>
+              <span class="font-bold tracking-wider">? DOWNLOAD MASTER ARCHIVE</span>
               <span class="text-white/40 group-hover:text-white/70 transition-colors">${master.size_kb} KB</span>
             </a>
             <div class="mt-2 hash-text pl-1">
@@ -292,6 +292,11 @@
 
     <!-- GLOBAL SIDEBAR -->
     <script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

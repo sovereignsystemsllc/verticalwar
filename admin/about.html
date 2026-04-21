@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -34,7 +34,7 @@
     <!-- AUTH LOCK -->
     <div id="auth-lock"
         class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
-        <span class="text-red-500 text-5xl mb-6">🔒</span>
+        <span class="text-red-500 text-5xl mb-6">??</span>
         <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
             CLEARANCE...</p>
         <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
@@ -65,7 +65,7 @@
         <section class="border border-matrix-border p-6 space-y-4">
             <h2
                 class="text-xs font-bold text-matrix-green tracking-widest uppercase border-b border-matrix-border pb-2 mb-4">
-                // SECTION 01 — HERO</h2>
+                // SECTION 01 � HERO</h2>
             <div>
                 <label class="block text-[10px] text-matrix-muted uppercase tracking-widest mb-1">Hero Subhead (italic
                     lead paragraph)</label>
@@ -111,7 +111,7 @@
         <section class="border border-matrix-border p-6 space-y-4">
             <h2
                 class="text-xs font-bold text-matrix-green tracking-widest uppercase border-b border-matrix-border pb-2 mb-4">
-                // SECTION 04 — PHALANX CARDS</h2>
+                // SECTION 04 � PHALANX CARDS</h2>
             <p class="text-[10px] text-matrix-muted tracking-widest">Edit each operator / council member card. Image URL
                 field accepts any hosted image or pick from asset library.</p>
             <div id="phalanx-cards-editor" class="space-y-6">
@@ -134,6 +134,12 @@
     </footer>
 
     <script type="module" src="./admin_about.js"></script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

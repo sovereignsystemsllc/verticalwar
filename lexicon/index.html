@@ -422,6 +422,11 @@
     <!-- LEXICON LOGIC -->
     <script type="module" src="./lexicon_ui.js"></script>
 
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

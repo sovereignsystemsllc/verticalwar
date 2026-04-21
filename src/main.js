@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient.js';
 import { initAuth, currentUser, currentRole, setAuthChangeCallback } from './auth.js';
 import { getArticleDescription } from './article-descriptions.js';
+import { trackPageview } from './telemetry.js';
 
 // ==========================================
 // FORGE STATE
@@ -85,6 +86,9 @@ async function init() {
 
   if (requestedId) {
     window.openArticle(requestedId, true);
+  } else {
+    // Only track if no article is initially opened (it tracks inside openArticle otherwise)
+    trackPageview();
   }
 }
 
@@ -215,7 +219,7 @@ function renderSidebar() {
                             <span>[${dateStr}]</span>
                         </span>
                         <span class="text-xs text-white/80 group-hover/row:text-white font-bold leading-snug tracking-wider">
-                            ${t.hidden ? '<span class="text-[#f59e0b] mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.6)]">[🔒]</span>' : ''}${t.title}
+                            ${t.audience === 'only_paid' ? '<span class="text-[#f59e0b] mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.6)]">[🔒]</span>' : ''}${t.title}
                         </span>
                     </button>${hasDesc ? `
                     <button onclick="event.stopPropagation();window.showArticleInfo('${t.id}')" class="shrink-0 px-2 text-[10px] text-[#a78bfa]/30 hover:text-[#a78bfa] transition-colors flex items-center lg:hidden" title="About this article">ⓘ</button>` : ''}
@@ -254,7 +258,7 @@ function renderSidebar() {
           <div class="py-3 flex items-center gap-2">
             <span class="text-[10px] text-[#a78bfa]/50">📄</span>
             <span class="text-xs font-bold text-white/80 hover:text-white tracking-wide truncate italic">
-              ${pinned.hidden ? '<span class="text-[#f59e0b] mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.6)]">[🔒]</span>' : ''}${pinned.title}
+              ${pinned.audience === 'only_paid' ? '<span class="text-[#f59e0b] mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.6)]">[🔒]</span>' : ''}${pinned.title}
             </span>
           </div>
         </div>`;
@@ -264,6 +268,7 @@ function renderSidebar() {
     // Find articles assigned to this exact series ID and sort them by order_index
     const tracks = globalArticles
       .filter(a => a.series_id === seriesDef.id)
+      .filter(a => isElevated || !a.hidden)
       .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
     html += buildFolder(seriesDef.title, tracks, 'series_' + seriesDef.id, seriesDef.category_label, seriesDef.id, seriesDef.splash_article_id);
@@ -272,6 +277,7 @@ function renderSidebar() {
   // 2. Render Unassigned Singles at the bottom, also sorted
   const singles = globalArticles
     .filter(a => !a.series_id)
+    .filter(a => isElevated || !a.hidden)
     .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
   html += buildFolder("Unassigned Singles", singles, 'unassigned_singles', null, null, null);
@@ -493,6 +499,9 @@ window.openArticle = async function (id, skipState = false) {
     }
   }
 
+  // Track the view
+  trackPageview(shareUrl);
+
   // UI Updates
   placeholderMsg.classList.add('hidden');
   // Clean render
@@ -521,12 +530,27 @@ window.openArticle = async function (id, skipState = false) {
   const video_url = (!error && fullArticle) ? fullArticle.video_url : null;
 
   // ------------------------------------------
-  // PAYWALL BLAST DOOR LOGIC (V4 MIGRATION)
+  // CLASSIFIED RECORD CHECK
   // ------------------------------------------
   const isElevated = ['OPERATOR', 'SOVEREIGN'].includes(currentRole);
-  let showBlastDoor = false;
 
   if (article.hidden && !isElevated) {
+    articleContent.innerHTML = `
+      <div class="mt-16 w-full border border-red-500/50 bg-[#05010a] p-8 text-center">
+        <h3 class="text-xl font-black text-red-500 uppercase tracking-[0.4em] mb-4">CLEARANCE REJECTED</h3>
+        <p class="text-xs text-white/70 font-mono tracking-widest leading-relaxed">
+          THIS RECORD DOES NOT EXIST OR HAS BEEN CLASSIFIED.
+        </p>
+      </div>`;
+    return;
+  }
+
+  // ------------------------------------------
+  // PAYWALL BLAST DOOR LOGIC (V4 MIGRATION)
+  // ------------------------------------------
+  let showBlastDoor = false;
+
+  if (article.audience === 'only_paid' && !isElevated) {
       showBlastDoor = true;
       // Truncate Payload (roughly 3 blocks)
       if (final_content_html) {
@@ -541,18 +565,18 @@ window.openArticle = async function (id, skipState = false) {
           <div class="absolute inset-0 bg-red-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out"></div>
           <div class="relative z-10 flex flex-col items-center">
             <h3 class="text-xl md:text-2xl font-black text-red-500 uppercase tracking-[0.4em] mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">RESTRICTED PAYLOAD</h3>
-            <p class="text-xs text-white/70 mb-8 font-mono tracking-widest leading-relaxed max-w-lg">
+            <p class="text-sm md:text-base text-white/80 mb-8 font-mono tracking-widest leading-relaxed max-w-lg">
               The remainder of this transmission is locked inside the Sovereign Hub. You must hold active clearance to decrypt this payload.
             </p>
             <div class="w-full max-w-sm flex flex-col gap-6">
               
               <!-- SECONDARY CTA: SYNC EXISTING (Substack Trap) -->
               <div class="border border-[#a78bfa]/30 p-5 bg-black/60 relative">
-                <p class="text-[9px] text-[#a78bfa] mb-3 tracking-[0.2em] font-bold uppercase drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">Already paying on Substack?</p>
-                <p class="text-[8px] text-[#a78bfa]/60 mb-4 tracking-widest leading-relaxed">Enter your email below. Our system will automatically verify your active subscription and sync your clearance instantly.</p>
+                <p class="text-xs md:text-sm text-[#a78bfa] mb-3 tracking-[0.2em] font-bold uppercase drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">Already paying on Substack?</p>
+                <p class="text-xs text-[#a78bfa]/70 mb-4 tracking-widest leading-relaxed">Enter your email below. Our system will automatically verify your active subscription and sync your clearance instantly.</p>
                 <div class="flex flex-col gap-3">
                   <input type="email" id="sync-email-input" placeholder="Substack Email" autocomplete="email" class="w-full bg-[#050505] border border-[#a78bfa]/40 text-[#a78bfa] p-2 focus:outline-none focus:border-[#a78bfa] text-xs font-mono placeholder-[#a78bfa]/30 text-center tracking-wider mb-1">
-                  <button onclick="window.triggerMagicSync(event)" class="w-full text-[#a78bfa] hover:text-black font-bold border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] px-4 py-2 uppercase tracking-[0.2em] transition-all text-[10px] shadow-[0_0_10px_rgba(167,139,250,0.2)] hover:shadow-none">
+                  <button onclick="window.triggerMagicSync(event)" class="w-full text-[#a78bfa] hover:text-black font-bold border border-[#a78bfa] bg-[#a78bfa]/10 hover:bg-[#a78bfa] px-4 py-2 uppercase tracking-[0.2em] transition-all text-sm shadow-[0_0_10px_rgba(167,139,250,0.2)] hover:shadow-none">
                     [ SYNC PAID ACCESS ]
                   </button>
                 </div>
@@ -560,10 +584,10 @@ window.openArticle = async function (id, skipState = false) {
 
               <!-- PRIMARY CTA: NATIVE V4 CHECKOUT -->
               <div>
-                <a href="/inner-circle" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-4 uppercase tracking-[0.2em] transition-all text-xs text-center block shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
+                <a href="/inner-circle" class="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black font-bold border border-red-500 px-4 py-4 uppercase tracking-[0.2em] transition-all text-sm md:text-base text-center block shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
                   [ UPGRADE NATIVELY ]
                 </a>
-                <p class="text-[8px] text-red-500/50 mt-3 tracking-widest uppercase">New here? Join the Inner Circle directly on native billing.</p>
+                <p class="text-xs text-red-500/60 mt-3 tracking-widest uppercase">New here? Join the Inner Circle directly on native billing.</p>
               </div>
 
             </div>

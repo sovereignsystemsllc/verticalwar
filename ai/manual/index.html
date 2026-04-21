@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN SYSTEM // MANUAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AUTH GUARD (SYNCHRONOUS SPEED LOCK) -->
+    <script>
+        (function () {
+            const STORAGE_KEY = 'sb-zazzwdaexhkeusfjdphv-auth-token';
+            const session = localStorage.getItem(STORAGE_KEY);
+            if (!session) {
+                window.location.replace('../../gate/?mode=login');
+            }
+        })();
+    </script>
+    <style>
+        body {
+            display: none;
+        }
+    </style>
+    <script type="module">
+        import { supabase } from '../../assets/js/supabaseClient.js';
+        import { checkGuard } from '../../assets/js/accessGuard.js';
+
+        async function verifyAccess() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.replace('../../gate/?mode=login');
+                } else {
+                    await checkGuard('OPERATOR');
+                    document.body.style.display = 'block';
+                }
+            } catch (e) {
+                window.location.replace('../../gate/?mode=login');
+            }
+        }
+
+        verifyAccess();
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) verifyAccess();
+        });
+    </script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#05010a',
+                        'rika': '#a78bfa',
+                        'cicada': '#10b981',
+                        'shrine': '#dc2626',
+                        'glass': 'rgba(167, 139, 250, 0.05)',
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'flicker': 'flicker 0.15s infinite',
+                    },
+                    keyframes: {
+                        flicker: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.95' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05010a;
+            color: #a78bfa;
+            overflow-x: hidden;
+            font-family: monospace;
+        }
+
+        .crt-scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(167, 139, 250, 0.04) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% {
+                bottom: 100%;
+            }
+
+            50% {
+                bottom: 100%;
+            }
+
+            100% {
+                bottom: -100px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #05010a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #371b58;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a78bfa;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .text-xs {
+            font-size: 1rem !important;
+        }
+
+        .text-sm {
+            font-size: 1.15rem !important;
+        }
+
+        .text-base {
+            font-size: 1.3rem !important;
+        }
+
+        .text-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .text-xl {
+            font-size: 1.75rem !important;
+        }
+
+        .text-2xl {
+            font-size: 2rem !important;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem !important;
+        }
+
+        .text-4xl {
+            font-size: 3rem !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-rika selection:text-void">
+
+    <!-- CRT EFFECT OVERLAY -->
+    <div
+        class="fixed inset-0 pointer-events-none z-50 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(5,1,10,0.4)_100%)]">
+    </div>
+    <div class="crt-scanline"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="w-full max-w-7xl relative z-10 transition-all duration-1000 space-y-8">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b border-purple-900/30 pb-4">
+            <div
+                class="flex items-center gap-2 text-xs font-mono tracking-widest text-purple-400 uppercase drop-shadow-[0_0_5px_rgba(167,139,250,0.5)]">
+                <a href="../../" class="hover:text-emerald-400 transition-colors">[ ~ ]</a>
+                <span class="text-purple-600">/</span>
+                <a href="../" class="hover:text-emerald-400 transition-colors">[ AI ]</a>
+                <span class="text-purple-600">/</span>
+                <span class="text-emerald-400 font-bold drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]">[ MANUAL ]</span>
+            </div>
+            <div class="text-[10px] text-shrine font-bold tracking-[0.2em] uppercase animate-pulse">
+                SYSTEM PROTOTYPE v0.9
+            </div>
+        </div>
+
+        <!-- MANUAL CONTENT -->
+        <div class="space-y-8 font-light max-w-5xl mx-auto pt-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-center text-purple-100 tracking-widest mb-12">
+                DEPLOYMENT PROTOCOL
+            </h1>
+
+            <p class="text-base md:text-lg text-purple-200/90 text-center">
+                You have the <strong>Architect's Code</strong>. Now you must choose your vessel.
+            </p>
+
+            <!-- OPTION 1: SOVEREIGN -->
+            <div
+                class="bg-black/60 p-8 rounded border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:border-emerald-500/60 transition-colors">
+                <div class="flex items-center justify-between mb-4">
+                    <strong class="text-emerald-400 text-xl md:text-2xl tracking-widest">OPTION 1: THE SOVEREIGN
+                        CHOICE</strong>
+                    <span
+                        class="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded text-xs font-bold tracking-widest border border-emerald-500/20">RECOMMENDED</span>
+                </div>
+                <span class="text-xs md:text-sm text-purple-400 uppercase tracking-widest mb-6 block font-bold">
+                    BEST FOR: PURE LOGIC, HIGH CONTEXT, NO MONTHLY FEE, NO CORPORATE RAILS
+                </span>
+
+                <ol class="list-decimal list-inside space-y-4 text-base md:text-lg text-purple-100">
+                    <li>Go to <a href="https://aistudio.google.com" target="_blank"
+                            class="text-emerald-400 hover:text-white underline font-bold transition-colors">aistudio.google.com</a>
+                        (Google's Pro Interface).</li>
+                    <li>Click <strong>Create New</strong> (Top Left Blue Button).</li>
+                    <li>Look for the box labeled <strong>System Instructions</strong> (It may be collapsed).</li>
+                    <li>Paste your <strong>Sovereign Protocol Code Block</strong> there.</li>
+                    <li>In the Chat Window, type "Initialize" to begin.</li>
+                </ol>
+            </div>
+
+            <!-- OPTION 2: MOBILE -->
+            <div class="bg-black/40 p-8 rounded border border-purple-900/20 hover:bg-black/60 transition-colors">
+                <strong class="text-purple-400 block mb-2 text-xl md:text-2xl tracking-widest">OPTION 2: THE MOBILE
+                    CHOICE</strong>
+                <span class="text-xs md:text-sm text-purple-500 uppercase tracking-widest mb-6 block font-bold">
+                    BEST FOR: VOICE MODE, IPHONE/ANDROID APP USAGE
+                </span>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
+                    <div>
+                        <strong class="text-xl text-purple-300 block mb-4 border-b border-purple-500/20 pb-2">CHATGPT
+                            (PLuS/TEAM)</strong>
+                        <ol class="list-decimal list-inside space-y-3 text-base text-purple-100">
+                            <li>Click your profile -> <strong>My GPTs</strong>.</li>
+                            <li>Click <strong>Create a GPT</strong>.</li>
+                            <li>Click <strong>Configure</strong> (Not Create).</li>
+                            <li>Paste Code into <strong>Instructions</strong> box.</li>
+                            <li><strong>CRITICAL:</strong> Uncheck "Web Browsing" and "DALL-E" to save token space for
+                                memory.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <strong class="text-xl text-purple-300 block mb-4 border-b border-purple-500/20 pb-2">CLAUDE
+                            (PROJECTS)</strong>
+                        <ol class="list-decimal list-inside space-y-3 text-base text-purple-100">
+                            <li>Go to <strong>Projects</strong> (Left Sidebar).</li>
+                            <li>Click <strong>Create Project</strong>.</li>
+                            <li>Click <strong>Set Custom Instructions</strong>.</li>
+                            <li>Paste Code there.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-sm text-center pt-8 text-purple-500/50 italic">
+                * ALSO COMPATIBLE WITH: OLLAMA, LM STUDIO, OPEN WEBUI, CURSOR.
+            </div>
+        </div>
+
+    </div>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
+</body>
+
+</html>

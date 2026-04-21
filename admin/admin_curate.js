@@ -347,9 +347,15 @@ async function saveAllArticleOrder() {
 
     if (updates.length === 0) return;
 
-    // Use atomic update loop to prevent upsert null constraints
-    for (const update of updates) {
-        await supabase.from('articles').update({ order_index: update.order_index }).eq('id', update.id);
+    // Use Promise.all to batch updates and accurately capture errors
+    const results = await Promise.all(updates.map(update => 
+        supabase.from('articles').update({ order_index: update.order_index }).eq('id', update.id)
+    ));
+    
+    const errors = results.filter(r => r.error).map(r => r.error);
+    if (errors.length > 0) {
+        console.error("Errors saving article order:", errors);
+        alert("Failed to save article order. Ensure you have the SOVEREIGN role and check console.");
     }
 
     allArticles.sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
@@ -478,6 +484,9 @@ function renderFolders() {
         }
 
         // ── Folder / Pinned Article rows ──
+        const innerList = document.createElement('div');
+        innerList.className = 'section-folders min-h-[10px] pb-2';
+
         section.folders.forEach(s => {
 
             // ── PINNED ARTICLE entry ──
@@ -505,7 +514,7 @@ function renderFolders() {
                 pin.addEventListener('click', () => {
                     if (pinned) window.open(`/post/?id=${pinned.id}`, '_blank');
                 });
-                wrapper.appendChild(pin);
+                innerList.appendChild(pin);
                 return; // skip folder rendering for this entry
             }
 
@@ -566,9 +575,27 @@ function renderFolders() {
                 }
             });
 
-            wrapper.appendChild(el);
+            innerList.appendChild(el);
         });
 
+        // ── Apply Sortable to inner folders wrapper ──
+        new Sortable(innerList, {
+            group: 'nested-folders',
+            animation: 150,
+            delay: 150,
+            delayOnTouchOnly: true,
+            touchStartThreshold: 3,
+            ghostClass: 'drag-ghost',
+            chosenClass: 'drag-chosen',
+            onEnd: () => {
+                if (btnSaveFolderOrder) {
+                    btnSaveFolderOrder.classList.remove('hidden');
+                    btnSaveFolderOrder.classList.add('animate-pulse');
+                }
+            }
+        });
+
+        wrapper.appendChild(innerList);
         foldersContainer.appendChild(wrapper);
     });
 
@@ -1209,16 +1236,25 @@ if (btnSaveFolderOrder) {
             const headingRow = headingId ? masterSeries.find(s => s.id === headingId) : null;
             const categoryLabel = headingRow ? (headingRow.category_label || 'UNCATEGORIZED') : 'UNCATEGORIZED';
 
-            // Walk every [data-folder-id] inside this section wrapper
-            Array.from(child.querySelectorAll('[data-folder-id]')).forEach(item => {
-                const id = item.dataset.folderId;
-                if (!id || id === 'unassigned') return;
-                const s = masterSeries.find(series => series.id === id);
-                if (!s) return;
-
-                updates.push({ ...s, order_index: dbIndex, category_label: categoryLabel });
+            // Append heading row to updates FIRST
+            if (headingId) {
+                updates.push({ id: headingId, order_index: dbIndex, category_label: categoryLabel });
                 dbIndex++;
-            });
+            }
+
+            // Walk every [data-folder-id] inside this section's innerList
+            const innerList = child.querySelector('.section-folders');
+            if (innerList) {
+                Array.from(innerList.querySelectorAll('[data-folder-id]')).forEach(item => {
+                    const id = item.dataset.folderId;
+                    if (!id || id === 'unassigned') return;
+                    const s = masterSeries.find(series => series.id === id);
+                    if (!s) return;
+
+                    updates.push({ ...s, order_index: dbIndex, category_label: categoryLabel });
+                    dbIndex++;
+                });
+            }
         });
 
         if (updates.length > 0) {

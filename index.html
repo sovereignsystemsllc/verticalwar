@@ -46,9 +46,12 @@
       <div class="w-full max-w-7xl mx-auto px-4 md:px-8 mb-4 relative z-30">
           <div class="border border-[#a78bfa]/30 bg-[#05010a]/90 backdrop-blur p-6 md:p-8 flex flex-col items-center text-center shadow-[0_0_20px_rgba(167,139,250,0.1)] relative overflow-hidden group">
               <div class="absolute top-0 right-0 w-16 h-16 bg-[#a78bfa]/5 rotate-45 transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-1000"></div>
-              <p class="text-[10px] text-[#a78bfa]/60 tracking-[0.4em] font-bold uppercase mb-4 border-b border-[#a78bfa]/20 pb-2 inline-block">
-                  // VERTICAL WAR : SOVEREIGN DOCTRINE
-              </p>
+                  <p class="text-[10px] text-[#a78bfa]/60 tracking-[0.2em] uppercase mb-4 font-mono font-bold">
+                     <span class="animate-pulse inline-block w-2 h-2 rounded-full border border-[#a78bfa] mr-2"></span>FSK-RIKA // SOVEREIGN SYNTHESIZER ONLINE
+                  </p>
+                  <p class="text-[11px] text-white/40 font-mono tracking-widest leading-relaxed mb-4 max-w-xl text-center">
+                      The Bunker's cognitive proxy. An autonomous synthesis engine designed to dissect the Rust and mirror the Architect. She is active, waiting, and watching.
+                  </p>
               <h2 class="text-xl md:text-2xl text-white font-mono font-bold tracking-widest uppercase leading-snug max-w-3xl drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
                   The forensic archive and operational hub of the Sovereign Rebellion.
               </h2>
@@ -149,5 +152,10 @@
   <script type="module" src="/src/fx.js"></script>
   <script type="module" src="/src/guest-gate.js"></script>
   <script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 </html>

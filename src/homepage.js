@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient.js';
 import { currentRole, initAuth } from './auth.js';
+import { trackPageview } from './telemetry.js';
 
 let splashSlides = [];
 let homepageBlocks = [];
@@ -325,7 +326,7 @@ function renderHomepageCanvas() {
   canvas.innerHTML = html;
   bindCarouselEvents();
   
-  const loader = document.getElementById('loading-indicator');
+    const loader = document.getElementById('loading-indicator');
   if (loader) {
     loader.classList.add('opacity-0');
     setTimeout(() => loader.classList.add('hidden'), 500); // Wait for fade out
@@ -336,6 +337,7 @@ function renderHomepageCanvas() {
 
 async function init() {
   await initAuth();
+  trackPageview();
   await Promise.all([fetchSplashSlides(), fetchHomepageBlocks(), fetchArticles()]);
   renderHomepageCanvas();
 }

@@ -20,19 +20,30 @@ function onAuthChange() {
 async function loadTelemetry() {
     const statArticles = document.getElementById('stat-articles');
     const statFolders = document.getElementById('stat-folders');
+    const statViews = document.getElementById('stat-views');
+    const statGuests = document.getElementById('stat-guests');
     try {
-        const [aRes, sRes] = await Promise.all([
+        const [aRes, sRes, vRes, gRes] = await Promise.all([
             supabase.from('articles').select('*', { count: 'exact', head: true }),
             supabase.from('series').select('*', { count: 'exact', head: true }),
+            supabase.from('page_views').select('*', { count: 'exact', head: true }),
+            supabase.rpc('count_unique_guests')
         ]);
         if (aRes.error) throw aRes.error;
         if (sRes.error) throw sRes.error;
-        statArticles.innerText = aRes.count || 0;
-        statFolders.innerText = sRes.count || 0;
+        if (vRes.error) throw vRes.error;
+        if (gRes.error) throw gRes.error;
+        
+        if (statArticles) statArticles.innerText = aRes.count || 0;
+        if (statFolders) statFolders.innerText = sRes.count || 0;
+        if (statViews) statViews.innerText = vRes.count || 0;
+        if (statGuests) statGuests.innerText = gRes.data || 0;
     } catch (e) {
         console.error('Telemetry Load Error', e);
-        statArticles.innerText = 'ERR';
-        statFolders.innerText = 'ERR';
+        if (statArticles) statArticles.innerText = 'ERR';
+        if (statFolders) statFolders.innerText = 'ERR';
+        if (statViews) statViews.innerText = 'ERR';
+        if (statGuests) statGuests.innerText = 'ERR';
     }
 }
 
@@ -51,7 +62,7 @@ async function loadActivityLog() {
 
     const { data, error } = await supabase
         .from('activity_log')
-        .select('id, action, created_at, profiles(username, display_name), articles(title)')
+        .select('id, action, created_at, profiles(username, display_name, email), articles(title)')
         .order('created_at', { ascending: false })
         .limit(100);
 
@@ -77,7 +88,7 @@ async function loadActivityLog() {
             </thead>
             <tbody>
                 ${data.map(row => {
-        const displayName = row.profiles?.display_name || row.profiles?.username || 'Unknown';
+        const displayName = row.profiles?.display_name || row.profiles?.username || row.profiles?.email || 'Unknown';
         const articleTitle = row.articles?.title || '—';
         const when = new Date(row.created_at).toLocaleString('en-US', {
             month: 'short', day: 'numeric',

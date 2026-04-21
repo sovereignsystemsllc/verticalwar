@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,7 +28,7 @@
     <!-- AUTH LOCK -->
     <div id="auth-lock"
         class="fixed inset-0 bg-[#05010a]/97 border border-red-500 z-40 flex flex-col items-center justify-center text-center p-8">
-        <span class="text-red-500 text-5xl mb-6">🔒</span>
+        <span class="text-red-500 text-5xl mb-6">??</span>
         <p class="text-red-500 font-bold tracking-[0.25em] text-sm uppercase mb-2" id="auth-status-title">VERIFYING
             CLEARANCE...</p>
         <p class="text-red-500/60 text-xs uppercase tracking-widest" id="auth-status-detail">Checking Supabase Session
@@ -70,7 +70,7 @@
                 <span id="slide-count" class="text-[10px] text-matrix-muted tracking-widest">...</span>
             </div>
             <div id="empty-state" class="hidden text-center py-16 text-matrix-muted text-xs tracking-widest uppercase">
-                <p class="text-4xl mb-4 opacity-30">📡</p>
+                <p class="text-4xl mb-4 opacity-30">??</p>
                 <p>No slides configured. Add one above.</p>
             </div>
             <div id="slides-list" class="space-y-3"></div>
@@ -83,7 +83,7 @@
         <div
             class="w-full max-w-2xl border border-matrix-green/40 bg-matrix-panel p-6 relative max-h-[90vh] overflow-y-auto">
             <button id="modal-close"
-                class="absolute top-3 right-4 text-matrix-muted hover:text-white font-bold text-sm">✕</button>
+                class="absolute top-3 right-4 text-matrix-muted hover:text-white font-bold text-sm">?</button>
             <h2 id="modal-title"
                 class="text-sm font-bold tracking-widest uppercase text-matrix-green mb-6 border-b border-matrix-border pb-3">
                 ADD SLIDE</h2>
@@ -160,6 +160,12 @@
     </footer>
 
     <script type="module" src="./admin_splash.js"></script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>

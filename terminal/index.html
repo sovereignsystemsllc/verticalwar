@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -245,18 +245,24 @@
             </span>
             <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" placeholder="type a command..."
                 class="text-sm placeholder-white/10">
-            <span class="text-[#00ff41] animate-pulse text-lg leading-none">█</span>
+            <span class="text-[#00ff41] animate-pulse text-lg leading-none">�</span>
         </div>
     </div>
 
     <!-- HELP HINT -->
     <p class="absolute bottom-3 font-mono text-[9px] text-white/15 tracking-widest uppercase z-20">
-        type <span class="text-[#00ff41]/40">HELP</span> for command index // <span class="text-[#a78bfa]/40">↑↓</span>
+        type <span class="text-[#00ff41]/40">HELP</span> for command index // <span class="text-[#a78bfa]/40">??</span>
         history
     </p>
 
     <script type="module" src="/terminal/terminal.js"></script>
     <script type="module" src="/src/fx.js"></script>
+<script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
 </body>
 
 </html>
