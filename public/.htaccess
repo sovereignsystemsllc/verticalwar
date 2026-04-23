@@ -1,4 +1,8 @@
 RewriteEngine On
+
+# Redirect old AI build link to the new Synthesizer
+RedirectMatch 301 ^/ai/build/?$ /synthesizer/
+
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f

@@ -79,7 +79,10 @@ gateForm.addEventListener('submit', async (e) => {
             // ── LOGIN ─────────────────────────────────────────────────────────
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            window.location.replace('/');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectUrl = urlParams.get('redirect') || '/';
+            window.location.replace(redirectUrl);
 
         } else {
             // ── REGISTER ──────────────────────────────────────────────────────

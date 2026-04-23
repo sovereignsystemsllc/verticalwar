@@ -5,13 +5,14 @@ import { initAuth, currentRole, setAuthChangeCallback } from './auth.js';
 // NAV CONFIG — Add new public pages here, not buried in HTML
 // ============================================================
 const NAV_ITEMS = [
-    { href: '/', label: '/ homepage' },
-    { href: '/codex/', label: '/ codex_root' },
-    { href: '/about', label: '/ about' },
-    { href: '/archives', label: '/ archives' },
-    { href: '/lexicon/', label: '/ lexicon' },
-    { href: '/terminal/', label: '/ cmd_link', cls: 'text-[#00ff41]/70 hover:text-[#00ff41] hover:border-[#00ff41]' },
-    { href: '/order', label: '/ pre-order', cls: 'text-red-500/70 hover:text-red-400' },
+    { href: '/', label: '/ homepage', indent: false },
+    { href: '/codex/', label: '/ codex_root', indent: true },
+    { href: '/about', label: '/ about', indent: true },
+    { href: '/archives', label: '$ archives', indent: true },
+    { href: '/lexicon/', label: '$ lexicon', indent: true },
+    { href: '/synthesizer/', label: '$ synthesizer', indent: true, cls: 'text-[#a78bfa]/80 hover:text-[#a78bfa] hover:border-[#a78bfa]' },
+    { href: '/terminal/', label: '$ cmd_link', indent: true, cls: 'text-[#00ff41]/70 hover:text-[#00ff41] hover:border-[#00ff41]' },
+    { href: '/order', label: '$ pre-order', indent: true, cls: 'text-red-500/70 hover:text-red-400' },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Build nav items from config
     const navItemsHtml = NAV_ITEMS.map(item => {
         const cls = item.cls || 'text-[#a78bfa]/80 hover:text-[#a78bfa]';
-        return `<a href="${item.href}" class="block w-full text-left py-2 px-6 ${cls} hover:bg-[#a78bfa]/10 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
+        const paddingCls = item.indent ? 'py-2 pl-10 pr-6' : 'py-2 px-6';
+        return `<a href="${item.href}" class="block w-full text-left ${paddingCls} ${cls} hover:bg-[#a78bfa]/10 transition-colors border-l-2 border-transparent hover:border-[#a78bfa]">
                     ${item.label}
                 </a>`;
     }).join('');
@@ -74,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </a>
                         <a href="/admin/receipts" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
                             &gt; receipts
+                        </a>
+                        <a href="/admin/lexicon" class="block w-full text-left py-1 px-6 pl-14 text-[#a78bfa]/50 hover:bg-[#a78bfa]/5 hover:text-[#a78bfa] transition-colors border-l-2 border-transparent hover:border-[#a78bfa]/40 text-[10px]">
+                            &gt; lexicon
                         </a>
                     </div>
                 </div>

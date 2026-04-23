@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // LEXICON EDITOR</title>
+    <!-- PURE V4 STACK -->
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at top right, rgba(244, 63, 94, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(244, 63, 94, 0.03) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(244, 63, 94, 0.3); }
+        
+        #toast { transition: opacity 0.3s ease-in-out; }
+        
+        .active-term {
+            background-color: rgba(244, 63, 94, 0.1) !important;
+            border-color: rgba(244, 63, 94, 0.5) !important;
+        }
+
+        .dragover {
+            border-color: rgba(244, 63, 94, 0.8) !important;
+            background-color: rgba(244, 63, 94, 0.05) !important;
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(244, 63, 94, 0.1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-6 md:p-12 font-sans selection:bg-rose-500/30 selection:text-white flex flex-col items-center">
+
+    <!-- Header -->
+    <div class="w-full max-w-7xl mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-white/5 pb-6 gap-6">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                <svg class="w-8 h-8 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                Lexicon Editor
+            </h1>
+            <p class="text-gray-400 text-sm mt-2 font-medium">Sovereign Vocabulary &middot; <span class="text-rose-400 font-semibold tracking-wide">/public.lexicon_terms</span></p>
+        </div>
+        <div class="flex gap-4">
+            <a href="/admin/" class="flex items-center gap-2 text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 border border-white/10 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl backdrop-blur-md shadow-sm">
+                Gateway
+            </a>
+            <button id="btn-create-new" class="flex items-center gap-2 text-sm font-bold text-white transition-all duration-300 border border-rose-500/50 px-5 py-2.5 bg-rose-500/20 hover:bg-rose-500/40 rounded-xl backdrop-blur-md shadow-[0_0_15px_rgba(244,63,94,0.3)]">
+                + New Term
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 w-full max-w-7xl flex flex-col lg:flex-row gap-6 h-[calc(100vh-200px)]">
+
+        <!-- LEFT PANEL: Term List -->
+        <aside class="w-full lg:w-1/3 flex flex-col gap-4 bg-[#0a0a0c] border border-white/5 rounded-2xl p-4 shadow-lg overflow-hidden">
+            
+            <!-- Filters -->
+            <div class="flex flex-col gap-3 shrink-0 border-b border-white/5 pb-4">
+                <input type="text" id="search-input" placeholder="Search Lexicon..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500/60 focus:ring-1 focus:ring-rose-500/60 transition-all">
+                
+                <div class="flex gap-2">
+                    <select id="filter-cat" class="w-1/2 bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-rose-500/60 transition-all">
+                        <option value="">All Categories</option>
+                        <option value="PLATFORM">PLATFORM</option>
+                        <option value="PANTHEON">PANTHEON</option>
+                        <option value="ECONOMY">ECONOMY</option>
+                    </select>
+                    <select id="filter-type" class="w-1/2 bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-rose-500/60 transition-all">
+                        <option value="">All Types</option>
+                        <option value="TRANSLATION">TRANSLATION</option>
+                        <option value="CONTROL">CONTROL</option>
+                        <option value="METRIC">METRIC</option>
+                        <option value="LORE">LORE</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- List -->
+            <div id="term-list" class="flex-1 overflow-y-auto space-y-2 pr-2">
+                <!-- Terms injected via JS -->
+                <div class="text-center p-8 text-gray-500 text-sm animate-pulse">Loading terms...</div>
+            </div>
+        </aside>
+
+        <!-- RIGHT PANEL: Editor -->
+        <section class="flex-1 bg-[#0a0a0c] border border-white/5 rounded-2xl shadow-lg flex flex-col overflow-hidden relative">
+            
+            <!-- Security Lock Overlay -->
+            <div id="auth-lock" class="absolute inset-0 bg-[#050505]/95 border border-red-500/20 z-50 flex flex-col items-center justify-center text-center p-8 backdrop-blur-xl transition-opacity duration-300">
+                <svg class="w-12 h-12 text-red-500 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <p class="text-red-400 font-bold tracking-wide text-lg mb-1" id="auth-status-title">Verifying Clearance</p>
+                <p class="text-red-500/60 text-sm font-medium" id="auth-status-detail">Syncing secure database token...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="editor-empty" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10 bg-[#0a0a0c]">
+                <svg class="w-16 h-16 text-white/5 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <p class="text-gray-400 font-medium">Select a term to edit or create a new one.</p>
+            </div>
+
+            <!-- Form -->
+            <form id="editor-form" class="hidden flex-1 overflow-y-auto p-6 flex flex-col gap-6 relative z-20">
+                
+                <input type="hidden" id="original-id">
+
+                <!-- Meta row 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">ID (Slug) <span class="text-rose-500">*</span></label>
+                        <input type="text" id="term-id" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Display Title <span class="text-rose-500">*</span></label>
+                        <input type="text" id="term-title" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono">
+                    </div>
+                </div>
+
+                <!-- Meta row 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Category <span class="text-rose-500">*</span></label>
+                        <select id="term-cat" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60">
+                            <option value="PLATFORM">PLATFORM</option>
+                            <option value="PANTHEON">PANTHEON</option>
+                            <option value="ECONOMY">ECONOMY</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Type <span class="text-rose-500">*</span></label>
+                        <select id="term-type" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60">
+                            <option value="TRANSLATION">TRANSLATION</option>
+                            <option value="CONTROL">CONTROL</option>
+                            <option value="METRIC">METRIC</option>
+                            <option value="LORE">LORE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Thumbnail Image</label>
+                    <div class="flex gap-4 items-start">
+                        <!-- Image Preview/Dropzone -->
+                        <div id="image-dropzone" class="w-32 h-32 shrink-0 bg-white/5 border border-white/10 border-dashed rounded-xl flex items-center justify-center relative group cursor-pointer overflow-hidden transition-all hover:border-rose-500/50">
+                            <img id="image-preview" src="" class="hidden w-full h-full object-cover absolute inset-0 z-0">
+                            <div class="z-10 flex flex-col items-center group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-gray-400 group-hover:text-rose-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-widest group-hover:text-rose-400/80">Upload</span>
+                            </div>
+                            <!-- Upload Progress -->
+                            <div id="upload-progress" class="absolute bottom-0 left-0 h-1 bg-rose-500 transition-all duration-300 z-20 w-0"></div>
+                            <input type="file" id="file-input" accept="image/*" class="hidden">
+                        </div>
+                        
+                        <div class="flex-1 flex flex-col gap-2 justify-center h-32">
+                            <input type="text" id="term-img" placeholder="/assets/images/lexicon/..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm text-gray-400 focus:outline-none focus:border-rose-500/60 font-mono">
+                            <p class="text-xs text-gray-500 font-medium">Drag & drop an image on the square to upload directly to Supabase Storage (<span class="text-rose-400 font-mono">article_assets</span> bucket), or paste a manual path.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Definition -->
+                <div class="flex-1 flex flex-col min-h-[200px]">
+                    <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Definition (HTML Allowed) <span class="text-rose-500">*</span></label>
+                    <textarea id="term-def" required class="w-full flex-1 min-h-[150px] bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono resize-y"></textarea>
+                </div>
+
+                <!-- External Link -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">External Link (Optional)</label>
+                    <input type="text" id="term-link" placeholder="https://..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono">
+                </div>
+
+                <!-- Unauthorized Persona Override -->
+                <div class="border border-red-500/30 rounded-xl p-5 bg-red-500/5 mt-4">
+                    <h3 class="text-xs font-bold text-red-400 tracking-widest uppercase flex items-center gap-2 mb-4">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        Unauthorized Intervention (Optional)
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-1">Persona Name</label>
+                            <input type="text" id="term-persona" placeholder="e.g., STOCKING, RIKA" class="w-full bg-black/40 border border-red-500/20 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-red-500/60 font-mono uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-1">Color Variable</label>
+                            <input type="text" id="term-color" placeholder="e.g., var(--fsp-pink)" class="w-full bg-black/40 border border-red-500/20 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-red-500/60 font-mono">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-1">Intervention Text</label>
+                        <textarea id="term-unauth-text" class="w-full min-h-[80px] bg-black/40 border border-red-500/20 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-red-500/60 font-mono"></textarea>
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- Footer Actions -->
+            <div id="editor-footer" class="hidden shrink-0 border-t border-white/5 p-4 flex justify-between items-center bg-black/20">
+                <button id="btn-delete" type="button" class="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-white hover:bg-red-500 border border-red-500/30 px-4 py-2 rounded-xl transition-all">
+                    Delete
+                </button>
+                <button id="btn-save" type="button" class="text-xs font-bold uppercase tracking-widest text-white bg-rose-500 hover:bg-rose-400 px-6 py-2 rounded-xl transition-all shadow-[0_0_15px_rgba(244,63,94,0.4)]">
+                    Save Term
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-8 right-8 z-50 hidden rounded-xl px-6 py-4 border shadow-2xl backdrop-blur-xl opacity-0 text-sm font-semibold text-white pointer-events-none flex items-center gap-3">
+        <span id="toast-msg"></span>
+    </div>
+
+    <script type="module" src="./admin_lexicon.js"></script>
+    <script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
+</body>
+
+</html>

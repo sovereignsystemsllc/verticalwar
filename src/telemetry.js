@@ -26,3 +26,18 @@ export async function trackPageview(pathOverride = null) {
         console.warn('Telemetry error:', e);
     }
 }
+
+export async function trackAction(action, meta = {}, articleId = null) {
+    try {
+        const userId = currentUser ? currentUser.id : null;
+
+        await supabase.from('activity_log').insert({
+            user_id: userId,
+            action: action,
+            article_id: articleId,
+            meta: meta
+        });
+    } catch (e) {
+        console.warn('Telemetry action error:', e);
+    }
+}

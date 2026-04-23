@@ -64,6 +64,47 @@ if ($http_code !== 200) {
     exit;
 }
 
+// --- 2.5 RATE LIMITING (THE ARMOR) ---
+$user_data = json_decode($user_response, true);
+$user_id = $user_data['id'] ?? 'unknown_user';
+
+$limit = 20; // Generous: 20 requests per minute
+$window = 60; // 60 seconds
+
+$rate_limit_dir = __DIR__ . '/.rates';
+if (!is_dir($rate_limit_dir)) {
+    @mkdir($rate_limit_dir, 0777, true);
+}
+
+// Create a small htaccess to block direct web access to the .rates directory
+if (!file_exists($rate_limit_dir . '/.htaccess')) {
+    @file_put_contents($rate_limit_dir . '/.htaccess', 'Require all denied');
+}
+
+$rate_file = $rate_limit_dir . '/rate_' . md5($user_id) . '.json';
+$current_time = time();
+$requests = [];
+
+if (file_exists($rate_file)) {
+    $content = @file_get_contents($rate_file);
+    if ($content) {
+        $requests = json_decode($content, true) ?: [];
+    }
+}
+
+$requests = array_filter($requests, function($timestamp) use ($current_time, $window) {
+    return ($current_time - $timestamp) < $window;
+});
+
+if (count($requests) >= $limit) {
+    http_response_code(429);
+    echo json_encode(["text" => "[ SYSTEM OVERLOAD :: Rate limit exceeded. Please wait 60 seconds before transmitting again. ]"]);
+    exit;
+}
+
+$requests[] = $current_time;
+@file_put_contents($rate_file, json_encode(array_values($requests)));
+
 // --- 3. FORWARD REQUEST TO GEMINI API ---
 $input_data = file_get_contents('php://input');
 $data = json_decode($input_data, true);
