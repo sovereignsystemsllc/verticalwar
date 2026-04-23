@@ -115,7 +115,25 @@ if (!isset($data['contents'])) {
     exit;
 }
 
-$gemini_api_key = 'AIzaSyBWQyiNXrPjwW5umF2--fgAY9QPIbcOinQ';
+$gemini_api_key = getenv('GEMINI_API_KEY');
+
+// If getenv fails, attempt to read from a local .env file
+if (!$gemini_api_key) {
+    $env_path = realpath(__DIR__ . '/../../.env');
+    if ($env_path && file_exists($env_path)) {
+        $env_contents = file_get_contents($env_path);
+        if (preg_match('/^GEMINI_API_KEY=(.*)$/m', $env_contents, $matches)) {
+            $gemini_api_key = trim($matches[1]);
+        }
+    }
+}
+
+if (!$gemini_api_key) {
+    // If we still don't have a key, return a server error.
+    http_response_code(500);
+    echo json_encode(["error" => "Server configuration error: Gemini API key not set."]);
+    exit;
+}
 $model = isset($data['model']) ? $data['model'] : 'gemini-1.5-pro-latest';
 
 $gemini_payload = [

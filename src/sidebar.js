@@ -10,6 +10,7 @@ const NAV_ITEMS = [
     { href: '/about', label: '/ about', indent: true },
     { href: '/archives', label: '$ archives', indent: true },
     { href: '/lexicon/', label: '$ lexicon', indent: true },
+    { href: '/videos/', label: '$ transmissions', indent: true },
     { href: '/synthesizer/', label: '$ synthesizer', indent: true, cls: 'text-[#a78bfa]/80 hover:text-[#a78bfa] hover:border-[#a78bfa]' },
     { href: '/terminal/', label: '$ cmd_link', indent: true, cls: 'text-[#00ff41]/70 hover:text-[#00ff41] hover:border-[#00ff41]' },
     { href: '/order', label: '$ pre-order', indent: true, cls: 'text-red-500/70 hover:text-red-400' },

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOVEREIGN OS // VIDEO CURATOR</title>
+    <!-- PURE V4 STACK -->
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at top right, rgba(244, 63, 94, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(244, 63, 94, 0.03) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(244, 63, 94, 0.3); }
+        
+        #toast { transition: opacity 0.3s ease-in-out; }
+        
+        .active-video {
+            background-color: rgba(244, 63, 94, 0.1) !important;
+            border-color: rgba(244, 63, 94, 0.5) !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-6 md:p-12 font-sans selection:bg-rose-500/30 selection:text-white flex flex-col items-center">
+
+    <!-- Header -->
+    <div class="w-full max-w-7xl mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-white/5 pb-6 gap-6">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                <svg class="w-8 h-8 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Video Curator
+            </h1>
+            <p class="text-gray-400 text-sm mt-2 font-medium">Sovereign Transmissions &middot; <span class="text-rose-400 font-semibold tracking-wide">/public.videos</span></p>
+        </div>
+        <div class="flex gap-4">
+            <a href="/admin/" class="flex items-center gap-2 text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 border border-white/10 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl backdrop-blur-md shadow-sm">
+                Gateway
+            </a>
+            <button id="btn-create-new" class="flex items-center gap-2 text-sm font-bold text-white transition-all duration-300 border border-rose-500/50 px-5 py-2.5 bg-rose-500/20 hover:bg-rose-500/40 rounded-xl backdrop-blur-md shadow-[0_0_15px_rgba(244,63,94,0.3)]">
+                + New Transmission
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 w-full max-w-7xl flex flex-col lg:flex-row gap-6 h-[calc(100vh-200px)]">
+
+        <!-- LEFT PANEL: Video List -->
+        <aside class="w-full lg:w-1/3 flex flex-col gap-4 bg-[#0a0a0c] border border-white/5 rounded-2xl p-4 shadow-lg overflow-hidden">
+            
+            <!-- Filters -->
+            <div class="flex flex-col gap-3 shrink-0 border-b border-white/5 pb-4">
+                <input type="text" id="search-input" placeholder="Search Transmissions..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500/60 focus:ring-1 focus:ring-rose-500/60 transition-all">
+                
+                <div class="flex gap-2">
+                    <select id="filter-cat" class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-xs text-white focus:outline-none focus:border-rose-500/60 transition-all">
+                        <option value="">All Categories</option>
+                        <option value="MONOLOGUE">MONOLOGUE</option>
+                        <option value="TUTORIAL">TUTORIAL</option>
+                        <option value="DOCUMENTARY">DOCUMENTARY</option>
+                        <option value="TRANSMISSION">TRANSMISSION</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- List -->
+            <div id="video-list" class="flex-1 overflow-y-auto space-y-2 pr-2">
+                <!-- Videos injected via JS -->
+                <div class="text-center p-8 text-gray-500 text-sm animate-pulse">Loading transmissions...</div>
+            </div>
+        </aside>
+
+        <!-- RIGHT PANEL: Editor -->
+        <section class="flex-1 bg-[#0a0a0c] border border-white/5 rounded-2xl shadow-lg flex flex-col overflow-hidden relative">
+            
+            <!-- Security Lock Overlay -->
+            <div id="auth-lock" class="absolute inset-0 bg-[#050505]/95 border border-red-500/20 z-50 flex flex-col items-center justify-center text-center p-8 backdrop-blur-xl transition-opacity duration-300">
+                <svg class="w-12 h-12 text-red-500 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <p class="text-red-400 font-bold tracking-wide text-lg mb-1" id="auth-status-title">Verifying Clearance</p>
+                <p class="text-red-500/60 text-sm font-medium" id="auth-status-detail">Syncing secure database token...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="editor-empty" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10 bg-[#0a0a0c]">
+                <svg class="w-16 h-16 text-white/5 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <p class="text-gray-400 font-medium">Select a transmission to edit or create a new one.</p>
+            </div>
+
+            <!-- Form -->
+            <form id="editor-form" class="hidden flex-1 overflow-y-auto p-6 flex flex-col gap-6 relative z-20">
+                
+                <input type="hidden" id="video-id">
+
+                <!-- Meta row 1 -->
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Display Title <span class="text-rose-500">*</span></label>
+                        <input type="text" id="video-title" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono">
+                    </div>
+                </div>
+
+                <!-- Meta row 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Category <span class="text-rose-500">*</span></label>
+                        <select id="video-cat" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60">
+                            <option value="MONOLOGUE">MONOLOGUE</option>
+                            <option value="TUTORIAL">TUTORIAL</option>
+                            <option value="DOCUMENTARY">DOCUMENTARY</option>
+                            <option value="TRANSMISSION">TRANSMISSION</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">YouTube ID <span class="text-rose-500">*</span></label>
+                        <input type="text" id="video-ytid" required placeholder="e.g. dQw4w9WgXcQ" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4">
+                    <input type="checkbox" id="video-featured" class="w-5 h-5 accent-rose-500 bg-white/10 border-white/20 rounded focus:ring-rose-500">
+                    <div>
+                        <label for="video-featured" class="text-sm font-bold text-gray-200 tracking-wide uppercase cursor-pointer">Featured Transmission</label>
+                        <p class="text-xs text-gray-500">Pin this transmission to the top of the gallery.</p>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="flex-1 flex flex-col min-h-[200px]">
+                    <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-2">Description (HTML Allowed) <span class="text-rose-500">*</span></label>
+                    <textarea id="video-desc" required class="w-full flex-1 min-h-[150px] bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-rose-500/60 font-mono resize-y"></textarea>
+                </div>
+
+            </form>
+
+            <!-- Footer Actions -->
+            <div id="editor-footer" class="hidden shrink-0 border-t border-white/5 p-4 flex justify-between items-center bg-black/20">
+                <button id="btn-delete" type="button" class="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-white hover:bg-red-500 border border-red-500/30 px-4 py-2 rounded-xl transition-all">
+                    Delete
+                </button>
+                <button id="btn-save" type="button" class="text-xs font-bold uppercase tracking-widest text-white bg-rose-500 hover:bg-rose-400 px-6 py-2 rounded-xl transition-all shadow-[0_0_15px_rgba(244,63,94,0.4)]">
+                    Save Transmission
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-8 right-8 z-50 hidden rounded-xl px-6 py-4 border shadow-2xl backdrop-blur-xl opacity-0 text-sm font-semibold text-white pointer-events-none flex items-center gap-3">
+        <span id="toast-msg"></span>
+    </div>
+
+    <script type="module" src="./admin_videos.js"></script>
+    <script type="module" src="/src/sidebar.js"></script>
+
+    <script type="module">
+        import { trackPageview } from '/src/telemetry.js';
+        trackPageview();
+    </script>
+</body>
+
+</html>

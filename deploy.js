@@ -18,6 +18,8 @@ async function deploy() {
         await sftp.connect(config);
         console.log('[DEPLOY] Uploading deployment_smart.zip...');
         await sftp.fastPut('deployment_smart.zip', 'www/verticalwar.com/deployment_smart.zip');
+        console.log('[DEPLOY] Uploading .env file to secure root...');
+        await sftp.fastPut('.env', 'www/verticalwar.com/.env');
         await sftp.end();
         console.log('[DEPLOY] Upload complete.');
 
