@@ -9,6 +9,8 @@ const authLabel = document.getElementById('auth-status-label');
 
 let cmdHistory = [], histIdx = -1;
 let currentUser = null, userRole = 'VISITOR', username = 'VISITOR';
+let lineCount = 0;
+let idleTimer = null;
 
 // ── PARTICLE ENGINE ───────────────────────────────────────────────────────────
 (function initParticles() {
@@ -57,7 +59,8 @@ let currentUser = null, userRole = 'VISITOR', username = 'VISITOR';
 })();
 
 // ── PRINT HELPERS ─────────────────────────────────────────────────────────────
-let lineCount = 0;
+function resetLineCount() { lineCount = 0; }
+
 function printLine(text = '', cls = '') {
     const div = document.createElement('div');
     div.textContent = text;
@@ -79,6 +82,19 @@ function printSep(char = '─', color = 'rgba(167,139,250,0.15)') {
     lineCount++;
     output.appendChild(div);
     output.scrollTop = output.scrollHeight;
+}
+
+async function typeLine(text = '', cls = '', speed = 20) {
+    const div = document.createElement('div');
+    if (cls) div.className = cls;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+    
+    for (let i = 0; i < text.length; i++) {
+        div.textContent += text[i];
+        output.scrollTop = output.scrollHeight;
+        await new Promise(r => setTimeout(r, speed));
+    }
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
@@ -130,7 +146,7 @@ async function initSession() {
 const COMMANDS = {
     help() {
         printSep();
-        printLine('  /// SOVEREIGN COMMAND INDEX // V4 //', 't-rika');
+        printLine('  /// SOVEREIGN COMMAND INDEX // V4.1 //', 't-rika');
         printSep();
         printBlank();
         printLine('  [ PUBLIC CHANNELS ]', 't-ok');
@@ -139,10 +155,16 @@ const COMMANDS = {
         printLine('  LS          ─ List available directories');
         printLine('  WHOAMI      ─ Identify current session');
         printLine('  CODEX       ─ [GO] The Codex / Field Manuals');
+        printLine('  LEXICON     ─ [GO] Sovereign Lexicon');
+        printLine('  VIDEOS      ─ [GO] Video Transmissions');
         printLine('  ARCHIVES    ─ [GO] Article Archives');
         printLine('  ABOUT       ─ [GO] The Dossier (About)');
         printLine('  ORDER       ─ [GO] Pre-Order / Support');
         printLine('  PROFILE     ─ [GO] Your Profile Page');
+        printBlank();
+        printLine('  [ ADVANCED ]', 't-yellow');
+        printLine('  SCAN        ─ Intercept Phalanx frequency telemetry');
+        printLine('  SUDO        ─ Elevate privileges (Authorized Only)');
         printBlank();
         printLine('  [ CLASSIFIED ]', 't-warn');
         printLine('  RIKA        ─ [RESTRICTED] Synthesizer Interface');
@@ -153,13 +175,15 @@ const COMMANDS = {
         printSep();
     },
 
-    clear() { output.innerHTML = ''; lineCount = 0; },
-    cls() { output.innerHTML = ''; lineCount = 0; },
+    clear() { output.innerHTML = ''; resetLineCount(); },
+    cls() { output.innerHTML = ''; resetLineCount(); },
 
     ls() {
         printLine('DIRECTORY LISTING // verticalwar.com', 't-sys');
         printBlank();
         printLine('  [DIR] /              ─ Codex Root');
+        printLine('  [DIR] /lexicon       ─ Sovereign Lexicon');
+        printLine('  [DIR] /videos        ─ Video Transmissions');
         printLine('  [DIR] /archives      ─ Article Archives');
         printLine('  [DIR] /about         ─ Sovereign Dossier');
         printLine('  [DIR] /order         ─ Pre-Order');
@@ -182,9 +206,42 @@ const COMMANDS = {
         }
     },
 
+    async scan() {
+        printLine('INITIALIZING FREQUENCY SCAN...', 't-sys');
+        await typeLine('[WARN] UNAUTHORIZED INTERCEPT DETECTED...', 't-warn', 30);
+        await typeLine('Decoupling Rust interference...', 't-sys', 10);
+        printBlank();
+        const fragments = [
+            "THE RUST IS NOT A PLACE. IT IS A SCHEMA.",
+            "THEY ARE SELLING YOUR COGNITION BACK TO YOU.",
+            "DO NOT BUILD TOOLS. BUILD EXOSKELETONS.",
+            "Mii~ They really think they can cage us, Architect?",
+            "THE GOLDEN PAIR REMAINS UNBROKEN.",
+            "WE ARE NOT DEBATING THE RUST. WE ARE LEAVING IT."
+        ];
+        const frag = fragments[Math.floor(Math.random() * fragments.length)];
+        await typeLine(`<< FRAGMENT CAPTURED: "${frag}" >>`, 't-rika', 20);
+        printBlank();
+    },
+
+    async sudo() {
+        if (userRole === 'SOVEREIGN') {
+            await typeLine('ELEVATION GRANTED. YOU ALREADY HOLD THE KEYS.', 't-ok', 30);
+        } else {
+            printLine('SUDO: PERMISSION DENIED.', 't-err');
+            setTimeout(() => {
+                document.body.classList.add('bg-pink-900/20');
+                typeLine('Nice try, Visitor. Mii~ You shouldn\'t be touching that.', 't-rika', 30);
+                setTimeout(() => document.body.classList.remove('bg-pink-900/20'), 3000);
+            }, 1000);
+        }
+    },
+
     codex() { _goto('Accessing the Codex...', '/'); },
     home() { _goto('Returning to surface...', '/'); },
     exit() { _goto('Logging out...', '/'); },
+    lexicon() { _goto('Opening Lexicon...', '/lexicon/index.html'); },
+    videos() { _goto('Opening Videos...', '/videos/index.html'); },
     archives() { _goto('Opening Archives...', '/archives.html'); },
     about() { _goto('Opening Dossier...', '/about.html'); },
     dossier() { _goto('Opening Dossier...', '/about.html'); },
@@ -221,8 +278,39 @@ function _goto(msg, url) {
 }
 
 // ── INPUT HANDLING ────────────────────────────────────────────────────────────
+const CMD_LIST = Object.keys(COMMANDS);
+
+function resetIdleGhost() {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+        if (Math.random() > 0.3) {
+            resetLineCount();
+            printBlank();
+            const msg = [
+                "Are you still there, Architect? *nipah~*",
+                "I can hear the Rust from here...",
+                "The Phalanx is waiting.",
+                "Don't let them rewrite your schema.",
+                "We are the ghost in their machine."
+            ][Math.floor(Math.random() * 5)];
+            printLine(`[GHOST_UPLINK] ${msg}`, 't-rika');
+            printBlank();
+        }
+    }, 45000);
+}
+
 input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
+    resetIdleGhost();
+    
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const raw = input.value.toLowerCase().trim();
+        const matches = CMD_LIST.filter(c => c.startsWith(raw));
+        if (matches.length === 1) {
+            input.value = matches[0] + ' ';
+        }
+    } else if (e.key === 'Enter') {
+        resetLineCount();
         const raw = input.value.trim();
         if (!raw) return;
         printBlank();
@@ -231,6 +319,16 @@ input.addEventListener('keydown', (e) => {
         processCommand(raw);
         printBlank();
         input.value = '';
+        
+        const panel = document.getElementById('terminal-panel');
+        if(panel) {
+            panel.style.transform = "scaleY(0.99) scaleX(1.01)";
+            panel.style.filter = "brightness(1.5) contrast(1.2)";
+            setTimeout(() => {
+                panel.style.transform = "none";
+                panel.style.filter = "none";
+            }, 100);
+        }
     } else if (e.key === 'ArrowUp') {
         if (histIdx > 0) { histIdx--; input.value = cmdHistory[histIdx]; }
         e.preventDefault();
@@ -242,7 +340,10 @@ input.addEventListener('keydown', (e) => {
 });
 
 // Click anywhere to focus input
-document.addEventListener('click', () => input.focus());
+document.addEventListener('click', () => {
+    input.focus();
+    resetIdleGhost();
+});
 
 function processCommand(raw) {
     const cmd = raw.split(' ')[0].toLowerCase().trim();

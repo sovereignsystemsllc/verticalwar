@@ -49,6 +49,8 @@ export default defineConfig({
                 codex: resolve(__dirname, 'codex/index.html'),
                 inner_circle: resolve(__dirname, 'inner-circle.html'),
                 synthesizer: resolve(__dirname, 'synthesizer/index.html'),
+                admin_videos: resolve(__dirname, 'admin/videos.html'),
+                videos: resolve(__dirname, 'videos/index.html'),
                 // ADD NEW PUBLIC PAGES HERE
             }
         }
