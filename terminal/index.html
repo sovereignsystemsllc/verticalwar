@@ -243,15 +243,18 @@
             <span id="prompt" class="font-mono text-sm font-bold whitespace-nowrap prompt-visitor">
                 VISITOR@SOVEREIGN:~$
             </span>
-            <input type="text" id="cmd-input" autocomplete="new-password" data-lpignore="true" data-1p-ignore="true" spellcheck="false" placeholder="type a command..." class="text-sm placeholder-white/10 w-full bg-transparent border-none outline-none text-white font-mono" style="caret-color: #00ff41;">
+            <!-- HONEYPOT TO DEFEAT CHROME AUTOFILL -->
+            <input type="email" style="opacity: 0; position: absolute; z-index: -1;" aria-hidden="true" tabindex="-1">
+            <input type="password" style="opacity: 0; position: absolute; z-index: -1;" aria-hidden="true" tabindex="-1">
+            <!-- REAL TERMINAL INPUT -->
+            <input type="text" id="cmd-input" name="sovereign_terminal_input" autocomplete="off" data-lpignore="true" data-1p-ignore="true" spellcheck="false" placeholder="type a command..." class="text-sm placeholder-white/10 w-full bg-transparent border-none outline-none text-white font-mono" style="caret-color: #00ff41;">
             <span class="text-[#00ff41] animate-pulse text-lg leading-none">&#x2588;</span>
         </div>
     </div>
 
     <!-- HELP HINT -->
     <p class="absolute bottom-3 font-mono text-[9px] text-white/15 tracking-widest uppercase z-20">
-        type <span class="text-[#00ff41]/40">HELP</span> for command index // <span class="text-[#a78bfa]/40">??</span>
-        history
+        type <span class="text-[#00ff41]/40">HELP</span> for command index // <span class="text-[#a78bfa]/40">&#8593;/&#8595;</span> history
     </p>
 
     <script type="module" src="/terminal/terminal.js"></script>
